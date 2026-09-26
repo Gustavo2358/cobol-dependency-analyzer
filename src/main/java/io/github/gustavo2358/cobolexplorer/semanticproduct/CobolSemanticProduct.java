@@ -1115,8 +1115,9 @@ public final class CobolSemanticProduct {
         public VaryingOperand { require(level>0,"varying level");Objects.requireNonNull(role);Objects.requireNonNull(integer);references=List.copyOf(references);Objects.requireNonNull(provenance); }
     }
     /** Each level denotes initialization and iteration whole-item writes to its control operand. */
-    public record PerformVarying(int levels,List<VaryingOperand> controls) {
-        public PerformVarying {require(levels>0,"varying levels");controls=List.copyOf(controls);}
+    public record PerformVarying(int levels,List<VaryingOperand> controls,List<PerformLoop> afterLoops) {
+        public PerformVarying(int levels,List<VaryingOperand> controls) {this(levels,controls,List.of());}
+        public PerformVarying {require(levels>0,"varying levels");controls=List.copyOf(controls);afterLoops=List.copyOf(afterLoops);}
     }
     public enum PerformPublicationKind { LEGACY_PROFILE, STRUCTURAL_FACTS }
     public record ProcedurePerformFact(StatementHeader header, Optional<PerformTarget> start, Optional<PerformTarget> end,

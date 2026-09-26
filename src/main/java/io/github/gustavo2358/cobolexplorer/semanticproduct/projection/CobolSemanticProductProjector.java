@@ -1232,9 +1232,9 @@ public final class CobolSemanticProductProjector {
                 if(!codes.contains(code))codes.add(code);
             if(containment.branch()==Branch.UNKNOWN)codes.add(CONTAINMENT_GAP);
             int[] operandOrdinal={0};
-            var loop=proof.loop().map(l->{
+            java.util.function.Function<ProcedurePerformSemantics.Loop,PerformLoop> projectLoop=l->{
                 var references=new ArrayList<DataReference>();var predicate=l.predicate();
-                for(var entry:p.controls().stream().filter(c->c.context()==Ast.PerformControlContext.CONDITION).flatMap(c->conditionEntries(c.expression(),inputs).stream()).toList()) {
+                for(var entry:l.condition().stream().flatMap(c->conditionEntries(c,inputs).stream()).toList()) {
                     if(entry.occurrence().role()==ResolutionContracts.ReferenceRole.PERFORM_FROM
                         ||entry.occurrence().role()==ResolutionContracts.ReferenceRole.PERFORM_THROUGH)continue;
                     var origin=provenance(entry.occurrence().meta().provenance());
@@ -1250,7 +1250,8 @@ public final class CobolSemanticProductProjector {
                     predicate.availability()==IfSemantics.Availability.KNOWN?List.of():List.of("PREDICATE_NOT_PROVEN"));
                 return new PerformLoop(PerformTestMode.valueOf(l.testMode().name()),new ConditionSurface(l.condition().map(CobolSemanticProductProjector::conditionShape).orElse("UNAVAILABLE"),
                     references,provenance(predicate.provenance()),guarantee));
-            });
+            };
+            var loop=proof.loop().map(projectLoop);
             var times=proof.times().map(t->{
                 Optional<DataReference> reference=Optional.empty();
                 for(var entry:plan.entries()) {
@@ -1275,7 +1276,7 @@ public final class CobolSemanticProductProjector {
                     }
                     controls.add(new VaryingOperand(control.varyingLevel(),VaryingOperandRole.valueOf(control.context().name()),operand.integer().map(Object::toString),refs,provenance(control.expression().meta().provenance())));
                 }
-                return new PerformVarying(v.levels(),controls);
+                return new PerformVarying(v.levels(),controls,v.afterLoops().stream().map(projectLoop).toList());
             });
             var status=codes.isEmpty()?ReadinessStatus.SUFFICIENT:ReadinessStatus.PARTIAL;
             statements.add(new ProcedurePerformFact(header(statementId,plan.position().ordinal(),containment,statementProvenance,

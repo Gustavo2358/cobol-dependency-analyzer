@@ -14,7 +14,7 @@ public final class ProcedurePerformSemantics {
     public record Count(Optional<Ast.Expression> expression,Optional<java.math.BigInteger> integer,
                         Optional<ResolutionContracts.SemanticEntityId> wholeItem,boolean proven) { }
     public record VaryingOperand(Ast.PerformControl control,Optional<java.math.BigInteger> integer,Optional<ResolutionContracts.SemanticEntityId> wholeItem) { }
-    public record Varying(int levels,List<VaryingOperand> controls) { public Varying {controls=List.copyOf(controls);} }
+    public record Varying(int levels,List<VaryingOperand> controls,List<Loop> afterLoops) { public Varying {controls=List.copyOf(controls);afterLoops=List.copyOf(afterLoops);} }
     public record Facts(Optional<Endpoint> start, Optional<Endpoint> end, List<Paragraph> procedures,
                         Optional<Integer> resume, Ast.SourceProvenance resumeOrigin, Optional<Loop> loop, Optional<Count> times, Optional<Varying> varying,boolean structureKnown,List<String> gaps) {
         public Facts { procedures=List.copyOf(procedures); gaps=List.copyOf(gaps); }
@@ -38,7 +38,7 @@ public final class ProcedurePerformSemantics {
     public boolean paragraphEnd(ResolutionContracts.ProgramUnitId unit,int id) { return paragraphEnds.contains(new ScalarMoveSemantics.NodeKey(unit,id)); }
     public boolean completion(ResolutionContracts.ProgramUnitId unit,int id) { return completions.contains(new ScalarMoveSemantics.NodeKey(unit,id)); }
     public static boolean applicable(Ast.PerformStatement p) {
-        return p.performKind()==Ast.PerformKind.PROCEDURE && p.inlineBody().isEmpty()
+        return (p.performKind()==Ast.PerformKind.INLINE || p.inlineBody().isEmpty())
             && (p.repetition()==Ast.PerformRepetition.UNTIL || p.repetition()==Ast.PerformRepetition.TIMES || p.repetition()==Ast.PerformRepetition.VARYING || p.throughReference()!=null && p.repetition()==Ast.PerformRepetition.ONCE);
     }
     /** Paragraph structure is independent of the legacy specialization's body profile. */
@@ -76,7 +76,7 @@ public final class ProcedurePerformSemantics {
             if(division!=null){next.putAll(division.normalContinuations());division.embeddedContinuations().forEach((from,to)->{if(cics.boundedLocal(unit.id(),nodes.get(from)))next.put(from,to);});}
             var provisional=new LinkedHashMap<Integer,Facts>();
             var performs=nodes.values().stream().filter(Ast.PerformStatement.class::isInstance).map(Ast.PerformStatement.class::cast)
-                .filter(ProcedurePerformSemantics::structuralCandidate).sorted(Comparator.comparingInt(p->p.meta().id())).toList();
+                .filter(p->structuralCandidate(p)||p.performKind()==Ast.PerformKind.INLINE&&applicable(p)).sorted(Comparator.comparingInt(p->p.meta().id())).toList();
             for(var p:performs) {
                 if(applicable(p))legacyRanges.add(new ScalarMoveSemantics.NodeKey(unit.id(),p.meta().id()));
                 var gaps=new LinkedHashSet<String>();if(!complete)gaps.add("PERFORM_INPUT_INCOMPLETE");
@@ -101,7 +101,7 @@ public final class ProcedurePerformSemantics {
                 boolean repetitionSupported=true;
                 Optional<Loop> loop=Optional.empty();
                 if(p.repetition()==Ast.PerformRepetition.UNTIL||p.repetition()==Ast.PerformRepetition.VARYING) {
-                    var conditions=p.controls().stream().filter(c->c.context()==Ast.PerformControlContext.CONDITION).map(Ast.PerformControl::expression).toList();
+                    var conditions=p.controls().stream().filter(c->c.context()==Ast.PerformControlContext.CONDITION&&(p.repetition()!=Ast.PerformRepetition.VARYING||c.varyingLevel()==1)).map(Ast.PerformControl::expression).toList();
                     var condition=conditions.size()==1?Optional.of(conditions.get(0)):Optional.<Ast.Expression>empty();
                     var predicate=condition.map(c->PerformPredicateSemantics.analyze(c,unit.id(),complete&&p.meta().provenance().exact(),p.repetition()==Ast.PerformRepetition.VARYING,refs,scalars,numbers,coverage))
                         .orElse(PerformPredicateSemantics.unavailable(p.meta().provenance()));
@@ -128,7 +128,16 @@ public final class ProcedurePerformSemantics {
                         var e=control.expression();var integer=e instanceof Ast.LiteralExpression l?l.integerValue():Optional.<java.math.BigInteger>empty();
                         operands.add(new VaryingOperand(control,integer,numbers.whole(e,unit.id(),refs)));
                     }
-                    varying=Optional.of(new Varying(levels,operands));
+                    var afterLoops=new ArrayList<Loop>();
+                    for(int level=2;level<=levels;level++) {
+                        final int selected=level;
+                        var conditions=p.controls().stream().filter(c->c.context()==Ast.PerformControlContext.CONDITION&&c.varyingLevel()==selected).map(Ast.PerformControl::expression).toList();
+                        var condition=conditions.size()==1?Optional.of(conditions.get(0)):Optional.<Ast.Expression>empty();
+                        var predicate=condition.map(c->PerformPredicateSemantics.analyze(c,unit.id(),complete&&p.meta().provenance().exact(),true,refs,scalars,numbers,coverage))
+                            .orElse(PerformPredicateSemantics.unavailable(p.meta().provenance()));
+                        afterLoops.add(new Loop(p.testMode(),condition,predicate));
+                    }
+                    varying=Optional.of(new Varying(levels,operands,afterLoops));
                     if(levels!=1||p.controls().size()!=4||p.controls().stream().anyMatch(c->c.varyingLevel()!=1))gaps.add("PERFORM_VARYING_SINGLE_VARIABLE_NOT_PROVEN");
                     if(levels>1)gaps.add("PERFORM_VARYING_AFTER_OUTSIDE_PROFILE");
                     var variables=operands.stream().filter(o->o.control().context()==Ast.PerformControlContext.CONTROL_VARIABLE).toList();

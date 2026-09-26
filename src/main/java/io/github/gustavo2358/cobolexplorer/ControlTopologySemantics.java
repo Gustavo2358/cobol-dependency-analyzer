@@ -16,6 +16,9 @@ public final class ControlTopologySemantics {
     private final Map<Integer,Integer> targetDeclarations=new HashMap<>();
     private final List<Ast.Paragraph> paragraphs=new ArrayList<>();
     private final Map<Integer,String> paragraphIds=new HashMap<>();
+    private final Map<Integer,Ast.Section> sections=new LinkedHashMap<>();
+    private final Map<Integer,String> sectionIds=new HashMap<>();
+    private final List<Integer> procedureOrder=new ArrayList<>();
     private final Map<Integer,String> paragraphOwners=new HashMap<>();
     private final Map<String,Ast.Section> declarativeRegions=new TreeMap<>();
     private final Map<String,Occurrence> occurrences=new TreeMap<>();
@@ -56,7 +59,7 @@ public final class ControlTopologySemantics {
                 &&ref.status()==ResolutionContracts.ResolutionStatus.RESOLVED&&ref.candidates().size()==1) {
             ref.selectedCandidate().ifPresent(c->{var id=c.entityId();var symbol=bySymbol.get(id.localId());
                 if(id.programUnitId().equals(unit.id())&&id.domain()==ResolutionContracts.SemanticEntityDomain.PROCEDURE_SYMBOL
-                        &&symbol!=null&&symbol.kind()==SymbolTable.SymbolKind.PARAGRAPH)
+                        &&symbol!=null&&(symbol.kind()==SymbolTable.SymbolKind.PARAGRAPH||symbol.kind()==SymbolTable.SymbolKind.PROCEDURE_SECTION))
                     targetDeclarations.put(ref.occurrence().referenceAstNodeId(),symbol.declarationAstNodeId());});
         }
         collectParagraphs(division,root);
@@ -65,9 +68,12 @@ public final class ControlTopologySemantics {
     private void collectParagraphs(Ast.Node node,String owner) {
         if(node instanceof Ast.Section section&&section.children().stream().anyMatch(Ast.UseClause.class::isInstance)) {
             owner="region:declarative:"+section.meta().id();declarativeRegions.put(owner,section);
+        } else if(node instanceof Ast.Section section) {
+            owner="region:section:"+section.meta().id();sections.put(section.meta().id(),section);
+            sectionIds.put(section.meta().id(),owner);procedureOrder.add(section.meta().id());
         }
         for(var child:Ast.children(node)) {
-            if(child instanceof Ast.Paragraph paragraph){paragraphs.add(paragraph);paragraphOwners.put(paragraph.meta().id(),owner);}
+            if(child instanceof Ast.Paragraph paragraph){paragraphs.add(paragraph);paragraphOwners.put(paragraph.meta().id(),owner);procedureOrder.add(paragraph.meta().id());}
             else if(!(child instanceof Ast.Statement))collectParagraphs(child,owner);
         }
     }
@@ -80,6 +86,17 @@ public final class ControlTopologySemantics {
             var first=paragraphs.stream().filter(p->paragraphOwners.get(p.meta().id()).equals(id)).findFirst();
             putRegion(id,RegionKind.DECLARATIVE,root,first.map(p->entry(paragraphIds.get(p.meta().id()),premise)).orElse(unknown(id,premise)),List.of(),unknown(id,premise),premise);
         }
+        var sectionList=new ArrayList<>(sections.values());
+        for(int i=0;i<sectionList.size();i++) {
+            var section=sectionList.get(i);String id=sectionIds.get(section.meta().id());
+            var ps=proof(id,ProofKind.LOCAL_GRAMMAR,"section-boundary",section.meta().provenance(),List.of(isolation));
+            var direct=section.children().stream().filter(Ast.Sentence.class::isInstance).map(Ast.Sentence.class::cast).flatMap(x->x.statements().stream()).toList();
+            var first=paragraphs.stream().filter(p->paragraphOwners.get(p.meta().id()).equals(id)).findFirst();
+            Target after=i+1<sectionList.size()?entry(sectionIds.get(sectionList.get(i+1).meta().id()),ps):unknown(root,ps);
+            Target tail=first.map(p->entry(paragraphIds.get(p.meta().id()),ps)).orElse(complete(id,ps));
+            putRegion(id,RegionKind.SECTION,root,direct.isEmpty()?tail:occ(direct.get(0),ps),List.of(),after,ps);
+            statements(direct,id,tail,isolation);
+        }
         // Each paragraph default is the canonical ordinary relation, not transported list order.
         for(var p:paragraphs) {
             String id=paragraphIds.get(p.meta().id());var ps=proof(id,ProofKind.LOCAL_GRAMMAR,"paragraph-boundary",p.meta().provenance(),List.of(isolation));
@@ -89,6 +106,8 @@ public final class ControlTopologySemantics {
             int ordinal=paragraphs.indexOf(p);
             if(ordinal+1<paragraphs.size()&&paragraphOwners.get(paragraphs.get(ordinal+1).meta().id()).equals(owner))
                 after=entry(paragraphIds.get(paragraphs.get(ordinal+1).meta().id()),ps);
+            else if(sectionIds.containsValue(owner))after=complete(owner,ps);
+            else if(owner.equals(root)&&!sectionList.isEmpty())after=entry(sectionIds.get(sectionList.get(0).meta().id()),ps);
             makeRegion(id,RegionKind.PARAGRAPH,owner,direct,after,ps);
             statements(direct,id,complete(id,ps),isolation);
         }
@@ -117,6 +136,19 @@ public final class ControlTopologySemantics {
             var next=i+1<list.size()&&ids.containsKey(list.get(i+1))?occ(list.get(i+1),p):end;
             if(!independent){add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(owner,p),"",p);continue;}
             exceptionalEvent(s,p);
+            if(s instanceof Ast.ModeledStatement m&&m.exitKind().isPresent()) {
+                var kind=m.exitKind().orElseThrow();String scope=owner;
+                var wanted=kind==Ast.ExitKind.PARAGRAPH?RegionKind.PARAGRAPH:RegionKind.INLINE_BODY;
+                while(!scope.isEmpty()&&(!regions.containsKey(scope)||regions.get(scope).kind()!=wanted))
+                    scope=regions.containsKey(scope)?regions.get(scope).parent():"";
+                if(!scope.isEmpty()) {
+                    var exitProof=proof(id+"/exit",ProofKind.LOCAL_GRAMMAR,"exit-"+kind.name().toLowerCase(Locale.ROOT),s.meta().provenance(),List.of(p));
+                    var target=kind==Ast.ExitKind.PERFORM_CYCLE?complete(scope,exitProof):new Target(TargetKind.ESCAPE,scope,List.of(exitProof));
+                    add(s,owner,OutcomeKind.EXPLICIT_TRANSFER,"exit",target,"",exitProof);
+                } else if(kind!=Ast.ExitKind.PARAGRAPH) add(s,owner,OutcomeKind.EXPLICIT_TRANSFER,"exit-ignored",next,"",p);
+                else add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"exit-scope-unavailable",unknown(owner,p),"",p);
+                continue;
+            }
             if(s instanceof Ast.GobackStatement){add(s,owner,OutcomeKind.PROGRAM_RETURN,"return",new Target(TargetKind.PROGRAM_RETURN,root,List.of(p)),"",p);continue;}
             if(s instanceof Ast.IfStatement f) {
                 var region="region:"+id+"/if";putRegion(region,RegionKind.IF,owner,occ(s,p),List.of(),next,p);
@@ -132,19 +164,18 @@ public final class ControlTopologySemantics {
                     add(s,region,OutcomeKind.BRANCH,role,target,"",p);}
                 if(!other)add(s,region,OutcomeKind.BRANCH,"other",complete(region,p),"",p);continue;
             }
-            if(s instanceof Ast.PerformStatement perform&&(perform.repetition()==Ast.PerformRepetition.UNKNOWN
-                    ||perform.controls().stream().anyMatch(control->control.varyingLevel()>1))) {
+            if(s instanceof Ast.PerformStatement perform&&(perform.repetition()==Ast.PerformRepetition.UNKNOWN)) {
                 var unknownProof=proof(id+"/repetition",ProofKind.PARTIAL_UNKNOWN,"unresolved-perform-repetition",s.meta().provenance(),List.of(p));
                 add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(owner,unknownProof),"",unknownProof);continue;
             }
             if(s instanceof Ast.PerformStatement perform&&perform.performKind()==Ast.PerformKind.PROCEDURE) {
                 var from=perform.fromReference()==null?null:targetDeclarations.get(perform.fromReference().meta().id());
                 var to=perform.throughReference()==null?from:targetDeclarations.get(perform.throughReference().meta().id());
-                int first=index(from),last=index(to);
-                if(first>=0&&last>=first&&paragraphOwners.get(from).equals(paragraphOwners.get(to))) {
+                int first=procedureOrder.indexOf(from),last=procedureOrder.indexOf(to);
+                if(first>=0&&last>=first&&procedureOwner(from).equals(procedureOwner(to))) {
                     String range="region:"+id+"/range",binding="binding:"+id;
                     var resolution=proof(binding,ProofKind.RESOLVED_TARGET,"resolved-ordered-paragraph-range",perform.meta().provenance(),List.of(p));
-                    var parts=paragraphs.subList(first,last+1).stream().map(x->paragraphIds.get(x.meta().id())).toList();
+                    var parts=procedureOrder.subList(first,last+1).stream().map(this::procedureRegion).toList();
                     putRegion(range,RegionKind.RANGE,owner,entry(parts.get(0),resolution),List.of(),next,resolution);
                     var r=regions.get(range);regions.put(range,new Region(r.id(),r.kind(),r.parent(),r.entry(),r.members(),parts,r.boundary(),r.proofs()));
                     publishInvocation(perform,owner,range,binding,id,"boundary:"+parts.get(parts.size()-1),next,resolution);
@@ -213,6 +244,11 @@ public final class ControlTopologySemantics {
             add(s,owner,completion?OutcomeKind.NORMAL:OutcomeKind.UNKNOWN_LOCAL,completion?"normal":"unknown",completion?next:unknown(owner,p),"",completionProof);
         }
     }
+    private String procedureRegion(Integer id) { return sectionIds.getOrDefault(id,paragraphIds.get(id)); }
+    private String procedureOwner(Integer id) {
+        if(sectionIds.containsKey(id))return root;
+        String owner=paragraphOwners.get(id);return sectionIds.containsValue(owner)?root:owner;
+    }
     private void exceptionalEvent(Ast.Statement statement,String premise) {
         if(cics==null)return;
         var abend=cics.abendFact(unit.id(),statement.meta().id()).orElse(null);
@@ -249,6 +285,10 @@ public final class ControlTopologySemantics {
     private Binding invocation(String binding,String id,String range,String endpoint,Target resume,Ast.PerformStatement p,String proof) {
         var phases=new ArrayList<Phase>();String entry="BODY",completion="RESUME";
         boolean before=p.testMode()==Ast.PerformTestMode.BEFORE;
+        int levels=p.controls().stream().mapToInt(Ast.PerformControl::varyingLevel).max().orElse(1);
+        if(p.repetition()==Ast.PerformRepetition.VARYING&&levels>1) {
+            return varyingInvocation(binding,id,range,endpoint,resume,p,proof,levels);
+        }
         if(p.repetition()==Ast.PerformRepetition.UNTIL||p.repetition()==Ast.PerformRepetition.VARYING) {
             String repeat="BODY";completion="test";if(before)entry="test";
             if(p.repetition()==Ast.PerformRepetition.VARYING) {
@@ -263,6 +303,28 @@ public final class ControlTopologySemantics {
             if(literal.isEmpty()) {entry="count-entry";phases.add(phase("count-entry",PhaseKind.PREDICATE,"COUNT_ENTRY",proof,"true","RESUME","false","BODY"));}
         }
         return new Binding(binding,id,range,endpoint,resume,entry,completion,phases,List.of(proof));
+    }
+    /** IBM 6.4 pp. 420–423: innermost increment, outward carry, and current FROM resets. */
+    private Binding varyingInvocation(String binding,String id,String range,String endpoint,Target resume,Ast.PerformStatement p,String proof,int levels) {
+        var phases=new ArrayList<Phase>();boolean before=p.testMode()==Ast.PerformTestMode.BEFORE;
+        for(int level=1;level<=levels;level++) {
+            phases.add(levelPhase("initial-"+level,PhaseKind.EFFECT,"VARY_INITIAL",proof,level,"next",
+                level<levels?"initial-"+(level+1):before?"test-1":"BODY"));
+            String yes=level==1?"RESUME":before?"update-"+(level-1):"test-"+(level-1);
+            String no=before?(level<levels?"test-"+(level+1):"BODY"):"update-"+level;
+            phases.add(levelPhase("test-"+level,PhaseKind.PREDICATE,"UNTIL_PREDICATE",proof,level,"true",yes,"false",no));
+            String updated=before?(level<levels?"reset-"+level+"-"+(level+1):"test-"+level)
+                :(level<levels?"initial-"+(level+1):"BODY");
+            phases.add(levelPhase("update-"+level,PhaseKind.EFFECT,"VARY_UPDATE",proof,level,"next",updated));
+            if(before)for(int inner=level+1;inner<=levels;inner++)
+                phases.add(levelPhase("reset-"+level+"-"+inner,PhaseKind.EFFECT,"VARY_INITIAL",proof,inner,"next",
+                    inner<levels?"reset-"+level+"-"+(inner+1):"test-"+level));
+        }
+        return new Binding(binding,id,range,endpoint,resume,"initial-1",(before?"update-":"test-")+levels,phases,List.of(proof));
+    }
+    private static Phase levelPhase(String id,PhaseKind kind,String operation,String proof,int level,String... edges) {
+        var result=new ArrayList<PhaseEdge>();for(int i=0;i<edges.length;i+=2)result.add(new PhaseEdge(edges[i],edges[i+1]));
+        return new Phase(id,kind,operation,result,List.of(proof),level);
     }
     private Phase phase(String id,PhaseKind kind,String operation,String proof,String... routing) {
         var edges=new ArrayList<PhaseEdge>();for(int i=0;i<routing.length;i+=2)edges.add(new PhaseEdge(routing[i],routing[i+1]));

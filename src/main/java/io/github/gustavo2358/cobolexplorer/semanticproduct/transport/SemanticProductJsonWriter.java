@@ -28,13 +28,22 @@ public final class SemanticProductJsonWriter {
     public static final String SCHEMA = "cobol-semantic-product";
     public static final String CONTRACT_VERSION = "2.28.0";
 
+    private static boolean extendedPerform(CobolSemanticPort port) {
+        return port.controlTopology().stream().anyMatch(t->t.outcomes().stream().anyMatch(o->o.target().kind()==io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.TargetKind.ESCAPE)
+            ||t.regions().stream().anyMatch(r->r.kind()==io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.RegionKind.SECTION)
+            ||t.bindings().stream().anyMatch(b->b.phases().stream().anyMatch(p->p.level()>0)));
+    }
     private static final ObjectMapper JSON = JsonMapper.builder()
             .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
             .addMixIn(io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.class,TopologyWire.class)
+            .addMixIn(io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.Phase.class,PhaseWire.class)
             .defaultPropertyInclusion(JsonInclude.Value.construct(
                     JsonInclude.Include.ALWAYS, JsonInclude.Include.ALWAYS))
             .build();
 
+    private interface PhaseWire {
+        @JsonInclude(JsonInclude.Include.NON_DEFAULT) int level();
+    }
     private interface TopologyWire {
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         List<io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.ExceptionalEvent> exceptionalEvents();
@@ -90,7 +99,7 @@ public final class SemanticProductJsonWriter {
         boolean partialRegionalSequence=port.statements().stream().anyMatch(s -> s instanceof CobolSemanticProduct.MoveFact m
             && (!m.logicalTransfers().isEmpty() || !m.additionalTransfers().isEmpty()
                 && m.transfers().stream().anyMatch(t -> t.effect().kind()==CobolSemanticProduct.RegionalMoveKind.UNAVAILABLE)));
-        return new SemanticProductDocument(SCHEMA, port.nominalValues().isPresent()?"2.47.0":port.statements().stream().anyMatch(s->s instanceof CobolSemanticProduct.IfFact f&&f.condition().textPredicate().isPresent())||port.statements().stream().anyMatch(s->s instanceof CobolSemanticProduct.ObservedStatement o&&o.effects().filter(e->e.proof()==CobolSemanticProduct.EffectProof.DLI_HOST_OPERANDS||e.proof()==CobolSemanticProduct.EffectProof.CICS_CONDITION_REGISTRATION).isPresent())||port.storage().entryState().conditions().stream().anyMatch(c->c.kind()==CobolSemanticProduct.InitialStorageKind.LOGICAL_TEXT)||port.statements().stream().anyMatch(s->s instanceof CobolSemanticProduct.CicsCommandFact c&&(c.hostEffects().isPresent()||c.commandKind()==CobolSemanticProduct.CicsCommandKind.RETRIEVE)||s instanceof CobolSemanticProduct.CicsHandlerFact h&&h.registrationEffects().isPresent())?"2.46.0":port.controlTopology().stream().anyMatch(t->!t.exceptionalEvents().isEmpty())?"2.45.0":port.statements().stream().anyMatch(s->s instanceof CobolSemanticProduct.CicsCommandFact c&&c.commandKind()==CobolSemanticProduct.CicsCommandKind.SEND_TERMINAL)?"2.44.0":port.statements().stream().anyMatch(CobolSemanticProduct.CicsCommandFact.class::isInstance)?"2.43.0":port.statements().stream().anyMatch(CobolSemanticProduct.CicsAbendFact.class::isInstance)
+        return new SemanticProductDocument(SCHEMA, extendedPerform(port)?"2.48.0":port.nominalValues().isPresent()?"2.47.0":port.statements().stream().anyMatch(s->s instanceof CobolSemanticProduct.IfFact f&&f.condition().textPredicate().isPresent())||port.statements().stream().anyMatch(s->s instanceof CobolSemanticProduct.ObservedStatement o&&o.effects().filter(e->e.proof()==CobolSemanticProduct.EffectProof.DLI_HOST_OPERANDS||e.proof()==CobolSemanticProduct.EffectProof.CICS_CONDITION_REGISTRATION).isPresent())||port.storage().entryState().conditions().stream().anyMatch(c->c.kind()==CobolSemanticProduct.InitialStorageKind.LOGICAL_TEXT)||port.statements().stream().anyMatch(s->s instanceof CobolSemanticProduct.CicsCommandFact c&&(c.hostEffects().isPresent()||c.commandKind()==CobolSemanticProduct.CicsCommandKind.RETRIEVE)||s instanceof CobolSemanticProduct.CicsHandlerFact h&&h.registrationEffects().isPresent())?"2.46.0":port.controlTopology().stream().anyMatch(t->!t.exceptionalEvents().isEmpty())?"2.45.0":port.statements().stream().anyMatch(s->s instanceof CobolSemanticProduct.CicsCommandFact c&&c.commandKind()==CobolSemanticProduct.CicsCommandKind.SEND_TERMINAL)?"2.44.0":port.statements().stream().anyMatch(CobolSemanticProduct.CicsCommandFact.class::isInstance)?"2.43.0":port.statements().stream().anyMatch(CobolSemanticProduct.CicsAbendFact.class::isInstance)
                 ||port.controlTopology().stream().flatMap(t->t.proofs().stream()).anyMatch(p->p.rule().equals("cics-handle-abend-ordinary-return"))?"2.42.0":port.factDependencies().isPresent()||port.statements().stream().anyMatch(CobolSemanticProduct.CicsHandlerFact.class::isInstance)?"2.41.0":port.controlTopology().isPresent()?"2.39.0":partialRegionalSequence?"2.38.0":!port.ordinaryContinuations().isEmpty()?"2.37.0":port.statements().stream().anyMatch(s->s instanceof CobolSemanticProduct.ProcedurePerformFact p && p.publicationKind()==CobolSemanticProduct.PerformPublicationKind.STRUCTURAL_FACTS)?"2.36.0":!port.storage().logicalExactViews().isEmpty()?"2.35.0":structuredUnknownEvaluate?"2.33.0":preservation?"2.32.0":port.sourceDependencies().availability()!=CobolSemanticProduct.Availability.UNAVAILABLE?"2.31.0":port.storage().logicalTextViews().isEmpty()?CONTRACT_VERSION:"2.29.0",
                 unit(port.unit()), policy(port.policy()), declarations, statements,
                 new StructureDocument(port.rootStatements().stream()
@@ -291,7 +300,7 @@ public final class SemanticProductJsonWriter {
                 p.procedures().stream().map(r->new PerformParagraphDocument("procedure:"+r.id().localId(),statementHandle(r.entry()),
                     r.statements().stream().map(SemanticProductJsonWriter::statementHandle).toList(),
                     r.completions().stream().map(SemanticProductJsonWriter::statementHandle).toList(),provenance(r.provenance()))).toList(),
-                continuation(p.normalContinuation()),p.loop().map(l->new PerformLoopDocument(l.testMode(),condition(l.condition()))).orElse(null),p.times().map(t->new PerformCountDocument(t.profile(),t.integer().orElse(null),t.reference().map(SemanticProductJsonWriter::dataReference).orElse(null),provenance(t.provenance()))).orElse(null),p.varying().map(v->new PerformVaryingDocument(v.levels(),v.controls().stream().map(o->new VaryingOperandDocument(o.level(),o.role(),o.integer().orElse(null),o.references().stream().map(SemanticProductJsonWriter::dataReference).toList(),provenance(o.provenance()))).toList())).orElse(null),p.gapCodes(),p.publicationKind()==CobolSemanticProduct.PerformPublicationKind.STRUCTURAL_FACTS?p.publicationKind():null,
+                continuation(p.normalContinuation()),p.loop().map(l->new PerformLoopDocument(l.testMode(),condition(l.condition()))).orElse(null),p.times().map(t->new PerformCountDocument(t.profile(),t.integer().orElse(null),t.reference().map(SemanticProductJsonWriter::dataReference).orElse(null),provenance(t.provenance()))).orElse(null),p.varying().map(v->new PerformVaryingDocument(v.levels(),v.controls().stream().map(o->new VaryingOperandDocument(o.level(),o.role(),o.integer().orElse(null),o.references().stream().map(SemanticProductJsonWriter::dataReference).toList(),provenance(o.provenance()))).toList(),v.afterLoops().stream().map(l->new PerformLoopDocument(l.testMode(),condition(l.condition()))).toList())).orElse(null),p.gapCodes(),p.publicationKind()==CobolSemanticProduct.PerformPublicationKind.STRUCTURAL_FACTS?p.publicationKind():null,
                 p.publicationKind()==CobolSemanticProduct.PerformPublicationKind.STRUCTURAL_FACTS?p.targetEntry().map(SemanticProductJsonWriter::statementHandle).orElse(null):null);
         }
         if (fact instanceof CobolSemanticProduct.PerformFact perform) {
@@ -589,7 +598,7 @@ public final class SemanticProductJsonWriter {
 
     private record PerformParagraphDocument(String id, String entry, List<String> statements, List<String> completions, ProvenanceDocument provenance) { }
     private record VaryingOperandDocument(int level,CobolSemanticProduct.VaryingOperandRole role,String integer,List<DataReferenceDocument> references,ProvenanceDocument provenance) { }
-    private record PerformVaryingDocument(int levels,List<VaryingOperandDocument> controls) { }
+    private record PerformVaryingDocument(int levels,List<VaryingOperandDocument> controls,@JsonInclude(JsonInclude.Include.NON_EMPTY) List<PerformLoopDocument> afterLoops) { }
     private record PerformCountDocument(CobolSemanticProduct.PerformCountProfile profile,String integer,DataReferenceDocument reference,ProvenanceDocument provenance) { }
     private record PerformLoopDocument(CobolSemanticProduct.PerformTestMode testMode, ConditionDocument condition) { }
     private record ProcedurePerformDocument(StatementHeaderDocument header, PerformTargetDocument start, PerformTargetDocument end,
