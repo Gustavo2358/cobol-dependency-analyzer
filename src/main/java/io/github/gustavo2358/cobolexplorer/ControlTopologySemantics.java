@@ -172,11 +172,16 @@ public final class ControlTopologySemantics {
                 var from=perform.fromReference()==null?null:targetDeclarations.get(perform.fromReference().meta().id());
                 var to=perform.throughReference()==null?from:targetDeclarations.get(perform.throughReference().meta().id());
                 int first=procedureOrder.indexOf(from),last=procedureOrder.indexOf(to);
+                // A SECTION endpoint is its completion, after its paragraphs;
+                // its header may precede the starting paragraph of a valid THRU.
+                if(sectionIds.containsKey(to))while(last+1<procedureOrder.size()
+                        &&sectionIds.get(to).equals(paragraphOwners.get(procedureOrder.get(last+1))))last++;
                 if(first>=0&&last>=first&&procedureOwner(from).equals(procedureOwner(to))) {
                     String range="region:"+id+"/range",binding="binding:"+id;
                     var resolution=proof(binding,ProofKind.RESOLVED_TARGET,"resolved-ordered-paragraph-range",perform.meta().provenance(),List.of(p));
-                    var parts=procedureOrder.subList(first,last+1).stream().map(this::procedureRegion).toList();
-                    putRegion(range,RegionKind.RANGE,owner,entry(parts.get(0),resolution),List.of(),next,resolution);
+                    var parts=new ArrayList<>(procedureOrder.subList(first,last+1).stream().map(this::procedureRegion).toList());
+                    String endRegion=procedureRegion(to);parts.remove(endRegion);parts.add(endRegion);
+                    putRegion(range,RegionKind.RANGE,owner,entry(procedureRegion(from),resolution),List.of(),next,resolution);
                     var r=regions.get(range);regions.put(range,new Region(r.id(),r.kind(),r.parent(),r.entry(),r.members(),parts,r.boundary(),r.proofs()));
                     publishInvocation(perform,owner,range,binding,id,"boundary:"+parts.get(parts.size()-1),next,resolution);
                 }else add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"invoke-unresolved",unknown(owner,p),"",p);

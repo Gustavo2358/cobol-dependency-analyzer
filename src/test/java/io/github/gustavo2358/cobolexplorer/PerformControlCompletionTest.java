@@ -20,6 +20,15 @@ class PerformControlCompletionTest {
         assertTrue(t.regions().stream().anyMatch(r->r.id().equals(endpoint.region())&&r.kind().name().equals("SECTION")));
     }
 
+    @Test void paragraphMayStartInsideItsThroughSection() {
+        var t=ControlTopologyAuthorityTest.publish("MAIN.\nPERFORM P THRU S.\nGOBACK.\nS SECTION.\nEARLIER-P.\nCALL 'DEAD'.\nP.\nCONTINUE.\nQ.\nCONTINUE.\nOUTSIDE SECTION.\nCALL 'DEAD'.\n").controlTopology().orElseThrow();
+        assertEquals(1,t.bindings().size());var b=t.bindings().get(0);
+        var range=t.regions().stream().filter(r->r.id().equals(b.region())).findFirst().orElseThrow();
+        var start=t.regions().stream().filter(r->r.id().equals(range.entry().reference())).findFirst().orElseThrow();
+        var end=t.boundaries().stream().filter(r->r.id().equals(b.endpoint())).findFirst().orElseThrow();
+        assertEquals(RegionKind.PARAGRAPH,start.kind());assertEquals(start.parent(),end.region());
+        assertEquals(end.region(),range.regions().get(range.regions().size()-1));
+    }
     @Test void varyingLevelsHaveIndependentTestsAndCurrentFromResets() {
         for(boolean before:new boolean[]{true,false}) {
             String body="MAIN.\nPERFORM P WITH TEST "+(before?"BEFORE":"AFTER")+"\n"

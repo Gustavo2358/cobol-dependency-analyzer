@@ -58,8 +58,14 @@ are open even when control and the write footprint are known.
 
 ## Review evidence
 
-Frontend FAST: 578 tests, zero failures/errors/skips. New source tests cover typed
+Frontend FAST: 579 tests, zero failures/errors/skips. New source tests cover typed
 exits, section endpoints, 3-level BEFORE/AFTER ordering and inline integer facts.
 The integrated review runs the unchanged 39-case PERFORM oracle plus source
 adversaries in analysis-cfg; raw execution evidence is retained outside Git.
 This work remains IN_PROGRESS pending semantic review and merge.
+
+A THRU endpoint naming a SECTION is ordered by its completion, after its last
+paragraph, not by the position of its header. A start paragraph may therefore be
+inside that ending section. RANGE entry is explicit; its final inventory element
+is the endpoint scope even when that scope encloses the start. An adversary asserts
+that earlier paragraphs and the following section remain unreachable.
