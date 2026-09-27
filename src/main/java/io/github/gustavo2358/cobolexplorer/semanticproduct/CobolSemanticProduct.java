@@ -797,7 +797,7 @@ public final class CobolSemanticProduct {
         StatementHeader header();
     }
 
-    public enum CicsCommandKind { SYNCPOINT, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE }
+    public enum CicsCommandKind { SYNCPOINT, SYNCPOINT_ROLLBACK, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE }
     public enum OperandExpressionKind { INTEGER, DATA_REFERENCE, LENGTH_OF }
     /** Source expression structure; LENGTH_OF refers to a declaration, not its stored value. */
     public record OperandExpression(OperandExpressionKind kind,Optional<java.math.BigInteger> integer,
@@ -821,20 +821,21 @@ public final class CobolSemanticProduct {
             options=List.copyOf(options);gapCodes=List.copyOf(gapCodes);
             var names=new java.util.HashSet<String>();int last=0;boolean shape=true;
             var allowed=new java.util.HashSet<>(java.util.Set.of("RESP","RESP2","NOHANDLE"));
+            if(commandKind==CicsCommandKind.SYNCPOINT_ROLLBACK)allowed.add("ROLLBACK");
             if(commandKind==CicsCommandKind.RETRIEVE)allowed.add("INTO");
             if(commandKind==CicsCommandKind.SEND_TERMINAL)allowed.addAll(java.util.Set.of("FROM","LENGTH","ERASE"));
             if(commandKind==CicsCommandKind.SEND_MAP||commandKind==CicsCommandKind.RECEIVE_MAP)allowed.addAll(java.util.Set.of("MAP","MAPSET",commandKind==CicsCommandKind.SEND_MAP?"FROM":"INTO"));
             if(commandKind==CicsCommandKind.SEND_MAP)allowed.addAll(java.util.Set.of("CURSOR","ERASE","FREEKB"));
             for(var o:options) {
                 require(o.start()>=last&&o.end()>o.start()&&o.end()<=rawText.length(),"ordered command options");last=o.end();
-                boolean flag=java.util.Set.of("NOHANDLE","CURSOR","ERASE","FREEKB").contains(o.name());
+                boolean flag=java.util.Set.of("NOHANDLE","CURSOR","ERASE","FREEKB","ROLLBACK").contains(o.name());
                 shape&=names.add(o.name())&&allowed.contains(o.name())&&(flag?o.operand().isEmpty():o.operand().filter(v->!v.isBlank()).isPresent());
                 require(o.reference().isEmpty()||o.operand().isPresent()&&!flag,"command reference has operand");
                 o.reference().ifPresent(r->{require(r.id().statement().equals(header.id()),"command operand owner");
                     require(r.role()==(java.util.Set.of("RESP","RESP2","INTO").contains(o.name())?OperandRole.WRITE:OperandRole.READ),"command operand role");});
             }
             if(syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED) {
-                require(shape&&(commandKind==CicsCommandKind.SYNCPOINT||names.contains(commandKind==CicsCommandKind.RETRIEVE?"INTO":commandKind==CicsCommandKind.SEND_TERMINAL?"FROM":"MAP")),"supported command syntax");
+                require(shape&&(commandKind==CicsCommandKind.SYNCPOINT||commandKind==CicsCommandKind.SYNCPOINT_ROLLBACK&&names.contains("ROLLBACK")||names.contains(commandKind==CicsCommandKind.RETRIEVE?"INTO":commandKind==CicsCommandKind.SEND_TERMINAL?"FROM":"MAP")),"supported command syntax");
                 require(gapCodes.stream().allMatch(g->g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"supported syntax has no syntax gap");
             } else require(gapCodes.stream().anyMatch(g->!g.isBlank()&&!g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"unavailable command reason");
             require(length.isEmpty()||commandKind==CicsCommandKind.SEND_TERMINAL&&names.contains("LENGTH"),"length belongs to terminal LENGTH option");

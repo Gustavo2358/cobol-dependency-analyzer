@@ -43,7 +43,7 @@ class CicsCommandContractTest {
         assertEquals(List.of("MAP","INTO","RESP","RESP2"),names);assertFalse(names.contains("NOHANDLE"));
     }
     @Test void unsupportedSubsetCannotContinue() throws Exception {
-        for(var cmd:List.of("SYNCPOINT ROLLBACK","SYNCPOINT MYSTERY","RECEIVE MAP()","RECEIVE MAP('M') RESP(RC) RESP(RC)","SEND MAP('M') ACCUM","SEND MAP('M') CURSOR(RC)","RECEIVE MAP(MAP-NAME)")) {
+        for(var cmd:List.of("SYNCPOINT ROLLBACK MYSTERY","SYNCPOINT MYSTERY","RECEIVE MAP()","RECEIVE MAP('M') RESP(RC) RESP(RC)","SEND MAP('M') ACCUM","SEND MAP('M') CURSOR(RC)","RECEIVE MAP(MAP-NAME)")) {
             var j=one(cmd);assertEquals("UNAVAILABLE",command(j).path("syntaxStatus").asText(),cmd);
             assertTrue(outcomes(j,command(j)).stream().allMatch(o->o.path("kind").asText().equals("UNKNOWN_LOCAL")),cmd);
         }
@@ -93,7 +93,7 @@ class CicsCommandContractTest {
         assertNotEquals(first.statements().get(0).header().id(),second.statements().get(0).header().id());
     }
     @Test void diagnosticAbsenceDoesNotSupplySyntaxQualification() {
-        var unsupported=CicsCommandSemantics.parse("EXEC CICS SYNCPOINT ROLLBACK END-EXEC").orElseThrow();
+        var unsupported=CicsCommandSemantics.parse("EXEC CICS SYNCPOINT ROLLBACK MYSTERY END-EXEC").orElseThrow();
         var withoutDiagnostic=new CicsCommandSemantics.Fact(unsupported.command(),unsupported.syntaxStatus(),unsupported.raw(),unsupported.options(),List.of());
         assertFalse(withoutDiagnostic.supported());assertTrue(CicsCommandControl.qualify(withoutDiagnostic).isEmpty());
         var supported=CicsCommandSemantics.parse("EXEC CICS SYNCPOINT END-EXEC").orElseThrow();
