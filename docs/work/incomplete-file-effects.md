@@ -1,6 +1,7 @@
 # Incomplete native file effects
 
-Status: IN_PROGRESS. Scope: F04/F07 and the same missing-target effect contracts.
+Status: DONE upon merge of [PR #63](https://github.com/Gustavo2358/proleap-poc/pull/63); required technical gates passed.
+Scope: F04/F07 and the same missing-target effect contracts.
 
 The producer must preserve independently known record/control/operand identities.
 A missing SELECT does not remove a unique FD record; a missing FD does not remove
@@ -52,7 +53,7 @@ not relaxed. SP/compilation schema versions remain unchanged.
 
 Remaining matrix, corpus and regression results are recorded in the local E2E
 follow-up evidence and the review PR, with byte-equivalent reuse distinguished
-from new execution. No merge is authorized by this work item.
+from new execution. The user subsequently authorized documentation closeout and merge.
 
 
 ## FILE contract expectation follow-up
@@ -71,3 +72,21 @@ source fixtures are unchanged from `4802305d17e7b1684d1f749618aa76fe8e091e0f`,
 so the integrated corpus evidence above remains valid and was not rerun for
 this test-only correction. The earlier full qualification remains a historical
 run; this follow-up does not claim the complete Maven suite is green.
+
+
+## Integration and remaining limits
+
+The final campaign completes all 310 fixture pipelines. PERFORM 39/39, Chaos
+48/48, PERFORM adversaries 25/25, aliases 14/14 and storage/FILE adversaries 13/13
+pass. CardDemo preserves all 73 products and its existing PARTIAL status. Known
+candidates, supports and referenced provenance are preserved as detailed in the
+E2E report. No additional corpus execution was needed for this documentation.
+
+The remaining historical full-suite findings are three PERFORM inventory oracles,
+one DLI oracle and one skipped discovery test. W2 ACCEPT and the copy-cycle oracle
+also remain outside this delivery. These limits are not failures of the 39-case
+PERFORM suite or the 48-case Chaos suite. The full suite is not claimed green.
+
+Integrate this producer before [lower PR #38](https://github.com/Gustavo2358/cobol-lower/pull/38).
+The lower must pin the producer merge SHA with its tree and selected file hashes;
+unchanged production permits reuse of the recorded integrated evidence.

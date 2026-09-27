@@ -1,7 +1,7 @@
 # Storage boundary fixes
 
 - id: STORAGE-BOUNDARY-FIXES
-- status: IN_PROGRESS
+- status: DONE upon merge of [PR #63](https://github.com/Gustavo2358/proleap-poc/pull/63); required technical gates passed.
 - scope: Canonical storage semantics: invalid RENAMES parentage and uncertain REDEFINES components.
 
 ## Rule and algorithm
@@ -61,7 +61,8 @@ Remaining discovery failures: `file-namespace-shadowing.cbl`,
 previous incomplete file-effect rejection. The existing `copy-cycle` source
 oracle still disagrees with its baseline product (54/55 source oracles pass).
 No ALTER implementation, wire-version change, AIR change or CFG change is included.
-This work remains IN_PROGRESS pending human review and merge.
+The user authorized integration after review of the results. PR #63 records the merge;
+its merged state closes this work under the lean policy.
 
 ## Authorized F04/F07 follow-up
 
