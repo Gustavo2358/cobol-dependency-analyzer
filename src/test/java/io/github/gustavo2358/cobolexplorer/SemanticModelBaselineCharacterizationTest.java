@@ -34,7 +34,13 @@ class SemanticModelBaselineCharacterizationTest {
                 () -> assertEquals(0, coactupc.parserErrors()),
                 () -> assertEquals(0, cbstm03a.parserErrors()),
                 () -> assertEquals(0, cbstm03d.parserErrors()),
-                () -> assertEquals(3, coactupc.unresolvedCopies()),
+                () -> assertEquals(1, coactupc.unresolvedCopies()),
+                () -> assertEquals(List.of("COACTUP"), coactupc.diagnostics().stream()
+                        .filter(d -> d.code() == Diagnostic.Code.UNRESOLVED_COPY)
+                        .map(Diagnostic::offendingToken).toList()),
+                () -> assertEquals(List.of("DFHBMSCA", "DFHAID"), coactupc.diagnostics().stream()
+                        .filter(d -> d.code() == Diagnostic.Code.NOMINAL_COPYBOOK)
+                        .map(Diagnostic::offendingToken).toList()),
                 () -> assertEquals(0, cbstm03a.unresolvedCopies()),
                 () -> assertEquals(0, cbstm03d.unresolvedCopies()));
 
@@ -128,7 +134,7 @@ class SemanticModelBaselineCharacterizationTest {
         index(tree, ids, sizes, new int[]{0});
         Ast.Program ast = new AstBuilder(parser, preprocessing.text(), preprocessing.sourceMap(),
                 ids, sizes).build(tree).program();
-        return new Analysis(ast, parser.getNumberOfSyntaxErrors(), preprocessing.unresolved());
+        return new Analysis(ast, parser.getNumberOfSyntaxErrors(), preprocessing.unresolved(), preprocessing.diagnostics());
     }
 
     private static int index(ParseTree tree, IdentityHashMap<ParseTree, Integer> ids,
@@ -147,5 +153,5 @@ class SemanticModelBaselineCharacterizationTest {
         return result;
     }
 
-    private record Analysis(Ast.Program ast, int parserErrors, int unresolvedCopies) { }
+    private record Analysis(Ast.Program ast, int parserErrors, int unresolvedCopies, List<Diagnostic> diagnostics) { }
 }

@@ -50,3 +50,13 @@ cadeia de COPY aponta para o pedido no fonte do usuário. Exatidão significa
 correspondência com o texto do modelo, sem afirmar equivalência ao membro IBM.
 O diagnostic tipado NOMINAL_COPYBOOK e a região de input parcial acompanham a
 expansão. Nomes resolvidos não autorizam valores ou storage conhecidos.
+
+## Retained operands inside embedded framing
+
+DLI framing keeps the normalized payload byte-for-byte, including line endings,
+and carries its retained SourceMap segments through the framing and COPY chain.
+COPY REPLACING composes both the ordinary and retained maps; a replacement cannot
+fall back to the enclosing command's coarse origin. The whole-command origin stays
+unchanged and operand `exact` stays false. No value, storage or control proof is
+created by this coordinate refinement. `ExecDliProvenanceTest` covers original
+operand slices, nested COPY/REPLACING, Unicode, line endings and following sentinels.

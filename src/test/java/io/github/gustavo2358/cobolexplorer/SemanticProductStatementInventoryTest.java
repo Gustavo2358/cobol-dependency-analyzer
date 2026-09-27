@@ -83,7 +83,7 @@ class SemanticProductStatementInventoryTest {
                         && !(item.statement() instanceof Ast.CallStatement)
                         && !(item.statement() instanceof Ast.IfStatement)
                         && !(item.statement() instanceof Ast.GobackStatement)
-                        && !(item.statement() instanceof Ast.PerformStatement p && ProcedurePerformSemantics.structuralCandidate(p)))
+                        && !(item.statement() instanceof Ast.PerformStatement p && typedPerform(p)))
                 .count();
         CobolSemanticProduct.IfFact actualIf = port.ifs().get(0);
 
@@ -92,7 +92,7 @@ class SemanticProductStatementInventoryTest {
                 () -> assertEquals(2, port.calls().size()),
                 () -> assertEquals(1, port.ifs().size()),
                 () -> assertEquals(expectedObserved, port.observedStatements().size(),
-                        "DISPLAY/inline PERFORM/CONTINUE remain observed; paragraph PERFORM preserves typed structure"),
+                        "DISPLAY and CONTINUE remain observed; both PERFORM forms preserve typed structure"),
                 () -> assertEquals(3, port.children(actualIf.header().id(),
                         CobolSemanticProduct.Branch.THEN).size(),
                         "unsupported direct IF children are still known branch members"),
@@ -175,7 +175,7 @@ class SemanticProductStatementInventoryTest {
                         "               DISPLAY 'ONLY-ELSE'",
                         "           END-IF.",
                         "           GOBACK."),
-                scenario("unsupported-under-unmodeled-structure", 0, 0, 0,
+                scenario("unsupported-under-inline-perform", 0, 0, 0,
                         "           PERFORM UNTIL FLAG = 9",
                         "               DISPLAY 'INLINE'",
                         "           END-PERFORM.",
@@ -212,7 +212,8 @@ class SemanticProductStatementInventoryTest {
             CobolSemanticProduct.State state = projection.state();
             CobolSemanticPort port = projection.port();
             long typed = scenario.moves() + scenario.calls() + scenario.ifs()
-                    + expected.stream().filter(item -> item.statement() instanceof Ast.GobackStatement).count();
+                    + expected.stream().filter(item -> item.statement() instanceof Ast.GobackStatement
+                            || item.statement() instanceof Ast.PerformStatement p && typedPerform(p)).count();
 
             assertAll(scenario.label(),
                     () -> assertEquals(expected.size(), state.statements().size()),
@@ -494,6 +495,15 @@ class SemanticProductStatementInventoryTest {
         }
     }
 
+    /** Independent AST-family oracle; do not call the producer's capability classifier. */
+    private static boolean typedPerform(Ast.PerformStatement p) {
+        return p.performKind() == Ast.PerformKind.PROCEDURE && p.fromReference() != null && p.inlineBody().isEmpty()
+                || p.performKind() == Ast.PerformKind.INLINE && switch (p.repetition()) {
+                    case UNTIL, TIMES, VARYING -> true;
+                    default -> false;
+                };
+    }
+
     private static void assertFactFamiliesMatch(
             List<ObservedAstStatement> expected,
             List<CobolSemanticProduct.StatementFact> actual) {
@@ -507,7 +517,7 @@ class SemanticProductStatementInventoryTest {
                 assertInstanceOf(CobolSemanticProduct.CallFact.class, fact);
             } else if (statement instanceof Ast.IfStatement) {
                 assertInstanceOf(CobolSemanticProduct.IfFact.class, fact);
-            } else if (statement instanceof Ast.PerformStatement p && ProcedurePerformSemantics.structuralCandidate(p)) {
+            } else if (statement instanceof Ast.PerformStatement p && typedPerform(p)) {
                 assertInstanceOf(CobolSemanticProduct.ProcedurePerformFact.class, fact);
             } else if (statement instanceof Ast.GobackStatement) {
                 assertInstanceOf(CobolSemanticProduct.GobackFact.class, fact);

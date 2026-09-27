@@ -358,7 +358,7 @@ final class PreprocessorEngine {
                             || !"EXECDLIBLOCK".equals(parser.getVocabulary().getSymbolicName(startToken.getType()))
                             || !original.equals(startToken.getText()))
                         throw new IllegalStateException("EXEC DLI has no real validated region token");
-                    edits.add(new Edit(start, end, document.transformedSlice(start, end, DliRegion.frame(original))));
+                    edits.add(new Edit(start, end, document.framedEmbeddedSlice(start, end, DliRegion.PREFIX, DliRegion.SUFFIX)));
                     continue;
                 }
                 String tag = switch (rule) {
