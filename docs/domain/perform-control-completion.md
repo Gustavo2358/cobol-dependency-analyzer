@@ -1,6 +1,7 @@
-# PERFORM control completion — design before implementation
+# PERFORM control completion
 
-Status: IN_PROGRESS; user authorized implementation and Draft PRs, no merge.
+Implementation and qualification complete. Integration is recorded in
+[PR #62](https://github.com/Gustavo2358/proleap-poc/pull/62); merge authorized by the user.
 
 ## Discovery and authority
 
@@ -62,10 +63,19 @@ Frontend FAST: 579 tests, zero failures/errors/skips. New source tests cover typ
 exits, section endpoints, 3-level BEFORE/AFTER ordering and inline integer facts.
 The integrated review runs the unchanged 39-case PERFORM oracle plus source
 adversaries in analysis-cfg; raw execution evidence is retained outside Git.
-This work remains IN_PROGRESS pending semantic review and merge.
+The user approved integration after reviewing the implementation and validation results.
 
 A THRU endpoint naming a SECTION is ordered by its completion, after its last
 paragraph, not by the position of its header. A start paragraph may therefore be
 inside that ending section. RANGE entry is explicit; its final inventory element
 is the endpoint scope even when that scope encloses the start. An adversary asserts
 that earlier paragraphs and the following section remain unreachable.
+
+## Qualification closeout
+
+The original PERFORM suite passes 39/39 and the source adversaries pass 25/25.
+The later alias MOVE correction retains both results and adds 14/14 alias
+adversaries. Required local and remote FAST gates passed. The 73-program CardDemo
+comparison retains 121 program, 271 file and 523 source relations and their
+supports; existing PARTIAL states and numeric/recursion limits remain explicit.
+The final documentation changes no production, contract, fixture or build input.
