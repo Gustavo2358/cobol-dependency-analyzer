@@ -1,0 +1,93 @@
+{
+  "implementationCommit": "298a1e57e480416f4573c57a14b5a2527bdc0a94",
+  "runtimeSources": {
+    "proleap-poc": "298a1e57e480416f4573c57a14b5a2527bdc0a94",
+    "cobol-lower": "dbf590f83203b87ce4b1c0e89af01bad8a25c9fc",
+    "analysis-cfg": "10eae0c3d51ac9b3d01cad5261f0fc439c1bc30b",
+    "analysis-ir": "2c7f31f19efbe3211a2aea5bbda90173a9666fe2",
+    "air-java": "d760b07b0fac42a106d09342ee9d5b8445ccf630"
+  },
+  "frontendJarSha256": "4f492c49539e4b608ec13200ae3e8f271d9636f951ec603f1bf9ae8f93c87514",
+  "rawEvidence": "/home/gustavo/workspace/teste-e2e/.synthetic-dfh",
+  "validation": {
+    "frontendFast": {
+      "tests": 596,
+      "failures": 0,
+      "log": "logs/frontend-fast-final.log"
+    },
+    "focusedInputAndCoverage": {
+      "tests": 14,
+      "failures": 0,
+      "log": "logs/frontend-summary.log"
+    },
+    "perform": {
+      "passed": 39,
+      "total": 39,
+      "finalProducerByteEquivalent": 39
+    },
+    "chaos": {
+      "passed": 48,
+      "total": 48
+    },
+    "performAdversarial": {
+      "passed": 25,
+      "total": 25
+    },
+    "aliases": {
+      "passed": 14,
+      "total": 14
+    },
+    "storageFile": {
+      "byteEquivalentProducts": 13,
+      "downstream": "reused with identical SP and frozen consumers"
+    },
+    "fixtureMatrix": {
+      "byteEquivalentProducts": 310,
+      "downstream": "reused with identical SP and frozen consumers"
+    },
+    "nominalAdversarial": {
+      "passed": 6,
+      "knownLimitationReproducedBeforeAndAfter": 1,
+      "oracleRetained": true
+    },
+    "carddemo": {
+      "pipelineCompleted": 73,
+      "dependencyCandidateSupportProvenanceEqual": 73,
+      "sourceResolutionChanges": 76,
+      "programsWithModels": 38,
+      "status": "PARTIAL"
+    },
+    "coactupc": {
+      "unresolvedCopiesBefore": 2,
+      "unresolvedCopiesAfter": 0,
+      "nominalCopybooks": 2,
+      "programTargets": [
+        "COMEN01C",
+        "CSUTLDTC"
+      ],
+      "fileSites": 7,
+      "fileSiteReachability": "UNREACHABLE_IN_MODEL",
+      "fileCandidatesBeforeAndAfter": [],
+      "finalSpSha256": {
+        "cobol-semantic-product.json": "e8585c6156b01b283065bdfec86be652cd32c1096410175919e22c2a243999ef",
+        "cobol-semantic-compilation.json": "a98369bba35109d46731569465ea09416ce92ad1c9b05b263d8fd30a1da8f097"
+      }
+    }
+  },
+  "presentationRefinement": {
+    "previousRuntime": "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/runtime.json",
+    "changedClasses": [
+      "io/github/gustavo2358/cobolexplorer/CoverageSnapshot.class",
+      "io/github/gustavo2358/cobolexplorer/ExplorerMain.class"
+    ],
+    "scope": "CoverageSnapshot presentation and ExplorerMain debug logging only; semantic producer classes identical. Final FAST and selected SP byte comparison cover the refinement."
+  },
+  "evidenceFilesSha256": {
+    "runtime-reviewed.json": "4c955707722eaa9f01b98f56644bcb38c68ae1d8be8b1618b58f8b3151b27708",
+    "carddemo/dependency-comparison.json": "a7adf0942f2d2e081f8e1c9c916bcc8ea70f5125a5bec0f0ecd808d4dbf79fed",
+    "carddemo/source-resolution-deltas.json": "8410c19580df8967324ca7a40c9c8c0b881a1a61775641325cd5299e59ef5907",
+    "matrix/results.json": "8d565264e41e0049043dc6ccc33a3b2a9b4d66cb1e3ae88bb14ce35e90e139f7",
+    "adversarial-final/results.json": "3a65b820dc0b272b3a95b74994b13efa2cea01941c6f4fa02bedebbf1dc25fbd",
+    "perform-reviewed/results.json": "9d0b16067a7d43c3cd52e412fb61fe1f8f8d4a1d26642488e8c4e3bf8afbccd2"
+  }
+}

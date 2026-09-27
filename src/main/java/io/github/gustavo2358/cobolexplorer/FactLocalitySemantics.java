@@ -49,7 +49,7 @@ public final class FactLocalitySemantics {
         // A located COPY never accounts for an unrelated parser, I/O, or ancestor input gap.
         boolean unlocated=report.gaps().stream().anyMatch(g->g.category()==ResolutionAnalysisReport.GapCategory.INPUT
             &&ResolutionAnalysisReport.appliesTo(g,id)
-            &&!(g.code().equals("UNRESOLVED_COPY")&&id.equals(g.programUnitId())&&!program.inputProof().regions().isEmpty()));
+            &&!(Diagnostic.incompleteCopyCode(g.code())&&id.equals(g.programUnitId())&&!program.inputProof().regions().isEmpty()));
         if(unlocated)gaps.add(new Gap(InputKind.UNLOCATED_INPUT,program.meta().provenance(),false));
         for(var p:structure.positions())if(StorageComponents.level(p.data())<0)gaps.add(new Gap(InputKind.OPAQUE_INCLUDE,p.data().meta().provenance(),true));
         var members=new TreeMap<String,List<StorageLayoutSemantics.Node>>();var baseByNode=new HashMap<Integer,String>();

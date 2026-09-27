@@ -93,7 +93,7 @@ final class PreprocessorEngine {
         List<SourceDependencyFact> sourceDependencies = new ArrayList<>();
         SourceMap document = processRecursive(normalized, file,
                 diagnostics, compilerOptions, toleratedPreprocessorDiagnostics,
-                new HashSet<>(), logSummary, sourceDependencies, List.of(), null, false);
+                new HashSet<>(), logSummary, sourceDependencies, List.of(), null, false, true);
         long errors = diagnostics.stream().filter(d -> d.phase() == Diagnostic.Phase.PREPROCESSOR)
                 .count() - toleratedPreprocessorDiagnostics[0];
         ResolutionContracts.PgmnameMode pgmnameMode = compilerOptions.stream()
@@ -133,7 +133,7 @@ final class PreprocessorEngine {
                                        List<CompilerOption> compilerOptions,
                                        int[] toleratedPreprocessorDiagnostics,
                                        Set<Path> expansionStack, LogSummary logSummary, List<SourceDependencyFact> sourceDependencies,
-                                       List<Ast.CopyFrame> includeChain, Ast.SourceLocation rootSite, boolean sqlMember) {
+                                       List<Ast.CopyFrame> includeChain, Ast.SourceLocation rootSite, boolean sqlMember, boolean nominalAllowed) {
         String source = document.text();
         UnicodeText indexedSource = new UnicodeText(source);
         Lexer lexer = binding.preprocessorLexer(CharStreams.fromString(source, file));
@@ -199,7 +199,25 @@ final class PreprocessorEngine {
                 sourceDependencies.add(new SourceDependencyFact(SourceDependencyFact.Kind.COPYBOOK, requested, qualification,
                     SourceDependencyFact.Resolution.UNRESOLVED, "", "COPY_SYNTAX", dependencyProvenance, dependencyRoot));
                 Optional<Path> path = library.resolve(requested);
-                if (path.isEmpty()) {
+                // Real configured members always take precedence. Replacements may inject
+                // value/layout clauses beyond the documented model profile.
+                Optional<SourceMap> nominal = nominalAllowed && path.isEmpty() && qualification.isEmpty()
+                        && copyReplacements(context, parser.getRuleNames(), indexedSource).isEmpty()
+                        ? NominalCopybooks.resolve(requested) : Optional.empty();
+                if (nominal.isPresent()) {
+                    String artifact = NominalCopybooks.artifact(requested);
+                    Diagnostic partial = sourceDiagnostic(document, Diagnostic.Phase.PREPROCESSOR,
+                            Diagnostic.Code.NOMINAL_COPYBOOK, start, end,
+                            "COPY '" + requested + "' uses a structural analysis model; runtime values and exact storage remain unproven",
+                            requested, "");
+                    diagnostics.add(partial);
+                    toleratedPreprocessorDiagnostics[0]++;
+                    sourceDependencies.set(occurrenceIndex, new SourceDependencyFact(SourceDependencyFact.Kind.COPYBOOK,
+                            requested, qualification, SourceDependencyFact.Resolution.RESOLVED, artifact,
+                            "COPY_SYNTAX", dependencyProvenance, dependencyRoot));
+                    var frame = new Ast.CopyFrame(file, requested, artifact, originalProvenance.original().startLine());
+                    edits.add(new Edit(start, end, nominal.orElseThrow().withCopyFrame(frame).withInputGap(partial)));
+                } else if (path.isEmpty()) {
                     LOG.trace("event=copy_resolution source={} phase=PREPROCESSING requested={} line={} status=UNRESOLVED reason=NOT_FOUND fallback=KEEP_UNRESOLVED_PLACEHOLDER",
                             file, requested, startToken.getLine());
                     toleratedPreprocessorDiagnostics[0]++;
@@ -233,11 +251,12 @@ final class PreprocessorEngine {
                         sourceDependencies.set(occurrenceIndex, new SourceDependencyFact(SourceDependencyFact.Kind.COPYBOOK, requested, qualification,
                             qualification.isEmpty() ? SourceDependencyFact.Resolution.RESOLVED : SourceDependencyFact.Resolution.UNRESOLVED,
                             qualification.isEmpty() ? includedFile : "", "COPY_SYNTAX", dependencyProvenance, dependencyRoot));
-                        SourceMap copyText = processRecursive(copySource, includedFile,
-                                diagnostics, compilerOptions,
-                                toleratedPreprocessorDiagnostics, expansionStack, logSummary, sourceDependencies, nestedChain, dependencyRoot, sqlMember);
                         List<CopyReplacement> replacements = copyReplacements(
                                 context, parser.getRuleNames(), indexedSource);
+                        SourceMap copyText = processRecursive(copySource, includedFile,
+                                diagnostics, compilerOptions,
+                                toleratedPreprocessorDiagnostics, expansionStack, logSummary, sourceDependencies,
+                                nestedChain, dependencyRoot, sqlMember, nominalAllowed && replacements.isEmpty());
                         for (CopyReplacement replacement : replacements) {
                             copyText = copyText.replaceLiteral(
                                     replacement.replaceable(), replacement.replacement());
@@ -289,7 +308,7 @@ final class PreprocessorEngine {
                                 var included=path.getFileName().toString();var nestedChain=new ArrayList<>(includeChain);
                                 var frame=new Ast.CopyFrame(file,name,included,p.original().startLine());nestedChain.add(frame);
                                 var expanded=processRecursive(library.readNormalized(path),included,diagnostics,compilerOptions,
-                                    toleratedPreprocessorDiagnostics,expansionStack,logSummary,sourceDependencies,nestedChain,fact.rootSite(),true);
+                                    toleratedPreprocessorDiagnostics,expansionStack,logSummary,sourceDependencies,nestedChain,fact.rootSite(),true,nominalAllowed);
                                 sourceDependencies.set(dependencyIndex,new SourceDependencyFact(fact.kind(),fact.name(),fact.qualification(),
                                     SourceDependencyFact.Resolution.RESOLVED,inventory.configuredArtifact(name).orElse(included),fact.authority(),fact.provenance(),fact.rootSite()));
                                 edits.add(new Edit(start,end,expanded.withCopyFrame(frame)));continue;
@@ -299,6 +318,20 @@ final class PreprocessorEngine {
                                     SourceDependencyFact.Resolution.IO_ERROR,"",fact.authority(),fact.provenance(),fact.rootSite()));
                                 diagnostics.add(sourceDiagnostic(document,Diagnostic.Phase.IO,start,end,failure.getMessage(),name,failure.getClass().getName()));
                             } finally {expansionStack.remove(path);}
+                        } else if(configured.isEmpty() && nominalAllowed) {
+                            var model=NominalCopybooks.resolveSqlInclude(name);
+                            if(model.isPresent()) {
+                                String artifact=NominalCopybooks.artifact(name);
+                                var partial=sourceDiagnostic(document,Diagnostic.Phase.PREPROCESSOR,
+                                    Diagnostic.Code.NOMINAL_COPYBOOK,start,end,
+                                    "SQL INCLUDE '"+name+"' uses a structural analysis model; runtime values and exact storage remain unproven",name,"");
+                                diagnostics.add(partial);toleratedPreprocessorDiagnostics[0]++;
+                                sourceDependencies.set(dependencyIndex,new SourceDependencyFact(fact.kind(),fact.name(),fact.qualification(),
+                                    SourceDependencyFact.Resolution.RESOLVED,artifact,fact.authority(),fact.provenance(),fact.rootSite()));
+                                var frame=new Ast.CopyFrame(file,name,artifact,p.original().startLine());
+                                edits.add(new Edit(start,end,model.orElseThrow().withCopyFrame(frame).withInputGap(partial)));
+                                continue;
+                            }
                         }
                     } else if(count>2 && significant.get(2).getText().equalsIgnoreCase("INCLUDE")) {
                         logSummary.sourceDependencyGaps.add("SQL_INCLUDE_FORM_UNPROVED");

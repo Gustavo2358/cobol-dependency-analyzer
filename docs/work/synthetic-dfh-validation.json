@@ -1,0 +1,139 @@
+{
+  "status": "DRAFT_REVIEW",
+  "scope": [
+    "DFHAID",
+    "DFHBMSCA"
+  ],
+  "catalogue": {
+    "groups": 2,
+    "aidElementaryFields": 36,
+    "bmsElementaryFields": 69,
+    "conditionNames": [
+      "DFHERASE",
+      "DFHCURSR"
+    ],
+    "newMissingName": "DFHNULL"
+  },
+  "semantics": {
+    "sourceMarker": "Ast.Meta.syntheticModel from typed SourceMap input gap",
+    "contract": "SP 2.49 / NOMINAL_TEXT_SOURCE_V2",
+    "symbolField": "modelAssumed",
+    "ordinaryInitialValues": "unknown",
+    "level88Values": "IBM documented hexadecimal sets, not runtime seeds",
+    "killPolicy": "model assumptions cannot justify kill or branch pruning",
+    "executableGraphChanges": false
+  },
+  "tests": {
+    "structuralE2E": "14/14",
+    "perform": "39/39",
+    "chaos": "48/48",
+    "logicalAliases": "14/14",
+    "performAdversaries": "25/25",
+    "carddemoPrograms": "73/73",
+    "frontendFastTests": 597,
+    "cfgFastTests": 638,
+    "lowerFast": "PASS",
+    "redEvidence": [
+      "four model-confidence tests failed before consumer change",
+      "105-field inventory admitted only 102 before shape fix"
+    ]
+  },
+  "regression": {
+    "coactupc": "both .cbl and .cl2 variants equal to frozen baseline",
+    "carddemoExactComparison": 67,
+    "carddemoNamesReachabilityAndAllPriorSupportsPreserved": 73,
+    "carddemoSourceOperandProvenanceEqual": 73,
+    "additionalExecutableSupports": 8,
+    "programVariantsWithAdditionalSupports": 6,
+    "removedCandidatesOrSupports": 0
+  },
+  "limits": [
+    "Only DFHAID and DFHBMSCA; no blanket DFH prefix fallback",
+    "Real members take priority; qualified COPY and replacement fallback deferred",
+    "Structural declared type/size does not prove installed IBM bytes, exact storage or runtime values",
+    "Four direct-model-target probes publish conditional source dependencies; their historical executable-edge oracle stays unproven",
+    "Full qualification and 310-fixture matrix not rerun; selected FAST, adversaries and real CardDemo corpus cover the changed boundary"
+  ],
+  "rawEvidenceRoot": "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision",
+  "implementationCommits": {
+    "proleap-poc": "a92b8fe7b1ceab3baffed845aa01da1641de7156",
+    "cobol-lower": "652bdfc915d4684c199c0cc125792fb2bebbd4a8",
+    "analysis-cfg": "837daf11d24282a2948412d560a96fd1644a1558"
+  },
+  "evidenceReuse": {
+    "carddemo": "All 73 full pipelines executed on structural revision; final writer refinement reexecuted all 73 frontends and proved SP/compilation byte equivalence. Same downstream binaries, all downstream evidence reused.",
+    "structural": "14 full E2E adversaries; final frontend reexecuted and proved SP/compilation byte equivalence for all 14."
+  },
+  "legacyWire": [
+    {
+      "suite": "perform",
+      "cases": 39,
+      "byteEquivalentToPriorPilot": 39,
+      "semanticChanges": []
+    },
+    {
+      "suite": "chaos",
+      "cases": 48,
+      "byteEquivalentToPriorPilot": 46,
+      "semanticChanges": [
+        "28_condition88_if",
+        "42_declaration_chaos"
+      ]
+    },
+    {
+      "suite": "aliases",
+      "cases": 14,
+      "byteEquivalentToPriorPilot": 14,
+      "semanticChanges": []
+    },
+    {
+      "suite": "perform-adversarial",
+      "cases": 25,
+      "byteEquivalentToPriorPilot": 25,
+      "semanticChanges": []
+    }
+  ],
+  "evidenceHashes": {
+    "logs/frontend-fast-reviewed.log": "68a565dbf15219198de125bd350b81951416fb60ce866821391b98bb53250162",
+    "logs/lower-fast-final.log": "92e25e9f792612f81409a57de727bc39d6c39dc04973e1bc9dd959e4a58466e4",
+    "logs/cfg-fast-final.log": "10ab5b564382a8786734f62d82e3deb0a108fbd2b35744e73878da48c3b285f4",
+    "logs/frontend-completeness-red-valid.log": "8322c5a89247abba59e1688b071a76d5fe36505855df96c5a05097f996d8d28f",
+    "logs/frontend-completeness-green.log": "c6a0728c5301ea9e63f9cb389f222790be8d89d91407c828aa2682019201869c",
+    "logs/cfg-model-red.log": "b2bf2d6dacd623269109a58d12610dec1dd33bb2312840a497c8dd5cb37f2f29",
+    "logs/cfg-model-green.log": "08c85498bfe34100c350146972a00cd6d0e3338fa87694864790cd70a5dc53b5",
+    "logs/lower-contract.log": "95a744f409d4c826659ec8f0629584a6d0e77a3d3b6bc2fb8e403556409e68e9",
+    "logs/structural-final.log": "038c18f9413195e0ad05e1693aabff1f84508377d4e78029afc0c5bc9ca03b3e",
+    "logs/carddemo-final.log": "444c74c4434802878652ae5ee2759722dc271fa9e726979aa4662c20203490ee",
+    "logs/carddemo-reviewed.log": "aa8f270fb3149049ff83544537a3ec899507f585e9ce26d3e1169f22086a62e7",
+    "logs/perform-reviewed.log": "51d3e319eaf5241a0a36827acef6e4f70d9c07e15b8f6e2d0ad683646062691c",
+    "logs/chaos-reviewed.log": "4e78257464e5d8f9aa0f6f3bcee67fe05afcbfb8269b22ef218937dc38b0bd4b",
+    "logs/aliases-reviewed.log": "bcb627ed63eafc575dd3f5974683f828f6881ac4359c86917ae556cece962d85",
+    "logs/perform-adversarial-reviewed.log": "077ce9567feb70fe208b0d5578fb5ec44e5e4c53cbac57ba89e1209436951c29",
+    "carddemo-final/dependency-comparison.json": "c40719bd0c13e2218b4867f1d1cf50a5da8cb7ce2f1bcc3d8225d7efce0722fe"
+  },
+  "runtimeArtifacts": {
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/e59cc7712a4e-antlr-parse-tree-explorer-1.0.0-SNAPSHOT.jar": "e59cc7712a4e0a5fa2bdef329690cd76fceedb3ecdf3df16003f12b0c16608f2",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/dd3e8a13a2d6-dd3e8a13a2d6-dd3e8a13a2d6-antlr4-runtime-4.13.2.jar": "dd3e8a13a2d669bf84fb8d834de35ce4875f27157698d206241ec8488aadcaf7",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/44508fd15765-44508fd15765-44508fd15765-slf4j-api-2.0.18.jar": "44508fd1576500688c790b190acdd16fec4f8c79a3e0b900afd70503cf055f55",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/beebede8db06-beebede8db06-beebede8db06-logback-classic-1.6.3.jar": "beebede8db065fe1b72909ecc66bb49acda618901635d86c25fce14a5915e37e",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/a6967a28c8b0-a6967a28c8b0-a6967a28c8b0-logback-core-1.6.3.jar": "a6967a28c8b086dee75a694d2f6fb8830c71153539866d7d8af065c9b6df91e0",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/d0da14c12b16-d0da14c12b16-d0da14c12b16-jackson-databind-2.22.2.jar": "d0da14c12b16b5d54719aa172d83b542ff4abeb8b0fb7db476fde8ceece760ca",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/21ddb598807d-21ddb598807d-21ddb598807d-jackson-annotations-2.22.jar": "21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/ff167a6317be-ff167a6317be-ff167a6317be-jackson-core-2.22.2.jar": "ff167a6317be15895706c26668f45b898efe40ab8780970658210fe1393d52a6",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/d3224b113ea8-d3224b113ea8-d3224b113ea8-hash4j-0.30.0.jar": "d3224b113ea835ce3452097747e5209ec760cf443dbed770d6ba68a0d480178f",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/16588a187075-cobol-lower-core-0.1.0-SNAPSHOT.jar": "16588a1870756e80466c66f890503892cb4e73d0308a786d1d957f9f5259d6ea",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/eceb2fbeedc8-cobol-lower-adapters-0.1.0-SNAPSHOT.jar": "eceb2fbeedc8b0854279bf445c8bc4f62568bbeec338bff04aaa587537fe8d7f",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/7bb9e1db02b3-7bb9e1db02b3-7bb9e1db02b3-air-model.jar": "7bb9e1db02b38eea2806fdbe6afff5bf052a5bc8c6ce145b07adcb10cb18ebaf",
+    "/home/gustavo/workspace/teste-e2e/.perform-semantics/final/runtime/d5de3eed948c-air-json-0.1.0-SNAPSHOT.jar": "d5de3eed948c13eb6854ea9cb8f16547bf07c56eef8040cde25cc3047800f3a2",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/579e72721639-cfg-kernel-0.1.0-SNAPSHOT.jar": "579e72721639a7f864818fec9dd93e5f92ed5c0ddf45618a4b1d3b1fdb12d23a",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/6efce3eeba8f-cfg-adapters-0.1.0-SNAPSHOT.jar": "6efce3eeba8f0d8d9f9413a1419009cc7d31ec4c6c5100faef7ea7f5778aefac",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/1f15c4baac8d-cfg-launcher-0.1.0-SNAPSHOT.jar": "1f15c4baac8d509f8653f56096c7a366713a41a21eb0493e2ef5eb6f2f4393d3",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/5675e0be8b20-analysis-kernel-0.1.0-SNAPSHOT.jar": "5675e0be8b20ee7b42a72ab74caf97a00edf9fdf78575ec35e6ac517eb331eaa",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/208bd782cea4-analysis-values-0.1.0-SNAPSHOT.jar": "208bd782cea4e46aa0851e1f2078babb5c046c6ce4d722e2fde7f002459f05ce",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/9fb081426417-analysis-dependencies-0.1.0-SNAPSHOT.jar": "9fb081426417678cd80d212dc646b7e75d964a6f4dc44514049a064fe30d4a42",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/ead47a95af3c-analysis-dataflow-0.1.0-SNAPSHOT.jar": "ead47a95af3c52e7b88f7ccd79d022ed7ebb2707594b3d8fff0cab903e91cfeb",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/5e6ff4b30978-analysis-adapters-0.1.0-SNAPSHOT.jar": "5e6ff4b30978e9e889864b5f7b07943fa77950a0303b11c4284a09ccb41a00c1",
+    "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/e3182f32d54f-analysis-launcher-0.1.0-SNAPSHOT.jar": "e3182f32d54fbfbbad2f190f4aca305daa45940508a4ec153e9a4c44a3b0f157"
+  },
+  "legacyWireSemanticChangesExplanation": "Chaos 28/42 add the existing PIC X parents WS-BOOL/WS-STATE to nominal values; their level-88 children do not allocate subordinate storage. No fact removed; dependency oracles unchanged."
+}

@@ -142,6 +142,8 @@
     const dynamicCall = entry.role === "CALL_TARGET" && entry.kind === "DATA";
     $("#resolution-insight").textContent = externalClassification?.copyInputCompleteness === "INCOMPLETE_UNRESOLVED_COPY"
       ? "Há uma hipótese externa inferida para este construct, mas COPYs ausentes tornam o universo nominal COBOL incompleto. O binding UNRESOLVED e essa incerteza permanecem observáveis."
+      : externalClassification?.copyInputCompleteness === "INCOMPLETE_NOMINAL_COPYBOOK"
+      ? "Os modelos de COPY fornecem nomes, mas o conteúdo continua desconhecido. A hipótese externa e a incerteza do binding permanecem observáveis."
       : dynamicCall
       ? "Este binding identifica a declaração da variável usada pelo CALL. Ele não afirma qual programa será chamado: os valores possíveis dependem de CFG, reaching definitions e merge de caminhos."
       : entry.status === "EXTERNAL_OBSERVED"

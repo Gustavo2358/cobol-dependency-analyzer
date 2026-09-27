@@ -203,10 +203,18 @@ final class SourceMap {
     }
 
     SourceMap withInputGap(Diagnostic diagnostic) {
-        if (diagnostic.code() != Diagnostic.Code.UNRESOLVED_COPY)
-            throw new IllegalArgumentException("only missing COPY regions are qualified");
+        if (!diagnostic.code().incompleteCopy())
+            throw new IllegalArgumentException("only incomplete COPY regions are qualified");
         return new SourceMap(text, segments.stream().map(s -> new Segment(s.start(), s.end(),
                 s.sourceFile(), s.originalStart(), s.originalEnd(), s.includeChain(), s.exact(), diagnostic)).toList(), sources, physicalBoundary);
+    }
+
+    boolean syntheticModel(int start, int end) {
+        for (int i=firstOverlapping(segments,start);i<segments.size()&&segments.get(i).start()<end;i++) {
+            var gap=segments.get(i).inputGap();
+            if(gap!=null&&gap.code()==Diagnostic.Code.NOMINAL_COPYBOOK)return true;
+        }
+        return false;
     }
 
     List<Segment> inputGapRegions() {

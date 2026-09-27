@@ -235,7 +235,7 @@ public final class CobolSemanticProductProjector {
         var ids=new HashMap<Integer,StatementId>();statements.forEach((ast,id)->ids.put(ast.meta().id(),id));
         return products.scalarMoves().nominalValues().facts(unit).filter(f->!f.queries().isEmpty()).map(f->{
             java.util.function.IntFunction<String> statement=n->"statement:"+Objects.requireNonNull(ids.get(n)).localId();
-            return new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues("NOMINAL_TEXT_SOURCE_V1",f.symbols(),
+            return new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues(f.symbols().stream().anyMatch(io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Symbol::modelAssumed)?"NOMINAL_TEXT_SOURCE_V2":"NOMINAL_TEXT_SOURCE_V1",f.symbols(),
                 f.assignments().stream().map(a->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Assignment(statement.apply(a.statement()),a.target(),a.source())).toList(),
                 f.conditions().stream().map(c->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Condition(statement.apply(c.statement()),c.predicate())).toList(),
                 f.queries().stream().map(q->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Query(statement.apply(q.statement()),q.node())).toList());
@@ -565,9 +565,9 @@ public final class CobolSemanticProductProjector {
         if (inputMissing)
             gaps.add(new EntryGap(GapScope.ANALYSIS_INPUT, "ENTRY_INPUT_INCOMPLETE",
                     "input remains incomplete; entry localization does not prove signature or data completeness", provenance));
-        for (var missing : inputs.report().frontendState().unresolvedCopyDiagnostics())
+        for (var missing : inputs.report().frontendState().incompleteCopyDiagnostics())
             if (inputMissing && (program.inputProof().copies().isEmpty() || program.inputProof().copies().contains(missing)))
-            gaps.add(new EntryGap(GapScope.ANALYSIS_INPUT, "UNRESOLVED_COPY",
+            gaps.add(new EntryGap(GapScope.ANALYSIS_INPUT, missing.code().name(),
                     "COPY '" + missing.offendingToken() + "' from '" + missing.file()
                             + "' at line " + missing.line() + " is unavailable; input remains incomplete", provenance));
         ReadinessStatus lowering = start.isEmpty() ? ReadinessStatus.BLOCKED

@@ -31,9 +31,14 @@ public final class ResolutionAnalysisReport {
         }
 
         public ExternalClassification.CopyInputCompleteness copyInputCompleteness() {
-            return unresolvedCopies() == 0
+            if (unresolvedCopies() != 0) return ExternalClassification.CopyInputCompleteness.INCOMPLETE_UNRESOLVED_COPY;
+            return incompleteCopyDiagnostics().isEmpty()
                     ? ExternalClassification.CopyInputCompleteness.COMPLETE
-                    : ExternalClassification.CopyInputCompleteness.INCOMPLETE_UNRESOLVED_COPY;
+                    : ExternalClassification.CopyInputCompleteness.INCOMPLETE_NOMINAL_COPYBOOK;
+        }
+
+        public List<Diagnostic> incompleteCopyDiagnostics() {
+            return diagnostics.stream().filter(d -> d.code().incompleteCopy()).toList();
         }
 
         public int unresolvedCopies() {
@@ -196,9 +201,9 @@ public final class ResolutionAnalysisReport {
     public long unknownDependencyCount() { return gaps.size(); }
 
     private static void addInputGaps(CompilationUnitBuildResult frontend, FrontendState state, List<Gap> gaps) {
-        for (Diagnostic diagnostic : state.unresolvedCopyDiagnostics()) {
-            addGap(gaps, GapCategory.INPUT, "UNRESOLVED_COPY",
-                    "COPY '" + diagnostic.offendingToken() + "' from '"
+        for (Diagnostic diagnostic : state.incompleteCopyDiagnostics()) {
+            addGap(gaps, GapCategory.INPUT, diagnostic.code().name(),
+                    diagnostic.code() == Diagnostic.Code.NOMINAL_COPYBOOK ? diagnostic.message() : "COPY '" + diagnostic.offendingToken() + "' from '"
                             + diagnostic.file() + "' could not be expanded",
                     copyOwner(frontend,diagnostic), "copyStatement", diagnostic.line(), -1);
         }
@@ -212,7 +217,7 @@ public final class ResolutionAnalysisReport {
             addGap(gaps, GapCategory.INPUT, "PARSER_ERROR",
                     state.parserErrors() + " parser error(s)", null, "", 0, -1);
         for (Diagnostic diagnostic : state.diagnostics()) {
-            if (diagnostic.code() == Diagnostic.Code.UNRESOLVED_COPY) continue;
+            if (diagnostic.code().incompleteCopy()) continue;
             if (diagnostic.phase() == Diagnostic.Phase.LEXER
                     || diagnostic.phase() == Diagnostic.Phase.PARSER
                     || diagnostic.phase() == Diagnostic.Phase.PREPROCESSOR

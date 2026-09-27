@@ -15,7 +15,7 @@ public final class ExternalClassification {
 
     public enum Reason { COBOL_REFERENCE_UNRESOLVED_WITH_KNOWN_CICS_SHAPE }
 
-    public enum CopyInputCompleteness { COMPLETE, INCOMPLETE_UNRESOLVED_COPY }
+    public enum CopyInputCompleteness { COMPLETE, INCOMPLETE_UNRESOLVED_COPY, INCOMPLETE_NOMINAL_COPYBOOK }
 
     public record Entry(int id, ResolutionContracts.ProgramUnitId programUnitId,
                         int rootAstNodeId, int rootOccurrenceId, String constructWrittenText,

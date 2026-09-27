@@ -22,6 +22,38 @@ Cada alternativa top-level de `CobolPreprocessor.startRule` possui classificaç�
 
 COPY ausente, cíclico ou com erro de I/O produz placeholder mapeado e diagnostic. Para membro não encontrado, `Diagnostic.Code.UNRESOLVED_COPY` é a identidade semântica estruturada; `Outcome.unresolved()` é derivado desses fatos, que preservam nome solicitado e localização em ordem determinística. A mensagem humana continua útil, mas seu wording não participa de contagem, composição ou geração de gaps. Ausência de copybook mantém a execução observável como incompleta; não equivale a COPY vazio nem exige interromper fases posteriores quando o placeholder ainda permite construir seus produtos coerentemente. COPY cíclico e falha de I/O conservam a política anterior e não pertencem a esse fallback.
 
+## Modelos estruturais DFH
+
+Na ausência de `DFHAID` ou `DFHBMSCA` nas bibliotecas configuradas, um COPY sem
+qualificação nem REPLACING usa o perfil `ibm-cics/structural-v2`. O modelo fornece
+os grupos 01, campos 02 `PIC X` e condições 88 documentados no IBM CICS Primer,
+na lista AID e nas constantes BMS. São 36 campos AID (incluindo `DFHNULL`),
+69 campos BMS e `DFHERASE`/`DFHCURSR` subordinados a `DFHBMFLG`.
+`DFHENTER OF DFHAID` e as condições qualificadas usam o binding canônico.
+A [definição e as fontes IBM](../work/synthetic-dfh-structure.md) delimitam a
+completude: união das declarações documentadas, sem alegar reprodução binária
+de cada versão instalada do CICS.
+
+Os campos têm tipo e tamanho declarados. Seus valores iniciais ficam ausentes;
+os dois níveis 88 preservam os conjuntos hexadecimais documentados. Valores de
+modelo não são fatos de runtime. Um membro real sempre tem prioridade. Não há
+regra por prefixo DFH nem consulta de rede durante a análise. REPLACING,
+inclusive em COPY ancestral, desabilita o modelo; os demais membros, ciclos,
+qualificações e erros de I/O seguem a política existente.
+
+`NOMINAL_COPYBOOK` permanece como diagnóstico tipado de input parcial. SourceMap
+marca a região modelada; `Ast.Meta.syntheticModel` conserva essa autoridade.
+Provenance usa `model:ibm-cics/structural-v2/<membro>` e a cadeia real de inclusão.
+A dependência COPYBOOK conserva autoridade COPY_SYNTAX e resolução RESOLVED.
+O conteúdo físico ausente não se torna conhecido.
+
+PIC e hierarquia não concedem prova de célula exata, bytes iniciais, disjointness
+ou kill. SP 2.49 publica a confiança explícita dos símbolos em `nominalValues`.
+O consumidor preserva candidatos anteriores e ambos os braços de condições
+influenciadas por modelos. Fatos independentes e kills comprovados continuam
+válidos. O [piloto anterior](../work/nominal-dfh-copybooks.md) registra as evidências
+históricas; seus limites de nomes achatados foram substituídos por este perfil.
+
 ## EXEC DLI opaco
 
 `execDliStatement` possui policy `PRESERVE_EMBEDDED_LANGUAGE` e um token
@@ -61,7 +93,7 @@ O processamento percorre a parse tree e resolve COPYs pelo repositório configur
 
 ## Fronteiras explícitas
 
-O preprocessor não resolve símbolos COBOL, não interpreta payload de SQL/CICS/SQLIMS/DLI, não busca membros fora dos diretórios configurados e não inventa configuração ausente. Modos não especificados permanecem valores explícitos na policy posterior. A composição posterior, não o preprocessor, decide quais fases possuem pré-requisitos estruturais sob input incompleto.
+O preprocessor não resolve símbolos COBOL, não interpreta payload de SQL/CICS/SQLIMS/DLI, usa os diretórios configurados e o catálogo estrutural explícito, sem inventar configuração ausente. Modos não especificados permanecem valores explícitos na policy posterior. A composição posterior, não o preprocessor, decide quais fases possuem pré-requisitos estruturais sob input incompleto.
 
 ## Evidência executável
 
@@ -87,3 +119,30 @@ library lookup. This does not classify a file as DCLGEN by name or extension.
 Missing members retain the opaque input boundary; I/O failure remains explicit.
 Nested SQL INCLUDE fails rather than publishing a fabricated expansion. Parsing,
 nominal resolution and control qualification still run on the expanded program.
+
+## Catálogo IBM ampliado
+
+O catálogo também fornece `CMQGMOV`, `CMQMDV`, `CMQODV`, `CMQPMOV`, `CMQTML`,
+`CMQV` e `SQLCA` quando ausentes. Os seis membros MQ seguem o inventário de
+declarações MQ 9.4: grupos de nível 10, campos 15/20, PIC alfanuméricos e
+numéricos, BINARY e POINTER. CMQV conserva as 2.353 constantes como declarações
+com tipo, sem valores iniciais. Os modelos ficam em recursos COBOL fixos e
+somente o catálogo explícito pode selecioná-los. A identidade é
+`model:ibm-mq/9.4-structural-v1/<membro>`.
+
+SQLCA usa o perfil Db2 para z/OS 13, incluindo SQLERRM, SQLWARN, SQLEXT e
+SQLERRD OCCURS 6. Sua identidade é `model:ibm-db2-zos/13-structural-v1/SQLCA`.
+O fallback sintético de SQLCA é autorizado somente por `EXEC SQL INCLUDE SQLCA`.
+`COPY SQLCA` continua usando um arquivo real quando disponível; sem esse arquivo,
+a ocorrência permanece COPYBOOK/UNRESOLVED e não recebe declarações sintéticas.
+O fato mantém kind SQL_INCLUDE e authority BUILTIN_SQL_INCLUDE, a cadeia de
+inclusão real e o diagnóstico NOMINAL_COPYBOOK. Um mapping explícito para um
+arquivo ausente não é substituído pelo modelo. SQL INCLUDE aninhado continua
+proibido; REPLACING ancestral continua desabilitando o fallback. SQLDA e
+membros não catalogados conservam seu comportamento anterior.
+
+Nenhuma dessas declarações comprova valores iniciais, endereço, padding ou
+layout de uma instalação IBM. Os perfis MQ de 32/64 bits têm os mesmos campos
+nomeados; padding anônimo adicional de 64 bits não é modelado. A comparação
+completa com a fonte oficial, inventário do CardDemo e testes estão em
+[IBM no CardDemo](../work/carddemo-ibm-copybooks.md).

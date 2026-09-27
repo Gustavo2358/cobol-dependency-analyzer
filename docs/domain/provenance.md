@@ -41,3 +41,12 @@ A fronteira física do source principal é conservada separadamente dos segmento
 texto. Ela permite qualificar ownership EOF conforme o contrato de compilation units;
 não acrescenta token, linha ou flag exact. Substituições no documento preservam a
 fronteira principal; fragments/inclusões isolados não a estabelecem.
+
+## Artefatos de modelo nominal
+
+O catálogo DFH usa uma identidade versionada `model:ibm-cics-ts/nominal-v1/`.
+As coordenadas originais apontam para as declarações geradas desse modelo; a
+cadeia de COPY aponta para o pedido no fonte do usuário. Exatidão significa
+correspondência com o texto do modelo, sem afirmar equivalência ao membro IBM.
+O diagnostic tipado NOMINAL_COPYBOOK e a região de input parcial acompanham a
+expansão. Nomes resolvidos não autorizam valores ou storage conhecidos.

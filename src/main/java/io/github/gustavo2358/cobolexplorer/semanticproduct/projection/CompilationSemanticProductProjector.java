@@ -23,6 +23,6 @@ public final class CompilationSemanticProductProjector {
             for(var use:port.fileInventory().operations().uses())for(var candidate:use.candidates())if(!candidate.unit().equals(port.unit()))files.add(candidate);
             result.add(new CompilationSemanticProduct.UnitProduct(port,Optional.ofNullable(u.parentId()).map(CompilationSemanticProductProjector::unit),owned,globals,captures,List.copyOf(files)));
         }
-        return new CompilationSemanticProduct(products.report().frontendState().supportsExternalClassification()&&products.report().frontendState().unresolvedCopies()==0?InventoryStatus.COMPLETE:InventoryStatus.INPUT_MISSING,projected.keySet().stream().map(CompilationSemanticProductProjector::unit).toList(),result);
+        return new CompilationSemanticProduct(products.report().frontendState().supportsExternalClassification()&&products.report().frontendState().incompleteCopyDiagnostics().isEmpty()?InventoryStatus.COMPLETE:InventoryStatus.INPUT_MISSING,projected.keySet().stream().map(CompilationSemanticProductProjector::unit).toList(),result);
     }
 }

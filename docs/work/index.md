@@ -80,3 +80,5 @@ como registros/handoffs cross-repo para `air-java`, `cobol-lower` e
 ## Positive Memory Topology — R7 contract review
 
 [Typed CICS handler operations / SP 2.41.0](positive-cics-handler-r7.md): IN_PROGRESS, frontend contract qualification; no runtime handler-state propagation or merge.
+
+- [NOMINAL-DFH-COPYBOOKS](nominal-dfh-copybooks.md): IN_PROGRESS — piloto nominal DFHAID/DFHBMSCA, em revisão.

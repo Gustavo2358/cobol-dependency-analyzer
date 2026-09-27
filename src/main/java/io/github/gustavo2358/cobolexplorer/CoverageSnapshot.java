@@ -20,16 +20,18 @@ final class CoverageSnapshot {
     private final Metrics metrics;
     private final List<Gap> structuralGaps;
     private final int unresolvedCopies;
+    private final int nominalCopies;
     private final int lexerErrors;
     private final int parserErrors;
 
     private CoverageSnapshot(String source, SemanticCoverage.Report report, Metrics metrics, List<Gap> structuralGaps,
-                             int unresolvedCopies, int lexerErrors, int parserErrors) {
+                             int unresolvedCopies, int nominalCopies, int lexerErrors, int parserErrors) {
         this.source = source;
         this.report = report;
         this.metrics = metrics;
         this.structuralGaps = List.copyOf(structuralGaps);
         this.unresolvedCopies = unresolvedCopies;
+        this.nominalCopies = nominalCopies;
         this.lexerErrors = lexerErrors;
         this.parserErrors = parserErrors;
     }
@@ -53,11 +55,12 @@ final class CoverageSnapshot {
                 count(nodes, Ast.EmbeddedLanguageStatement.class));
         List<Gap> gaps = nodes.stream().map(CoverageSnapshot::structuralGap)
                 .filter(Objects::nonNull).toList();
-        return new CoverageSnapshot(source, report, metrics, gaps, unresolvedCopies, lexerErrors, parserErrors);
+        int nominalCopies = (int) program.inputProof().copies().stream().filter(d -> d.code() == Diagnostic.Code.NOMINAL_COPYBOOK).count();
+        return new CoverageSnapshot(source, report, metrics, gaps, unresolvedCopies, nominalCopies, lexerErrors, parserErrors);
     }
 
     boolean dependencyCoverageComplete() {
-        return report.dependencyCoverageComplete() && structuralGaps.isEmpty() && unresolvedCopies == 0
+        return report.dependencyCoverageComplete() && structuralGaps.isEmpty() && unresolvedCopies == 0 && nominalCopies == 0
                 && lexerErrors == 0 && parserErrors == 0;
     }
 
@@ -121,6 +124,7 @@ final class CoverageSnapshot {
 
     private List<String> blockingReasons() {
         List<String> result = new ArrayList<>();
+        if (nominalCopies > 0) result.add(nominalCopies + " COPY(s) com modelo nominal; conteúdo desconhecido");
         if (unresolvedCopies > 0) result.add(unresolvedCopies + " COPY(s) ausente(s)");
         if (lexerErrors > 0) result.add(lexerErrors + " erro(s) léxico(s)");
         if (parserErrors > 0) result.add(parserErrors + " erro(s) sintático(s)");

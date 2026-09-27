@@ -6,13 +6,20 @@ public record Diagnostic(String frontend, Phase phase, Code code, String file, i
                          String message, String offendingToken, String exceptionClass) {
     public enum Phase { PREPROCESSOR, LEXER, PARSER, IO, OTHER }
 
-    public enum Code { GENERAL, UNRESOLVED_COPY }
+    public enum Code {
+        GENERAL, UNRESOLVED_COPY, NOMINAL_COPYBOOK;
+        public boolean incompleteCopy() { return this == UNRESOLVED_COPY || this == NOMINAL_COPYBOOK; }
+    }
+
+    public static boolean incompleteCopyCode(String code) {
+        return Code.UNRESOLVED_COPY.name().equals(code) || Code.NOMINAL_COPYBOOK.name().equals(code);
+    }
 
     public Diagnostic {
         code = Objects.requireNonNull(code, "code");
-        if (code == Code.UNRESOLVED_COPY && phase != Phase.PREPROCESSOR)
+        if (code.incompleteCopy() && phase != Phase.PREPROCESSOR)
             throw new IllegalArgumentException(
-                    "UNRESOLVED_COPY diagnostics must belong to the preprocessor");
+                    "incomplete COPY diagnostics must belong to the preprocessor");
     }
 
     public Diagnostic(String frontend, Phase phase, String file, int line, int column,

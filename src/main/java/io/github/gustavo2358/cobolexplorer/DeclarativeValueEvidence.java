@@ -12,6 +12,7 @@ final class DeclarativeValueEvidence {
 
     static Optional<Fact> extract(Ast.DataEntry declaration, StorageLayoutSemantics.Profile profile,
             Map<Integer,SemanticCoverage.Finding> coverage, Optional<BigInteger> groupExtent) {
+        if(declaration.meta().syntheticModel())return Optional.empty();
         // A repeated element's VALUE is not the logical value of its containing aggregate.
         // This is positive multiplicity evidence, not an unknown-layout recall gate.
         if(declaration.clauses().stream().anyMatch(Ast.OccursClause.class::isInstance))return Optional.empty();
