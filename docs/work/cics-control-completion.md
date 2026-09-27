@@ -101,3 +101,10 @@ A preliminary probe used the reserved word AREA as a data-name and degraded pars
 corrected WS-AREA fixtures preserve the oracle. Final probes have zero parser errors,
 and the permanent runner now rejects parser degradation even when a dead-site oracle
 happens to pass. Explicit ABEND exit and dispatch are integrated together in D5.
+
+## Review handoff
+
+Implementation checkpoints D1–D5 are complete. Status stays IN_PROGRESS until
+review/merge; no merge is authorized by this work item. See the
+[qualification report](cics-control-qualification.md) for corpus results, the
+regression found and corrected, reused evidence and remaining limits.
