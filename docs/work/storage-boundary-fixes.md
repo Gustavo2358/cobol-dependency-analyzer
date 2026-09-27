@@ -32,12 +32,15 @@ complete value overwrite, without relying on the physical profile.
 
 ## Validation and remaining limits (2026-09-27)
 
+This section records the initial storage wave. The [FILE follow-up](incomplete-file-effects.md)
+resolves the three remaining pipeline rejections and the two SP-version test expectations.
+
 - FAST: 582 tests, PASS. Focused storage/RENAMES/locality tests: 23, PASS.
 - Full local qualification: 1,157 tests, six failures and one existing skipped
   discovery case. The same six failures reproduce on unchanged main
   `f33fae3b13edc8e2ba044e948836875fe55cb7de`: two stale SP-version expectations,
   three stale PERFORM inventory expectations and the old empty DLI-host oracle.
-  They were not changed in this PR. Normalizer artifact checks also passed.
+  They were not changed in that initial wave. Normalizer artifact checks also passed.
 - Integrated discovery corpus: 307/310, up from 296/310; all 11 targeted defects
   complete frontend → Semantic Product → lower → AIR → CFG → dependencies.
 - PERFORM 39/39; Chaos 48/48; existing PERFORM adversaries 25/25; logical aliases

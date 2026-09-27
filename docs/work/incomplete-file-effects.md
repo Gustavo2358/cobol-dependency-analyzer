@@ -53,3 +53,21 @@ not relaxed. SP/compilation schema versions remain unchanged.
 Remaining matrix, corpus and regression results are recorded in the local E2E
 follow-up evidence and the review PR, with byte-equivalent reuse distinguished
 from new execution. No merge is authorized by this work item.
+
+
+## FILE contract expectation follow-up
+
+Two transport tests still required SP 2.41 even though their fixtures now publish
+newer facts. Computed CALL operands select SP 2.47 (`nominalValues`); the FILE USE
+fixture's SECTION regions select SP 2.48. The assertions now require those exact
+versions, following the documented feature selection. All effect, allocation,
+handler, continuation and deterministic publication assertions are preserved.
+
+New execution: `mvn -Dtest=File*Test,IncompleteFileEffectsTest test` passes all
+115 tests, including all ten tests in the two changed contract classes. No
+failures, errors or skips remain in this family. Repository FAST also passes
+589 tests, with no failures, errors or skips. Production, build inputs and
+source fixtures are unchanged from `4802305d17e7b1684d1f749618aa76fe8e091e0f`,
+so the integrated corpus evidence above remains valid and was not rerun for
+this test-only correction. The earlier full qualification remains a historical
+run; this follow-up does not claim the complete Maven suite is green.
