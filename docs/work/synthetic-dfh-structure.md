@@ -107,3 +107,10 @@ Chaos has two expected SP additions: WS-BOOL in case 28 and WS-STATE in case 42
 now enter the nominal text inventory despite their level-88 children. Neither loses
 a fact or changes its dependency oracle. The other 46 Chaos products, all 14 alias
 products and all 25 PERFORM adversarial products match the previous pilot byte-for-byte.
+
+## Ampliação aprovada
+
+O desenho estrutural foi aprovado para expansão ao CardDemo completo. O trabalho
+[CardDemo IBM](carddemo-ibm-copybooks.md) acrescenta MQ e SQLCA. Os resultados acima
+continuam sendo a evidência histórica do piloto; a ampliação tem inventário,
+baseline e reexecução próprios.

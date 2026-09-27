@@ -37,7 +37,7 @@ de cada versão instalada do CICS.
 Os campos têm tipo e tamanho declarados. Seus valores iniciais ficam ausentes;
 os dois níveis 88 preservam os conjuntos hexadecimais documentados. Valores de
 modelo não são fatos de runtime. Um membro real sempre tem prioridade. Não há
-regra por prefixo DFH, consulta de rede ou fallback de SQL INCLUDE. REPLACING,
+regra por prefixo DFH nem consulta de rede durante a análise. REPLACING,
 inclusive em COPY ancestral, desabilita o modelo; os demais membros, ciclos,
 qualificações e erros de I/O seguem a política existente.
 
@@ -119,3 +119,28 @@ library lookup. This does not classify a file as DCLGEN by name or extension.
 Missing members retain the opaque input boundary; I/O failure remains explicit.
 Nested SQL INCLUDE fails rather than publishing a fabricated expansion. Parsing,
 nominal resolution and control qualification still run on the expanded program.
+
+## Catálogo IBM ampliado
+
+O catálogo também fornece `CMQGMOV`, `CMQMDV`, `CMQODV`, `CMQPMOV`, `CMQTML`,
+`CMQV` e `SQLCA` quando ausentes. Os seis membros MQ seguem o inventário de
+declarações MQ 9.4: grupos de nível 10, campos 15/20, PIC alfanuméricos e
+numéricos, BINARY e POINTER. CMQV conserva as 2.353 constantes como declarações
+com tipo, sem valores iniciais. Os modelos ficam em recursos COBOL fixos e
+somente o catálogo explícito pode selecioná-los. A identidade é
+`model:ibm-mq/9.4-structural-v1/<membro>`.
+
+SQLCA usa o perfil Db2 para z/OS 13, incluindo SQLERRM, SQLWARN, SQLEXT e
+SQLERRD OCCURS 6. Sua identidade é `model:ibm-db2-zos/13-structural-v1/SQLCA`.
+Além de COPY, o caminho existente de `EXEC SQL INCLUDE SQLCA` pode expandi-lo.
+O fato mantém kind SQL_INCLUDE e authority BUILTIN_SQL_INCLUDE, a cadeia de
+inclusão real e o diagnóstico NOMINAL_COPYBOOK. Um mapping explícito para um
+arquivo ausente não é substituído pelo modelo. SQL INCLUDE aninhado continua
+proibido; REPLACING ancestral continua desabilitando o fallback. SQLDA e
+membros não catalogados conservam seu comportamento anterior.
+
+Nenhuma dessas declarações comprova valores iniciais, endereço, padding ou
+layout de uma instalação IBM. Os perfis MQ de 32/64 bits têm os mesmos campos
+nomeados; padding anônimo adicional de 64 bits não é modelado. A comparação
+completa com a fonte oficial, inventário do CardDemo e testes estão em
+[IBM no CardDemo](../work/carddemo-ibm-copybooks.md).

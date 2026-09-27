@@ -283,6 +283,143 @@
         "PROGA001"
       ],
       "assignmentSupportLine": 10
+    },
+    {
+      "id": "mq_width_both_arms",
+      "source": "mq_width_both_arms.cbl",
+      "sha256": "d2f5ef2ecd7e93956bc59d429d5a3a2e4aa6151af6d9e0352dd26c770f625b1e",
+      "calls": {
+        "target": {
+          "line": 16,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "mq_numeric_constants_both_arms",
+      "source": "mq_numeric_constants_both_arms.cbl",
+      "sha256": "828104d1fb82b82be5e9a0a777ac480b5897c9211dfae473253aca33224821ae",
+      "calls": {
+        "target": {
+          "line": 15,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "sqlca_evaluate_all_arms",
+      "source": "sqlca_evaluate_all_arms.cbl",
+      "sha256": "f1ed30002c1bb3949035f1423133d8cd013cc63d7c7d7d840bd911c8d622a247",
+      "calls": {
+        "target": {
+          "line": 13,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "sqlca_width_both_arms",
+      "source": "sqlca_width_both_arms.cbl",
+      "sha256": "0c7b24b5bb4c55971552cdded565e3e3755277d3758ea77a47921ddd6e2c989c",
+      "calls": {
+        "target": {
+          "line": 15,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "mq_unknown_overwrite",
+      "source": "mq_unknown_overwrite.cbl",
+      "sha256": "36e92d4b4af9bb45a9f7e7cd605ffcde6c441f89d653ee64e468500002bb6dd7",
+      "calls": {
+        "target": {
+          "line": 12,
+          "required": [
+            "PROGA001"
+          ],
+          "allowed": [
+            "PROGA001"
+          ],
+          "forbidden": []
+        }
+      },
+      "sourceCandidates": [
+        "PROGA001"
+      ],
+      "assignmentSupportLine": 10
+    },
+    {
+      "id": "sqlca_unknown_overwrite",
+      "source": "sqlca_unknown_overwrite.cbl",
+      "sha256": "676e4ed87cb877b7df7885c8615d033b24a5cd85a3abc57bbcc5c616907b25e9",
+      "calls": {
+        "target": {
+          "line": 11,
+          "required": [
+            "PROGA001"
+          ],
+          "allowed": [
+            "PROGA001"
+          ],
+          "forbidden": []
+        }
+      },
+      "sourceCandidates": [
+        "PROGA001"
+      ],
+      "assignmentSupportLine": 9
+    },
+    {
+      "id": "mq_independent_kill",
+      "source": "mq_independent_kill.cbl",
+      "sha256": "71d84782e04810d0145329842edfe10b16de5b8b2657ef6e2dc2b159ab9c6c95",
+      "calls": {
+        "target": {
+          "line": 13,
+          "required": [
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGB001"
+          ],
+          "forbidden": [
+            "PROGA001"
+          ]
+        }
+      }
     }
   ]
 }

@@ -1,15 +1,31 @@
 package io.github.gustavo2358.cobolexplorer;
 
 import java.util.*;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
-/** Documented CICS analysis declarations, with shape but no authoritative initial values.
+/** Documented IBM analysis declarations, with shape but no authoritative initial values.
  * Authority: https://www.ibm.com/docs/en/cics-ts/6.x?topic=reference-bms-constants
- * Group/elementary form follows the IBM CICS Primer. See docs/work/synthetic-dfh-structure.md.
+ * CICS follows the IBM CICS Primer; MQ/Db2 authority is in docs/work/carddemo-ibm-copybooks.md.
  * These are analysis models, not compiler/runtime replacements for IBM members. */
 final class NominalCopybooks {
     private NominalCopybooks() { }
     private static final Map<String,List<String>> MEMBERS = catalogue();
+    private static final Map<String,String> RESOURCE_PROFILES = Map.of(
+        "CMQGMOV", "ibm-mq/9.4-structural-v1", "CMQMDV", "ibm-mq/9.4-structural-v1",
+        "CMQODV", "ibm-mq/9.4-structural-v1", "CMQPMOV", "ibm-mq/9.4-structural-v1",
+        "CMQTML", "ibm-mq/9.4-structural-v1", "CMQV", "ibm-mq/9.4-structural-v1",
+        "SQLCA", "ibm-db2-zos/13-structural-v1");
+    // SQL INCLUDE admits the Db2 member explicitly, not arbitrary COPY members.
+    static Optional<SourceMap> resolveSqlInclude(String name) {
+        return name.equalsIgnoreCase("SQLCA") ? resolve(name) : Optional.empty();
+    }
+    static Set<String> members() {
+        var names=new TreeSet<>(MEMBERS.keySet());names.addAll(RESOURCE_PROFILES.keySet());
+        return Collections.unmodifiableSet(names);
+    }
 
     private static Map<String,List<String>> catalogue() {
         var aid = new ArrayList<>(List.of("DFHNULL", "DFHENTER", "DFHCLEAR"));
@@ -32,7 +48,16 @@ final class NominalCopybooks {
     }
 
     static Optional<SourceMap> resolve(String name) {
-        var names=MEMBERS.get(name.toUpperCase(Locale.ROOT));
+        name=name.toUpperCase(Locale.ROOT);
+        if (RESOURCE_PROFILES.containsKey(name)) {
+            String resource="/synthetic-copybooks/"+name+".cpy";
+            try (var input=NominalCopybooks.class.getResourceAsStream(resource)) {
+                if(input==null)throw new IllegalStateException("Missing catalogue resource: "+resource);
+                String source=new String(input.readAllBytes(),StandardCharsets.UTF_8);
+                return Optional.of(SourceNormalizer.normalize(source,artifact(name),SourceNormalizer.SourceFormat.FIXED).sourceMap());
+            } catch(IOException failure) { throw new UncheckedIOException(failure); }
+        }
+        var names=MEMBERS.get(name);
         if (names==null) return Optional.empty();
         String source="       01 " + name.toUpperCase(Locale.ROOT) + ".\n"
                 + names.stream().map(n -> "          02 " + n + " PIC X.\n"
@@ -41,5 +66,8 @@ final class NominalCopybooks {
                     .collect(Collectors.joining());
         return Optional.of(SourceNormalizer.normalize(source, artifact(name), SourceNormalizer.SourceFormat.FIXED).sourceMap());
     }
-    static String artifact(String name) { return "model:ibm-cics/structural-v2/"+name.toUpperCase(Locale.ROOT); }
+    static String artifact(String name) {
+        String canonical=name.toUpperCase(Locale.ROOT);
+        return "model:"+RESOURCE_PROFILES.getOrDefault(canonical,"ibm-cics/structural-v2")+"/"+canonical;
+    }
 }

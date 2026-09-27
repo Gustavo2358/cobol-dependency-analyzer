@@ -77,7 +77,11 @@ class FactDependencyLocalityTest {
     @Test void aliasAndOpaqueIncludeDoNotProduceFalseCells() throws Exception {
         var alias=publish("01 RECORD-A.\n 05 TARGET PIC X(8).\n 05 ALIAS REDEFINES TARGET PIC X(4).\n01 SENTINEL PIC X.");
         assertFalse(known(alias,"TARGET",FactKind.LOCAL_CELL));
-        var opaque=publish("01 RECORD-A.\n 05 TARGET PIC X(8).\nEXEC SQL INCLUDE SQLCA END-EXEC.");
+        // SQLCA is now a structural model; SQLDA still exercises opaque input.
+        var opaque=publish("01 RECORD-A.\n 05 TARGET PIC X(8).\nEXEC SQL INCLUDE SQLDA END-EXEC.");
+        var model=publish("01 RECORD-A.\n 05 TARGET PIC X(8).\nEXEC SQL INCLUDE SQLCA END-EXEC.");
+        assertTrue(known(model,"TARGET",FactKind.SOURCE_IDENTITY));assertFalse(known(model,"TARGET",FactKind.LOCAL_CELL));
+        assertTrue(model.factDependencies().orElseThrow().inputs().stream().anyMatch(i->i.kind()==InputKind.MISSING_COPY&&!i.available()));
         assertTrue(known(opaque,"TARGET",FactKind.SOURCE_IDENTITY));assertFalse(known(opaque,"TARGET",FactKind.LOCAL_CELL));
         assertTrue(opaque.factDependencies().orElseThrow().inputs().stream().anyMatch(i->i.kind()==InputKind.OPAQUE_INCLUDE));
         var out=Path.of("target/fact-dependency-r2");Files.createDirectories(out);

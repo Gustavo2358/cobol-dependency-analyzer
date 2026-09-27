@@ -318,6 +318,20 @@ final class PreprocessorEngine {
                                     SourceDependencyFact.Resolution.IO_ERROR,"",fact.authority(),fact.provenance(),fact.rootSite()));
                                 diagnostics.add(sourceDiagnostic(document,Diagnostic.Phase.IO,start,end,failure.getMessage(),name,failure.getClass().getName()));
                             } finally {expansionStack.remove(path);}
+                        } else if(configured.isEmpty() && nominalAllowed) {
+                            var model=NominalCopybooks.resolveSqlInclude(name);
+                            if(model.isPresent()) {
+                                String artifact=NominalCopybooks.artifact(name);
+                                var partial=sourceDiagnostic(document,Diagnostic.Phase.PREPROCESSOR,
+                                    Diagnostic.Code.NOMINAL_COPYBOOK,start,end,
+                                    "SQL INCLUDE '"+name+"' uses a structural analysis model; runtime values and exact storage remain unproven",name,"");
+                                diagnostics.add(partial);toleratedPreprocessorDiagnostics[0]++;
+                                sourceDependencies.set(dependencyIndex,new SourceDependencyFact(fact.kind(),fact.name(),fact.qualification(),
+                                    SourceDependencyFact.Resolution.RESOLVED,artifact,fact.authority(),fact.provenance(),fact.rootSite()));
+                                var frame=new Ast.CopyFrame(file,name,artifact,p.original().startLine());
+                                edits.add(new Edit(start,end,model.orElseThrow().withCopyFrame(frame).withInputGap(partial)));
+                                continue;
+                            }
                         }
                     } else if(count>2 && significant.get(2).getText().equalsIgnoreCase("INCLUDE")) {
                         logSummary.sourceDependencyGaps.add("SQL_INCLUDE_FORM_UNPROVED");

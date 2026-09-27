@@ -1,0 +1,80 @@
+{
+  "mqVersion": "9.4.0.0",
+  "archiveUrl": "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.4.0.0-IBM-MQC-Redist-LinuxX64.tar.gz",
+  "archiveSha256": "a839db8f14cef59319639336e951a52dc320fd6a42ab5bee9bc925e43985f457",
+  "sources": [
+    {
+      "member": "CMQGMOV",
+      "archiveMember": "inc/cobcpy32/CMQGMOV",
+      "sha256": "970e239f57ef6e080160a697051bc9e6c8da1eda181258c9281a350b160deacc",
+      "declarations": 17
+    },
+    {
+      "member": "CMQGMOV",
+      "archiveMember": "inc/cobcpy64/CMQGMOV",
+      "sha256": "53f1e00ccfde2f3cbdb6e0aa6ae2b092cb89e75b882f040fde50b6c18f6bf50a",
+      "declarations": 17
+    },
+    {
+      "member": "CMQMDV",
+      "archiveMember": "inc/cobcpy32/CMQMDV",
+      "sha256": "28ce2c13499a39769d60b9d6069c115a192bf7af3ff2d28d74640ddaea3797dd",
+      "declarations": 30
+    },
+    {
+      "member": "CMQMDV",
+      "archiveMember": "inc/cobcpy64/CMQMDV",
+      "sha256": "19d88a4eba33579368230d63753f55ca52333ec90f104859e3cc3ef1dbba2d78",
+      "declarations": 31
+    },
+    {
+      "member": "CMQODV",
+      "archiveMember": "inc/cobcpy32/CMQODV",
+      "sha256": "e0cd2e99f800205b37679ad53c28ce3f42ff92de8dd2652f8904dd64d8c303f7",
+      "declarations": 38
+    },
+    {
+      "member": "CMQODV",
+      "archiveMember": "inc/cobcpy64/CMQODV",
+      "sha256": "a3dbce8153f98c2dab67b6f44b4f1992857f9d8e252b39df4c0ecd85244c6609",
+      "declarations": 39
+    },
+    {
+      "member": "CMQPMOV",
+      "archiveMember": "inc/cobcpy32/CMQPMOV",
+      "sha256": "cec3ba10bc642e585c375f442d1504659013fcee9e20070081898a5ec17e5e0c",
+      "declarations": 21
+    },
+    {
+      "member": "CMQPMOV",
+      "archiveMember": "inc/cobcpy64/CMQPMOV",
+      "sha256": "08c3e02e7b0a24e10215d53ce67972506277fcb4e061c9c28ac16c0eee640021",
+      "declarations": 21
+    },
+    {
+      "member": "CMQTML",
+      "archiveMember": "inc/cobcpy32/CMQTML",
+      "sha256": "d22df481660e0fae59f2b0d0eb5321b9bf9ae09890dfb376ea64bf145dfcd8f7",
+      "declarations": 10
+    },
+    {
+      "member": "CMQTML",
+      "archiveMember": "inc/cobcpy64/CMQTML",
+      "sha256": "08bc88364872e910e25035dff6a89acc5f40f94164fc4dbce4d09f916f1e6adc",
+      "declarations": 11
+    },
+    {
+      "member": "CMQV",
+      "archiveMember": "inc/cobcpy32/CMQV",
+      "sha256": "4123bcec25f9fef8bd01f5eea91ac2fe24e02e5a9c376ed298ae8131ea02a840",
+      "declarations": 2353
+    },
+    {
+      "member": "CMQV",
+      "archiveMember": "inc/cobcpy64/CMQV",
+      "sha256": "92846d1337f82f539caeb2c655c2cb11a31d9f94bc377bcdb4b7a3cc3a6531a0",
+      "declarations": 2353
+    }
+  ],
+  "note": "Names, levels and field types only. Initial values/comments/runtime code are not copied. 32/64 named declaration shapes agree; 64-bit-only anonymous padding is excluded. No physical layout is claimed. SQLCA follows Db2 z/OS 13 docs, not the LUW layout."
+}
