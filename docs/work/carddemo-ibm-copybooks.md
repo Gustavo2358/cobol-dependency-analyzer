@@ -119,3 +119,19 @@ This is a C2 catalogue admission correction. Reexecute the frontend over the 73
 CardDemo programs and existing suites; byte-identical SP/compilation products
 allow reuse of downstream evidence with identical consumer binaries. Full
 qualification and the historical 310-fixture matrix remain outside this follow-up.
+
+### Follow-up validation result
+
+All **73 CardDemo**, **21 structural adversaries**, **39 PERFORM**, **48 Chaos**,
+**14 aliases** and **25 PERFORM adversaries** reran the frontend. All 220
+SP/compilation pairs are byte-identical to the qualified expansion baseline.
+Downstream corpus/suite evidence is **reused**, supported by these exact input
+hashes and unchanged immutable consumer binaries; no downstream corpus stages
+were reexecuted for this correction. No candidate, support or provenance delta.
+The preceding expansion's full four-stage runs remain the underlying evidence.
+
+`carddemo-ibm-review-validation.json` records the implementation commit, runtime
+hash, per-suite result hashes and preserved RED/GREEN/FAST/package logs. Full
+qualification and the historical 310-fixture matrix were not executed. Draft #64
+remains open for review; consumer pins and current metadata are updated in
+cobol-lower #39 and analysis-cfg #49.

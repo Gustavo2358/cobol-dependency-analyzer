@@ -1,0 +1,63 @@
+{
+  "scope": "SQLCA synthetic fallback restricted to EXEC SQL INCLUDE; operational source metadata corrected.",
+  "implementationCommit": "3a4d9e9cbbce4d481eaf58db9e4ef8463e635914",
+  "frontendJarSha256": "98be3ec558e4a210d426d6654f3056ed57590fb01c295a6e45d2b338a18f36c6",
+  "newlyExecuted": {
+    "focalTests": 28,
+    "frontendFastTests": 603,
+    "frontendEquivalence": {
+      "carddemo": {
+        "cases": 73,
+        "allByteIdentical": true,
+        "resultsSha256": "3a0c40122e477f6cabe97cfae986e3620adb0ff728e9956c18b90745bc88b490"
+      },
+      "adversaries": {
+        "cases": 21,
+        "allByteIdentical": true,
+        "resultsSha256": "ecd8ddc255afe8c07ac3e4456c804ed01b1de90c9d1f85d87ad0fe8ee1c03265"
+      },
+      "perform": {
+        "cases": 39,
+        "allByteIdentical": true,
+        "resultsSha256": "f1e22a36f35397b1a07ee50ea1785914e3bc58674fdd87bbf31e7a7e05ed9c76"
+      },
+      "chaos": {
+        "cases": 48,
+        "allByteIdentical": true,
+        "resultsSha256": "461efcf61c65dad2cceb607b3f93c16d408a7f9ef8d05c9215ca10958304945a"
+      },
+      "aliases": {
+        "cases": 14,
+        "allByteIdentical": true,
+        "resultsSha256": "d7fb44e6fcb813bbaccf3a5081441743d84313fcba38d529ee24ebfdb606d9d9"
+      },
+      "perform-adversarial": {
+        "cases": 25,
+        "allByteIdentical": true,
+        "resultsSha256": "aff58c78b2f84ee007c71f6d4dc0b11295a86cca8296bdc6fcec71a4ac80a81f"
+      }
+    }
+  },
+  "reusedEvidence": "Lower/CFG/dependency executions from the expansion and its explicitly linked prior suites. Every frontend SP/compilation product is byte-identical and immutable consumer binaries retain their hashes. This follow-up does not claim new execution of downstream corpus stages.",
+  "fullQualification": "NOT_EXECUTED",
+  "historical310Matrix": "NOT_EXECUTED",
+  "rawEvidenceRoot": ".synthetic-dfh/carddemo-review-fixes/",
+  "logs": {
+    "copy-sqlca-red": {
+      "path": ".synthetic-dfh/carddemo-review-fixes/copy-sqlca-red.log",
+      "sha256": "f6bc396aced9689c4ad29b39a952e8ede489c05ef504995abdc870442441aab4"
+    },
+    "focal-green": {
+      "path": ".synthetic-dfh/carddemo-review-fixes/focal-green.log",
+      "sha256": "07d9aca913a1821fc1135e22daed2119f92f12097f3dee9cbe415602b465285a"
+    },
+    "frontend-fast": {
+      "path": ".synthetic-dfh/carddemo-review-fixes/frontend-fast.log",
+      "sha256": "10a74f0c895d74f3a5b310a51736d91452cf38f674ef86f5bd71756a5fa472b5"
+    },
+    "frontend-package": {
+      "path": ".synthetic-dfh/carddemo-review-fixes/frontend-package.log",
+      "sha256": "210d9f40933a6e8fdf287d195d65c18c8560b083ab11b1d8f07c6f4bfac374ce"
+    }
+  }
+}
