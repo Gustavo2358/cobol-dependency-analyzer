@@ -47,8 +47,8 @@ for name in sorted(set(paths.decode().split('\0')) - {''}):
     if path.is_symlink() or not path.is_file():
         continue  # Match the original search: no symlink following or deleted files.
     content = path.read_text(errors='replace')
-    if name.startswith('docs/') and name.endswith('.md'):
-        # Exact repository identity in documentary evidence only.
+    if name.startswith('docs/') and name.endswith(('.md', '.json')):
+        # Exact repository identity in prose and machine-readable documentary evidence only.
         content = repository.sub('', content)
     if forbidden.search(content):
         contents.append(name)

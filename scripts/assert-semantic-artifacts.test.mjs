@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 
 import {
   assertCandidateCardinality,
+  assertCoactupcCopyInputs,
   assertCountMap,
   assertDeclaredCount,
   assertOccurrenceIdentity,
@@ -91,4 +92,28 @@ test("input summary follows ownership and ancestry without granting completeness
   assert.throws(() => assertUnitGapSummary("child", { ...units[1], gaps: 1, complete: true }, units, scoped), /complete/);
   const global = [{ unitId: null, category: "INPUT" }];
   assert.doesNotThrow(() => assertUnitGapSummary("peer", { ...units[2], gaps: 1, complete: false }, units, global));
+});
+
+test("COACTUPC copy evidence distinguishes real absence from structural models", () => {
+  const sample = () => ({
+    tree: { meta: { unresolvedCopies: 1 } },
+    coverage: { meta: { unresolvedCopies: 1, complete: false } },
+    resolution: { meta: { unresolvedCopies: 1, dependencyAnalysisReady: false } },
+    ast: { nodes: [
+      { t: "DataEntry", a: { name: "DFHNULL" }, sf: "model:ibm-cics/structural-v2/DFHAID" },
+      { t: "DataEntry", a: { name: "DFHBMUNP" }, sf: "model:ibm-cics/structural-v2/DFHBMSCA" },
+    ] },
+  });
+  assert.doesNotThrow(() => assertCoactupcCopyInputs(sample()));
+  for (const key of ["tree", "coverage", "resolution"]) {
+    for (const count of [0, 3]) {
+      const altered = sample(); altered[key].meta.unresolvedCopies = count;
+      assert.throws(() => assertCoactupcCopyInputs(altered), /unresolvedCopies/);
+    }
+  }
+  for (const mutate of [b => b.ast.nodes.pop(), b => b.ast.nodes[0].sf = "real.cpy",
+    b => b.coverage.meta.complete = true, b => b.resolution.meta.dependencyAnalysisReady = true]) {
+    const altered = sample(); mutate(altered);
+    assert.throws(() => assertCoactupcCopyInputs(altered));
+  }
 });

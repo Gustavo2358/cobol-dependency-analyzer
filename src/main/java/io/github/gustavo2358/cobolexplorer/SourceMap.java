@@ -148,12 +148,30 @@ final class SourceMap {
     }
 
     SourceMap transformedSlice(int start, int end, String replacementText) {
-        Ast.SourceProvenance origin = provenance(start, end);
-        UnicodeText replacement = new UnicodeText(replacementText);
-        Segment segment = replacementText.isEmpty() ? null : new Segment(0, replacement.length(),
-                origin.original().file(), offset(origin.original().file(), origin.original().startLine(),
-                origin.original().startColumn()), offsetAfter(origin.original()), origin.includeChain(), false);
-        return new SourceMap(replacementText, segment == null ? List.of() : List.of(segment), sources, null);
+        int length = new UnicodeText(replacementText).length();
+        return new SourceMap(replacementText, transformedSegments(start, end, length, segments), sources, null,
+                transformedSegments(start, end, length, retainedSegments));
+    }
+
+    private List<Segment> transformedSegments(int start, int end, int length, List<Segment> mapping) {
+        if (length == 0) return List.of();
+        var origin = provenance(start, end, mapping);
+        return List.of(new Segment(0, length, origin.original().file(),
+                offset(origin.original().file(), origin.original().startLine(), origin.original().startColumn()),
+                offsetAfter(origin.original()), origin.includeChain(), false));
+    }
+
+    /** Frame a retained payload without changing its bytes or physical line structure.
+     * Whole-region provenance stays approximate; operands keep the composed source map. */
+    SourceMap framedEmbeddedSlice(int start, int end, String prefix, String suffix) {
+        int offset = prefix.codePointCount(0, prefix.length());
+        int payloadEnd = offset + end - start;
+        var coarse = transformedSlice(start, end, prefix + indexedText.substring(start, end) + suffix);
+        var retained = new ArrayList<Segment>();
+        coarse.addSlice(retained, 0, offset, 0);
+        addRetainedSlice(retained, start, end, offset);
+        coarse.addSlice(retained, payloadEnd, coarse.length(), payloadEnd);
+        return new SourceMap(coarse.text, coarse.segments, sources, null, mergeAdjacent(retained));
     }
 
     /** Preserve the coordinates of retained runs while framing/flattening an opaque payload.

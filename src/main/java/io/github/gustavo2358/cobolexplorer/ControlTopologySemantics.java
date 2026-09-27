@@ -215,7 +215,13 @@ public final class ControlTopologySemantics {
             var command=cics==null?Optional.<CicsCommandControl.Qualification>empty():cics.commandFact(unit.id(),s.meta().id()).flatMap(CicsCommandControl::qualify);
             if(command.isPresent()) {
                 var q=command.get();var normal=proof(id+"/command-normal",ProofKind.LOCAL_GRAMMAR,q.ordinaryProof(),s.meta().provenance(),List.of(p));
-                add(s,owner,OutcomeKind.NORMAL,"normal",next,"",normal);
+                if(q.programReturn()) {
+                    add(s,owner,OutcomeKind.PROGRAM_RETURN,"return",new Target(TargetKind.PROGRAM_RETURN,root,List.of(normal)),"",normal);
+                    if(q.conditionReturn()) {
+                        var error=proof(id+"/command-condition-return",ProofKind.LOCAL_GRAMMAR,"cics-return-local-condition",s.meta().provenance(),List.of(normal));
+                        add(s,owner,OutcomeKind.NORMAL,"condition-return",next,"",error);
+                    }
+                } else add(s,owner,OutcomeKind.NORMAL,"normal",next,"",normal);
                 for(var condition:q.unresolvedConditions()) {
                     var remainder=proof(id+"/command-"+condition,ProofKind.PARTIAL_UNKNOWN,"cics-command-"+condition,s.meta().provenance(),List.of(normal));
                     add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"cics/"+condition,unknown(owner,remainder),"",remainder);

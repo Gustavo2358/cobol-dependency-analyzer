@@ -81,7 +81,7 @@ class FactDependencyLocalityTest {
         var opaque=publish("01 RECORD-A.\n 05 TARGET PIC X(8).\nEXEC SQL INCLUDE SQLDA END-EXEC.");
         var model=publish("01 RECORD-A.\n 05 TARGET PIC X(8).\nEXEC SQL INCLUDE SQLCA END-EXEC.");
         assertTrue(known(model,"TARGET",FactKind.SOURCE_IDENTITY));assertFalse(known(model,"TARGET",FactKind.LOCAL_CELL));
-        assertTrue(model.factDependencies().orElseThrow().inputs().stream().anyMatch(i->i.kind()==InputKind.MISSING_COPY&&!i.available()));
+        assertTrue(model.factDependencies().orElseThrow().inputs().stream().anyMatch(i->i.kind()==InputKind.MODEL_STORAGE&&!i.available()));
         assertTrue(known(opaque,"TARGET",FactKind.SOURCE_IDENTITY));assertFalse(known(opaque,"TARGET",FactKind.LOCAL_CELL));
         assertTrue(opaque.factDependencies().orElseThrow().inputs().stream().anyMatch(i->i.kind()==InputKind.OPAQUE_INCLUDE));
         var out=Path.of("target/fact-dependency-r2");Files.createDirectories(out);

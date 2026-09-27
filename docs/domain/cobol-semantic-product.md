@@ -701,3 +701,17 @@ interpretations may add a candidate but cannot remove observed source text. An
 influenced condition cannot exclude either branch. Synthetic initial seeds are
 ignored. A later ordinary write with independent proof can still kill candidates.
 This does not introduce AIR cells, CFG successors or executable dependency edges.
+
+## SP 2.50 — structural model locality
+
+`MODEL_STORAGE` is an unavailable input with producer-owned scope. It does not
+stand for unknown source text or grant physical layout, exact cells, initialization
+or a kill. It affects declarations originating in the model, their shared storage
+components (including aliases), and still-open surrounding records. Independently
+closed real records after a structural model keep their own declaration context.
+Actual missing COPY and unlocated input retain the existing prefix rules.
+
+The producer carries the distinction from SourceMap through UnitInputProof; no
+consumer infers it from a member name or a provenance URI. SP 2.50 transports this
+input kind; older versions cannot publish it. Source uncertainty preserves the
+kind and remains unavailable.

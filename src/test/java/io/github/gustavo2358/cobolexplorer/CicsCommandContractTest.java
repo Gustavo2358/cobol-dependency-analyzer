@@ -43,13 +43,13 @@ class CicsCommandContractTest {
         assertEquals(List.of("MAP","INTO","RESP","RESP2"),names);assertFalse(names.contains("NOHANDLE"));
     }
     @Test void unsupportedSubsetCannotContinue() throws Exception {
-        for(var cmd:List.of("SYNCPOINT ROLLBACK","SYNCPOINT MYSTERY","RECEIVE MAP()","RECEIVE MAP('M') RESP(RC) RESP(RC)","SEND MAP('M') ACCUM","SEND MAP('M') CURSOR(RC)","RECEIVE MAP(MAP-NAME)")) {
+        for(var cmd:List.of("SYNCPOINT ROLLBACK MYSTERY","SYNCPOINT MYSTERY","RECEIVE MAP()","RECEIVE MAP('M') RESP(RC) RESP(RC)","SEND MAP('M') ACCUM","SEND MAP('M') CURSOR(RC)","RECEIVE MAP(MAP-NAME)")) {
             var j=one(cmd);assertEquals("UNAVAILABLE",command(j).path("syntaxStatus").asText(),cmd);
             assertTrue(outcomes(j,command(j)).stream().allMatch(o->o.path("kind").asText().equals("UNKNOWN_LOCAL")),cmd);
         }
     }
     @Test void unrelatedAndTerminalCommandsStayOutsideNewFamily() throws Exception {
-        for(var cmd:List.of("SEND TEXT FROM(WS-AREA)","RETURN","XCTL PROGRAM('X')","ABEND","READ FILE('F') INTO(WS-AREA) RESP(RC)","MYSTERY RESP(RC)")) {
+        for(var cmd:List.of("SEND TEXT FROM(WS-AREA)","XCTL PROGRAM('X')","ABEND","READ FILE('F') INTO(WS-AREA) RESP(RC)","MYSTERY RESP(RC)")) {
             var j=one(cmd);assertTrue(j.path("statements").findValuesAsText("variant").stream().noneMatch("CICS_COMMAND"::equals));
             var first=j.path("statements").get(0);
             if(!cmd.startsWith("READ"))assertTrue(outcomes(j,first).stream().noneMatch(o->o.path("target").path("reference").equals(j.path("statements").get(1).path("header").path("id"))),cmd);
@@ -93,7 +93,7 @@ class CicsCommandContractTest {
         assertNotEquals(first.statements().get(0).header().id(),second.statements().get(0).header().id());
     }
     @Test void diagnosticAbsenceDoesNotSupplySyntaxQualification() {
-        var unsupported=CicsCommandSemantics.parse("EXEC CICS SYNCPOINT ROLLBACK END-EXEC").orElseThrow();
+        var unsupported=CicsCommandSemantics.parse("EXEC CICS SYNCPOINT ROLLBACK MYSTERY END-EXEC").orElseThrow();
         var withoutDiagnostic=new CicsCommandSemantics.Fact(unsupported.command(),unsupported.syntaxStatus(),unsupported.raw(),unsupported.options(),List.of());
         assertFalse(withoutDiagnostic.supported());assertTrue(CicsCommandControl.qualify(withoutDiagnostic).isEmpty());
         var supported=CicsCommandSemantics.parse("EXEC CICS SYNCPOINT END-EXEC").orElseThrow();

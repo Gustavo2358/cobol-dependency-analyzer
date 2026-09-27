@@ -489,9 +489,23 @@ function assertCrossArtifactSources(bundle) {
       "resolution-data.js.sourceLines", "does not match parse-tree source lines");
 }
 
+export function assertCoactupcCopyInputs(bundle) {
+  for (const key of ["tree", "coverage", "resolution"]) {
+    invariant(bundle[key].meta.unresolvedCopies === 1, `${key}.meta.unresolvedCopies`,
+        "COACTUPC retains the unavailable COACTUP member in the configured corpus/cpy library");
+  }
+  for (const [name, member] of [["DFHNULL", "DFHAID"], ["DFHBMUNP", "DFHBMSCA"]]) {
+    invariant(bundle.ast.nodes.some(node => node.t === "DataEntry" && node.a?.name === name
+        && node.sf === `model:ibm-cics/structural-v2/${member}`),
+        "ast-data.js modeled COPY sentinel", `missing structural model declaration ${name}`);
+  }
+  invariant(bundle.coverage.meta.complete === false
+      && bundle.resolution.meta.dependencyAnalysisReady === false,
+      "modeled COPY completeness", "model declarations do not close missing input or runtime uncertainty");
+}
+
 function assertCoactupc(bundle) {
-  invariant(bundle.tree.meta.unresolvedCopies === 3, "tree-data.js.meta.unresolvedCopies",
-      "COACTUPC evidence requires the three known unavailable COPY inputs");
+  assertCoactupcCopyInputs(bundle);
   invariant(bundle.coverage.meta.complete === false, "coverage-data.js.meta.complete",
       "COACTUPC coverage must remain conservatively incomplete");
   invariant(bundle.resolution.meta.programUnits === 1, "resolution-data.js.meta.programUnits",

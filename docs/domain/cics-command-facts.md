@@ -66,3 +66,17 @@ them and uses the published topology for nonexecutable state assessment; their
 AIR lowering remains NOT_READY. No value producer, dependency admission or
 publication rule is added. Complexity is linear in source statements/options,
 plus the existing finite topology/state algorithms.
+
+## SP2.50 completion extension
+
+SYNCPOINT_ROLLBACK is qualified separately from SYNCPOINT. Its ROLLBACK flag is
+mandatory and operand-free. Ordinary completion is possible; default condition
+processing remains open unless RESP/NOHANDLE handles it locally. Application host
+proof covers explicit response destinations only; recoverable resources and CICS
+transactional state remain unknown. No stored host value is reverted or killed.
+
+RETURN in SP2.50 supports the plain form and TRANSID/COMMAREA/LENGTH/IMMEDIATE
+with RESP/RESP2/NOHANDLE. Success exits the program level. Possible errors with
+locally handled conditions have a distinct continuation; RESP2 alone does not
+establish it. Passed host areas are reads, response areas are MAY writes. CHANNEL,
+INPUTMSG and BTS options remain outside this closed executable subset.

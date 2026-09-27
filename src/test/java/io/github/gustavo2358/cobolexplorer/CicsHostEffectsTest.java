@@ -40,7 +40,7 @@ class CicsHostEffectsTest {
         assertFalse(c.hasNonNull("hostEffects"),"missing storage cannot create executable memory proof");
     }
     @Test void missingOrUnclassifiedMemoryDoesNotAcquireAProof()throws Exception {
-        for(var text:java.util.List.of("RECEIVE MAP('M') RESP(RC)","SEND MAP('M') RESP(RC)","RECEIVE MAP('M') INTO(WS-AREA(1:2)) RESP(RC)","SYNCPOINT ROLLBACK"))
+        for(var text:java.util.List.of("RECEIVE MAP('M') RESP(RC)","SEND MAP('M') RESP(RC)","RECEIVE MAP('M') INTO(WS-AREA(1:2)) RESP(RC)","SYNCPOINT ROLLBACK MYSTERY"))
             assertFalse(CicsCommandContractTest.command(CicsCommandContractTest.one(text)).hasNonNull("hostEffects"),text);
     }
 }

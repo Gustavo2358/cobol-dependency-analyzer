@@ -29,7 +29,7 @@ final class EmbeddedExpressionSyntax {
     static List<Host> parse(String raw,int offset,int line,int column,int tokenIndex) {
         var command=CicsCommandSemantics.parse(raw);
         var options=new ArrayList<CicsCommandSyntax.Option>();
-        if(command.filter(c->c.command()==CicsCommandSemantics.Kind.SEND_TERMINAL).isPresent())options.addAll(command.get().options());
+        if(command.filter(c->c.command()==CicsCommandSemantics.Kind.SEND_TERMINAL||c.command()==CicsCommandSemantics.Kind.RETURN).isPresent())options.addAll(command.get().options());
         // Non-reference LENGTH operands have their own identity; they are not a write to the measured item.
         new CicsFileControlAnalyzer().parse(raw).ifPresent(file->{
             for(var o:file.options())if(o.syntax().name().equals("LENGTH")&&o.syntax().operand().isPresent()) {

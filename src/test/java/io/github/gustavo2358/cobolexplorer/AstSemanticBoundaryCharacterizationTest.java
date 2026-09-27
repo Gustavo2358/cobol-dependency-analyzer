@@ -27,18 +27,22 @@ class AstSemanticBoundaryCharacterizationTest {
     void matrixCountsParseContextsAstNodesAndCurrentCoverageExactly() throws Exception {
         AstBoundaryTestSupport.Analysis analysis = AstBoundaryTestSupport.analyzeFixture();
         List<BoundaryRow> matrix = boundaryMatrix(analysis);
+        // SQLCA now expands to 23 declarations instead of one opaque entry:
+        // 13 real + 23 modeled entries, 20 real + 24 modeled clauses.
+        assertEquals(23, AstBoundaryTestSupport.nodes(analysis, Ast.DataEntry.class)
+                .stream().filter(e -> e.meta().syntheticModel()).count());
 
         assertEquals("WORK-AST-002/SLICE-1/v1", MATRIX_VERSION);
         assertEquals(List.of(
                         new BoundaryRow("statement", "statement", "Ast.Statement", 10, 10,
                                 "manifest per concrete statement", "manifest per concrete statement",
                                 "only nominal children", "(ProgramUnitId, astNodeId)", 10),
-                        new BoundaryRow("data-description", "dataDescriptionEntry", "Ast.DataEntry", 14, 14,
+                        new BoundaryRow("data-description", "dataDescriptionEntry", "Ast.DataEntry", 36, 36,
                                 "MODELED or opaque preserved", "container-specific",
-                                "no; clauses may contain occurrences", "(ProgramUnitId, astNodeId)", 14),
-                        new BoundaryRow("data-clause", "direct data clause", "Ast.DataClause", 20, 20,
+                                "no; clauses may contain occurrences", "(ProgramUnitId, astNodeId)", 36),
+                        new BoundaryRow("data-clause", "direct data clause", "Ast.DataClause", 44, 44,
                                 "typed or PRESERVED_UNINTERPRETED", "clause-specific",
-                                "only nominal endpoints", "(ProgramUnitId, astNodeId)", 20),
+                                "only nominal endpoints", "(ProgramUnitId, astNodeId)", 44),
                         new BoundaryRow("condition-surface", "abbreviation", "Ast.RelationCondition", 1, 1,
                                 "MODELED structural surface (WORK-COND-003)", "no dependency knowledge claim",
                                 "relation operands only", "(ProgramUnitId, astNodeId)", 0)),
@@ -70,8 +74,7 @@ class AstSemanticBoundaryCharacterizationTest {
                 .findFirst().orElseThrow();
         List<Ast.DataEntry> fillers = entries.stream().filter(Ast.DataEntry::filler)
                 .filter(entry -> entry.levelKind() != Ast.DataLevelKind.OPAQUE).toList();
-        Ast.DataEntry opaqueSql = entries.stream()
-                .filter(entry -> entry.levelKind() == Ast.DataLevelKind.OPAQUE)
+        Ast.DataEntry sqlca = entries.stream().filter(entry -> entry.name().equals("SQLCA"))
                 .findFirst().orElseThrow();
         Ast.DataEntry fillerRedefines = fillers.stream().filter(entry -> entry.clauses().stream()
                 .anyMatch(Ast.RedefinesClause.class::isInstance)).findFirst().orElseThrow();
@@ -97,10 +100,14 @@ class AstSemanticBoundaryCharacterizationTest {
         assertAll("structural facts remain distinct from future storage semantics",
                 () -> assertEquals(9, root.children().size()),
                 () -> assertEquals(3, fillers.size()),
-                () -> assertEquals("SQL", opaqueSql.level()),
-                () -> assertTrue(opaqueSql.declaration().contains("EXEC SQL")),
-                () -> assertTrue(opaqueSql.filler(),
-                        "current AST conflates an absent SQL declarator with the FILLER flag"),
+                () -> assertEquals("01", sqlca.level()),
+                () -> assertFalse(sqlca.filler()),
+                () -> assertTrue(sqlca.meta().syntheticModel()),
+                () -> assertEquals(List.of("SQLCAID", "SQLCABC", "SQLCODE", "SQLERRM",
+                        "SQLERRP", "SQLERRD", "SQLWARN", "SQLEXT"),
+                        sqlca.children().stream().map(Ast.DataEntry::name).toList()),
+                () -> assertTrue(entries.stream().filter(e -> e.meta().syntheticModel())
+                        .flatMap(e -> e.clauses().stream()).noneMatch(Ast.ValueClause.class::isInstance)),
                 () -> assertEquals(6, AstBoundaryTestSupport.nodes(analysis, Ast.ValueClause.class).size()),
                 () -> assertEquals(2, conditionValues.values().size()),
                 () -> assertEquals("BASE-ITEM", redefines.target().baseName()),
@@ -120,6 +127,23 @@ class AstSemanticBoundaryCharacterizationTest {
                 () -> assertTrue(table.declarationRelations().stream().noneMatch(relation ->
                         relation.referenceAstNodeId() == redefines.target().meta().id()),
                         "FILLER has no owner symbol, so its endpoint is bound only as a nominal occurrence"));
+    }
+
+    @Test
+    void unavailableSqlIncludeRemainsOpaque() throws Exception {
+        String source = Files.readString(AstBoundaryTestSupport.FIXTURE, StandardCharsets.UTF_8)
+                .replace("INCLUDE SQLCA", "INCLUDE APP-SQL-AREA");
+        var analysis = AstBoundaryTestSupport.analyze(source, "missing-sql-include.cbl");
+        var entries = AstBoundaryTestSupport.nodes(analysis, Ast.DataEntry.class);
+        var opaque = entries.stream().filter(e -> e.levelKind() == Ast.DataLevelKind.OPAQUE).toList();
+        assertEquals(14, entries.size());
+        assertEquals(20, AstBoundaryTestSupport.nodes(analysis, Ast.DataClause.class).size());
+        assertEquals(1, opaque.size());
+        assertEquals("SQL", opaque.get(0).level());
+        assertTrue(opaque.get(0).declaration().contains("APP-SQL-AREA"));
+        assertFalse(opaque.get(0).meta().syntheticModel());
+        assertTrue(entries.stream().noneMatch(e -> e.name().equals("SQLCA")));
+        AstBoundaryTestSupport.assertActualProductsJoin(analysis);
     }
 
     @Test
