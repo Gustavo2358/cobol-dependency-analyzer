@@ -4,6 +4,24 @@
 OPTIONAL_EXTENSION / NOT_PART_OF_CORE, requer nova autorização.
 [Handoff final](https://github.com/Gustavo2358/analysis-cfg/blob/main/docs/product/file-dependencies/closeout.md).
 
+## Incomplete declarations and effect bounds
+
+The canonical memory analysis indexes a unique FD/SD description independently
+of its SELECT control. Missing or ambiguous control does not erase a known
+record; missing description does not erase observed status/INTO/FROM receivers.
+Explicit operands retain nominal identity and provenance even without a FILE owner.
+A missing expected owner forbids strong FROM/INTO/status effects. A missing
+required destination opens the write bound; an unbound FROM source opens the
+read bound. These are observed operations whose locations lack proof, not effects
+invented from unrelated profile or coverage gaps. Partial tables retain their
+known steps and four conditional outcomes.
+
+Strong effects still require all prior record-kind, exact-view and disjunction
+proofs. READ buffers remain MAY; INTO belongs only to success, and FROM precedes
+I/O. A later independently proved MOVE can kill an earlier candidate. No schema,
+AIR or CFG extension is needed: SP 2.48's existing partial plan and bound fields
+carry this information. [Work and oracles](../work/incomplete-file-effects.md).
+
 ## Checkpoints históricos
 
 CORE N+C qualificado; closeout/merges autorizados. W10 DEFERRED / OPTIONAL_EXTENSION,

@@ -95,6 +95,20 @@ public final class FactLocalitySemantics {
         var proofs=new ArrayList<Proof>();var regions=new ArrayList<Region>();var facts=new ArrayList<Fact>();var bindings=new ArrayList<Binding>();
         var attrs=program.attributes();boolean ordinary=!attrs.recursive()&&!attrs.common()&&!attrs.library()&&!attrs.definition()&&!attrs.initial();
         var exacts=new HashMap<Integer,Integer>();for(var e:storage.logicalExactViews())if(e.node().unit().equals(id))exacts.put(e.node().node(),e.representative().node());
+        // A nonallocating alias can share an already complete logical value.
+        // Its canonical character range must cover that entire value; matching
+        // names or lengths alone never establish the relation.
+        var logicalViews=new HashMap<Integer,StorageLayoutSemantics.LogicalView>();
+        for(var view:storage.logicalViews())if(view.node().unit().equals(id))logicalViews.put(view.node().node(),view);
+        var completeRenames=new HashSet<Integer>();
+        for(var rename:structure.renames()) {
+            int owner=rename.data().meta().id();var view=logicalViews.get(owner);
+            var rootView=view==null?null:logicalViews.get(view.root().node());
+            if(rootView!=null&&exacts.containsKey(rootView.node().node())
+                    &&view.start().equals(rootView.start())&&view.length().equals(rootView.length())) {
+                exacts.put(owner,exacts.get(rootView.node().node()));completeRenames.add(owner);
+            }
+        }
         var views=new HashMap<Integer,StorageLayoutSemantics.View>();layout.views().forEach(v->views.put(v.node().node(),v));
         for(var entry:members.entrySet()) {
             var region=entry.getKey();var b=bases.get(region);int rootId=b.id().node();var root=positions.get(rootId).data();var section=sections.get(rootId);
@@ -114,10 +128,17 @@ public final class FactLocalitySemantics {
                 ||positions.get(n.id().node()).data().clauses().stream().anyMatch(c->c instanceof Ast.OccursClause||c instanceof Ast.RedefinesClause))
                 &&structure.renames().stream().noneMatch(p->baseByNode.getOrDefault(p.root(),"").equals(region))
                 &&!structure.uncertainRoots().contains(rootId);
-            boolean wholeExact=structure.renames().stream().noneMatch(p->baseByNode.getOrDefault(p.root(),"").equals(region))&&ns.stream().allMatch(n->exacts.containsKey(n.id().node()))&&ns.stream().map(n->exacts.get(n.id().node())).distinct().count()==1;
+            boolean wholeExact=ns.stream().allMatch(n->exacts.containsKey(n.id().node()))&&ns.stream().map(n->exacts.get(n.id().node())).distinct().count()==1;
             var aliasOrigin=structure.relations().stream().filter(r->baseByNode.getOrDefault(r.owner(),"").equals(region)).map(r->r.clause().meta().provenance()).findFirst().orElse(b.origin());
             var aliasInventory=proof(proofs,ProofKind.ALIAS_INVENTORY,region,region,aliases||wholeExact,List.of(syntax),List.of(),aliasOrigin);
-            var alias=proof(proofs,ProofKind.ALIAS_CLOSURE,region,region,true,List.of(closed,aliasInventory),List.of(),b.origin());
+            var aliasDependencies=new ArrayList<String>(List.of(closed,aliasInventory));
+            if(wholeExact)for(var n:ns)if(completeRenames.contains(n.id().node())) {
+                var relation="ALIAS_INVENTORY/"+region+"/logical-renames/"+node(n.id().node());
+                proofs.add(new Proof(relation,ProofKind.ALIAS_INVENTORY,region,region,true,List.of(syntax),List.of(),
+                    "IBM6.4/R2/COMPLETE_LOGICAL_RENAMES",origin(n.origin())));
+                aliasDependencies.add(relation);
+            }
+            var alias=proof(proofs,ProofKind.ALIAS_CLOSURE,region,region,true,aliasDependencies,List.of(),b.origin());
             var profile=proof(proofs,ProofKind.PROFILE,region,region,true,List.of(),List.of("input:profile"),b.origin());
             boolean allocated=(local||b.independent())&&context.getOrDefault(region,List.of()).isEmpty()&&StorageComponents.level(root)>0;
             boolean isolated=allocated&&closure.getOrDefault(region,List.of()).isEmpty()&&(aliases||wholeExact)&&section!=null;

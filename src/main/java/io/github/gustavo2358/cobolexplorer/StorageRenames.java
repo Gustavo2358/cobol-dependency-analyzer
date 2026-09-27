@@ -22,13 +22,27 @@ final class StorageRenames {
         var ranges=new HashMap<Integer,Range>();var original=new HashMap<Integer,View>();var kinds=new HashMap<Integer,Kind>();
         for(var v:views){original.put(v.node().node(),v);if(v.textual()&&v.offset().value().isPresent()&&v.extent().value().isPresent())ranges.put(v.node().node(),new Range(v.base(),v.offset().value().orElseThrow(),v.extent().value().orElseThrow()));}
         for(var n:nodes)kinds.put(n.id().node(),n.kind());
+        // Detached negative aliases participate in root ordering without allocating a base.
+        var rootPositions=new ArrayList<StorageComponents.Position>();
+        for(var position:physical.positions())if(position.parent().isEmpty())rootPositions.add(position);
+        for(var position:physical.renames())if(position.parent().filter(id->kinds.get(id)==Kind.ELEMENTARY).isPresent())rootPositions.add(position);
+        rootPositions.sort(Comparator.comparingInt(p->p.data().meta().span().startToken()));
+        var rootOrders=new HashMap<Integer,Integer>();
+        for(int i=0;i<rootPositions.size();i++)rootOrders.put(rootPositions.get(i).data().meta().id(),i);
+        for(int i=0;i<nodes.size();i++) {
+            var n=nodes.get(i);if(n.parent().isPresent())continue;
+            nodes.set(i,new Node(n.id(),n.parent(),rootOrders.get(n.id().node()),n.filler(),n.kind(),n.entity(),n.extent(),n.origin()));
+        }
         var result=new ArrayList<Renaming>();
         for(var p:proveRanges(unit,physical,resolution,entities,coverage,ranges,kinds)) {
             boolean proved=p.range()!=null;var root=original.get(p.position().root());
             var offset=proved?Measure.known(p.range().start()):Measure.unknown(Reason.RENAMES_NOT_PROVEN);
             var extent=proved?Measure.known(p.range().length()):Measure.unknown(Reason.RENAMES_NOT_PROVEN);
             var data=p.position().data();
-            nodes.add(new Node(p.owner(),p.position().parent().map(id->new Key(unit,id)),p.position().order(),data.filler(),p.kind(),Optional.ofNullable(entities.get(data.meta().id())),extent,data.meta().provenance()));
+            // A negative level-66 declaration still has a view on its owning base,
+            // but an elementary record is not a physical container.
+            var parent=p.position().parent().filter(id->kinds.get(id)!=Kind.ELEMENTARY);
+            nodes.add(new Node(p.owner(),parent.map(id->new Key(unit,id)),parent.isEmpty()?rootOrders.get(data.meta().id()):p.position().order(),data.filler(),p.kind(),Optional.ofNullable(entities.get(data.meta().id())),extent,data.meta().provenance()));
             views.add(new View(p.owner(),root.base(),offset,extent,proved,data.meta().provenance()));
             if(p.clause()!=null)result.add(new Renaming(p.owner(),Optional.ofNullable(p.from()).map(id->new Key(unit,id)),Optional.ofNullable(p.through()).map(id->new Key(unit,id)),proved,p.clause()));
         }
