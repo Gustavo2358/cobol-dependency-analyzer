@@ -28,13 +28,8 @@ final class CicsHostSyntax {
             }
         });
         CicsCommandSemantics.parse(raw).ifPresent(command->{
-            for(var option:command.options())if(Set.of("MAP","MAPSET","FROM","INTO","RESP","RESP2").contains(option.name())) {
+            for(var option:command.options())if(Set.of("MAP","MAPSET","FROM","INTO","RESP","RESP2","TRANSID","COMMAREA").contains(option.name())) {
                 options.add(option);roles.put(option.start(),Set.of("INTO","RESP","RESP2").contains(option.name())?Ast.EmbeddedHostRole.WRITE:Ast.EmbeddedHostRole.READ);
-            }
-        });
-        CicsCommandSyntax.parse(raw).filter(c->c.name().equals("RETURN")).ifPresent(command->{
-            for(var option:command.options())if(Set.of("TRANSID","COMMAREA","LENGTH","RESP","RESP2").contains(option.name())) {
-                options.add(option);roles.put(option.start(),Set.of("RESP","RESP2").contains(option.name())?Ast.EmbeddedHostRole.WRITE:Ast.EmbeddedHostRole.READ);
             }
         });
         var result=new ArrayList<Host>();

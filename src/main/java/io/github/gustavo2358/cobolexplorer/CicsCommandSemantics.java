@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.*;
 
 /** Source command/option qualification. Does not compute control, runtime values or handlers. */
 public final class CicsCommandSemantics {
-    public enum Kind { SYNCPOINT, SYNCPOINT_ROLLBACK, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE }
+    public enum Kind { SYNCPOINT, SYNCPOINT_ROLLBACK, RETURN, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE }
     public enum SyntaxStatus { SUPPORTED, UNAVAILABLE }
     public record HostEffects(List<Integer> literalOptions) { public HostEffects { literalOptions=List.copyOf(literalOptions); } }
     public record Fact(Kind command,SyntaxStatus syntaxStatus,String raw,List<CicsCommandSyntax.Option> options,List<String> gaps,Optional<HostEffects> hostEffects) {
@@ -44,7 +44,7 @@ public final class CicsCommandSemantics {
         var literals=new ArrayList<Integer>();
         for(var option:fact.options()) {
             if(option.operand().isEmpty())continue;
-            if(Set.of("MAP","MAPSET").contains(option.name())&&option.operand().flatMap(CicsCommandSyntax::literal).isPresent()) {
+            if(Set.of("MAP","MAPSET","TRANSID").contains(option.name())&&option.operand().flatMap(CicsCommandSyntax::literal).isPresent()) {
                 literals.add(option.start());continue;
             }
             if(option.name().equals("LENGTH")) {
@@ -65,6 +65,7 @@ public final class CicsCommandSemantics {
         var syntax=CicsCommandSyntax.parse(raw);if(syntax.isEmpty())return Optional.empty();var s=syntax.get();
         Kind kind;
         if(s.name().equals("SYNCPOINT"))kind=s.options().stream().anyMatch(o->o.name().equals("ROLLBACK"))?Kind.SYNCPOINT_ROLLBACK:Kind.SYNCPOINT;
+        else if(s.name().equals("RETURN"))kind=Kind.RETURN;
         else if(s.name().equals("RETRIEVE"))kind=Kind.RETRIEVE;
         else if(Set.of("SEND","RECEIVE").contains(s.name())&&s.options().stream().anyMatch(o->o.name().equals("MAP")))
             kind=s.name().equals("SEND")?Kind.SEND_MAP:Kind.RECEIVE_MAP;
@@ -73,6 +74,7 @@ public final class CicsCommandSemantics {
         var gaps=new LinkedHashSet<>(s.gaps());boolean supported=s.gaps().isEmpty();var names=new HashSet<String>();
         var allowed=new HashSet<>(Set.of("RESP","RESP2","NOHANDLE"));
         if(kind==Kind.SYNCPOINT_ROLLBACK)allowed.add("ROLLBACK");
+        if(kind==Kind.RETURN)allowed.addAll(Set.of("TRANSID","COMMAREA","LENGTH","IMMEDIATE"));
         if(kind==Kind.RETRIEVE)allowed.add("INTO");
         if(kind==Kind.SEND_TERMINAL)allowed.addAll(Set.of("FROM","LENGTH","ERASE"));
         if(kind==Kind.SEND_MAP||kind==Kind.RECEIVE_MAP)allowed.addAll(Set.of("MAP","MAPSET",kind==Kind.SEND_MAP?"FROM":"INTO"));
@@ -80,13 +82,14 @@ public final class CicsCommandSemantics {
         for(var o:s.options()) {
             if(!allowed.contains(o.name())){supported=false;gaps.add("CICS_COMMAND_UNMODELED_OPTION");}
             if(!names.add(o.name())){supported=false;gaps.add("CICS_COMMAND_DUPLICATE_OPTION");}
-            boolean flag=Set.of("NOHANDLE","CURSOR","ERASE","FREEKB","ROLLBACK").contains(o.name());
+            boolean flag=Set.of("NOHANDLE","CURSOR","ERASE","FREEKB","ROLLBACK","IMMEDIATE").contains(o.name());
             if(flag?o.operand().isPresent():o.operand().filter(v->!v.isBlank()).isEmpty()){supported=false;gaps.add("CICS_COMMAND_OPERAND_SHAPE");}
             if(!flag&&allowed.contains(o.name())&&o.operand().isPresent()) {
-                String v=o.operand().orElseThrow().strip();boolean name=Set.of("MAP","MAPSET").contains(o.name());
-                if(!(kind==Kind.SEND_TERMINAL&&o.name().equals("LENGTH")?EmbeddedExpressionSyntax.supported(v):name&&CicsCommandSyntax.literal(v).filter(x->!x.isEmpty()).isPresent()||dataSyntax(v))){supported=false;gaps.add("CICS_COMMAND_OPERAND_SHAPE");}
+                String v=o.operand().orElseThrow().strip();boolean name=Set.of("MAP","MAPSET","TRANSID").contains(o.name());
+                if(!((kind==Kind.SEND_TERMINAL||kind==Kind.RETURN)&&o.name().equals("LENGTH")?EmbeddedExpressionSyntax.supported(v):name&&CicsCommandSyntax.literal(v).filter(x->!x.isEmpty()).isPresent()||dataSyntax(v))){supported=false;gaps.add("CICS_COMMAND_OPERAND_SHAPE");}
             }
         }
+        if(kind==Kind.RETURN&&(names.contains("LENGTH")&&!names.contains("COMMAREA")||names.contains("IMMEDIATE")&&!names.contains("TRANSID"))){supported=false;gaps.add("CICS_COMMAND_OPTION_COMBINATION");}
         if(kind==Kind.RETRIEVE&&!names.contains("INTO")){supported=false;gaps.add("CICS_COMMAND_REQUIRED_INTO");}
         if(kind==Kind.SEND_TERMINAL&&!names.contains("FROM")){supported=false;gaps.add("CICS_COMMAND_REQUIRED_FROM");}
         if(kind==Kind.SEND_MAP||kind==Kind.RECEIVE_MAP) {

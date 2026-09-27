@@ -74,3 +74,9 @@ mandatory and operand-free. Ordinary completion is possible; default condition
 processing remains open unless RESP/NOHANDLE handles it locally. Application host
 proof covers explicit response destinations only; recoverable resources and CICS
 transactional state remain unknown. No stored host value is reverted or killed.
+
+RETURN in SP2.50 supports the plain form and TRANSID/COMMAREA/LENGTH/IMMEDIATE
+with RESP/RESP2/NOHANDLE. Success exits the program level. Possible errors with
+locally handled conditions have a distinct continuation; RESP2 alone does not
+establish it. Passed host areas are reads, response areas are MAY writes. CHANNEL,
+INPUTMSG and BTS options remain outside this closed executable subset.
