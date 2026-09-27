@@ -82,3 +82,9 @@ como registros/handoffs cross-repo para `air-java`, `cobol-lower` e
 [Typed CICS handler operations / SP 2.41.0](positive-cics-handler-r7.md): IN_PROGRESS, frontend contract qualification; no runtime handler-state propagation or merge.
 
 - [NOMINAL-DFH-COPYBOOKS](nominal-dfh-copybooks.md): IN_PROGRESS — piloto nominal DFHAID/DFHBMSCA, em revisão.
+
+## Composite FILE control — review
+
+[Scope and contract](file-composite-control.md); [qualification](file-composite-qualification.md).
+SP2.51 per-use control for OPEN/CLOSE and SORT/MERGE without procedure callbacks.
+IN_PROGRESS: implemented and qualified locally, awaiting review; no merge.
