@@ -20,9 +20,13 @@ public final class NominalValueSemantics {
         if(storage.isEmpty())return new NominalValueSemantics(result);
         var predicates=TextConditionSemantics.analyze(frontend,resolution,shapes,true);
         for(var unit:frontend.compilationUnit().programUnits()) {
+            var modelNodes=new HashSet<Integer>();
+            var inventory=new ArrayDeque<Ast.Node>();inventory.add(unit.program());
+            while(!inventory.isEmpty()){var n=inventory.removeFirst();if(n instanceof Ast.Program&&n!=unit.program())continue;
+                if(n instanceof Ast.DataEntry d&&d.meta().syntheticModel())modelNodes.add(d.meta().id());inventory.addAll(Ast.children(n));}
             var nodes=new HashMap<ResolutionContracts.SemanticEntityId,String>();var symbols=new ArrayList<NominalValues.Symbol>();
             for(var n:storage.get().layout().layout(unit.id()).nodes())n.entity().ifPresent(e->{
-                var shape=shapes.get(e);if(shape!=null){String id="storage-node:"+n.id().node();nodes.put(e,id);symbols.add(new NominalValues.Symbol(id,shape.extent()));}});
+                var shape=shapes.get(e);if(shape!=null){String id="storage-node:"+n.id().node();nodes.put(e,id);symbols.add(new NominalValues.Symbol(id,shape.extent(),modelNodes.contains(n.id().node())));}});
             var references=new HashMap<Integer,String>();
             for(var r:resolution.entries())if(r.occurrence().programUnitId().equals(unit.id())&&r.status()==ResolutionContracts.ResolutionStatus.RESOLVED)
                 r.selectedCandidate().map(c->nodes.get(c.entityId())).ifPresent(node->references.put(r.occurrence().referenceAstNodeId(),node));

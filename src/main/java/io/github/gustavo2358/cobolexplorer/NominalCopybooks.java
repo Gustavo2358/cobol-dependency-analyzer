@@ -3,15 +3,16 @@ package io.github.gustavo2358.cobolexplorer;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/** Versioned CICS TS names, deliberately without values, pictures or storage claims.
+/** Documented CICS analysis declarations, with shape but no authoritative initial values.
  * Authority: https://www.ibm.com/docs/en/cics-ts/6.x?topic=reference-bms-constants
+ * Group/elementary form follows the IBM CICS Primer. See docs/work/synthetic-dfh-structure.md.
  * These are analysis models, not compiler/runtime replacements for IBM members. */
 final class NominalCopybooks {
     private NominalCopybooks() { }
     private static final Map<String,List<String>> MEMBERS = catalogue();
 
     private static Map<String,List<String>> catalogue() {
-        var aid = new ArrayList<>(List.of("DFHENTER", "DFHCLEAR"));
+        var aid = new ArrayList<>(List.of("DFHNULL", "DFHENTER", "DFHCLEAR"));
         for (int n=1;n<=3;n++) aid.add("DFHPA"+n);
         for (int n=1;n<=24;n++) aid.add("DFHPF"+n);
         aid.addAll(List.of("DFHOPID", "DFHMSRE", "DFHTRIG", "DFHPEN", "DFHCLRP", "DFHSTRF"));
@@ -33,8 +34,12 @@ final class NominalCopybooks {
     static Optional<SourceMap> resolve(String name) {
         var names=MEMBERS.get(name.toUpperCase(Locale.ROOT));
         if (names==null) return Optional.empty();
-        String source=names.stream().map(n -> "       01 " + n + ".\n").collect(Collectors.joining());
+        String source="       01 " + name.toUpperCase(Locale.ROOT) + ".\n"
+                + names.stream().map(n -> "          02 " + n + " PIC X.\n"
+                    + (n.equals("DFHBMFLG") ? "             88 DFHERASE VALUES X'80' X'82'.\n"
+                        + "             88 DFHCURSR VALUES X'02' X'82'.\n" : ""))
+                    .collect(Collectors.joining());
         return Optional.of(SourceNormalizer.normalize(source, artifact(name), SourceNormalizer.SourceFormat.FIXED).sourceMap());
     }
-    static String artifact(String name) { return "model:ibm-cics-ts/nominal-v1/"+name.toUpperCase(Locale.ROOT); }
+    static String artifact(String name) { return "model:ibm-cics/structural-v2/"+name.toUpperCase(Locale.ROOT); }
 }

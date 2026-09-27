@@ -1,14 +1,21 @@
-# Nominal DFH copybooks
+# Nominal DFH copybooks — historical first pilot
 
 - id: NOMINAL-DFH-COPYBOOKS
 - status: IN_PROGRESS
 - scope: Missing, unqualified DFHAID and DFHBMSCA COPY declarations; no values or storage proofs.
 
+The initial names-only design below is superseded by
+[the structural revision](synthetic-dfh-structure.md). This document preserves
+its original measurements. The initial catalogue omitted DFHNULL and flattened
+both groups; the revision corrects those limitations and the missing 88 names.
+
 ## Rule and authority
 
 The user authorized a nominal model: identifiers exist, but model data cannot
-prove a branch impossible or justify a kill. IBM CICS TS documents both members
-as sets of 01 declarations in WORKING-STORAGE:
+prove a branch impossible or justify a kill. The CICS TS overview uses the wording “sets of 01 statements”; the IBM Primer
+and TXSeries AID documentation show 01 groups with subordinate 02 items. The
+first pilot deliberately flattened these groups, so that overview did not justify
+its original claim of faithful declaration structure. Overview:
 https://www.ibm.com/docs/en/cics-ts/6.x?topic=reference-bms-constants .
 The catalogue records names only. No PIC, VALUE, USAGE, extent, offset, constant
 value or disjointness is supplied. EIB runtime registers and other DFH members

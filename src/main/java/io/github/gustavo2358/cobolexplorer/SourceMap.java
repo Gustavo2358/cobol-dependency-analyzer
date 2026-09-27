@@ -209,6 +209,14 @@ final class SourceMap {
                 s.sourceFile(), s.originalStart(), s.originalEnd(), s.includeChain(), s.exact(), diagnostic)).toList(), sources, physicalBoundary);
     }
 
+    boolean syntheticModel(int start, int end) {
+        for (int i=firstOverlapping(segments,start);i<segments.size()&&segments.get(i).start()<end;i++) {
+            var gap=segments.get(i).inputGap();
+            if(gap!=null&&gap.code()==Diagnostic.Code.NOMINAL_COPYBOOK)return true;
+        }
+        return false;
+    }
+
     List<Segment> inputGapRegions() {
         return segments.stream().filter(s -> s.inputGap() != null).toList();
     }

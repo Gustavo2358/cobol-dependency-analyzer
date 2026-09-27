@@ -25,6 +25,24 @@ for case in json.loads((r.ROOT/'expected.json').read_text())['cases']:
         names={v['referenceName'] for s in sites for v in s['candidates']}
         if names!=set(case['xctl']) or not all(v.get('supports') for s in sites for v in s['candidates']):
             row['status']='FAIL';row['xctlFailure']='Candidates/supports do not match oracle'
+    if case.get('sourceCandidates') and row.get('oracle'):
+        # Preserve the historical executable oracle, including its expected failure.
+        # The product obligation is now a source-qualified candidate with real support.
+        doc=json.loads((a.out/case['id']/'dependencies.json').read_text())
+        programs=doc['dependencies']['programs']
+        candidates=[v for p in programs for v in p['candidates']]
+        names={v['referenceName'] for v in candidates}
+        supported=all(v.get('conditionalSupports') and any(
+            e['kind']=='ASSIGNMENT' and e['provenance']['original']['file']==case['source']
+            and e['provenance']['original']['startLine']==case['assignmentSupportLine']
+            for support in v['conditionalSupports'] for e in support['evidence']) for v in candidates)
+        legacy=row['oracle']['calls']['target']
+        honest=(not row['oracle']['sourceMappingErrors'] and
+            set(legacy['failures'])=={'MISSING_CANDIDATES','MISSING_EDGES'} and
+            not legacy['actual'] and not legacy['actualEdges'] and legacy['activations'] and
+            all(v['effectiveUnknownRemainder'] is True for v in legacy['activations']))
+        row['sourceOracle']={'required':case['sourceCandidates'],'actual':sorted(names),'supported':supported,'executionUnproven':bool(honest)}
+        row['status']='PASS' if names==set(case['sourceCandidates']) and supported and honest else 'FAIL'
     if row['status']=='FAIL' and case.get('knownLimitation') and a.baseline_runtime:
         baseline=json.loads(a.baseline_runtime.read_text());baseout=a.out/'baseline';baseout.mkdir(exist_ok=True)
         before=r.run_case(case,baseline,baseout,180,a.java,'2g')

@@ -200,7 +200,7 @@ final class PreprocessorEngine {
                     SourceDependencyFact.Resolution.UNRESOLVED, "", "COPY_SYNTAX", dependencyProvenance, dependencyRoot));
                 Optional<Path> path = library.resolve(requested);
                 // Real configured members always take precedence. Replacements may inject
-                // value/layout clauses, so a names-only model cannot support them safely.
+                // value/layout clauses beyond the documented model profile.
                 Optional<SourceMap> nominal = nominalAllowed && path.isEmpty() && qualification.isEmpty()
                         && copyReplacements(context, parser.getRuleNames(), indexedSource).isEmpty()
                         ? NominalCopybooks.resolve(requested) : Optional.empty();
@@ -208,7 +208,7 @@ final class PreprocessorEngine {
                     String artifact = NominalCopybooks.artifact(requested);
                     Diagnostic partial = sourceDiagnostic(document, Diagnostic.Phase.PREPROCESSOR,
                             Diagnostic.Code.NOMINAL_COPYBOOK, start, end,
-                            "COPY '" + requested + "' uses a names-only model; values and storage remain unknown",
+                            "COPY '" + requested + "' uses a structural analysis model; runtime values and exact storage remain unproven",
                             requested, "");
                     diagnostics.add(partial);
                     toleratedPreprocessorDiagnostics[0]++;

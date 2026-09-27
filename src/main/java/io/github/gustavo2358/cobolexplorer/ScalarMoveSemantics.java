@@ -332,10 +332,16 @@ public final class ScalarMoveSemantics {
     }
 
     private static Optional<ScalarText> possibleReceiver(Ast.DataEntry entry) {
-        if(!entry.children().isEmpty()||entry.filler()||entry.visibility()!=Ast.DeclarationVisibility.LOCAL||!entry.meta().provenance().exact())return Optional.empty();
+        // A condition name does not allocate subordinate storage. Model PICs are
+        // nominal assumptions even when the terminating period crosses a COPY boundary.
+        if(entry.children().stream().anyMatch(c->c.levelKind()!=Ast.DataLevelKind.CONDITION_88)
+                ||entry.filler()||entry.visibility()!=Ast.DeclarationVisibility.LOCAL
+                ||!entry.meta().provenance().exact()&&!entry.meta().syntheticModel())return Optional.empty();
         Optional<Integer> extent=Optional.empty();int pictures=0,usages=0;
         for(var clause:entry.clauses()) {
-            if(clause instanceof Ast.PictureClause picture){pictures++;extent=picture.textExtent();}
+            if(clause instanceof Ast.PictureClause picture){
+                if(!picture.meta().provenance().exact())return Optional.empty();
+                pictures++;extent=picture.textExtent();}
             else if(clause instanceof Ast.UsageClause usage&&usage.display())usages++;
             else if(!(clause instanceof Ast.ValueClause)&&!(clause instanceof Ast.RedefinesClause)&&!(clause instanceof Ast.PreservedDataClause))return Optional.empty();
         }

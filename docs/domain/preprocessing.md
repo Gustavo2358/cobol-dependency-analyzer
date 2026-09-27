@@ -22,32 +22,37 @@ Cada alternativa top-level de `CobolPreprocessor.startRule` possui classificaç�
 
 COPY ausente, cíclico ou com erro de I/O produz placeholder mapeado e diagnostic. Para membro não encontrado, `Diagnostic.Code.UNRESOLVED_COPY` é a identidade semântica estruturada; `Outcome.unresolved()` é derivado desses fatos, que preservam nome solicitado e localização em ordem determinística. A mensagem humana continua útil, mas seu wording não participa de contagem, composição ou geração de gaps. Ausência de copybook mantém a execução observável como incompleta; não equivale a COPY vazio nem exige interromper fases posteriores quando o placeholder ainda permite construir seus produtos coerentemente. COPY cíclico e falha de I/O conservam a política anterior e não pertencem a esse fallback.
 
-## Modelos nominais DFH
+## Modelos estruturais DFH
 
-Se a busca nas bibliotecas não encontrar `DFHAID` ou `DFHBMSCA`, um COPY sem
-qualificação nem REPLACING pode usar o catálogo `ibm-cics-ts/nominal-v1`.
-Os nomes vêm da [lista BMS do IBM CICS TS](https://www.ibm.com/docs/en/cics-ts/6.x?topic=reference-bms-constants).
-Cada nome vira uma declaração 01 sem PIC, VALUE, USAGE ou tamanho. É um modelo
-para binding nominal; não é um copybook para compilação ou execução.
+Na ausência de `DFHAID` ou `DFHBMSCA` nas bibliotecas configuradas, um COPY sem
+qualificação nem REPLACING usa o perfil `ibm-cics/structural-v2`. O modelo fornece
+os grupos 01, campos 02 `PIC X` e condições 88 documentados no IBM CICS Primer,
+na lista AID e nas constantes BMS. São 36 campos AID (incluindo `DFHNULL`),
+69 campos BMS e `DFHERASE`/`DFHCURSR` subordinados a `DFHBMFLG`.
+`DFHENTER OF DFHAID` e as condições qualificadas usam o binding canônico.
+A [definição e as fontes IBM](../work/synthetic-dfh-structure.md) delimitam a
+completude: união das declarações documentadas, sem alegar reprodução binária
+de cada versão instalada do CICS.
 
-Um membro real sempre tem prioridade. Não há regra por prefixo DFH, busca na
-rede nem fallback de SQL INCLUDE. REPLACING, inclusive em um COPY ancestral,
-desabilita o modelo: substituições arbitrárias poderiam introduzir PIC/VALUE.
-Os demais membros, qualificações, ciclos e erros de I/O mantêm a política vigente.
+Os campos têm tipo e tamanho declarados. Seus valores iniciais ficam ausentes;
+os dois níveis 88 preservam os conjuntos hexadecimais documentados. Valores de
+modelo não são fatos de runtime. Um membro real sempre tem prioridade. Não há
+regra por prefixo DFH, consulta de rede ou fallback de SQL INCLUDE. REPLACING,
+inclusive em COPY ancestral, desabilita o modelo; os demais membros, ciclos,
+qualificações e erros de I/O seguem a política existente.
 
-`NOMINAL_COPYBOOK` qualifica a expansão como conteúdo parcial, mesmo com zero
-`UNRESOLVED_COPY`. O SourceMap conserva `model:ibm-cics-ts/nominal-v1/<membro>`
-e a cadeia real de inclusão. A dependência de fonte continua sendo COPYBOOK
-com autoridade COPY_SYNTAX e resolução RESOLVED para esse artefato de modelo.
-O conteúdo IBM não é declarado conhecido. O relatório, o produto de compilação
-e a interface permanecem incompletos.
+`NOMINAL_COPYBOOK` permanece como diagnóstico tipado de input parcial. SourceMap
+marca a região modelada; `Ast.Meta.syntheticModel` conserva essa autoridade.
+Provenance usa `model:ibm-cics/structural-v2/<membro>` e a cadeia real de inclusão.
+A dependência COPYBOOK conserva autoridade COPY_SYNTAX e resolução RESOLVED.
+O conteúdo físico ausente não se torna conhecido.
 
-As declarações usam a semântica canônica de dados opacos: identidade disponível,
-sem scalar, célula lógica exata, bytes iniciais ou prova física. As provas locais
-tratam a região nominal como input parcial localizado; isso não invalida fatos
-independentes nem cria provas de kill. Lower, AIR, CFG e dependencies continuam
-usando seus contratos existentes. Limites e evidências do piloto estão no
-[work item](../work/nominal-dfh-copybooks.md).
+PIC e hierarquia não concedem prova de célula exata, bytes iniciais, disjointness
+ou kill. SP 2.49 publica a confiança explícita dos símbolos em `nominalValues`.
+O consumidor preserva candidatos anteriores e ambos os braços de condições
+influenciadas por modelos. Fatos independentes e kills comprovados continuam
+válidos. O [piloto anterior](../work/nominal-dfh-copybooks.md) registra as evidências
+históricas; seus limites de nomes achatados foram substituídos por este perfil.
 
 ## EXEC DLI opaco
 
@@ -88,7 +93,7 @@ O processamento percorre a parse tree e resolve COPYs pelo repositório configur
 
 ## Fronteiras explícitas
 
-O preprocessor não resolve símbolos COBOL, não interpreta payload de SQL/CICS/SQLIMS/DLI, usa os diretórios configurados e o catálogo nominal explícito, sem inventar configuração ausente. Modos não especificados permanecem valores explícitos na policy posterior. A composição posterior, não o preprocessor, decide quais fases possuem pré-requisitos estruturais sob input incompleto.
+O preprocessor não resolve símbolos COBOL, não interpreta payload de SQL/CICS/SQLIMS/DLI, usa os diretórios configurados e o catálogo estrutural explícito, sem inventar configuração ausente. Modos não especificados permanecem valores explícitos na policy posterior. A composição posterior, não o preprocessor, decide quais fases possuem pré-requisitos estruturais sob input incompleto.
 
 ## Evidência executável
 

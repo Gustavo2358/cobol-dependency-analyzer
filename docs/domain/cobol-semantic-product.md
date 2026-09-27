@@ -678,3 +678,26 @@ single-level phases omit `level` (decoded as 0) and retain their existing payloa
 Only publications using these new topology facts select 2.48. Earlier wire formats
 omit the new fields and keep their meaning; consumers must reject new facts under
 older versions. Numeric value evaluation remains outside this capability.
+
+
+## SP 2.49 — explicit synthetic model assumptions
+
+`NOMINAL_TEXT_SOURCE_V2` extends every `symbols` entry with mandatory boolean
+`modelAssumed`. True means the declaration's shape comes from an analysis model.
+The producer selects SP 2.49 only when such a symbol is present. Ordinary products
+retain V1 (`node`, `extent`) and their existing version/bytes. A consumer must
+reject missing, nonboolean or silently downgraded model markers.
+
+The AST's typed input authority determines this marker; adapters do not infer it
+from a path, declaration name or DFH prefix. Binding, PIC and group qualification
+remain available. Model declarations cannot supply declarative initial values,
+exact storage/local-cell proof or executable predicate proof. The existing located
+input gap and COPY provenance remain explicit. Nominal predicate syntax is allowed
+with its symbol authority; it is not an executable proof.
+
+The source-value consumer propagates model influence through copies and joins.
+An influenced write retains predecessor candidates and unknown remainder. Width
+interpretations may add a candidate but cannot remove observed source text. An
+influenced condition cannot exclude either branch. Synthetic initial seeds are
+ignored. A later ordinary write with independent proof can still kill candidates.
+This does not introduce AIR cells, CFG successors or executable dependency edges.

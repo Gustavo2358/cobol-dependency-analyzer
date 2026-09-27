@@ -2166,7 +2166,7 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
         int endOffset = stop == null ? startOffset : Math.min(indexedSource.length(), stop.getStopIndex() + 1);
         return new Ast.Meta(id, span, new Ast.ParseTreeOrigin(-1, grammarRule, 0),
                 retainedEmbeddedOperand ? sourceMap.embeddedOperandProvenance(startOffset, endOffset)
-                        : sourceMap.provenance(startOffset, endOffset));
+                        : sourceMap.provenance(startOffset, endOffset), sourceMap.syntheticModel(startOffset,endOffset));
     }
 
     private static Ast.SourceSpan spanOf(TerminalNode terminal) {
@@ -2424,7 +2424,7 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
                     new Ast.ParseTreeOrigin(parseIds.getOrDefault(context, -1), rule(context),
                         parseSubtreeSizes.getOrDefault(context, 1)),
                 retainedEmbeddedOperand ? sourceMap.embeddedOperandProvenance(startOffset, endOffset)
-                        : sourceMap.provenance(startOffset, endOffset));
+                        : sourceMap.provenance(startOffset, endOffset), sourceMap.syntheticModel(startOffset,endOffset));
     }
 
     /** Written arm anchor; children and owner retain their own complete provenance.

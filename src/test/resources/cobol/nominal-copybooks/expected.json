@@ -56,7 +56,12 @@
           "forbidden": []
         }
       },
-      "knownLimitation": "No target value can be computed without a textual shape; discovery oracle stays failing in both runtimes. Verify baseline explicitly; never manufacture a scalar/cell proof."
+      "knownLimitation": "Executable target still lacks a physical/local-cell proof. Keep the historical edge oracle; independently require the source-qualified dependency and its original assignment support.",
+      "sourceCandidates": [
+        "P",
+        "PROGA001"
+      ],
+      "assignmentSupportLine": 10
     },
     {
       "id": "known_kill_survives",
@@ -133,6 +138,151 @@
         "PROGA001",
         "PROGB001"
       ]
+    },
+    {
+      "id": "qualified_null",
+      "source": "qualified_null.cbl",
+      "sha256": "cb9f3b6fbf03286570751b52a540e902830b00872e5bfd2297452641e52eb002",
+      "calls": {
+        "target": {
+          "line": 15,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "condition_name",
+      "source": "condition_name.cbl",
+      "sha256": "6a6b06eb7f4307b657bfbc52558ee85d10dd790382c67a15a29f56ff07455b4b",
+      "calls": {
+        "target": {
+          "line": 15,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "model_copy_branch",
+      "source": "model_copy_branch.cbl",
+      "sha256": "1e52945a807478e56882999fff6a74fce40ff912b31f7f7b3a72c4c3cc0bedd0",
+      "calls": {
+        "target": {
+          "line": 17,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "model_width_branch",
+      "source": "model_width_branch.cbl",
+      "sha256": "03a5f8c2503498914d152692cfd27020adae46e7e6f89d983460d20096f2eeb9",
+      "calls": {
+        "target": {
+          "line": 16,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "last_aid_target",
+      "source": "last_aid_target.cbl",
+      "sha256": "9ee500856b34d34810c3ac6dbcd5b2b5381c02aff2668634f81dee981a7472d9",
+      "calls": {
+        "target": {
+          "line": 12,
+          "required": [
+            "PROGA001"
+          ],
+          "allowed": [
+            "PROGA001"
+          ],
+          "forbidden": []
+        }
+      },
+      "knownLimitation": "Executable target still lacks a physical/local-cell proof. Keep the historical edge oracle; independently require the source-qualified dependency and its original assignment support.",
+      "sourceCandidates": [
+        "P",
+        "PROGA001"
+      ],
+      "assignmentSupportLine": 10
+    },
+    {
+      "id": "last_bms_target",
+      "source": "last_bms_target.cbl",
+      "sha256": "c089b4f685690338efd1f47c830c9f0e9a2196db02f7a6c246e4a8bd19c67110",
+      "calls": {
+        "target": {
+          "line": 12,
+          "required": [
+            "PROGA001"
+          ],
+          "allowed": [
+            "PROGA001"
+          ],
+          "forbidden": []
+        }
+      },
+      "knownLimitation": "Executable target still lacks a physical/local-cell proof. Keep the historical edge oracle; independently require the source-qualified dependency and its original assignment support.",
+      "sourceCandidates": [
+        "P",
+        "PROGA001"
+      ],
+      "assignmentSupportLine": 10
+    },
+    {
+      "id": "flag_with_conditions_target",
+      "source": "flag_with_conditions_target.cbl",
+      "sha256": "a8e2db84b26f02bec935108b68402cc592c5a64850d92f4f10e3c63e3eab250e",
+      "calls": {
+        "target": {
+          "line": 12,
+          "required": [
+            "PROGA001"
+          ],
+          "allowed": [
+            "PROGA001"
+          ],
+          "forbidden": []
+        }
+      },
+      "knownLimitation": "Executable target still lacks a physical/local-cell proof. Keep the historical edge oracle; independently require the source-qualified dependency and its original assignment support.",
+      "sourceCandidates": [
+        "P",
+        "PROGA001"
+      ],
+      "assignmentSupportLine": 10
     }
   ]
 }

@@ -23,7 +23,10 @@ public final class Ast {
     }
 
     public record Meta(int id, SourceSpan span, ParseTreeOrigin origin,
-                       SourceProvenance provenance) {
+                       SourceProvenance provenance, boolean syntheticModel) {
+        public Meta(int id, SourceSpan span, ParseTreeOrigin origin, SourceProvenance provenance) {
+            this(id, span, origin, provenance, false);
+        }
         public Meta(int id, SourceSpan span, ParseTreeOrigin origin) {
             this(id, span, origin, new SourceProvenance(
                     new SourceLocation("<unknown>", span.startLine(), span.startColumn(), span.endLine(), span.endColumn()),
