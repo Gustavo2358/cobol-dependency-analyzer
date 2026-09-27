@@ -18,6 +18,7 @@ No merge is part of this campaign. Exact consumer pins are in sources.lock.json.
 | Frontend FAST | 614 tests, zero failures/errors/skips |
 | Lower FAST | PASS after the final payload correction |
 | CFG FAST | PASS with the new projection, wire and architecture inventories |
+| CFG full local | Architecture, semantic, performance and W5 integration PASS; historical W2D version guard fails before its downstream stages |
 | Lower full local (D5, before the final payload correction) | PASS: 205184 semantic checks; performance run 244391 checks, including 39207 performance checks |
 | Frontend full local | 1189 tests: 6 failures, 1 error, 1 skip; all seven failing cases independently reproduced on baseline main |
 
@@ -33,7 +34,13 @@ failures and one error. They concern old SQLCA inventory/data hierarchy, DLI hos
 operands and legacy PERFORM statement inventory. They were not changed here.
 Full qualification is therefore not globally green.
 
-CFG full-local status is recorded in the final campaign report and PR.
+The CFG full run reaches W2D, whose script still requires the producer pin to be
+SP2.38. Baseline main already pins SP2.49. Executing the main guard with its own
+lock and the preserved historical SP2.47 fixture reproduces the identical failure.
+The historical W2D/move/basic-PERFORM/multi-call/partial E2Es after that guard were
+not completed by the full command. Current four-stage suites and the exhaustive
+corpus runs above are separate evidence; they are not reported as a green full.
+This unrelated historical guard was not relaxed. See w2d-baseline-guard/result.json.
 
 ## Corpus audit and the final correction
 
