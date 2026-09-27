@@ -307,3 +307,20 @@ cobertura/provenance e formato escalar continuam premissas próprias já existen
 Overlays posteriores e FILLER participam do índice antes de qualquer consulta.
 Cláusula preservada, relação não provada, RENAMES e visibilidade não local não
 viram alocação independente. Um índice de outro snapshot é rejeitado por identidade.
+
+## Negative relations and logical completeness
+
+An unproved level-66 alias keeps its node, declaration provenance, owning base and
+unknown range. If its syntactic owner is elementary, the storage graph omits that
+invalid physical parent edge and assigns root sibling order by source tokens.
+This never creates an allocation or resolves an invalid RENAMES endpoint.
+
+A subordinate REDEFINES with an unproved target makes its component uncertain.
+Even a syntactic chain with exactly one child cannot then prove a complete value
+Cell. Exact logical views use the same uncertain-root boundary as regional layout;
+independent roots retain their own proofs. FILLER still has physical node identity
+without a nominal data symbol, and RENAMES views do not allocate physical children.
+
+See [storage boundary fixes](../work/storage-boundary-fixes.md) for failure classes
+and adversarial oracles. IBM 6.4 [language reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
+defines level-66 regrouping and its endpoint restrictions.

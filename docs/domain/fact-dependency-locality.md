@@ -97,3 +97,17 @@ and corrects the unapproved 2.40 draft; approved <=2.39 contracts remain unchang
 The campaign evidence is `fact-dependency-locality-r2/evidence/` in the aggregator,
 including first-four and all56 storage checkpoints, full73 physical discovery,
 frozen historical oracles, first-loss redistribution and raw performance logs.
+
+## Complete logical RENAMES
+
+A positive logical RENAMES range can join an already complete logical value family
+when it has the same published root, start and length. Every member, including all
+aliases, must cover that value. A partial or unproved alias prevents this whole
+family proof. The alias inventory records each complete alias as a regional proof
+with its declaration provenance; Cell proofs depend on that inventory, closure,
+logical type and allocation. No new physical extent, codec or lifetime follows.
+
+This removes a blanket RENAMES veto on otherwise proved whole-value identity.
+The lower continues to consume the fact graph; it does not reconstruct COBOL
+ranges. The dependency oracle requires that a proven complete overwrite kills the
+old candidate, while uncertain writes preserve it.

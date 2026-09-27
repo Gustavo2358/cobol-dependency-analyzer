@@ -155,6 +155,8 @@ public final class StorageLayoutSemantics {
         var relations=new HashMap<Integer,StorageComponents.Relation>();
         for(var relation:structure.relations())relations.put(relation.owner(),relation);
         for(var component:structure.rootComponents()) {
+            // Shape alone cannot certify a value cell inside an uncertain overlay.
+            if(component.members().stream().anyMatch(structure.uncertainRoots()::contains))continue;
             if(component.members().size()<2||!working.containsAll(component.members()))continue;
             var members=component.members();var first=shapes.get(members.get(0));
             if(first==null||!first.supported()||first.kind()!=Kind.ELEMENTARY||first.leafExtent().isEmpty())continue;
@@ -173,6 +175,8 @@ public final class StorageLayoutSemantics {
         // A second child component or an overlay member would make the relation
         // partial, so neither may be silently collapsed into the same Cell.
         for(var component:structure.rootComponents()) {
+            // Shape alone cannot certify a value cell inside an uncertain overlay.
+            if(component.members().stream().anyMatch(structure.uncertainRoots()::contains))continue;
             if(component.members().size()!=1)continue;
             var chain=new ArrayList<Integer>();int current=component.representative();
             while(true) {
