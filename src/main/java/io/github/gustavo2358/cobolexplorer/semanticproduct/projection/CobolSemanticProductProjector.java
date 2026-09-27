@@ -225,9 +225,12 @@ public final class CobolSemanticProductProjector {
         var topology=io.github.gustavo2358.cobolexplorer.ControlTopologySemantics.analyze(
                 inputs.selectedSource().unit(), inputs.selectedSource().table(), products.resolution(), products.report(),
                 statementIds, fileInventory, products.cics().orElse(null));
+        var locality=products.factDependencies().get(unitId);
+        if(locality==null&&!topology.fileFlows().isEmpty())locality=io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies.unavailable(
+                provenance(inputs.selectedSource().unit().program().meta().provenance()));
         return new ScopedProjection(new CobolSemanticProduct.State(inputs.boundaryUnit(),
                 policy(inputs.report().policy()), declarations.facts(),
-                statements, gaps, coverage, entries, storageIndependence(inputs, declarations.ids()), storage(inputs, declarations.ids()), fileInventory,products.sourceDependencies().getOrDefault(unitId,io.github.gustavo2358.cobolexplorer.semanticproduct.CobolSemanticProduct.SourceDependencyInventory.unavailable()),ordinaryContinuations(inputs,statementIds,statements),Optional.of(topology),Optional.ofNullable(products.factDependencies().get(unitId)),nominalValues(products,unitId,statementIds)),java.util.Collections.unmodifiableMap(new LinkedHashMap<>(declarations.ids())));
+                statements, gaps, coverage, entries, storageIndependence(inputs, declarations.ids()), storage(inputs, declarations.ids()), fileInventory,products.sourceDependencies().getOrDefault(unitId,io.github.gustavo2358.cobolexplorer.semanticproduct.CobolSemanticProduct.SourceDependencyInventory.unavailable()),ordinaryContinuations(inputs,statementIds,statements),Optional.of(topology),Optional.ofNullable(locality),nominalValues(products,unitId,statementIds)),java.util.Collections.unmodifiableMap(new LinkedHashMap<>(declarations.ids())));
     }
 
     private static Optional<io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues> nominalValues(

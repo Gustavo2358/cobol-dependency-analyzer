@@ -6,6 +6,12 @@ import static io.github.gustavo2358.cobolexplorer.semanticproduct.CobolSemanticP
 /** Causal source proof graph. Physical layout and logical value identity are distinct facets. */
 public record FactDependencies(String authority,List<Input> inputs,List<Proof> proofs,
         List<Region> regions,List<Fact> facts,List<Binding> bindings) {
+    /** No locality analysis was supplied. This grants no allocation, binding or kill proof. */
+    public static FactDependencies unavailable(Provenance origin) {
+        return new FactDependencies("FRONTEND_FACT_DEPENDENCY_LOCALITY_R2",
+            List.of(new Input("input:profile",InputKind.PHYSICAL_PROFILE,false,List.of(),List.of(),List.of(),origin)),
+            List.of(),List.of(),List.of(),List.of());
+    }
     public enum InputKind { MISSING_COPY, MODEL_STORAGE, OPAQUE_INCLUDE, UNLOCATED_INPUT, PHYSICAL_PROFILE }
     public enum ProofKind { SOURCE_SYNTAX, REGION_CONTEXT, DECLARATION_CONTEXT, REGION_BOUNDARY, REGION_CLOSURE, ALIAS_INVENTORY, ALIAS_CLOSURE, LOCAL_ALLOCATION, LOGICAL_TYPE, PROFILE, PHYSICAL_VIEW }
     public enum FactKind { SOURCE_IDENTITY, LOGICAL_TEXT, STORAGE_IDENTITY, LOCAL_CELL, PHYSICAL_VIEW }

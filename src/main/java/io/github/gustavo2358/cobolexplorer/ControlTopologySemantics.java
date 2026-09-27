@@ -26,6 +26,7 @@ public final class ControlTopologySemantics {
     private final Map<String,Boundary> boundaries=new TreeMap<>();
     private final Map<String,Outcome> outcomes=new TreeMap<>();
     private final Map<String,Binding> bindings=new TreeMap<>();
+    private final List<FileFlow> fileFlows=new ArrayList<>();
     private final List<ExceptionalEvent> exceptionalEvents=new ArrayList<>();
     private final Map<String,Proof> proofs=new TreeMap<>();
     private final Map<String,List<String>> subregions=new HashMap<>();
@@ -123,11 +124,12 @@ public final class ControlTopologySemantics {
         ids.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(e->{if(!occurrences.containsKey(e.getValue())){
             var p=proof(e.getValue()+"/unplaced",ProofKind.PARTIAL_UNKNOWN,"unsupported-region-membership",e.getKey().meta().provenance(),List.of(isolation));
             add(e.getKey(),root,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(root,p),"",p);}});
+        fileFlows();
         fileRoutes();
         for(var r:new ArrayList<>(regions.values()))regions.put(r.id(),new Region(r.id(),r.kind(),r.parent(),r.entry(),occurrences.values().stream().filter(o->o.region().equals(r.id())).map(Occurrence::statement).toList(),
             r.kind()==RegionKind.RANGE?r.regions():subregions.getOrDefault(r.id(),List.of()).stream().sorted().toList(),r.boundary(),r.proofs()));
-        return new ControlTopology("FRONTEND_CONTROL_TOPOLOGY_R1",List.copyOf(occurrences.values()),List.copyOf(regions.values()),
-            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents);
+        return new ControlTopology(fileFlows.isEmpty()?"FRONTEND_CONTROL_TOPOLOGY_R1":"FRONTEND_CONTROL_TOPOLOGY_R2",List.copyOf(occurrences.values()),List.copyOf(regions.values()),
+            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows);
     }
     private void statements(List<Ast.Statement> list,String owner,Target end,String isolation) {
         for(int i=0;i<list.size();i++) {
@@ -360,8 +362,50 @@ public final class ControlTopologySemantics {
         var previous=occurrences.get(id);var edges=new ArrayList<String>();if(previous!=null)edges.addAll(previous.outcomes());edges.add(edge);
         occurrences.put(id,new Occurrence(id,owner,edges,List.of(p)));
     }
+    /** Publish internal control once, before binding per-event destinations. */
+    private void fileFlows() {
+        var groups=new TreeMap<String,List<CobolSemanticProduct.FileUse>>();
+        files.operations().uses().forEach(u->groups.computeIfAbsent("statement:"+u.statement().localId(),k->new ArrayList<>()).add(u));
+        var byId=new HashMap<String,Ast.Statement>();ids.forEach((statement,id)->byId.put(id,statement));
+        var sorts=new HashMap<String,CobolSemanticProduct.FileSortPlan>();files.sortPlans().forEach(plan->sorts.put("statement:"+plan.statement().localId(),plan));
+        for(var group:groups.entrySet()) {
+            var id=group.getKey();var uses=group.getValue();uses.sort(Comparator.comparingInt(CobolSemanticProduct.FileUse::ordinal));
+            var normal=outcomes.get("outcome:"+id+"/normal");
+            if(normal==null||normal.target().kind()==TargetKind.UNKNOWN_LOCAL)continue;
+            var sort=sorts.get(id);
+            boolean linear=uses.size()>1&&uses.stream().allMatch(u->u.command()==CobolSemanticProduct.FileCommand.OPEN||u.command()==CobolSemanticProduct.FileCommand.CLOSE);
+            if(!linear&&(sort==null||sort.work()<0||!sort.procedures().isEmpty()))continue;
+            var statement=byId.get(id);var p=proof(id+"/file-flow",ProofKind.LOCAL_GRAMMAR,
+                linear?"file-sequential-operands":"file-input-work-output-phases",statement.meta().provenance(),normal.proofs());
+            var points=new ArrayList<FilePoint>();Target first;
+            if(linear) {
+                for(int i=0;i<uses.size();i++)points.add(new FilePoint(id+"/file/use/"+uses.get(i).ordinal(),FilePointKind.USE,uses.get(i).ordinal(),
+                    List.of(i+1<uses.size()?filePoint(id+"/file/use/"+uses.get(i+1).ordinal(),p):normal.target()),List.of(p)));
+                first=filePoint(points.get(0).id(),p);
+            } else {
+                var output=filePhase(id,"output",sort.outputs(),normal.target(),p,points);
+                var work=id+"/file/use/"+sort.work();points.add(new FilePoint(work,FilePointKind.USE,sort.work(),List.of(output),List.of(p)));
+                first=filePhase(id,"input",sort.inputs(),filePoint(work,p),p,points);
+            }
+            fileFlows.add(new FileFlow(id,first,points,List.of(p)));
+        }
+    }
+    private Target filePhase(String owner,String phase,List<Integer> ordinals,Target next,String p,List<FilePoint> points) {
+        if(ordinals.isEmpty())return next;
+        var selector=owner+"/file/"+phase;var alternatives=new ArrayList<Target>();
+        for(var ordinal:ordinals) {
+            var id=owner+"/file/use/"+ordinal;alternatives.add(filePoint(id,p));
+            points.add(new FilePoint(id,FilePointKind.USE,ordinal,List.of(filePoint(selector,p)),List.of(p)));
+        }
+        alternatives.add(next);points.add(new FilePoint(selector,FilePointKind.CHOICE,-1,alternatives,List.of(p)));
+        return filePoint(selector,p);
+    }
+    private static Target filePoint(String id,String proof){return new Target(TargetKind.FILE_POINT,id,List.of(proof));}
     private void fileRoutes() {
         var byId=new HashMap<String,Ast.Statement>();ids.forEach((s,id)->byId.put(id,s));
+        var continuations=new HashMap<String,Target>();
+        fileFlows.forEach(f->f.points().stream().filter(p->p.kind()==FilePointKind.USE)
+            .forEach(p->continuations.put(f.statement()+"/"+p.ordinal(),p.targets().get(0))));
         for(var use:files.operations().uses()) {
             String id="statement:"+use.statement().localId();var s=byId.get(id);if(s==null)continue;
             var occurrence=occurrences.get(id);var p=occurrence.proofs().get(0);
@@ -375,7 +419,7 @@ public final class ControlTopologySemantics {
                     var declaration=files.declaratives().stream().filter(d->d.id().equals(destination.declarative().orElseThrow())).findFirst().orElseThrow();
                     var partial=proof(id+"/use-callback",ProofKind.PARTIAL_UNKNOWN,"declarative-callback-binding-not-published",s.meta().provenance(),List.of(p));
                     target=unknown(occurrence.region(),partial);
-                } else target=outcomes.get("outcome:"+id+"/normal").target();
+                } else target=continuations.getOrDefault(id+"/"+use.ordinal(),outcomes.get("outcome:"+id+"/normal").target());
                 var premise=proof(id+"/file/"+use.ordinal()+"/"+route.event()+"/"+i,ProofKind.LOCAL_GRAMMAR,
                     "file-event-"+route.event()+"/"+destination.kind(),s.meta().provenance(),List.of(p));
                 add(s,occurrence.region(),OutcomeKind.BRANCH,"file/"+use.ordinal()+"/"+route.event()+"/"+i,target,"",premise);
