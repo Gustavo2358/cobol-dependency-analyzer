@@ -59,3 +59,9 @@ previous incomplete file-effect rejection. The existing `copy-cycle` source
 oracle still disagrees with its baseline product (54/55 source oracles pass).
 No ALTER implementation, wire-version change, AIR change or CFG change is included.
 This work remains IN_PROGRESS pending human review and merge.
+
+## Authorized F04/F07 follow-up
+
+The user subsequently authorized correction of the three incomplete file-effect
+inputs. The previous exclusion records the first validation wave. Current work
+and tests are described in [incomplete file effects](incomplete-file-effects.md).

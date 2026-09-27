@@ -36,13 +36,20 @@ public final class FileIoEffects {
                 var gaps=new LinkedHashSet<>(op.gaps());boolean unknownRead=false;
                 var file=op.file().orElse(null);
                 boolean sortRecord=FileIoMemory.expectedKind(surface,op.ordinal())==Ast.FileKind.SD;
-                boolean nativeProfile=surface.profile()==Ast.FileSyntaxProfile.N_LR&&file!=null&&file.description().kind()==(sortRecord?Ast.FileKind.SD:Ast.FileKind.FD)
-                    &&(sortRecord||file.binding().control().assignment().form()==Ast.AssignmentForm.IBM_NAME);
-                if(file!=null&&(surface.command()==Ast.FileCommand.WRITE||surface.command()==Ast.FileCommand.REWRITE||surface.command()==Ast.FileCommand.RELEASE))reads.addAll(file.records());
-                if(file!=null){var auxiliary=new ArrayList<Ast.FileAuxiliary>(file.binding().control().auxiliary());auxiliary.addAll(file.description().auxiliary());
+                boolean owner=file!=null&&file.hasKind(sortRecord?Ast.FileKind.SD:Ast.FileKind.FD);
+                boolean nativeProfile=surface.profile()==Ast.FileSyntaxProfile.N_LR&&owner
+                    &&(sortRecord||file.control().filter(c->c.assignment().form()==Ast.AssignmentForm.IBM_NAME).isPresent());
+                if(surface.command()==Ast.FileCommand.WRITE||surface.command()==Ast.FileCommand.REWRITE||surface.command()==Ast.FileCommand.RELEASE) {
+                    if(owner&&!file.records().isEmpty())reads.addAll(file.records());
+                    else {
+                        var record=memory.target(new Key(unit,surface.files().get(op.ordinal()).reference().meta().id()));
+                        if(record.isPresent())reads.add(record.orElseThrow());else unknownRead=true;
+                    }
+                }
+                if(file!=null){var auxiliary=new ArrayList<Ast.FileAuxiliary>(file.control().map(Ast.FileControl::auxiliary).orElse(List.of()));auxiliary.addAll(file.description().map(Ast.FileDescription::auxiliary).orElse(List.of()));
                     for(var clause:auxiliary){boolean read=clause.kind()==Ast.FileAuxKind.RECORD&&(surface.command()==Ast.FileCommand.WRITE||surface.command()==Ast.FileCommand.REWRITE||surface.command()==Ast.FileCommand.RELEASE)
                         ||clause.kind()==Ast.FileAuxKind.PASSWORD&&surface.command()==Ast.FileCommand.OPEN
-                        ||clause.kind()==Ast.FileAuxKind.LINAGE&&file.description().kind()==Ast.FileKind.FD&&(surface.command()==Ast.FileCommand.WRITE||surface.command()==Ast.FileCommand.OPEN&&(surface.files().get(op.ordinal()).mode()==Ast.FileOpenMode.OUTPUT||surface.files().get(op.ordinal()).mode()==Ast.FileOpenMode.EXTEND));
+                        ||clause.kind()==Ast.FileAuxKind.LINAGE&&file.hasKind(Ast.FileKind.FD)&&(surface.command()==Ast.FileCommand.WRITE||surface.command()==Ast.FileCommand.OPEN&&(surface.files().get(op.ordinal()).mode()==Ast.FileOpenMode.OUTPUT||surface.files().get(op.ordinal()).mode()==Ast.FileOpenMode.EXTEND));
                         if(read)for(var reference:clause.data()){var target=memory.target(new Key(file.entity().programUnitId(),reference.reference().meta().id())).map(t->FileIoMemory.inUnit(t,unit));if(target.isPresent())reads.add(target.orElseThrow());else unknownRead=true;}
                     }
                 }
@@ -50,16 +57,19 @@ public final class FileIoEffects {
                     var target=memory.target(new Key(unit,operand.value().meta().id()));if(target.isPresent()){reads.add(target.orElseThrow());if(target.orElseThrow().wholeBase())unknownRead=true;}
                     else if(!(operand.value() instanceof Ast.LiteralExpression))unknownRead=true;
                 }
-                if(file!=null&&surface.command()==Ast.FileCommand.READ)for(var reference:file.binding().control().references())
+                if(file!=null&&surface.command()==Ast.FileCommand.READ)for(var reference:file.control().map(Ast.FileControl::references).orElse(List.of()))
                     if(reference.role()==Ast.FileReferenceRole.RECORD_KEY||reference.role()==Ast.FileReferenceRole.RELATIVE_KEY) {
                         var target=memory.target(new Key(file.entity().programUnitId(),reference.reference().meta().id())).map(t->FileIoMemory.inUnit(t,unit));if(target.isPresent())reads.add(target.orElseThrow());else unknownRead=true;
                     }
+                var from=surface.operands().stream().filter(o->o.role()==Ast.FileOperandRole.FROM).findFirst();
+                var source=from.flatMap(o->memory.target(new Key(unit,o.value().meta().id())));
+                if(from.isPresent()&&(source.isEmpty()||source.orElseThrow().wholeBase()))unknownRead=true;
+                boolean receiver=false;
                 for(var write:op.writes())if(write.role()==FileIoMemory.Role.FROM_RECORD) {
-                    var source=surface.operands().stream().filter(o->o.role()==Ast.FileOperandRole.FROM).findFirst()
-                        .flatMap(o->memory.target(new Key(unit,o.value().meta().id())));
-                    if(source.isEmpty()||source.orElseThrow().wholeBase())unknownRead=true;
-                    before.add(transfer(write.target(),source,statement.origin(),bases));
+                    before.add(transfer(write.target(),source,statement.origin(),bases,owner));receiver=true;
                 }
+                // An unresolved receiver must not erase an independently known sender.
+                if(!receiver)source.ifPresent(reads::add);
                 // This table describes effects IF the semantic outcome occurs;
                 // handler selection and which cases are feasible are independent W4 facts.
                 for(var outcome:Outcome.values()) {
@@ -72,12 +82,12 @@ public final class FileIoEffects {
                         if(role==FileIoMemory.Role.RECORD&&surface.command()==Ast.FileCommand.REWRITE&&outcome==Outcome.INVALID_KEY)continue;
                         var reasons=new ArrayList<String>();var kind=Kind.MAY_UNKNOWN;
                         if(role==FileIoMemory.Role.FILE_STATUS) {
-                            if(exactText(write.target(),bases)&&write.target().view().orElseThrow().extent().value().orElseThrow().equals(java.math.BigInteger.TWO))kind=Kind.MUST_UNKNOWN;
+                            if(owner&&exactText(write.target(),bases)&&write.target().view().orElseThrow().extent().value().orElseThrow().equals(java.math.BigInteger.TWO))kind=Kind.MUST_UNKNOWN;
                             else reasons.add("FILE_STATUS_STORAGE_NOT_PROVEN");
                         } else if(role==FileIoMemory.Role.INTO) {
-                            boolean address=exactText(write.target(),bases);boolean separate=file!=null&&!file.records().isEmpty()
+                            boolean address=exactText(write.target(),bases);boolean separate=owner&&!file.records().isEmpty()
                                 &&file.records().stream().allMatch(r->separate(r,write.target(),bases));
-                            boolean sender=file!=null&&!file.records().isEmpty()&&file.records().stream().allMatch(r->r.view().filter(View::textual).isPresent());
+                            boolean sender=owner&&!file.records().isEmpty()&&file.records().stream().allMatch(r->r.view().filter(View::textual).isPresent());
                             if(!address)reasons.add("FILE_RECEIVER_ADDRESS_NOT_PROVEN");
                             if(!separate)reasons.add("FILE_TRANSFER_ALIAS_NOT_PROVEN");
                             if(!sender)reasons.add("FILE_RECORD_MOVE_CLASS_NOT_PROVEN");
@@ -92,16 +102,18 @@ public final class FileIoEffects {
                 }
                 if(file!=null&&!file.entity().programUnitId().equals(unit))gaps.add("FILE_CAPTURE_PHYSICAL_VIEW_UNAVAILABLE");
                 if(unknownRead)gaps.add("FILE_READ_BOUND_NOT_PROVEN");
+                if(op.unknownWriteBound())gaps.add("FILE_WRITE_BOUND_NOT_PROVEN");
                 if(!nativeProfile)gaps.add("FILE_EFFECT_PROFILE_NOT_PROVEN");
-                plans.add(new Operation(op.ordinal(),reads,before,outcomes,false,false,List.copyOf(gaps)));
+                plans.add(new Operation(op.ordinal(),reads,before,outcomes,unknownRead,op.unknownWriteBound(),List.copyOf(gaps)));
             }
             result.put(statement.statement(),List.copyOf(plans));
         }
         return new FileIoEffects(result);
     }
     private static int order(FileIoMemory.Role role){return switch(role){case RECORD,FROM_RECORD->0;case RELATIVE_KEY->1;case RECORD_LENGTH->2;case FILE_STATUS->3;case ADDITIONAL_STATUS->4;case INTO->5;};}
-    private static Step transfer(FileIoMemory.Target destination,Optional<FileIoMemory.Target> source,Ast.SourceProvenance origin,Map<Key,Base> bases) {
+    private static Step transfer(FileIoMemory.Target destination,Optional<FileIoMemory.Target> source,Ast.SourceProvenance origin,Map<Key,Base> bases,boolean owner) {
         var gaps=new ArrayList<String>();Kind kind=Kind.MAY_UNKNOWN;
+        if(!owner)gaps.add("FILE_RECORD_OWNER_NOT_PROVEN");
         if(!exactText(destination,bases))gaps.add("FILE_RECEIVER_ADDRESS_NOT_PROVEN");
         if(source.isEmpty()||!exactText(source.orElseThrow(),bases))gaps.add("FILE_SOURCE_ADDRESS_NOT_PROVEN");
         if(source.isEmpty()||!separate(source.orElseThrow(),destination,bases))gaps.add("FILE_TRANSFER_ALIAS_NOT_PROVEN");

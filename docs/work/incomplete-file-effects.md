@@ -1,0 +1,55 @@
+# Incomplete native file effects
+
+Status: IN_PROGRESS. Scope: F04/F07 and the same missing-target effect contracts.
+
+The producer must preserve independently known record/control/operand identities.
+A missing SELECT does not remove a unique FD record; a missing FD does not remove
+an explicit INTO/FROM operand or a known SELECT status receiver. Unknown write
+locations are MAY bounds, never a MUST kill. Profile/representation diagnostics
+alone do not open memory bounds. No parsing or name lookup moves downstream.
+
+Authority: existing FD-W3 conditional effect table, Dependency Preservation
+Principle, and FileEffectAdmission. IBM SC27-8713-03 (6.4, READ pp429–434,
+WRITE pp476–480) distinguishes the buffer, success-only INTO and pre-I/O FROM.
+The official IBM READ/WRITE documentation confirms that ordering. An incomplete
+source is not certified as valid COBOL. Strong steps retain every existing proof
+including record ownership, precise text view and disjunction.
+
+Algorithm: index unique description and control independently by canonical FILE
+entity; resolve operations by existing bindings; collect observed destinations
+independently. An unavailable required destination opens its direction's bound.
+Known steps and provenance coexist with those bounds. No gap-string dispatch,
+no global widening for a profile diagnostic. Complexity remains linear in the
+indexed source inventory plus emitted effect targets; all traversals are finite.
+
+Oracles before production: FD without SELECT retains buffer and INTO; SELECT
+without FD retains status; unresolved FROM receiver/source retains uncertainty;
+WS record operand without owner is MAY; complete FROM retains COPY_BYTES;
+missing INTO cannot claim a closed empty plan. Lower must still reject removed
+required steps with closed bounds. E2E must preserve old candidates across MAY,
+add remainder, and eliminate candidates after a later proved MOVE.
+
+Validation: focused producer contracts, consumer admission/codec, three original
+inputs, additional adversaries, FAST. Rerun the fixture matrix and frontend of
+CardDemo because the effect producer is shared; reuse downstream only with
+byte-identical SP and identical consumers. Run PERFORM/Chaos regression requested
+by the campaign. Existing unrelated qualification failures remain explicit.
+
+## Focused qualification
+
+Initial tests failed in four independent cases; after implementation the focused
+family passed 37 tests. A later adversary caught loss of SORT/MERGE's incomplete
+control qualification; the gap is preserved, without weakening positive memory
+facts. Final FAST: 589 tests, zero failures/skips. The three original fixtures and
+13 storage dependency adversaries (seven new) complete the four-stage pipeline.
+The original six adversarial expected sets are unchanged. PERFORM remains 39/39.
+
+The earlier hardcoded false read-bound expectation for an unresolved FROM was
+inconsistent with FileEffectAdmission. Its oracle now requires the explicit
+open bound; precise FROM, missing owner, independent profile gaps and kill rules
+are tested separately. Source fixtures and existing dependency expected sets were
+not relaxed. SP/compilation schema versions remain unchanged.
+
+Remaining matrix, corpus and regression results are recorded in the local E2E
+follow-up evidence and the review PR, with byte-equivalent reuse distinguished
+from new execution. No merge is authorized by this work item.

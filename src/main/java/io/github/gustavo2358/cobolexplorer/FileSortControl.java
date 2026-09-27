@@ -50,10 +50,11 @@ public final class FileSortControl {
                     if(op.file().isEmpty())gaps.add("FILE_SORT_BINDING_NOT_PROVEN");
                     else {
                         var file=op.file().orElseThrow();
-                        if(file.description().kind()!=FileIoMemory.expectedKind(surface,op.ordinal()))gaps.add("FILE_KIND_NOT_PROVEN");
+                        if(file.description().isEmpty()||file.control().isEmpty())gaps.add("FILE_SORT_BINDING_NOT_PROVEN");
+                        if(!file.hasKind(FileIoMemory.expectedKind(surface,op.ordinal())))gaps.add("FILE_KIND_NOT_PROVEN");
                         if(!identities.add(file.entity())&&surface.command()==Ast.FileCommand.MERGE)gaps.add("FILE_MERGE_DUPLICATE_PARTICIPANT");
                         if(surface.command()==Ast.FileCommand.MERGE&&surface.files().get(op.ordinal()).role()!=Ast.FileRole.WORK
-                                &&file.binding().control().accessMode()==Ast.FileAccessMode.RANDOM)gaps.add("FILE_MERGE_ACCESS_OUTSIDE_N_LR");
+                                &&file.control().filter(c->c.accessMode()==Ast.FileAccessMode.RANDOM).isPresent())gaps.add("FILE_MERGE_ACCESS_OUTSIDE_N_LR");
                     }
                 }
                 if(work<0)gaps.add("FILE_SORT_WORK_NOT_PROVEN");

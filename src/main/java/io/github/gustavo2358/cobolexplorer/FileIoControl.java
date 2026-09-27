@@ -85,7 +85,7 @@ public final class FileIoControl {
             var events=new ArrayList<Event>(List.of(Event.SUCCESS));
             if(surface.command()==Ast.FileCommand.RETURN)events.add(Event.END);
             else if(surface.command()==Ast.FileCommand.READ) {
-                var access=file==null?Ast.FileAccessMode.UNSPECIFIED:file.binding().control().accessMode();
+                var access=file==null?Ast.FileAccessMode.UNSUPPORTED:file.control().map(Ast.FileControl::accessMode).orElse(Ast.FileAccessMode.UNSUPPORTED);
                 if(file==null||access==Ast.FileAccessMode.UNSUPPORTED) {
                     events.add(Event.END);events.add(Event.INVALID_KEY);gaps.add("FILE_ACCESS_MODE_NOT_PROVEN");
                 } else events.add(access==Ast.FileAccessMode.RANDOM||access==Ast.FileAccessMode.DYNAMIC&&!surface.options().contains(Ast.FileOption.NEXT)?Event.INVALID_KEY:Event.END);
