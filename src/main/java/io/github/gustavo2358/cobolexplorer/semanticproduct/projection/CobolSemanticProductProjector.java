@@ -565,9 +565,9 @@ public final class CobolSemanticProductProjector {
         if (inputMissing)
             gaps.add(new EntryGap(GapScope.ANALYSIS_INPUT, "ENTRY_INPUT_INCOMPLETE",
                     "input remains incomplete; entry localization does not prove signature or data completeness", provenance));
-        for (var missing : inputs.report().frontendState().unresolvedCopyDiagnostics())
+        for (var missing : inputs.report().frontendState().incompleteCopyDiagnostics())
             if (inputMissing && (program.inputProof().copies().isEmpty() || program.inputProof().copies().contains(missing)))
-            gaps.add(new EntryGap(GapScope.ANALYSIS_INPUT, "UNRESOLVED_COPY",
+            gaps.add(new EntryGap(GapScope.ANALYSIS_INPUT, missing.code().name(),
                     "COPY '" + missing.offendingToken() + "' from '" + missing.file()
                             + "' at line " + missing.line() + " is unavailable; input remains incomplete", provenance));
         ReadinessStatus lowering = start.isEmpty() ? ReadinessStatus.BLOCKED

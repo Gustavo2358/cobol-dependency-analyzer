@@ -18,7 +18,7 @@ public record EntryInputProof(List<Diagnostic> dataCopies,List<Diagnostic> separ
         for (var d : input.diagnostics()) {
             switch (d.phase()) {
                 case PREPROCESSOR -> {
-                    if (d.code() != Diagnostic.Code.UNRESOLVED_COPY || !remaining.containsKey(d)) return false;
+                    if (!d.code().incompleteCopy() || !remaining.containsKey(d)) return false;
                     if (remaining.get(d) == 1) remaining.remove(d);
                     else remaining.put(d, remaining.get(d) - 1);
                 }

@@ -211,13 +211,13 @@ public final class ExplorerMain {
         String classifierReason = classifierExecuted
                 ? "STRUCTURAL_PREREQUISITES_AVAILABLE" : "STRUCTURAL_FRONTEND_ERRORS";
         String classifierFallback = !classifierExecuted ? "SKIP_CLASSIFIER_FAIL_CLOSED"
-                : unresolvedCopies > 0
+                : !frontendState.incompleteCopyDiagnostics().isEmpty()
                 ? "CONTINUE_WITH_PARTIAL_ANALYSIS" : "NONE";
         LOG.debug("event=external_classification_completed phase=EXTERNAL_CLASSIFICATION elapsedMs={} executed={} reason={} unresolvedCopies={} copyInputCompleteness={} classifications={} fallback={} impact={}",
                 elapsedMs(phaseStarted), classifierExecuted, classifierReason, unresolvedCopies,
                 frontendState.copyInputCompleteness(),
                 externalClassifications.entries().size(), classifierFallback,
-                unresolvedCopies > 0 ? "ANALYSIS_INCOMPLETE" : "NO_ADDITIONAL_IMPACT");
+                !frontendState.incompleteCopyDiagnostics().isEmpty() ? "ANALYSIS_INCOMPLETE" : "NO_ADDITIONAL_IMPACT");
         ResolutionAnalysisReport resolutionReport = ResolutionAnalysisReport.compose(compilationBuild,
                 frontendState, occurrences, resolution, externalClassifications);
         ObservedDependencyWriter.write(ObservedDependencyInventory.from(compilationBuild,resolutionReport),

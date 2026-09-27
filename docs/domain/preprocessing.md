@@ -22,6 +22,33 @@ Cada alternativa top-level de `CobolPreprocessor.startRule` possui classificaç�
 
 COPY ausente, cíclico ou com erro de I/O produz placeholder mapeado e diagnostic. Para membro não encontrado, `Diagnostic.Code.UNRESOLVED_COPY` é a identidade semântica estruturada; `Outcome.unresolved()` é derivado desses fatos, que preservam nome solicitado e localização em ordem determinística. A mensagem humana continua útil, mas seu wording não participa de contagem, composição ou geração de gaps. Ausência de copybook mantém a execução observável como incompleta; não equivale a COPY vazio nem exige interromper fases posteriores quando o placeholder ainda permite construir seus produtos coerentemente. COPY cíclico e falha de I/O conservam a política anterior e não pertencem a esse fallback.
 
+## Modelos nominais DFH
+
+Se a busca nas bibliotecas não encontrar `DFHAID` ou `DFHBMSCA`, um COPY sem
+qualificação nem REPLACING pode usar o catálogo `ibm-cics-ts/nominal-v1`.
+Os nomes vêm da [lista BMS do IBM CICS TS](https://www.ibm.com/docs/en/cics-ts/6.x?topic=reference-bms-constants).
+Cada nome vira uma declaração 01 sem PIC, VALUE, USAGE ou tamanho. É um modelo
+para binding nominal; não é um copybook para compilação ou execução.
+
+Um membro real sempre tem prioridade. Não há regra por prefixo DFH, busca na
+rede nem fallback de SQL INCLUDE. REPLACING, inclusive em um COPY ancestral,
+desabilita o modelo: substituições arbitrárias poderiam introduzir PIC/VALUE.
+Os demais membros, qualificações, ciclos e erros de I/O mantêm a política vigente.
+
+`NOMINAL_COPYBOOK` qualifica a expansão como conteúdo parcial, mesmo com zero
+`UNRESOLVED_COPY`. O SourceMap conserva `model:ibm-cics-ts/nominal-v1/<membro>`
+e a cadeia real de inclusão. A dependência de fonte continua sendo COPYBOOK
+com autoridade COPY_SYNTAX e resolução RESOLVED para esse artefato de modelo.
+O conteúdo IBM não é declarado conhecido. O relatório, o produto de compilação
+e a interface permanecem incompletos.
+
+As declarações usam a semântica canônica de dados opacos: identidade disponível,
+sem scalar, célula lógica exata, bytes iniciais ou prova física. As provas locais
+tratam a região nominal como input parcial localizado; isso não invalida fatos
+independentes nem cria provas de kill. Lower, AIR, CFG e dependencies continuam
+usando seus contratos existentes. Limites e evidências do piloto estão no
+[work item](../work/nominal-dfh-copybooks.md).
+
 ## EXEC DLI opaco
 
 `execDliStatement` possui policy `PRESERVE_EMBEDDED_LANGUAGE` e um token
@@ -61,7 +88,7 @@ O processamento percorre a parse tree e resolve COPYs pelo repositório configur
 
 ## Fronteiras explícitas
 
-O preprocessor não resolve símbolos COBOL, não interpreta payload de SQL/CICS/SQLIMS/DLI, não busca membros fora dos diretórios configurados e não inventa configuração ausente. Modos não especificados permanecem valores explícitos na policy posterior. A composição posterior, não o preprocessor, decide quais fases possuem pré-requisitos estruturais sob input incompleto.
+O preprocessor não resolve símbolos COBOL, não interpreta payload de SQL/CICS/SQLIMS/DLI, usa os diretórios configurados e o catálogo nominal explícito, sem inventar configuração ausente. Modos não especificados permanecem valores explícitos na policy posterior. A composição posterior, não o preprocessor, decide quais fases possuem pré-requisitos estruturais sob input incompleto.
 
 ## Evidência executável
 

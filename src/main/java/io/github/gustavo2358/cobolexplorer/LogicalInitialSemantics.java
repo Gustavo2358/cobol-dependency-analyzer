@@ -45,7 +45,7 @@ final class LogicalInitialSemantics {
             if(entry.signatureClausesPresent()||entry.declarativesPresent())blockers.add("FOREIGN_ENTRY_STORAGE");
             if(unit.program().inputProof().regions().stream().anyMatch(p->p.expanded().endLine()>=procedure.meta().provenance().expanded().startLine()))blockers.add("PROCEDURE_INPUT_MISSING");
             if(report.gaps().stream().anyMatch(g->g.category()==ResolutionAnalysisReport.GapCategory.INPUT&&ResolutionAnalysisReport.appliesTo(g,unit.id())
-                &&!(g.code().equals("UNRESOLVED_COPY")&&!unit.program().inputProof().regions().isEmpty())))blockers.add("UNLOCATED_INPUT_MISSING");
+                &&!(Diagnostic.incompleteCopyCode(g.code())&&!unit.program().inputProof().regions().isEmpty())))blockers.add("UNLOCATED_INPUT_MISSING");
             var pending=new ArrayDeque<Ast.Node>();pending.push(procedure);
             while(!pending.isEmpty()) {
                 var n=pending.pop();

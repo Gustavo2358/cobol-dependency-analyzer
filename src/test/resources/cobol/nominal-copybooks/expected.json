@@ -1,0 +1,138 @@
+{
+  "cases": [
+    {
+      "id": "if_both_arms",
+      "source": "if_both_arms.cbl",
+      "sha256": "b633ecd220623552c8202173e2feb99ba48e9e5f3e737fe70d4e8312b23e492a",
+      "calls": {
+        "target": {
+          "line": 15,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "evaluate_all_arms",
+      "source": "evaluate_all_arms.cbl",
+      "sha256": "aa683149221a944c6940f60e6d9250bab06995ed213ad0f3a8e47a5d0a18d179",
+      "calls": {
+        "target": {
+          "line": 15,
+          "required": [
+            "PROGA001",
+            "PROGB001",
+            "PROGC001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001",
+            "PROGC001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "nominal_destination_unknown_overwrite",
+      "source": "nominal_destination_unknown_overwrite.cbl",
+      "sha256": "8cfcf4923b5017bf41c612b6611c6db64a0a4547bf7abc94a8e4e3e75cc08106",
+      "calls": {
+        "target": {
+          "line": 12,
+          "required": [
+            "PROGA001"
+          ],
+          "allowed": [
+            "PROGA001"
+          ],
+          "forbidden": []
+        }
+      },
+      "knownLimitation": "No target value can be computed without a textual shape; discovery oracle stays failing in both runtimes. Verify baseline explicitly; never manufacture a scalar/cell proof."
+    },
+    {
+      "id": "known_kill_survives",
+      "source": "known_kill_survives.cbl",
+      "sha256": "5801fcc6398f483e4e9adb13fe4983a8e464b2a92fb1c91ba91df2c2c34d9f7e",
+      "calls": {
+        "target": {
+          "line": 12,
+          "required": [
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGB001"
+          ],
+          "forbidden": [
+            "PROGA001"
+          ]
+        }
+      }
+    },
+    {
+      "id": "unknown_source_keeps_candidate",
+      "source": "unknown_source_keeps_candidate.cbl",
+      "sha256": "981430a3eec7cf3ed698ba993dcc434deeec01e9969586e6d1b65c1519768128",
+      "calls": {
+        "target": {
+          "line": 12,
+          "required": [
+            "PROGA001"
+          ],
+          "allowed": [
+            "PROGA001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "unknown_alias_write",
+      "source": "unknown_alias_write.cbl",
+      "sha256": "98c277a57a2a5338efc038f4066eaddff7af19aafb1028302ecd1869060efe8e",
+      "calls": {
+        "target": {
+          "line": 12,
+          "required": [
+            "PROGA001"
+          ],
+          "allowed": [
+            "PROGA001"
+          ],
+          "forbidden": []
+        }
+      }
+    },
+    {
+      "id": "cics_if_candidates",
+      "source": "cics_if_candidates.cbl",
+      "sha256": "6f5ec0e9c1007fc4c9ebf912ec6ac5515249f37535720b78e849c6407ef0f511",
+      "calls": {
+        "target": {
+          "line": 15,
+          "required": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "allowed": [
+            "PROGA001",
+            "PROGB001"
+          ],
+          "forbidden": []
+        }
+      },
+      "xctl": [
+        "PROGA001",
+        "PROGB001"
+      ]
+    }
+  ]
+}
