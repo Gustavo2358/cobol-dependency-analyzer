@@ -30,8 +30,8 @@ public final class SemanticProductJsonWriter {
 
     private static Object nominalValueDocument(io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues v) {
         if(v.authority().equals("NOMINAL_TEXT_SOURCE_V2"))return v;
-        return java.util.Map.of("authority",v.authority(),"symbols",v.symbols().stream().map(s->java.util.Map.of("node",s.node(),"extent",s.extent())).toList(),
-            "assignments",v.assignments(),"conditions",v.conditions(),"queries",v.queries());
+        return new java.util.TreeMap<>(java.util.Map.of("authority",v.authority(),"symbols",v.symbols().stream().map(s->new java.util.TreeMap<>(java.util.Map.of("node",s.node(),"extent",s.extent()))).toList(),
+            "assignments",v.assignments(),"conditions",v.conditions(),"queries",v.queries()));
     }
     private static boolean extendedPerform(CobolSemanticPort port) {
         return port.controlTopology().stream().anyMatch(t->t.outcomes().stream().anyMatch(o->o.target().kind()==io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.TargetKind.ESCAPE)

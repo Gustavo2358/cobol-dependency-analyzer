@@ -43,7 +43,7 @@ for case in json.loads((r.ROOT/'expected.json').read_text())['cases']:
             all(v['effectiveUnknownRemainder'] is True for v in legacy['activations']))
         row['sourceOracle']={'required':case['sourceCandidates'],'actual':sorted(names),'supported':supported,'executionUnproven':bool(honest)}
         row['status']='PASS' if names==set(case['sourceCandidates']) and supported and honest else 'FAIL'
-    if row['status']=='FAIL' and case.get('knownLimitation') and a.baseline_runtime:
+    if row['status']=='FAIL' and case.get('knownLimitation') and not case.get('sourceCandidates') and a.baseline_runtime:
         baseline=json.loads(a.baseline_runtime.read_text());baseout=a.out/'baseline';baseout.mkdir(exist_ok=True)
         before=r.run_case(case,baseline,baseout,180,a.java,'2g')
         row['baseline']=before

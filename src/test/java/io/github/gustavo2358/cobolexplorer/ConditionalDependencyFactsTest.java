@@ -8,6 +8,10 @@ class ConditionalDependencyFactsTest {
         var out=java.nio.file.Path.of("target/conditional-source");java.nio.file.Files.createDirectories(out);java.nio.file.Files.writeString(out.resolve("nominal.json"),j.toPrettyString());
         var f=j.path("nominalValues");
         assertEquals("NOMINAL_TEXT_SOURCE_V1",f.path("authority").asText());
+        var keys=new java.util.ArrayList<String>();f.fieldNames().forEachRemaining(keys::add);
+        assertEquals(java.util.List.of("assignments","authority","conditions","queries","symbols"),keys);
+        var symbolKeys=new java.util.ArrayList<String>();f.path("symbols").get(0).fieldNames().forEachRemaining(symbolKeys::add);
+        assertEquals(java.util.List.of("extent","node"),symbolKeys);
         assertEquals(2,f.path("symbols").size());
         assertEquals(1,f.path("assignments").size());
         assertEquals("READ",f.path("assignments").get(0).path("source").path("kind").asText());
