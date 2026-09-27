@@ -45,7 +45,9 @@ public final class FactLocalitySemantics {
                     if(root instanceof Ast.DataEntry d)sections.put(d.meta().id(),section);
                     if(root instanceof Ast.FileDescription fd)for(var d:fd.entries())sections.put(d.meta().id(),section);
                 }
-        var gaps=new ArrayList<Gap>();for(var origin:program.inputProof().regions())gaps.add(new Gap(InputKind.MISSING_COPY,origin,true));
+        var models=new HashSet<>(program.inputProof().modelRegions());
+        var gaps=new ArrayList<Gap>();for(var origin:program.inputProof().regions())
+            gaps.add(new Gap(models.contains(origin)?InputKind.MODEL_STORAGE:InputKind.MISSING_COPY,origin,true));
         // A located COPY never accounts for an unrelated parser, I/O, or ancestor input gap.
         boolean unlocated=report.gaps().stream().anyMatch(g->g.category()==ResolutionAnalysisReport.GapCategory.INPUT
             &&ResolutionAnalysisReport.appliesTo(g,id)
@@ -77,15 +79,23 @@ public final class FactLocalitySemantics {
                 // Prefix proof is intentionally conservative after an unknown insertion.
                 // Allocation/visibility also depend on the entire declaration header.
                 // A COPY inside its clauses may change EXTERNAL/GLOBAL or identity.
-                boolean affectsContext=!gap.located()||start(gap.origin())<end(root.meta().provenance().expanded());
+                boolean modeledComponent=entry.getValue().stream().anyMatch(n->positions.get(n.id().node()).data().meta().syntheticModel()
+                    &&overlaps(positions.get(n.id().node()).data().meta().provenance(),gap.origin()));
+                boolean structuralModel=gap.kind()==InputKind.MODEL_STORAGE;
+                boolean affectsContext=structuralModel?modeledComponent:
+                    !gap.located()||start(gap.origin())<end(root.meta().provenance().expanded());
                 long close=closeAt.get(entry.getKey());
-                boolean affectsClosure=affectsContext||!gap.located()||start(gap.origin())<close;
+                boolean affectsClosure=affectsContext||!gap.located()
+                    ||start(gap.origin())<close&&(!structuralModel||start(gap.origin())>=start(root.meta().provenance()));
                 if(affectsContext){contexts.add(entry.getKey());context.computeIfAbsent(entry.getKey(),k->new ArrayList<>()).add(input);}
                 if(affectsClosure){closures.add(entry.getKey());closure.computeIfAbsent(entry.getKey(),k->new ArrayList<>()).add(input);}
             }
             for(var entry:members.values())for(var n:entry) {
                 var ast=positions.get(n.id().node()).data();
-                if(!gap.located()||start(gap.origin())<end(ast.meta().provenance().expanded())) {
+                boolean declarationAffected=gap.kind()==InputKind.MODEL_STORAGE
+                    ?ast.meta().syntheticModel()&&overlaps(ast.meta().provenance(),gap.origin())
+                    :!gap.located()||start(gap.origin())<end(ast.meta().provenance().expanded());
+                if(declarationAffected) {
                     var subject=node(n.id().node());declarations.add(subject);declarationInputs.computeIfAbsent(subject,k->new ArrayList<>()).add(input);
                 }
             }
@@ -199,6 +209,9 @@ public final class FactLocalitySemantics {
     private static void fact(List<Fact> out,FactKind kind,String subject,String region,List<String> deps){out.add(new Fact(kind+"/"+subject,kind,subject,region,deps));}
     private static String node(int id){return "storage-node:"+id;}
     private static String base(int id){return "storage-base:"+id;}
+    private static boolean overlaps(Ast.SourceProvenance a,Ast.SourceProvenance b) {
+        return start(a)<end(b.expanded())&&start(b)<end(a.expanded());
+    }
     private static long start(Ast.SourceProvenance p){return ((long)p.expanded().startLine()<<32)+p.expanded().startColumn();}
     private static long end(Ast.SourceLocation p){return ((long)p.endLine()<<32)+p.endColumn();}
     private static CobolSemanticProduct.Provenance origin(Ast.SourceProvenance p){return new CobolSemanticProduct.Provenance(location(p.expanded()),location(p.original()),p.includeChain().stream().map(c->new CobolSemanticProduct.IncludeFrame(c.includingFile(),c.requestedName(),c.includedFile(),c.includeLine())).toList(),p.exact());}
