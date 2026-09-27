@@ -1135,7 +1135,14 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
         var effects=statementEffects(context,operands,clauses,operandNodes);
         return preserved
                 ? new Ast.PreservedStatement(meta, rule(context), sourceText(context).strip(), operands, clauses,effects,fileIo)
-                : new Ast.ModeledStatement(meta, rule(context), sourceText(context).strip(), operands, clauses,effects,fileIo);
+                : new Ast.ModeledStatement(meta, rule(context), sourceText(context).strip(), operands, clauses,effects,fileIo,exitKind(context));
+    }
+
+    private static Optional<Ast.ExitKind> exitKind(ParserRuleContext context) {
+        if (!(context instanceof CobolParser.ExitStatementContext e)) return Optional.empty();
+        if (e.PARAGRAPH()!=null) return Optional.of(Ast.ExitKind.PARAGRAPH);
+        if (e.PERFORM()!=null) return Optional.of(e.CYCLE()!=null?Ast.ExitKind.PERFORM_CYCLE:Ast.ExitKind.PERFORM);
+        return Optional.empty();
     }
 
     private static Optional<StatementEffectSummary> statementEffects(ParserRuleContext context,List<Ast.StatementOperand> operands,

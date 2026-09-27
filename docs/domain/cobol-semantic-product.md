@@ -659,3 +659,22 @@ Campos sem essas garantias podem contribuir para descoberta de dependências.
 O produtor emite o bloco quando há uma consulta computada textual. Contratos
 anteriores continuam sem o bloco; um consumidor antigo deve recusar 2.47.
 Veja [regra e validação](../architecture/conditional-dependency-candidates.md).
+
+## SP 2.48 — scoped PERFORM completion
+
+[PERFORM control completion](perform-control-completion.md) extends the existing
+control topology with `SECTION` regions and `ESCAPE` targets. An escape is an
+explicit occurrence outcome referencing an enclosing `PARAGRAPH` or `INLINE_BODY`.
+It completes that paragraph or leaves that inline invocation, respectively.
+`COMPLETE` retains normal iteration completion, including `EXIT PERFORM CYCLE`.
+Section boundaries preserve ordinary continuation separately from invocation return.
+
+For multi-level VARYING, `Phase.level` selects a positive level and its three typed
+control operands. Level 1 uses `loop`; levels 2..N use `varying.afterLoops` in order.
+Each condition has its own predicate, reference IDs and provenance. Initialization,
+updates, resets and tests use the published phase edges for BEFORE/AFTER. Historical
+single-level phases omit `level` (decoded as 0) and retain their existing payload.
+
+Only publications using these new topology facts select 2.48. Earlier wire formats
+omit the new fields and keep their meaning; consumers must reject new facts under
+older versions. Numeric value evaluation remains outside this capability.

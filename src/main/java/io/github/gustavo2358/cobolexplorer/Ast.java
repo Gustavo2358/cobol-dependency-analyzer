@@ -472,10 +472,15 @@ public final class Ast {
         public FileIoSurface { files=List.copyOf(files);operands=List.copyOf(operands);options=List.copyOf(options);handlers=List.copyOf(handlers);procedures=List.copyOf(procedures);gapCodes=List.copyOf(gapCodes); }
     }
 
+    public enum ExitKind { PARAGRAPH, PERFORM, PERFORM_CYCLE }
+
     public record ModeledStatement(Meta meta, String grammarRule, String writtenText,
                                    List<StatementOperand> operands,
                                    List<StatementClause> clauses, Optional<StatementEffectSummary> effects,
-                                   Optional<FileIoSurface> fileIo) implements Statement {
+                                   Optional<FileIoSurface> fileIo, Optional<ExitKind> exitKind) implements Statement {
+        public ModeledStatement(Meta meta,String grammarRule,String writtenText,List<StatementOperand> operands,List<StatementClause> clauses,Optional<StatementEffectSummary> effects,Optional<FileIoSurface> fileIo) {
+            this(meta,grammarRule,writtenText,operands,clauses,effects,fileIo,Optional.empty());
+        }
         public ModeledStatement(Meta meta,String grammarRule,String writtenText,List<StatementOperand> operands,List<StatementClause> clauses,Optional<StatementEffectSummary> effects) {
             this(meta,grammarRule,writtenText,operands,clauses,effects,Optional.empty());
         }

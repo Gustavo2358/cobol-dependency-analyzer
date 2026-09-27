@@ -1,0 +1,81 @@
+# PERFORM control completion
+
+Implementation and qualification complete. Integration is recorded in
+[PR #62](https://github.com/Gustavo2358/proleap-poc/pull/62); merge authorized by the user.
+
+## Discovery and authority
+
+The current SP topology is authoritative for control. Baseline product evidence in
+`artefatos-e2e/carddemo-recall-20260926/historical-regression-current/perform`:
+29 and 30 publish UNKNOWN_LOCAL for the EXIT; CALL exists but is unreachable.
+37 rejects a resolved SECTION because topology target resolution accepts paragraphs
+only. 38 rejects more than one VARYING level before creating a binding. For 37/38
+closure therefore never inventories the continuation CALL into executable AIR.
+AIR/CFG/dependencies preserve these missing control facts, without reconstructing
+COBOL. The earlier paragraph-profile restrictions are separate from this route.
+
+IBM Enterprise COBOL 6.4 Language Reference, printed pp. 344–345, 413–414,
+420–423, read from the preserved official PDF/text on 2026-09-26:
+https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf
+EXIT PARAGRAPH transfers to paragraph completion. EXIT PERFORM transfers after
+the lexically enclosing inline PERFORM, bypassing repetition; outside inline it
+is ignored. CYCLE transfers to iteration completion. A SECTION invocation ends
+at its own section boundary. VARYING initializes all controls, tests outer to
+inner (BEFORE), increments the inner control and carries outward with inner
+resets. AFTER executes the body before its tests and bypasses updates on exit.
+
+## Representation and obligations
+
+Extend existing grammar-owned topology, without adding an AIR capability. Typed
+regional escape targets distinguish a scope exit from normal body completion.
+The lower binds them to the correct enclosing activation; memory remains shared.
+Section entry/boundaries come from AST ownership and resolved procedure symbols.
+Loop phases carry a typed level, selecting the corresponding condition/control
+payload. Numeric values stay explicitly open; exact footprints and predicate
+reads remain local. No constant count unrolling, dependency-specific edge, source
+reparse, ALTER change, or expected relaxation.
+
+All graph walks terminate using visited sets; contexts retain existing recursion
+refusal. For L controls, BEFORE reset phases use O(L²) space and AFTER uses O(L); activation expansion remains
+output-sensitive as documented in compositional-perform.md. Unsupported operands
+retain explicit partial effects/control and never become an ONCE invocation.
+
+## Evidence plan
+
+Independent source topology assertions RED first, then consumer AIR edge/effect
+assertions and source adversaries: dead tails, nested exits, paragraph escape from
+inline loops, repeated callers, section sentinels and mixed ranges, 2/3-level loops
+with both TEST modes, reset/update ordering, body CALL and continuation CALL.
+Run unchanged original 39 oracles; frontend/lower FAST and affected boundary
+checks; CFG FAST when repinned. Real CardDemo corpus required because the topology
+changes general dependency reachability; compare relations and source supports,
+investigate every delta, preserve raw products and hashes. Existing PARTIAL
+numeric/recursion and unrelated gaps stay explicit.
+
+Legacy paragraph qualification diagnostics (including AFTER outside its historical
+single-level profile) remain on the legacy fact surface. They do not override the
+current topology. Unsupported integer operands keep partial memory effects; values
+are open even when control and the write footprint are known.
+
+## Review evidence
+
+Frontend FAST: 579 tests, zero failures/errors/skips. New source tests cover typed
+exits, section endpoints, 3-level BEFORE/AFTER ordering and inline integer facts.
+The integrated review runs the unchanged 39-case PERFORM oracle plus source
+adversaries in analysis-cfg; raw execution evidence is retained outside Git.
+The user approved integration after reviewing the implementation and validation results.
+
+A THRU endpoint naming a SECTION is ordered by its completion, after its last
+paragraph, not by the position of its header. A start paragraph may therefore be
+inside that ending section. RANGE entry is explicit; its final inventory element
+is the endpoint scope even when that scope encloses the start. An adversary asserts
+that earlier paragraphs and the following section remain unreachable.
+
+## Qualification closeout
+
+The original PERFORM suite passes 39/39 and the source adversaries pass 25/25.
+The later alias MOVE correction retains both results and adds 14/14 alias
+adversaries. Required local and remote FAST gates passed. The 73-program CardDemo
+comparison retains 121 program, 271 file and 523 source relations and their
+supports; existing PARTIAL states and numeric/recursion limits remain explicit.
+The final documentation changes no production, contract, fixture or build input.
