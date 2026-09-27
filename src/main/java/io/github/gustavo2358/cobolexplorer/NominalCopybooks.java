@@ -18,9 +18,11 @@ final class NominalCopybooks {
         "CMQODV", "ibm-mq/9.4-structural-v1", "CMQPMOV", "ibm-mq/9.4-structural-v1",
         "CMQTML", "ibm-mq/9.4-structural-v1", "CMQV", "ibm-mq/9.4-structural-v1",
         "SQLCA", "ibm-db2-zos/13-structural-v1");
-    // SQL INCLUDE admits the Db2 member explicitly, not arbitrary COPY members.
+    private static final Set<String> SQL_INCLUDE_MEMBERS = Set.of("SQLCA");
+    // Each inclusion form has its own catalogue authority.
     static Optional<SourceMap> resolveSqlInclude(String name) {
-        return name.equalsIgnoreCase("SQLCA") ? resolve(name) : Optional.empty();
+        String canonical=name.toUpperCase(Locale.ROOT);
+        return SQL_INCLUDE_MEMBERS.contains(canonical) ? load(canonical) : Optional.empty();
     }
     static Set<String> members() {
         var names=new TreeSet<>(MEMBERS.keySet());names.addAll(RESOURCE_PROFILES.keySet());
@@ -48,7 +50,11 @@ final class NominalCopybooks {
     }
 
     static Optional<SourceMap> resolve(String name) {
-        name=name.toUpperCase(Locale.ROOT);
+        String canonical=name.toUpperCase(Locale.ROOT);
+        return SQL_INCLUDE_MEMBERS.contains(canonical) ? Optional.empty() : load(canonical);
+    }
+
+    private static Optional<SourceMap> load(String name) {
         if (RESOURCE_PROFILES.containsKey(name)) {
             String resource="/synthetic-copybooks/"+name+".cpy";
             try (var input=NominalCopybooks.class.getResourceAsStream(resource)) {

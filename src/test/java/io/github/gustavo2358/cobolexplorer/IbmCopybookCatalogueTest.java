@@ -71,6 +71,21 @@ class IbmCopybookCatalogueTest {
         var sql=preprocess("EXEC SQL INCLUDE SQLCA END-EXEC.","CALL REAL-ITEM.");
         assertTrue(sql.diagnostics().isEmpty());assertEquals("SQLCA.cpy",sql.sourceDependencies().get(0).artifact());
     }
+    @Test void missingSqlcaCopyRemainsUnresolvedWithoutSyntheticDeclarations() throws Exception {
+        for(var operand:List.of("SQLCA", "sqlca", "'SQLCA'")) {
+            var pre=preprocess("COPY "+operand+".","CALL SQLCAID.\nGOBACK.");
+            assertEquals(1,pre.unresolved(),operand);
+            assertTrue(pre.diagnostics().stream().anyMatch(d->d.code()==Diagnostic.Code.UNRESOLVED_COPY));
+            assertFalse(pre.diagnostics().stream().anyMatch(d->d.code()==Diagnostic.Code.NOMINAL_COPYBOOK));
+            var fact=pre.sourceDependencies().get(0);
+            assertEquals(SourceDependencyFact.Kind.COPYBOOK,fact.kind());
+            assertEquals(SourceDependencyFact.Resolution.UNRESOLVED,fact.resolution());
+            var analysis=AstBoundaryTestSupport.analyze(pre,"ibm-models.cbl");
+            assertTrue(AstBoundaryTestSupport.nodes(analysis,Ast.DataEntry.class).isEmpty());
+        }
+        assertTrue(NominalCopybooks.resolve("SQLCA").isEmpty());
+        assertTrue(NominalCopybooks.resolveSqlInclude("sqlca").isPresent());
+    }
     @Test void sqlModelCannotOverrideExplicitMissingArtifactOrNestedIncludeRule() throws Exception {
         var inventory=library.resolve("inventory.json");
         Files.writeString(inventory,"{\"version\":\"1.0.0\",\"artifacts\":[{\"name\":\"SQLCA\",\"kind\":\"SQL_INCLUDE\",\"artifact\":\"missing.cpy\"}]}");

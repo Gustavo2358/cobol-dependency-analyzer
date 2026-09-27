@@ -100,3 +100,22 @@ frontend FAST and complete real corpus. No unexplained regression remains.
 Raw products and logs are in `.synthetic-dfh/carddemo-expansion/`. The tracked
 `carddemo-ibm-validation.json` records commands/results evidence hashes, exact
 runtime jars, baseline heads and reuse scope. No merge was performed.
+
+## Review follow-up — SQLCA inclusion authority
+
+The shared catalogue loader also admitted synthetic SQLCA through generic COPY,
+although the declared scope was SQL INCLUDE. Inclusion-form admission now occurs
+before the private resource loader: only EXEC SQL INCLUDE admits the SQLCA model.
+Real COPY SQLCA still uses the normal library resolution path. Missing COPY
+SQLCA retains COPYBOOK/UNRESOLVED, its input gap and no synthetic declarations.
+
+The new oracle first failed because COPY SQLCA was resolved. After the fix, all
+28 focused catalogue/preprocessor tests pass, including uppercase, lowercase and
+quoted COPY operands, real-member precedence and the existing SQL INCLUDE guards.
+Frontend FAST passes 603 tests with no failures/errors/skips. The contract remains
+SP 2.49 / NOMINAL_TEXT_SOURCE_V2; no consumer implementation changes are needed.
+
+This is a C2 catalogue admission correction. Reexecute the frontend over the 73
+CardDemo programs and existing suites; byte-identical SP/compilation products
+allow reuse of downstream evidence with identical consumer binaries. Full
+qualification and the historical 310-fixture matrix remain outside this follow-up.

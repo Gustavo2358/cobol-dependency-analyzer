@@ -132,7 +132,9 @@ somente o catálogo explícito pode selecioná-los. A identidade é
 
 SQLCA usa o perfil Db2 para z/OS 13, incluindo SQLERRM, SQLWARN, SQLEXT e
 SQLERRD OCCURS 6. Sua identidade é `model:ibm-db2-zos/13-structural-v1/SQLCA`.
-Além de COPY, o caminho existente de `EXEC SQL INCLUDE SQLCA` pode expandi-lo.
+O fallback sintético de SQLCA é autorizado somente por `EXEC SQL INCLUDE SQLCA`.
+`COPY SQLCA` continua usando um arquivo real quando disponível; sem esse arquivo,
+a ocorrência permanece COPYBOOK/UNRESOLVED e não recebe declarações sintéticas.
 O fato mantém kind SQL_INCLUDE e authority BUILTIN_SQL_INCLUDE, a cadeia de
 inclusão real e o diagnóstico NOMINAL_COPYBOOK. Um mapping explícito para um
 arquivo ausente não é substituído pelo modelo. SQL INCLUDE aninhado continua
