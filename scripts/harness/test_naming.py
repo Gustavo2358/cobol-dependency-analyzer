@@ -22,6 +22,16 @@ class NamingGuard(unittest.TestCase):
             return subprocess.run(['bash','scripts/verify-naming.sh'],cwd=root,env=env,capture_output=True,text=True).returncode
     def test_canonical_repository_in_docs(self):
         self.assertEqual(0,self.run_guard('docs/evidence.md','https://github.com/example/'+VENDOR+'-poc/pull/1'))
+    def test_canonical_repository_in_json_evidence(self):
+        self.assertEqual(0,self.run_guard('docs/work/evidence.json',
+                '{"sources":{"'+VENDOR+'-poc":"abc123"}}'))
+    def test_json_evidence_does_not_exempt_other_legacy_names(self):
+        for text in (VENDOR+' engine',VENDOR+'-pocket',PURPOSE):
+            with self.subTest(text=text):
+                self.assertNotEqual(0,self.run_guard('docs/work/evidence.json',
+                        '{"repository":"'+VENDOR+'-poc","label":"'+text+'"}'))
+    def test_json_product_resource_cannot_use_repository_exception(self):
+        self.assertNotEqual(0,self.run_guard('src/resource.json','{"name":"'+VENDOR+'-poc"}'))
     def test_mixed_doc_still_rejects_product_identifier(self):
         self.assertNotEqual(0,self.run_guard('docs/evidence.md',VENDOR+'-poc\n'+VENDOR+' engine'))
     def test_product_code_cannot_use_repository_exception(self):
