@@ -194,7 +194,7 @@
       "air-java": "/home/gustavo/workspace/teste-e2e/.perform-semantics/lower-build/air-java"
     },
     "sources": {
-      "proleap-poc": "a92b8fe7b1ceab3baffed845aa01da1641de7156",
+      "proleap-poc": "503e11f6b33daa504e6338cf84a11984acab82cf",
       "cobol-lower": "652bdfc915d4684c199c0cc125792fb2bebbd4a8",
       "analysis-cfg": "837daf11d24282a2948412d560a96fd1644a1558",
       "analysis-ir": "2c7f31f19efbe3211a2aea5bbda90173a9666fe2",
@@ -224,6 +224,7 @@
       "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/5e6ff4b30978-analysis-adapters-0.1.0-SNAPSHOT.jar": "5e6ff4b30978e9e889864b5f7b07943fa77950a0303b11c4284a09ccb41a00c1",
       "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/revision/runtime/e3182f32d54f-analysis-launcher-0.1.0-SNAPSHOT.jar": "e3182f32d54fbfbbad2f190f4aca305daa45940508a4ec153e9a4c44a3b0f157"
     },
-    "buildState": "CardDemo IBM expansion; working tree, commit recorded at closeout"
-  }
+    "buildState": "Implementation commit 503e11f6b33daa504e6338cf84a11984acab82cf; documentation-only revisions do not change the validated binaries"
+  },
+  "runtimeMetadataCorrection": "Raw run configs inherited the previous frontend sources label a92b8fe from the baseline. The actual frontend jar was always fb47477144775474aa191c89396818eec582585e4170a029133da1ac17b4535c and was used by every recorded command. This report records the correct implementation SHA; immutable raw configs and their hashes are retained."
 }
