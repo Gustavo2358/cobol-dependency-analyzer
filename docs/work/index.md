@@ -1,5 +1,8 @@
 R4 active: [WORK-AST-EOF-BOUNDARY-R4](active/WORK-AST-EOF-BOUNDARY-R4/work-item.json). EOF input ownership only; R5–R9 not started.
 
+[CardDemo FILE e W0–W8 — DONE / MERGED](carddemo-control-integration.md): implementação qualificada e integrada; limites e campanhas futuras separados.
+
+
 [R7-R2 — typed CICS ABEND event](positive-cics-abend-r7-r2.md): SP 2.42 producer only; state/dispatch pending review.
 
 R3 prior wave:  [WORK-AST-INPUT-HARDENING-R3](active/WORK-AST-INPUT-HARDENING-R3/work-item.json), user-authorized pivot supersedes old EXPLICIT_SOURCE_ENVIRONMENT scope; historical D0 remains read-only.
