@@ -1,3 +1,5 @@
+[CardDemo values/control — DONE / MERGED](carddemo-values-control-integration.md): capabilities 1–4 and review corrections integrated; point 5 is a separate campaign.
+
 R4 active: [WORK-AST-EOF-BOUNDARY-R4](active/WORK-AST-EOF-BOUNDARY-R4/work-item.json). EOF input ownership only; R5–R9 not started.
 
 [CardDemo FILE e W0–W8 — DONE / MERGED](carddemo-control-integration.md): implementação qualificada e integrada; limites e campanhas futuras separados.
