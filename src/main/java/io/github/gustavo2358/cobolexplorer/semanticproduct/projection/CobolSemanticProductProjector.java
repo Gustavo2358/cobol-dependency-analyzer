@@ -1,6 +1,7 @@
 package io.github.gustavo2358.cobolexplorer.semanticproduct.projection;
 
 import io.github.gustavo2358.cobolexplorer.Ast;
+import io.github.gustavo2358.cobolexplorer.LogicalMoveSemantics;
 import io.github.gustavo2358.cobolexplorer.CicsCommandSemantics;
 import io.github.gustavo2358.cobolexplorer.StorageLayoutSemantics;
 import io.github.gustavo2358.cobolexplorer.StorageAccessSemantics;
@@ -658,11 +659,8 @@ public final class CobolSemanticProductProjector {
             boolean regionalSequence=(move.corresponding() || move.source() instanceof Ast.LiteralExpression || move.source() instanceof Ast.DataReference)
                     && move.targets().stream().allMatch(Ast.DataReference.class::isInstance)
                     && !sequence.isEmpty()&&sequence.stream().anyMatch(e->e.kind()!=StorageAccessSemantics.MoveKind.UNAVAILABLE);
-            boolean logicalSequence=move.targets().size()>1 && move.source() instanceof Ast.LiteralExpression literal
-                && literal.logicalText().isPresent() && move.targets().stream().filter(Ast.DataReference.class::isInstance)
-                    .map(Ast.DataReference.class::cast).anyMatch(receiver->inputs.products().storage()
-                        .flatMap(st->st.logicalWholeItem(new StorageLayoutSemantics.Key(inputs.unitId(),receiver.meta().id())))
-                        .flatMap(inputs.products().scalarMoves()::declaration).isPresent());
+            boolean logicalSequence=inputs.products().storage().flatMap(st->st.logicalMove(
+                new StorageLayoutSemantics.Key(inputs.unitId(),move.meta().id()))).filter(LogicalMoveSemantics.Fact::admitted).isPresent();
             if(regionalSequence||logicalSequence)capability=Capability.supported("MOVE","REGIONAL_TRANSFER_SEQUENCE");
             List<ReferenceResolution.Entry> entries = new ArrayList<>();
             if (capability.supported()) {
@@ -1419,12 +1417,14 @@ public final class CobolSemanticProductProjector {
                     ? ContinuationAvailability.KNOWN : intrinsicEnd ? ContinuationAvailability.NONE : ContinuationAvailability.UNAVAILABLE, next, statementProvenance);
             Optional<WholeItemAccess> access = semantic.wholeItem().filter(entity -> copy != CopySemantics.POSSIBLE_TEXT).map(entity ->
                     new WholeItemAccess(Objects.requireNonNull(dataIds.get(entity), "whole item must be published")));
+            var logicalFact=inputs.products().storage().flatMap(st->st.logicalMove(new StorageLayoutSemantics.Key(inputs.unitId(),move.meta().id())));
             MoveSource source;
             if (move.source() instanceof Ast.LiteralExpression literal) {
+                var logicalText=logicalFact.flatMap(LogicalMoveSemantics.Fact::literal).or(()->literal.logicalText().map(t->t.value()));
                 source = new LiteralSource(new OperandId(statementId, 0),
-                        literal.logicalText().isPresent() ? LiteralKind.ALPHANUMERIC : LiteralKind.UNKNOWN,
-                        literal.value(), provenance(literal.meta().provenance()),
-                        literal.logicalText().map(text -> new TextValue(text.value())));
+                        logicalText.isPresent() ? LiteralKind.ALPHANUMERIC : LiteralKind.UNKNOWN,
+                        logicalText.orElse(literal.value()), provenance(literal.meta().provenance()),
+                        logicalText.map(TextValue::new));
             } else {
                 var read = plan.entries().get(move.targets().size());
                 source = new DataReference(new OperandId(statementId, 0), OperandRole.READ,
@@ -1464,7 +1464,7 @@ public final class CobolSemanticProductProjector {
                     var e=i<effects.size()?effects.get(i):null;var receiver=(Ast.DataReference)move.targets().get(i);
                     MoveSource sending;
                     if(source instanceof LiteralSource literal)sending=new LiteralSource(new OperandId(statementId,i*2),literal.kind(),literal.value(),literal.provenance(),literal.logicalValue());
-                    else {var read=(DataReference)source;sending=new DataReference(new OperandId(statementId,i*2),OperandRole.READ,read.binding(),read.provenance(),Optional.empty(),read.regionalAccess());}
+                    else {var read=(DataReference)source;sending=new DataReference(new OperandId(statementId,i*2),OperandRole.READ,read.binding(),read.provenance(),read.wholeItemAccess(),read.regionalAccess(),List.of(),read.logicalWholeItem());}
                     var logical=inputs.products().storage().flatMap(st->st.logicalWholeItem(new StorageLayoutSemantics.Key(inputs.unitId(),receiver.meta().id()))).map(dataIds::get);
                     var receiving=new DataReference(new OperandId(statementId,i*2+1),OperandRole.WRITE,nominalBinding(plan.entries().get(i),dataIds),provenance(receiver.meta().provenance()),Optional.empty(),regionalAccess(inputs,receiver.meta().id()),List.of(),logical);
                     var effect=e==null?new RegionalMove(RegionalMoveKind.UNAVAILABLE,List.of(),List.of("ACCESS_NOT_PROVEN"))
@@ -1474,24 +1474,21 @@ public final class CobolSemanticProductProjector {
                 fact=new MoveFact(fact.header(),fact.source(),fact.target(),CopySemantics.UNAVAILABLE,fact.normalContinuation(),Optional.empty(),fact.regionalMove(),extra);
             }
             var logicalTransfers=new ArrayList<LogicalTransfer>();
-            if(move.targets().size()>1&&fact.source() instanceof LiteralSource literal&&literal.logicalValue().isPresent()) {
-                var text=literal.logicalValue().orElseThrow().value();var length=text.codePointCount(0,text.length());
+            if(move.targets().size()>1&&logicalFact.isPresent()) {
                 for(int i=0;i<move.targets().size();i++) {
                     var receiver=i==0?fact.target():fact.additionalTransfers().get(i-1).target();
-                    if(receiver.logicalWholeItem().isEmpty())continue;
-                    var entity=inputs.products().storage().orElseThrow().logicalWholeItem(new StorageLayoutSemantics.Key(
-                        inputs.unitId(),move.targets().get(i).meta().id()));
-                    var extent=entity.flatMap(inputs.products().scalarMoves()::declaration);
-                    if(extent.isEmpty())continue;
-                    var n=extent.orElseThrow().extent();
-                    var fitted=length>n?text.substring(0,text.offsetByCodePoints(0,n)):text+" ".repeat(n-length);
-                    logicalTransfers.add(new LogicalTransfer(receiver.id(),new TextValue(fitted)));
+                    var fitted=logicalFact.orElseThrow().fitted().get(move.targets().get(i).meta().id());
+                    // Group aliases use the full logical family rather than scalar
+                    // transfer certificates, which require an elementary declaration.
+                    var entity=inputs.products().storage().orElseThrow().logicalWholeItem(new StorageLayoutSemantics.Key(inputs.unitId(),move.targets().get(i).meta().id()));
+                    if(fitted!=null&&entity.flatMap(inputs.products().scalarMoves()::declaration).isPresent())
+                        logicalTransfers.add(new LogicalTransfer(receiver.id(),new TextValue(fitted)));
                 }
             }
             if(!logicalTransfers.isEmpty())fact=new MoveFact(fact.header(),fact.source(),fact.target(),fact.copySemantics(),
                 fact.normalContinuation(),fact.textAdjustment(),fact.regionalMove(),fact.additionalTransfers(),logicalTransfers);
             statements.add(fact);
-            if (move.source() instanceof Ast.LiteralExpression literal && literal.logicalText().isEmpty()) gaps.add(new Gap(statementId, GapScope.LITERAL_KIND,
+            if (move.source() instanceof Ast.LiteralExpression literal && literal.logicalText().isEmpty() && logicalFact.flatMap(LogicalMoveSemantics.Fact::literal).isEmpty()) gaps.add(new Gap(statementId, GapScope.LITERAL_KIND,
                     LITERAL_KIND_GAP, "literal category is outside the canonical basic text capability",
                     provenance(literal.meta().provenance())));
             for (var gap : moveGaps) gaps.add(new Gap(statementId,
