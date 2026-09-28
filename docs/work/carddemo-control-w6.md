@@ -37,3 +37,7 @@ A operação AIR Halt existe no modelo, mas está fora do perfil JSON vigente. O
 ### Oráculos históricos verificados no gate completo
 
 O primeiro Maven completo encontrou três expectativas desatualizadas. O entrypoint `embeddedIdentifier : identifier EOF`, acrescentado em W4, já estava classificado no manifesto versionado: os dois testes de inventário conservaram as comparações exatas de conjuntos e agora também exigem a classificação dessa regra (601 COBOL + 31 preprocessing). O teste FILE confundia memória NO_OP de EXIT PROGRAM com controle sequencial; agora exige separadamente NO_OP e os outcomes NORMAL/PROGRAM_RETURN da unidade externa. Não houve mudança de produção para satisfazer esses testes. O rerun Maven passou: 1.220 testes, zero falhas/erros, um skip histórico.
+
+## Checkpoint qualificado
+
+Implementação W6 concluída e qualificada; status IN_PROGRESS até revisão/merge. Resultado integrado, deltas e limites em [W1–W6](carddemo-control-w1-w6.md). Parada antes de W7.
