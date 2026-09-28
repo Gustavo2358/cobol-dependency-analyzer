@@ -375,8 +375,12 @@ final class PreprocessorEngine {
                 LOG.trace("event=embedded_language_preserved source={} phase=PREPROCESSING rule={} line={} sentenceEnd={}",
                         file, rule, startToken.getLine(), sentenceEnd);
                 String suffix = "\n" + (sentenceEnd ? ". \n" : "");
+                var comments=tokens.getTokens(startToken.getTokenIndex(),stopToken.getTokenIndex()).stream()
+                        .filter(t->"COMMENTLINE".equals(parser.getVocabulary().getSymbolicName(t.getType())))
+                        .filter(t->t.getStartIndex()==0||Character.isWhitespace(indexedSource.substring(t.getStartIndex()-1,t.getStartIndex()).codePointAt(0)))
+                        .map(t->new SourceMap.OmittedText(t.getStartIndex(),t.getStopIndex()+1)).toList();
                 edits.add(new Edit(start, end, rule.equals("execCicsStatement")
-                        ? document.framedEmbeddedSlice(start, end, sentenceEnd ? end - 1 : end, tag + " ", suffix)
+                        ? document.framedEmbeddedSlice(start, end, sentenceEnd ? end - 1 : end, tag + " ", suffix,comments)
                         : document.transformedSlice(start, end, tag + " " + opaque + suffix)));
             } else if (policy == PreprocessorPolicy.UNSUPPORTED) {
                 throw new UnsupportedOperationException(

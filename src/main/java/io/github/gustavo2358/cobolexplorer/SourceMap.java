@@ -176,9 +176,22 @@ final class SourceMap {
 
     /** Preserve the coordinates of retained runs while framing/flattening an opaque payload.
      * The ordinary map still describes the complete transformation as approximate. */
+    record OmittedText(int start, int end) { }
     SourceMap framedEmbeddedSlice(int start, int end, int payloadEnd, String prefix, String suffix) {
+        return framedEmbeddedSlice(start,end,payloadEnd,prefix,suffix,List.of());
+    }
+    /** Grammar-authorized omitted spans are blanked before physical records are flattened. */
+    SourceMap framedEmbeddedSlice(int start, int end, int payloadEnd, String prefix, String suffix,List<OmittedText> omitted) {
         int from = start, to = payloadEnd;
         var points = indexedText.substring(start, payloadEnd).codePoints().toArray();
+        var blank = new boolean[points.length];
+        for(var span:omitted) {
+            if(span.start()<start||span.end()>payloadEnd||span.end()<span.start())throw new IllegalArgumentException("omitted span outside payload");
+            for(int i=span.start()-start;i<span.end()-start;i++) {
+                if(points[i]=='\r'||points[i]=='\n')throw new IllegalArgumentException("omitted span contains record boundary");
+                blank[i]=true;
+            }
+        }
         int left = 0, right = points.length;
         while (left < right && Character.isWhitespace(points[left])) left++;
         while (right > left && Character.isWhitespace(points[right - 1])) right--;
@@ -189,12 +202,17 @@ final class SourceMap {
         for (int cursor = from; cursor < to;) {
             int run = cursor;
             boolean lineBreak = points[cursor - start] == '\r' || points[cursor - start] == '\n';
-            while (cursor < to && (points[cursor - start] == '\r' || points[cursor - start] == '\n') == lineBreak) cursor++;
+            boolean omittedRun=blank[cursor-start];
+            while (cursor < to && blank[cursor-start]==omittedRun && (points[cursor - start] == '\r' || points[cursor - start] == '\n') == lineBreak) cursor++;
             if (lineBreak) {
                 text.append(' ');
                 for (var segment : transformedSlice(run, cursor, " ").segments)
                     retained.add(segment.shifted(destination));
                 destination++;
+            } else if(omittedRun) {
+                String spaces=" ".repeat(cursor-run);text.append(spaces);
+                for(var segment:transformedSlice(run,cursor,spaces).segments)retained.add(segment.shifted(destination));
+                destination+=cursor-run;
             } else {
                 text.append(indexedText.substring(run, cursor));
                 addRetainedSlice(retained, run, cursor, destination);

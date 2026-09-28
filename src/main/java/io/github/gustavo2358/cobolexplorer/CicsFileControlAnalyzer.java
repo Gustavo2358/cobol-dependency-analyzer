@@ -14,6 +14,8 @@ public final class CicsFileControlAnalyzer {
         public Fact {options=List.copyOf(options);gaps=List.copyOf(gaps);}
         public boolean boundedLocal() {return gaps.isEmpty()&&options.stream().anyMatch(o->Set.of("RESP","NOHANDLE").contains(o.canonicalName()));}
     }
+    private static final Set<Command> DATASET_ALIASES=Set.of(Command.READ,Command.WRITE,Command.REWRITE,Command.DELETE,
+        Command.STARTBR,Command.READNEXT,Command.READPREV,Command.RESETBR,Command.ENDBR,Command.UNLOCK,Command.SET);
     private static final Set<String> READS=words("READ READNEXT READPREV");
     private static final Set<String> FLAGS=words("NOHANDLE UNCOMMITTED CONSISTENT REPEATABLE UPDATE GENERIC EQUAL GTEQ DEBKEY DEBREC RBA RRN XRBA NOSUSPEND MASSINSERT START NEXT END ADDABLE NOTADDABLE BROWSABLE NOTBROWSABLE DELETABLE NOTDELETABLE OLD SHARE EMPTY EMPTYREQ NOEMPTYREQ DISABLED ENABLED CLOSED OPEN EXCTL NOEXCTL LOAD NOLOAD NOTREADABLE READABLE RLS NOTRLS CFTABLE CICSTABLE NOTTABLE USERTABLE NOTUPDATABLE UPDATABLE CONTENTION LOCKING WAIT FORCE NOWAIT");
     private static final Map<Command,Set<String>> CATALOG=catalog();
@@ -98,8 +100,8 @@ public final class CicsFileControlAnalyzer {
         return new Contribution(frontend,facts);
     }
     private static String canonical(Command command,String option) {
-        // C06-HUMAN-20260917: READ has the legacy FILE alias; no blanket CICS alias.
-        if((command==Command.READ||command==Command.SET)&&option.equals("DATASET"))return "FILE";
+        // IBM compatibility aliases are command-specific; INQUIRE and other resources are excluded.
+        if(DATASET_ALIASES.contains(command)&&option.equals("DATASET"))return "FILE";
         if(command==Command.SET&&option.equals("OBJECTNAME"))return "DSNAME";
         return option;
     }

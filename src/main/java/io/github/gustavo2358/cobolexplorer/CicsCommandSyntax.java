@@ -5,7 +5,10 @@ import java.util.*;
 /** Shared syntax only; each CICS domain owns option meaning. Linear, quote-aware scanner. */
 public final class CicsCommandSyntax {
     private CicsCommandSyntax() { }
-    public record Option(String name, Optional<String> operand, int start, int end) { }
+    public record Option(String name, Optional<String> operand, int start, int end) {
+        /** Exact opening-parenthesis successor, even with intervening comments. */
+        public int operandStart() {return end-1-operand.orElseThrow().length();}
+    }
     public record Command(String name,List<Option> options,List<String> gaps,boolean ended) {
         public Command {options=List.copyOf(options);gaps=List.copyOf(gaps);}
     }
@@ -13,6 +16,7 @@ public final class CicsCommandSyntax {
         return parseEmbedded(raw,"CICS");
     }
     static Optional<Command> parseEmbedded(String raw,String language) {
+        raw=withoutComments(raw);
         var cursor=new Cursor(raw);cursor.space();
         if(cursor.at("*>EXECCICS")){cursor.position+=10;cursor.space();}
         if(!cursor.word().equalsIgnoreCase("EXEC")||!cursor.word().equalsIgnoreCase(language))return Optional.empty();
@@ -39,6 +43,24 @@ public final class CicsCommandSyntax {
         cursor.space();if(cursor.at(".")){cursor.position++;cursor.space();}
         if(!ended||cursor.position!=raw.length())gaps.add(language+"_INCOMPLETE_PAYLOAD");
         return Optional.of(new Command(name,options,List.copyOf(gaps),ended));
+    }
+    /** Private lexical view of already normalized COBOL text. No source/map mutation. */
+    private static String withoutComments(String raw) {
+        Objects.requireNonNull(raw);var chars=raw.toCharArray();char quote=0;int i=0;
+        while(i<raw.length()&&Character.isWhitespace(raw.charAt(i)))i++;
+        // Preserve the historical normalized EXEC wrapper accepted by this parser.
+        if(raw.regionMatches(true,i,"*>EXECCICS",0,10))i+=10;
+        for(;i<raw.length();i++) {
+            char c=raw.charAt(i);
+            if(quote!=0) {
+                if(c==quote){if(i+1<raw.length()&&raw.charAt(i+1)==quote)i++;else quote=0;}
+            } else if(c=='\''||c=='"')quote=c;
+            else if(c=='*'&&i+1<raw.length()&&raw.charAt(i+1)=='>'&&(i==0||Character.isWhitespace(raw.charAt(i-1)))) {
+                while(i<raw.length()&&raw.charAt(i)!='\r'&&raw.charAt(i)!='\n')chars[i++]=' ';
+                i--;
+            }
+        }
+        return new String(chars);
     }
     public static Optional<String> literal(String value) {
         if(value.isEmpty()||(value.charAt(0)!='\''&&value.charAt(0)!='"'))return Optional.empty();
