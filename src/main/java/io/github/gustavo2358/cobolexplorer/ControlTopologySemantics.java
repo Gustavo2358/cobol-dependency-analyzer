@@ -28,6 +28,7 @@ public final class ControlTopologySemantics {
     private final Map<String,Binding> bindings=new TreeMap<>();
     private final List<FileFlow> fileFlows=new ArrayList<>();
     private final List<SourceContinuation> sourceContinuations=new ArrayList<>();
+    private final List<EntryPoint> entryPoints=new ArrayList<>();
     private final List<ExceptionalEvent> exceptionalEvents=new ArrayList<>();
     private final Map<String,Proof> proofs=new TreeMap<>();
     private final Map<String,List<String>> subregions=new HashMap<>();
@@ -127,13 +128,36 @@ public final class ControlTopologySemantics {
         ids.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(e->{if(!occurrences.containsKey(e.getValue())){
             var p=proof(e.getValue()+"/unplaced",ProofKind.PARTIAL_UNKNOWN,"unsupported-region-membership",e.getKey().meta().provenance(),List.of(isolation));
             add(e.getKey(),root,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(root,p),"",p);}});
+        alternateEntries(isolation);
         fileFlows();
         fileRoutes();
         openControlDestinations();
         for(var r:new ArrayList<>(regions.values()))regions.put(r.id(),new Region(r.id(),r.kind(),r.parent(),r.entry(),occurrences.values().stream().filter(o->o.region().equals(r.id())).map(Occurrence::statement).toList(),
             r.kind()==RegionKind.RANGE?r.regions():subregions.getOrDefault(r.id(),List.of()).stream().sorted().toList(),r.boundary(),r.proofs()));
         return new ControlTopology(fileFlows.isEmpty()?"FRONTEND_CONTROL_TOPOLOGY_R1":"FRONTEND_CONTROL_TOPOLOGY_R2",List.copyOf(occurrences.values()),List.copyOf(regions.values()),
-            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows,sourceContinuations);
+            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows,sourceContinuations,entryPoints);
+    }
+    private void alternateEntries(String isolation) {
+        var byHandle=new HashMap<String,Ast.Statement>();ids.forEach((source,id)->byHandle.put(id,source));
+        for(var declaration:AlternateEntrySemantics.analyze(unit))if(declaration.supported()) {
+            String id=ids.get(declaration.source());if(id==null)continue;
+            var dependencies=new LinkedHashSet<String>();dependencies.add(isolation);
+            var outcome=outcomes.get("outcome:"+id+"/normal");
+            Target start=outcome==null||!independent?unknown(root,isolation):outcome.target();
+            var seen=new HashSet<String>();
+            while(true) {
+                dependencies.addAll(start.proofs());
+                if(!seen.add(start.kind()+"/"+start.reference())){start=unknown(root,isolation);break;}
+                if(start.kind()==TargetKind.REGION_ENTRY){start=regions.get(start.reference()).entry();continue;}
+                if(start.kind()==TargetKind.COMPLETE){start=boundaries.get(regions.get(start.reference()).boundary()).ordinaryDefault();continue;}
+                if(start.kind()==TargetKind.OCCURRENCE&&byHandle.get(start.reference()) instanceof Ast.PreservedStatement next&&next.entrySurface().isPresent()) {
+                    var step=outcomes.get("outcome:"+start.reference()+"/normal");if(step==null){start=unknown(root,isolation);break;}start=step.target();continue;
+                }
+                break;
+            }
+            var premise=proof(declaration.entry()+"/start",ProofKind.LOCAL_GRAMMAR,"alternate-entry-start",declaration.source().meta().provenance(),List.copyOf(dependencies));
+            entryPoints.add(new EntryPoint(declaration.entry(),id,new Target(start.kind(),start.reference(),List.of(premise)),List.of(premise)));
+        }
     }
     /** The period frontier is represented only when a source NEXT SENTENCE needs it. */
     private void sentences(List<Ast.Sentence> sentences,String owner,Target end,String isolation) {

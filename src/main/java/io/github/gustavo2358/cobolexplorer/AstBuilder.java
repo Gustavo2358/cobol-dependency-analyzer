@@ -1144,7 +1144,7 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
         var fileIo = FileIoSyntax.project(context, operandNodes, clauseContexts, clauses);
         var effects=statementEffects(context,operands,clauses,operandNodes);
         return preserved
-                ? new Ast.PreservedStatement(meta, rule(context), sourceText(context).strip(), operands, clauses,effects,fileIo)
+                ? new Ast.PreservedStatement(meta, rule(context), sourceText(context).strip(), operands, clauses,effects,fileIo,context instanceof CobolParser.EntryStatementContext entry?Optional.of(new Ast.EntrySurface(basicLogicalText(entry.literal()),entry.identifier().size())):Optional.empty())
                 : new Ast.ModeledStatement(meta, rule(context), sourceText(context).strip(), operands, clauses,effects,fileIo,exitKind(context));
     }
 

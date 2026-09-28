@@ -497,10 +497,18 @@ public final class Ast {
         }
     }
 
+    /** Typed declaration surface; the operand nodes retain sole traversal ownership. */
+    public record EntrySurface(Optional<LogicalText> name,int parameterCount) {
+        public EntrySurface {Objects.requireNonNull(name);if(parameterCount<0)throw new IllegalArgumentException("entry parameter count");}
+    }
+
     public record PreservedStatement(Meta meta, String grammarRule, String writtenText,
                                      List<StatementOperand> operands,
                                      List<StatementClause> clauses, Optional<StatementEffectSummary> effects,
-                                   Optional<FileIoSurface> fileIo) implements Statement {
+                                   Optional<FileIoSurface> fileIo,Optional<EntrySurface> entrySurface) implements Statement {
+        public PreservedStatement(Meta meta,String grammarRule,String writtenText,List<StatementOperand> operands,List<StatementClause> clauses,Optional<StatementEffectSummary> effects,Optional<FileIoSurface> fileIo) {
+            this(meta,grammarRule,writtenText,operands,clauses,effects,fileIo,Optional.empty());
+        }
         public PreservedStatement(Meta meta,String grammarRule,String writtenText,List<StatementOperand> operands,List<StatementClause> clauses,Optional<StatementEffectSummary> effects) {
             this(meta,grammarRule,writtenText,operands,clauses,effects,Optional.empty());
         }
@@ -508,7 +516,7 @@ public final class Ast {
             this(meta,grammarRule,writtenText,operands,clauses,Optional.empty());
         }
         public PreservedStatement {
-            Objects.requireNonNull(effects);Objects.requireNonNull(fileIo);
+            Objects.requireNonNull(effects);Objects.requireNonNull(fileIo);Objects.requireNonNull(entrySurface);
             operands = List.copyOf(operands);
             clauses = List.copyOf(clauses);
         }

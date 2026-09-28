@@ -217,16 +217,16 @@ public final class CobolSemanticProductProjector {
                 !inputs.report().inputComplete(inputs.unitId())
                         ? CobolSemanticProduct.InventoryStatus.INPUT_MISSING
                         : CobolSemanticProduct.InventoryStatus.COMPLETE;
-        EntryInventory entries = entries(inputs, statementIds, inventoryStatus);
+        var fileInventory=files(inputs, declarations.ids(), statementIds, observedOperandIds);
+        var topology=io.github.gustavo2358.cobolexplorer.ControlTopologySemantics.analyze(
+                inputs.selectedSource().unit(), inputs.selectedSource().table(), products.resolution(), products.report(),
+                statementIds, fileInventory, products.cics().orElse(null));
+        EntryInventory entries = entries(inputs, statementIds, inventoryStatus,topology);
         if (entries.gapCodes().contains("DECLARATIVES_NOT_PROJECTED")
                 && inventoryStatus == InventoryStatus.COMPLETE)
             inventoryStatus = InventoryStatus.PARTIAL;
         CobolSemanticProduct.CoverageSummary coverage = coverage(
                 inventoryStatus, statements, inputs.unitSummary());
-        var fileInventory=files(inputs, declarations.ids(), statementIds, observedOperandIds);
-        var topology=io.github.gustavo2358.cobolexplorer.ControlTopologySemantics.analyze(
-                inputs.selectedSource().unit(), inputs.selectedSource().table(), products.resolution(), products.report(),
-                statementIds, fileInventory, products.cics().orElse(null));
         var locality=products.factDependencies().get(unitId);
         if(locality==null&&!topology.fileFlows().isEmpty())locality=io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies.unavailable(
                 provenance(inputs.selectedSource().unit().program().meta().provenance()));
@@ -520,7 +520,7 @@ public final class CobolSemanticProductProjector {
     }
 
     private static EntryInventory entries(ProjectionInputs inputs,
-            Map<Ast.Statement, StatementId> statementIds, InventoryStatus inventoryStatus) {
+            Map<Ast.Statement, StatementId> statementIds, InventoryStatus inventoryStatus,io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology topology) {
         Ast.Program program = inputs.selectedSource().unit().program();
         Ast.Division procedure = null;
         for (Ast.Division division : program.divisions()) {
@@ -591,8 +591,29 @@ public final class CobolSemanticProductProjector {
         List<String> inventoryGaps = new ArrayList<>(List.of("ALTERNATE_ENTRIES_NOT_PROJECTED"));
         if (declaratives && inputs.products().storage().isEmpty()) inventoryGaps.add("DECLARATIVES_NOT_PROJECTED");
         if (inputMissing) inventoryGaps.add("ENTRY_INPUT_INCOMPLETE");
-        return new EntryInventory(inputMissing ? InventoryStatus.INPUT_MISSING : InventoryStatus.PARTIAL,
-                List.of(entry), inventoryGaps);
+        var declared=io.github.gustavo2358.cobolexplorer.AlternateEntrySemantics.analyze(inputs.selectedSource().unit());
+        var all=new ArrayList<EntryFact>();all.add(entry);
+        if(!declared.isEmpty()){inventoryGaps.remove("ALTERNATE_ENTRIES_NOT_PROJECTED");inventoryGaps.add("ENTRY_RUNTIME_CONTRACT_OPEN");}
+        var starts=new HashMap<String,io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.EntryPoint>();topology.entryPoints().forEach(e->starts.put(e.entry(),e));
+        var byHandle=new HashMap<String,StatementId>();statementIds.values().forEach(id->byHandle.put("statement:"+id.localId(),id));
+        for(var declaration:declared) {
+            var point=starts.get(declaration.entry());
+            var target=point!=null&&point.target().kind()==io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.TargetKind.OCCURRENCE?Optional.ofNullable(byHandle.get(point.target().reference())):Optional.<StatementId>empty();
+            var originAt=provenance(declaration.source().meta().provenance());var localGaps=new ArrayList<EntryGap>();
+            declaration.gaps().forEach(code->localGaps.add(new EntryGap(GapScope.ENTRY_START,code,"alternate entry declaration is outside the supported source domain",originAt)));
+            if(target.isEmpty())localGaps.add(new EntryGap(GapScope.ENTRY_START,"ALTERNATE_ENTRY_START_UNAVAILABLE","topology has no supported executable start",originAt));
+            boolean preciseSignature=declaration.parameters()==0&&!inputMissing;
+            if(!preciseSignature)localGaps.add(new EntryGap(GapScope.ENTRY_SIGNATURE,"ENTRY_SIGNATURE_NOT_PROJECTED","actual USING bindings and runtime parameter values remain unknown",originAt));
+            if(inputMissing)localGaps.add(new EntryGap(GapScope.ANALYSIS_INPUT,"ENTRY_INPUT_INCOMPLETE","missing inputs retain their own uncertainty",originAt));
+            all.add(new EntryFact(new EntryId(inputs.boundaryUnit(),declaration.ordinal()),EntryRole.ALTERNATE,declaration.supported()?Availability.KNOWN:Availability.UNAVAILABLE,
+                new ExecutableStart(target.isPresent()?Availability.KNOWN:Availability.UNAVAILABLE,target),
+                new EntrySignature(preciseSignature?Availability.KNOWN:Availability.PARTIAL,Optional.of(declaration.parameters()),ReturningClause.ABSENT),originAt,
+                localGaps.isEmpty()?CoverageStatus.MODELED:CoverageStatus.PARTIAL,
+                readiness(target.isEmpty()?ReadinessStatus.BLOCKED:preciseSignature?ReadinessStatus.SUFFICIENT:ReadinessStatus.PARTIAL,"declared alternate entry",
+                    target.isPresent()?ReadinessStatus.SUFFICIENT:ReadinessStatus.BLOCKED,"topology owns the external start",ReadinessStatus.BLOCKED,"runtime parameter and storage state remain open"),localGaps,
+                declaration.name(),Optional.ofNullable(statementIds.get(declaration.source()))));
+        }
+        return new EntryInventory(inputMissing ? InventoryStatus.INPUT_MISSING : InventoryStatus.PARTIAL,all,inventoryGaps);
     }
 
     private static IndependentStorageSet storageIndependence(ProjectionInputs inputs,
