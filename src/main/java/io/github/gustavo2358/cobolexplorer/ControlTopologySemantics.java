@@ -30,6 +30,8 @@ public final class ControlTopologySemantics {
     private final List<SourceContinuation> sourceContinuations=new ArrayList<>();
     private final List<EntryPoint> entryPoints=new ArrayList<>();
     private final List<ExceptionalEvent> exceptionalEvents=new ArrayList<>();
+    private final List<ConditionRegistration> conditionRegistrations=new ArrayList<>();
+    private final List<ConditionEvent> conditionEvents=new ArrayList<>();
     private final Map<String,Proof> proofs=new TreeMap<>();
     private final Map<String,List<String>> subregions=new HashMap<>();
     private final CobolSemanticProduct.FileInventory files;
@@ -132,10 +134,11 @@ public final class ControlTopologySemantics {
         fileFlows();
         fileRoutes();
         openControlDestinations();
+        openConditionRestorations();
         for(var r:new ArrayList<>(regions.values()))regions.put(r.id(),new Region(r.id(),r.kind(),r.parent(),r.entry(),occurrences.values().stream().filter(o->o.region().equals(r.id())).map(Occurrence::statement).toList(),
             r.kind()==RegionKind.RANGE?r.regions():subregions.getOrDefault(r.id(),List.of()).stream().sorted().toList(),r.boundary(),r.proofs()));
         return new ControlTopology(fileFlows.isEmpty()?"FRONTEND_CONTROL_TOPOLOGY_R1":"FRONTEND_CONTROL_TOPOLOGY_R2",List.copyOf(occurrences.values()),List.copyOf(regions.values()),
-            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows,sourceContinuations,entryPoints);
+            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows,sourceContinuations,entryPoints,conditionRegistrations,conditionEvents);
     }
     private void alternateEntries(String isolation) {
         var byHandle=new HashMap<String,Ast.Statement>();ids.forEach((source,id)->byHandle.put(id,source));
@@ -182,6 +185,7 @@ public final class ControlTopologySemantics {
             var next=i+1<list.size()&&ids.containsKey(list.get(i+1))?occ(list.get(i+1),p):end;
             if(!independent){add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(owner,p),"",p);continue;}
             exceptionalEvent(s,p);
+            conditionEvent(s,next,p);
             if(s instanceof Ast.NextSentenceStatement) {
                 String scope=owner;while(!scope.isEmpty()&&regions.get(scope).kind()!=RegionKind.SENTENCE)scope=regions.get(scope).parent();
                 var target=scope.isEmpty()?unknown(owner,p):new Target(TargetKind.ESCAPE,scope,List.of(p));
@@ -305,6 +309,17 @@ public final class ControlTopologySemantics {
             }
             if(CicsConditionSyntax.effects(s).isPresent()&&s instanceof Ast.EmbeddedLanguageStatement embedded
                     &&embedded.procedureOperands().stream().allMatch(r->targetDeclarations.containsKey(r.meta().id()))) {
+                var registrationProof=proof(id+"/condition-state",ProofKind.LOCAL_GRAMMAR,"cics-condition-registration",s.meta().provenance(),List.of(p));
+                boolean ignore=CicsCommandSyntax.parse(embedded.rawText()).orElseThrow().name().equals("IGNORE");int labelOrdinal=0;
+                for(var option:CicsConditionSyntax.parse(embedded.rawText()).orElseThrow()) {
+                    var targets=new ArrayList<Target>();
+                    if(option.operand().isPresent()) {
+                        var ref=embedded.procedureOperands().get(labelOrdinal++);var declaration=targetDeclarations.get(ref.meta().id());
+                        var resolved=proof(id+"/condition-target/"+option.name(),ProofKind.RESOLVED_TARGET,"cics-condition-label",ref.meta().provenance(),List.of(registrationProof));
+                        targets.add(entry(procedureRegion(declaration),resolved));
+                    }
+                    conditionRegistrations.add(new ConditionRegistration(id,option.name(),ignore?ConditionAction.IGNORE:targets.isEmpty()?ConditionAction.DEFAULT:ConditionAction.LABEL,targets,List.of(registrationProof)));
+                }
                 var normal=proof(id+"/condition-registration",ProofKind.LOCAL_GRAMMAR,"cics-handle-condition-ordinary-return",s.meta().provenance(),List.of(p));
                 add(s,owner,OutcomeKind.NORMAL,"normal",next,"",normal);continue;
             }
@@ -330,6 +345,11 @@ public final class ControlTopologySemantics {
                 }
                 var other=proof(id+"/sql-other",ProofKind.PARTIAL_UNKNOWN,"db2-select-into-other-outcomes",s.meta().provenance(),List.of(normal));
                 add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"sql/other",unknown(owner,other),"",other);continue;
+            }
+            if(conditionEvents.stream().anyMatch(e->e.statement().equals(id))
+                    &&cics.fact(unit.id(),s.meta().id()).filter(f->f.command()==CicsProgramControlAnalyzer.Command.LINK).isPresent()) {
+                var returned=proof(id+"/link-normal",ProofKind.LOCAL_GRAMMAR,"cics-link-successful-return",s.meta().provenance(),List.of(p));
+                add(s,owner,OutcomeKind.NORMAL,"normal",next,"",returned);continue;
             }
             boolean completion=division.normalCompletionStatements().contains(s.meta().id());
             if(s instanceof Ast.EmbeddedLanguageStatement)completion=cics!=null&&cics.boundedLocal(unit.id(),s);
@@ -362,6 +382,28 @@ public final class ControlTopologySemantics {
                 sourceContinuations.add(new SourceContinuation(id,entry(paragraphIds.get(paragraph.meta().id()),premise),List.of(premise),List.of(prerequisite)));
         }
     }
+    /** Unknown stack restoration grants source possibilities only, never executable edges. */
+    private void openConditionRestorations() {
+        for(var source:ids.keySet())if(source instanceof Ast.EmbeddedLanguageStatement embedded
+                &&embedded.language()==Ast.EmbeddedLanguage.CICS) {
+            var command=CicsCommandSyntax.parse(embedded.rawText()).orElse(null);
+            if(command==null||!command.name().equals("POP")||!command.ended()||!command.gaps().isEmpty()
+                    ||command.options().size()!=1||!command.options().get(0).name().equals("HANDLE")
+                    ||command.options().get(0).operand().isPresent())continue;
+            var prerequisite=ids.get(source);
+            for(var event:conditionEvents)if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
+                var key=event.id()+"/unknown-restoration/"+prerequisite;
+                var hypothesis=proof(key,ProofKind.CONTROL_POSSIBILITY,"cics-condition-disposition-open-after-unmodeled-restoration",
+                    source.meta().provenance(),event.proofs());
+                var targets=new ArrayList<Target>();targets.add(event.continuation());
+                conditionRegistrations.stream().filter(r->Set.of(event.condition(),"ERROR").contains(r.condition()))
+                    .flatMap(r->r.target().stream()).forEach(targets::add);
+                var seen=new HashSet<String>();
+                for(var target:targets)if(seen.add(target.kind()+"/"+target.reference()))
+                    sourceContinuations.add(new SourceContinuation(event.statement(),new Target(target.kind(),target.reference(),java.util.stream.Stream.concat(target.proofs().stream(),java.util.stream.Stream.of(hypothesis)).distinct().toList()),List.of(hypothesis),List.of(prerequisite)));
+            }
+        }
+    }
     private boolean sourceMayComplete(Ast.Statement statement) {
         // The grammar owns the hypothetical continuation. Known terminal forms are excluded
         // even when their operands/effects are not admitted. This is never execution proof.
@@ -381,6 +423,18 @@ public final class ControlTopologySemantics {
         if(sectionIds.containsKey(id))return root;
         String owner=paragraphOwners.get(id);return sectionIds.containsValue(owner)?root:owner;
     }
+    private void conditionEvent(Ast.Statement statement,Target continuation,String premise) {
+        if(cics==null)return;var command=cics.fact(unit.id(),statement.meta().id()).orElse(null);
+        if(command==null||!command.gaps().isEmpty()
+            ||command.options().stream().anyMatch(o->!Set.of("PROGRAM","COMMAREA","LENGTH","RESP","RESP2","NOHANDLE").contains(o.name()))
+            ||command.options().stream().filter(o->o.name().equals("PROGRAM")).count()!=1
+            ||command.options().stream().map(CicsProgramControlAnalyzer.Option::name).distinct().count()!=command.options().size())return;
+        boolean bypass=command.options().stream().anyMatch(o->Set.of("RESP","NOHANDLE").contains(o.name()));
+        var id="condition-event:"+ids.get(statement)+"/PGMIDERR";
+        var authority=proof(id,ProofKind.LOCAL_GRAMMAR,"cics-pgmiderr-condition-event",statement.meta().provenance(),List.of(premise));
+        var defaultEvent=bypass?"":"event:"+ids.get(statement)+"/"+(command.command()==CicsProgramControlAnalyzer.Command.XCTL?EventOrigin.XCTL_PGMIDERR:EventOrigin.LINK_PGMIDERR);
+        conditionEvents.add(new ConditionEvent(id,ids.get(statement),"PGMIDERR",bypass?EventEligibility.HANDLERS_BYPASSED:EventEligibility.HANDLER_ELIGIBLE,continuation,defaultEvent,List.of(authority)));
+    }
     private void exceptionalEvent(Ast.Statement statement,String premise) {
         if(cics==null)return;
         var abend=cics.abendFact(unit.id(),statement.meta().id()).orElse(null);
@@ -389,16 +443,16 @@ public final class ControlTopologySemantics {
             origin=EventOrigin.EXPLICIT_ABEND;eligibility=EventEligibility.valueOf(abend.eligibility().name());guards=List.of();
         } else {
             var command=cics.fact(unit.id(),statement.meta().id()).orElse(null);
-            if(command==null||command.command()!=CicsProgramControlAnalyzer.Command.XCTL||!command.gaps().isEmpty()
+            if(command==null||!command.gaps().isEmpty()
                 ||command.options().stream().anyMatch(o->!Set.of("PROGRAM","COMMAREA","LENGTH","RESP2").contains(o.name()))
                 ||command.options().stream().filter(o->o.name().equals("PROGRAM")).count()!=1
                 ||command.options().stream().map(CicsProgramControlAnalyzer.Option::name).distinct().count()!=command.options().size())return;
-            origin=EventOrigin.XCTL_PGMIDERR;eligibility=EventEligibility.HANDLER_ELIGIBLE;
+            origin=command.command()==CicsProgramControlAnalyzer.Command.XCTL?EventOrigin.XCTL_PGMIDERR:EventOrigin.LINK_PGMIDERR;eligibility=EventEligibility.HANDLER_ELIGIBLE;
             guards=List.of(EventPremise.CONDITION_RAISED,EventPremise.DEFAULT_DISPOSITION_APPLIES);
         }
         var id="event:"+ids.get(statement)+"/"+origin;
         var proof=proof(id,ProofKind.LOCAL_GRAMMAR,origin==EventOrigin.EXPLICIT_ABEND?
-            "cics-explicit-abend-event":"cics-xctl-pgmiderr-default-abend-event",statement.meta().provenance(),List.of(premise));
+            "cics-explicit-abend-event":origin==EventOrigin.LINK_PGMIDERR?"cics-link-pgmiderr-default-abend-event":"cics-xctl-pgmiderr-default-abend-event",statement.meta().provenance(),List.of(premise));
         exceptionalEvents.add(new ExceptionalEvent(id,ids.get(statement),origin,"TASK_ABEND",eligibility,
             "CURRENT_EXECUTION_LOGICAL_LEVEL","UNAVAILABLE",guards,List.of(proof)));
     }
