@@ -758,3 +758,11 @@ CICS_COMMAND acrescenta ASKTIME, FORMATTIME, ASSIGN, INQUIRE_PROGRAM, SEND_TEXT 
 ## SP2.56 — controle COBOL
 
 Acrescenta regiões SENTENCE/SEARCH/SEARCH_ARM, escape de SENTENCE, outcome/target PROGRAM_HALT e prova SEARCH_INDEX_MAY. A prova exige READ/WRITE ALL, exposição NONE, ambiente NONE e nenhum MUST; índice/resultado não são inferidos. Contratos de [topologia](control-topology.md) e [W6](../work/carddemo-control-w6.md) definem premissas contextuais e limites.
+
+### SP 2.57 — PERFORM binding precondition
+
+Publications with a specified `controlTopology.bindings[].reentryPolicy` require
+2.57.0. Every binding carries the field in that version. SOURCE_UNDEFINED records
+an undefined active reentry; UNSPECIFIED grants no additional authority.
+The policy is orthogonal to completion endpoints and phases. See
+[control topology](control-topology.md#sp-257--active-binding-reentry).

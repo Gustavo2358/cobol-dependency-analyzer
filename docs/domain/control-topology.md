@@ -160,3 +160,21 @@ An explicit event continuation is still validated against structural completion.
 Uma região `SENTENCE` publica a conclusão do período quando houver NEXT SENTENCE. Seu `ESCAPE` abandona frames inline contidos e liga a conclusão ao contexto procedural ativo; não equivale à continuação do IF/SEARCH. `SEARCH`/`SEARCH_ARM` abstraem a busca interna de SEARCH ALL como decisão match/fim; o corpo WHEN não é uma iteração. O índice permanece MAY desconhecido (`SEARCH_INDEX_MAY`), sem prova de valor ou kill.
 
 `PROGRAM_HALT` representa STOP RUN sem sucessor, distinto de `PROGRAM_RETURN`. Lower publica a alternativa AIR HaltAlternative com controle fechado e efeitos de finalização abertos (o codec atual não admite Halt isolado). EXIT PROGRAM contido retorna; para unidade externa, o papel main/chamado não é conhecido pelo contrato: retorno e continuação são possibilidades distintas. ENTRY não executa uma chamada e não concede nova raiz: há somente continuação sequencial, quando alcançado. Entradas alternativas continuam fora da projeção principal. [Regra e testes W6](../work/carddemo-control-w6.md).
+
+## SP 2.57 — active binding reentry
+
+`Binding.reentryPolicy` belongs to the producer contract. `SOURCE_UNDEFINED` means
+that invoking the same binding identity while it is still active has no defined
+source semantics. `UNSPECIFIED` preserves historical publications; it does not
+grant recursive return semantics. The legacy typed constructor supplies UNSPECIFIED.
+A consumer must not derive this policy from paragraph names or nesting depth.
+Sequential invocation after completion is not reentry.
+
+The IBM Enterprise COBOL producer publishes SOURCE_UNDEFINED for PERFORM bindings,
+including every VARYING level through the containing binding. IBM's
+[Basic PERFORM rule](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statement-basic-perform)
+forbids a PERFORM causing its own execution. Conditional source possibilities do
+not prove that this happens at runtime; no condition evaluation is implied.
+A reached reentry remains open control and effects, with no invented return,
+halt or kill. Source dependency possibilities retain their existing conditional
+authority and do not certify execution through an undefined activation.
