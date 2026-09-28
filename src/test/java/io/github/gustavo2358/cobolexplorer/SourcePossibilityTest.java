@@ -10,8 +10,9 @@ class SourcePossibilityTest {
     private static JsonNode product(String body) throws Exception {
         return new ObjectMapper().readTree(SemanticProductJsonWriter.serialize(ControlTopologyAuthorityTest.publish(body)));
     }
+    // Dynamic SQL remains outside W5: retain the unknown-control oracle after static UPDATE is admitted.
     @Test void unknownEmbeddedCompletionHasOnlySourcePossibility() throws Exception {
-        var p=product("EXEC SQL UPDATE T SET C = 'X' END-EXEC\nCALL 'AFTERIO'\nGOBACK.\n");
+        var p=product("EXEC SQL EXECUTE IMMEDIATE SQL-TEXT END-EXEC\nCALL 'AFTERIO'\nGOBACK.\n");
         var t=p.path("controlTopology");
         assertEquals("2.52.0",p.path("contractVersion").asText());
         assertEquals(1,t.path("sourceContinuations").size());
@@ -27,13 +28,13 @@ class SourcePossibilityTest {
             assertEquals(0,product(body).path("controlTopology").path("sourceContinuations").size());
     }
     @Test void hypotheticalCompletionAtParagraphBoundaryIsSymbolic() throws Exception {
-        var p=product("PERFORM P\nCALL 'AFTERIO'\nGOBACK.\nP.\nEXEC SQL UPDATE T SET C = 'X' END-EXEC.\n");
+        var p=product("PERFORM P\nCALL 'AFTERIO'\nGOBACK.\nP.\nEXEC SQL EXECUTE IMMEDIATE SQL-TEXT END-EXEC.\n");
         var c=p.path("controlTopology").path("sourceContinuations");
         assertEquals(1,c.size());assertEquals("COMPLETE",c.get(0).path("target").path("kind").asText());
     }
 
     @Test void possibilityProofCannotAuthorizeAnyExecutableSlot() throws Exception {
-        var t=(com.fasterxml.jackson.databind.node.ObjectNode)product("PERFORM P\nGOBACK.\nP.\nEXEC SQL UPDATE T SET C = 1 END-EXEC.\n").path("controlTopology");
+        var t=(com.fasterxml.jackson.databind.node.ObjectNode)product("PERFORM P\nGOBACK.\nP.\nEXEC SQL EXECUTE IMMEDIATE SQL-TEXT END-EXEC.\n").path("controlTopology");
         var hypothesis=t.path("proofs").findValues("kind");
         String proof=null;for(var p:t.path("proofs"))if(p.path("kind").asText().equals("CONTROL_POSSIBILITY"))proof=p.path("id").asText();
         assertNotNull(proof);

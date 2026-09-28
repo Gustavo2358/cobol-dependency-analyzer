@@ -6,13 +6,13 @@ class DatabaseControlTest {
     static final List<String> SQL=List.of("SELECT COUNT(1) INTO :OUT-X FROM S.T WHERE ((:FLAG-X = '1' AND C = :IN-X) OR :FLAG-X <> '1') AND D LIKE TRIM(:IN-X)","UPDATE S.T SET C = :IN-X, D = CURRENT DATE WHERE C = :IN-X", "INSERT INTO S.T (C,D) VALUES (:IN-X,TIMESTAMP_FORMAT(:IN-X, 'YY-MM-DD'))", "DELETE FROM S.T WHERE C = :IN-X", "OPEN CURSOR-X", "FETCH CURSOR-X INTO :OUT-X", "CLOSE CURSOR-X");
     @Test void sqlClosedFormsRetainNormalAndFailure()throws Exception {
         for(var sql:SQL) {
-            assertTrue(SqlNormalCompletion.selectInto("EXEC SQL "+sql+" END-EXEC"),sql);
+            assertTrue(SqlCommandSyntax.parse("EXEC SQL "+sql+" END-EXEC").isPresent(),sql);
             var p=CicsMemoryLocalityTest.publish("01 IN-X PIC X(20).\n01 OUT-X PIC X(20).\n01 FLAG-X PIC X.","EXEC SQL\n"+sql.replace(" WHERE ","\nWHERE ").replace(" INTO ","\nINTO ").replace(" SET ","\nSET ").replace(" VALUES ","\nVALUES ").replace(" AND ","\nAND ").replace(" OR ","\nOR ")+"\nEND-EXEC.\nCALL 'AFTERIO'.\nGOBACK.",false);
             var j=CicsAbendContractTest.json(p);assertEquals("2.55.0",j.path("contractVersion").asText());
             var statement=j.path("statements").get(0);var o=CicsCommandContractTest.outcomes(j,statement);
             assertTrue(o.stream().anyMatch(x->x.path("kind").asText().equals("NORMAL")),sql);
             assertTrue(o.stream().anyMatch(x->x.path("kind").asText().equals("UNKNOWN_LOCAL")),sql);
-            var e=statement.path("effects");assertEquals("SQL_HOST_OPERANDS",e.path("proof").asText());assertEquals("ALL",e.path("unknownWriteBound").asText());assertTrue(e.path("mustOverwrite").isEmpty());
+            var e=j.path("statementEffects").get(0);assertEquals("SQL_HOST_OPERANDS",e.path("proof").asText());assertEquals("ALL",e.path("unknownWriteBound").asText());assertTrue(e.path("mustOverwrite").isEmpty());
         }
     }
     @Test void dliUpdatesAndCheckpointAreBoundedSyntax() {

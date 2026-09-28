@@ -15,8 +15,11 @@ final class DliCommandSemantics {
             var operand=byOffset.get(h.optionStart());if(operand==null||operand.role()!=h.role()||!operand.option().equals(h.option()))return Optional.empty();
             if(h.role()==Ast.EmbeddedHostRole.WRITE)writes.add(operand.reference());else reads.add(operand.reference());
         }
+        if(s.expressionOperands().size()!=parsed.get().expressions().size())return Optional.empty();
+        boolean external=parsed.get().external();
+        var bound=external?StatementEffectSummary.Bound.ALL:StatementEffectSummary.Bound.NONE;
         return Optional.of(new StatementEffectSummary(reads,writes,List.of(),List.of(),
-            StatementEffectSummary.Bound.NONE,StatementEffectSummary.Bound.NONE,StatementEffectSummary.Bound.NONE,
-            StatementEffectSummary.Environment.UNKNOWN,StatementEffectSummary.ValueTransform.UNKNOWN,StatementEffectSummary.Proof.DLI_HOST_OPERANDS));
+            bound,bound,bound,
+            StatementEffectSummary.Environment.UNKNOWN,StatementEffectSummary.ValueTransform.UNKNOWN,external?StatementEffectSummary.Proof.DLI_EXTERNAL_OPERANDS:StatementEffectSummary.Proof.DLI_HOST_OPERANDS));
     }
 }

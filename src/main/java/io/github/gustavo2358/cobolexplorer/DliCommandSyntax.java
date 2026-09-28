@@ -5,7 +5,12 @@ import java.util.*;
 /** IMS option grammar; COBOL owns the host operand grammar. Unknown shapes stay opaque. */
 final class DliCommandSyntax {
     record Host(String option,int optionStart,String operand,int operandStart,Ast.EmbeddedHostRole role) { }
-    record Command(String name,List<Host> hosts) { Command { hosts=List.copyOf(hosts); } }
+    record Expression(String option,int optionStart,String operand,int operandStart) { }
+    record Command(String name,List<Host> hosts,List<Expression> expressions) {
+        Command {hosts=List.copyOf(hosts);expressions=List.copyOf(expressions);}
+        Command(String name,List<Host> hosts){this(name,hosts,List.of());}
+        boolean external(){return Set.of("CHKP","REPL","ISRT","DLET").contains(name);}
+    }
     static Optional<Command> parse(String raw) {
         var framed=CicsCommandSyntax.parseEmbedded(raw,"DLI");
         if(framed.isEmpty()||!framed.get().ended()||!framed.get().gaps().isEmpty())return Optional.empty();
@@ -25,6 +30,7 @@ final class DliCommandSyntax {
             }
             return psb?Optional.of(new Command(c.name(),hosts)):Optional.empty();
         }
+        if(Set.of("CHKP","REPL","ISRT","DLET").contains(c.name()))return external(raw,c);
         if(!Set.of("GU","GN","GNP").contains(c.name()))return Optional.empty();
         if(options.size()<4||!options.get(0).name().equals("USING")||options.get(0).operand().isPresent()
                 ||!options.get(1).name().equals("PCB"))return Optional.empty();
@@ -50,6 +56,40 @@ final class DliCommandSyntax {
             } else return Optional.empty();
         }
         return segment&&into?Optional.of(new Command(c.name(),hosts)):Optional.empty();
+    }
+    private static Optional<Command> external(String raw,CicsCommandSyntax.Command c) {
+        var options=c.options();var hosts=new ArrayList<Host>();var expressions=new ArrayList<Expression>();
+        if(c.name().equals("CHKP")) {
+            if(options.size()!=1||!options.get(0).name().equals("ID")||options.get(0).operand().isEmpty())return Optional.empty();
+            var o=options.get(0);String value=o.operand().orElseThrow();var literal=CicsCommandSyntax.literal(value.strip());
+            if(literal.isPresent())return literal.get().length()==8?Optional.of(new Command(c.name(),hosts)):Optional.empty();
+            return host(hosts,o,value,raw.indexOf('(',o.start())+1,Ast.EmbeddedHostRole.READ,raw,false)?Optional.of(new Command(c.name(),hosts)):Optional.empty();
+        }
+        int at=0;
+        if(!options.isEmpty()&&options.get(0).name().equals("USING")) {
+            if(options.get(0).operand().isPresent()||options.size()<2||!options.get(1).name().equals("PCB"))return Optional.empty();
+            var pcb=options.get(1);if(pcb.operand().isEmpty()||!host(hosts,pcb,pcb.operand().get(),raw.indexOf('(',pcb.start())+1,Ast.EmbeddedHostRole.READ,raw,true))return Optional.empty();at=2;
+        }
+        boolean segment=false,from=false,where=false;var seen=new HashSet<String>();
+        for(int i=at;i<options.size();i++) {
+            var o=options.get(i);if(o.operand().isEmpty())return Optional.empty();
+            String value=o.operand().get();int begin=raw.indexOf('(',o.start())+1;
+            if(o.name().equals("SEGMENT")) {
+                if(!name(value.strip())||segment&&from)return Optional.empty();
+                segment=true;from=false;where=false;seen.clear();continue;
+            }
+            if(!segment||!seen.add(o.name()))return Optional.empty();
+            if(o.name().equals("FROM")) {
+                if(where||!host(hosts,o,value,begin,Ast.EmbeddedHostRole.READ,raw,false))return Optional.empty();from=true;
+            } else if(o.name().equals("WHERE")) {
+                if(from)return Optional.empty();int equal=value.indexOf('=');
+                if(equal<1||!name(value.substring(0,equal).strip())||!host(hosts,o,value.substring(equal+1),begin+equal+1,Ast.EmbeddedHostRole.READ,raw,true))return Optional.empty();where=true;
+            } else if(o.name().equals("SEGLENGTH")) {
+                if(!EmbeddedExpressionSyntax.supported(value))return Optional.empty();
+                expressions.add(new Expression(o.name(),o.start(),value,begin));
+            } else return Optional.empty();
+        }
+        return segment&&from?Optional.of(new Command(c.name(),hosts,expressions)):Optional.empty();
     }
     private static boolean host(List<Host> out,CicsCommandSyntax.Option o,String value,int start,Ast.EmbeddedHostRole role,String raw,boolean constant) {
         String stripped=value.strip();

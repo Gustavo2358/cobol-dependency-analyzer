@@ -972,7 +972,14 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
             try {operands.add(new Ast.EmbeddedHostOperand(host.option(),host.optionStart(),host.role(),(Ast.DataReference)identifierExpression(tree)));}
             finally {embeddedOperandOrigin=previous;retainedEmbeddedOperand=retained;}
         }
-        return new Ast.EmbeddedLanguageStatement(anchor,Ast.EmbeddedLanguage.DLI,raw,operands);
+        var expressions=new ArrayList<Ast.EmbeddedExpressionOperand>();
+        if(parsed.isPresent())for(var host:parsed.get().expressions()) {
+            var tree=EmbeddedExpressionSyntax.parseAt(host.operand(),raw,host.operandStart(),ctx.getStart().getStartIndex()+DliRegion.PREFIX.length(),ctx.getStart().getLine(),ctx.getStart().getCharPositionInLine()+DliRegion.PREFIX.length(),ctx.getStart().getTokenIndex()).orElseThrow();
+            var previous=embeddedOperandOrigin;embeddedOperandOrigin=anchor.origin();boolean retained=retainedEmbeddedOperand;retainedEmbeddedOperand=true;
+            try {expressions.add(new Ast.EmbeddedExpressionOperand(host.option(),host.optionStart(),expression(tree,"DLI length")));}
+            finally {embeddedOperandOrigin=previous;retainedEmbeddedOperand=retained;}
+        }
+        return new Ast.EmbeddedLanguageStatement(anchor,Ast.EmbeddedLanguage.DLI,raw,operands,List.of(),List.of(),expressions);
     }
     @Override public Ast.Node visitExecSqlImsStatement(CobolParser.ExecSqlImsStatementContext ctx) { return buildEmbedded(ctx, Ast.EmbeddedLanguage.SQLIMS); }
     @Override public Ast.Node visitExitStatement(CobolParser.ExitStatementContext ctx) { return modeled(ctx); }
@@ -1454,6 +1461,15 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     private Ast.EmbeddedLanguageStatement buildEmbedded(ParserRuleContext context, Ast.EmbeddedLanguage language) {
         var anchor=meta(context);String raw=sourceText(context).strip();var operands=new ArrayList<Ast.EmbeddedHostOperand>();
         var anchors=new ArrayList<Ast.EmbeddedOperandAnchor>();
+        if(language==Ast.EmbeddedLanguage.SQL)SqlCommandSyntax.parse(raw).filter(c->!c.declaration()).ifPresent(command->{
+            for(var host:command.hosts()) {
+                var tree=CicsHostSyntax.parseReference(host.operand(),raw,host.start(),context.getStart().getStartIndex(),
+                    context.getStart().getLine(),context.getStart().getCharPositionInLine(),context.getStart().getTokenIndex()).orElseThrow();
+                var previous=embeddedOperandOrigin;embeddedOperandOrigin=anchor.origin();boolean retained=retainedEmbeddedOperand;retainedEmbeddedOperand=true;
+                try {operands.add(new Ast.EmbeddedHostOperand("SQL_HOST",host.start(),host.role(),(Ast.DataReference)identifierExpression(tree)));}
+                finally {embeddedOperandOrigin=previous;retainedEmbeddedOperand=retained;}
+            }
+        });
         boolean handler=language==Ast.EmbeddedLanguage.CICS&&CicsHandlerSyntax.parse(raw).isPresent();
         if(handler) for(var operand:CicsHandlerSyntax.targetOperand(raw)) {
             int offset=context.getStart().getStartIndex();

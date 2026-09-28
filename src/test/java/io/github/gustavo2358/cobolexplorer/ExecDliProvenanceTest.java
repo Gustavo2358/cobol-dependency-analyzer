@@ -110,7 +110,7 @@ class ExecDliProvenanceTest {
                 List.of("PCB:READ:PAUT-PCB-NUM", "INTO:WRITE:PENDING-AUTH-SUMMARY", "WHERE:READ:PA-ACCT-ID"),
                 List.of("PCB:READ:PAUT-PCB-NUM", "INTO:WRITE:PENDING-AUTH-DETAILS", "WHERE:READ:PA-AUTHORIZATION-KEY"),
                 List.of("PCB:READ:PAUT-PCB-NUM", "INTO:WRITE:PENDING-AUTH-DETAILS"),
-                List.of(), // REPL remains outside the admitted host-effects profile.
+                List.of("PCB:READ:PAUT-PCB-NUM", "FROM:READ:PENDING-AUTH-DETAILS"), // W5 REPL reads its replacement buffer.
                 List.of("PSB:READ:PSB-NAME"), List.of(), List.of("PSB:READ:PSB-NAME"));
         String[] lines = normalized.text().split("\n", -1);
         for (int i = 0; i < intervals.length; i++) {

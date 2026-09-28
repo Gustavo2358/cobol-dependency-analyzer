@@ -7,6 +7,7 @@ final class SqlDeclarationSyntax {
     private SqlDeclarationSyntax() { }
     static boolean nonallocating(Ast.DataEntry entry) {
         if(!entry.level().equals("SQL"))return false;
+        if(SqlCommandSyntax.parse(entry.declaration()).filter(SqlCommandSyntax.Command::declaration).isPresent())return true;
         try {return new Parser(entry.declaration()).table();}catch(Unproved ignored){return false;}
     }
     private static final class Unproved extends RuntimeException { Unproved(){super(null,null,false,false);} }
