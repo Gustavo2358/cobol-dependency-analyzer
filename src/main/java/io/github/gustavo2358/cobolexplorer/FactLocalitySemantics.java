@@ -53,7 +53,7 @@ public final class FactLocalitySemantics {
             &&ResolutionAnalysisReport.appliesTo(g,id)
             &&!(Diagnostic.incompleteCopyCode(g.code())&&id.equals(g.programUnitId())&&!program.inputProof().regions().isEmpty()));
         if(unlocated)gaps.add(new Gap(InputKind.UNLOCATED_INPUT,program.meta().provenance(),false));
-        for(var p:structure.positions())if(StorageComponents.level(p.data())<0)gaps.add(new Gap(InputKind.OPAQUE_INCLUDE,p.data().meta().provenance(),true));
+        for(var p:structure.positions())if(StorageComponents.level(p.data())<0&&!SqlDeclarationSyntax.nonallocating(p.data()))gaps.add(new Gap(InputKind.OPAQUE_INCLUDE,p.data().meta().provenance(),true));
         var members=new TreeMap<String,List<StorageLayoutSemantics.Node>>();var baseByNode=new HashMap<Integer,String>();
         for(var v:layout.views())baseByNode.put(v.node().node(),base(v.base().node()));
         for(var n:layout.nodes())members.computeIfAbsent(baseByNode.get(n.id().node()),k->new ArrayList<>()).add(n);
@@ -103,7 +103,7 @@ public final class FactLocalitySemantics {
         }
         inputs.add(new Input("input:profile",InputKind.PHYSICAL_PROFILE,layout.profile()!=StorageLayoutSemantics.Profile.UNSPECIFIED,List.of(),List.of(),List.of(),origin(program.meta().provenance())));
         var proofs=new ArrayList<Proof>();var regions=new ArrayList<Region>();var facts=new ArrayList<Fact>();var bindings=new ArrayList<Binding>();
-        var attrs=program.attributes();boolean ordinary=!attrs.recursive()&&!attrs.common()&&!attrs.library()&&!attrs.definition()&&!attrs.initial();
+        var attrs=program.attributes();boolean ordinary=!attrs.recursive()&&!attrs.common()&&!attrs.library()&&!attrs.definition();
         var exacts=new HashMap<Integer,Integer>();for(var e:storage.logicalExactViews())if(e.node().unit().equals(id))exacts.put(e.node().node(),e.representative().node());
         // A nonallocating alias can share an already complete logical value.
         // Its canonical character range must cover that entire value; matching

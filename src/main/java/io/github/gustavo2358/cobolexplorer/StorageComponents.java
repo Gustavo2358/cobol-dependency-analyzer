@@ -79,7 +79,7 @@ public final class StorageComponents {
                 }
             var roots=new ArrayList<Ast.DataEntry>();boolean structure=sections.size()<=1&&fileSections.size()<=1&&! (sections.isEmpty()&&fileSections.isEmpty());
             for(var section:sections)for(var child:section.children()) {
-                if(child instanceof Ast.DataEntry d){roots.add(d);structure&=level(d)==1||level(d)==77;}
+                if(child instanceof Ast.DataEntry d){if(SqlDeclarationSyntax.nonallocating(d))continue;roots.add(d);structure&=level(d)==1||level(d)==77;}
                 else structure=false;
             }
             var workingRoots=List.copyOf(roots);var descriptions=new ArrayList<Ast.FileDescription>();

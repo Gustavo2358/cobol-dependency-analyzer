@@ -815,7 +815,7 @@ public final class CobolSemanticProduct {
     }
     /** Explicit source options; no control decision, handler target or runtime value. */
     public record CicsCommandFact(StatementHeader header,CicsCommandKind commandKind,CicsCommandSyntaxStatus syntaxStatus,
-            String rawText,List<CicsOption> options,List<String> gapCodes,Optional<OperandExpression> length,Optional<CicsHostEffects> hostEffects) implements StatementFact {
+            String rawText,List<CicsOption> options,List<String> gapCodes,Optional<OperandExpression> length,Optional<CicsHostEffects> hostEffects,Optional<DataReference> implicitArea) implements StatementFact {
         public CicsCommandFact {
             Objects.requireNonNull(header);Objects.requireNonNull(commandKind);Objects.requireNonNull(syntaxStatus);Objects.requireNonNull(rawText);Objects.requireNonNull(length);
             options=List.copyOf(options);gapCodes=List.copyOf(gapCodes);
@@ -844,11 +844,20 @@ public final class CobolSemanticProduct {
             if((commandKind==CicsCommandKind.SEND_TERMINAL||commandKind==CicsCommandKind.RETURN)&&syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED)
                 require(length.isPresent()==names.contains("LENGTH"),"supported LENGTH has structural expression");
             length.flatMap(OperandExpression::reference).ifPresent(r->require(r.id().statement().equals(header.id()),"expression operand owner"));
+            Objects.requireNonNull(implicitArea);
+            if(implicitArea.isPresent()) {
+                var area=implicitArea.orElseThrow();
+                require(syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED&&(commandKind==CicsCommandKind.RECEIVE_MAP||commandKind==CicsCommandKind.SEND_MAP),"implicit BMS command kind");
+                require(!names.contains("INTO")&&!names.contains("FROM")&&!names.contains("SET"),"implicit area excludes explicit area");
+                require(area.id().statement().equals(header.id())&&area.logicalWholeItem().isPresent()&&area.binding().selected().equals(area.logicalWholeItem()),"implicit area resolved whole identity");
+                require(area.role()==(commandKind==CicsCommandKind.RECEIVE_MAP?OperandRole.WRITE:OperandRole.READ)&&!area.provenance().exact(),"implicit direction and derived provenance");
+                require(options.stream().anyMatch(o->o.name().equals("MAP")&&o.reference().isEmpty()&&o.operand().isPresent()),"implicit MAP literal source");
+            }
             Objects.requireNonNull(hostEffects);
             if(hostEffects.isPresent()) {
                 require(syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED,"host effects require supported syntax");
-                require(commandKind!=CicsCommandKind.RECEIVE_MAP||names.contains("INTO"),"RECEIVE host area must be explicit");
-                require(commandKind!=CicsCommandKind.SEND_MAP||names.contains("FROM"),"SEND host area must be explicit");
+                require(commandKind!=CicsCommandKind.RECEIVE_MAP||names.contains("INTO")||implicitArea.isPresent(),"RECEIVE host area must be explicit");
+                require(commandKind!=CicsCommandKind.SEND_MAP||names.contains("FROM")||implicitArea.isPresent(),"SEND host area must be explicit");
                 var literals=new java.util.HashSet<>(hostEffects.orElseThrow().literalOptions());
                 for(var option:options) {
                     if(literals.remove(option.start()))require(java.util.Set.of("MAP","MAPSET","TRANSID").contains(option.name())&&option.reference().isEmpty(),"literal proof belongs to a name parameter");
@@ -858,6 +867,7 @@ public final class CobolSemanticProduct {
             }
 
         }
+        public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g,Optional<OperandExpression> l,Optional<CicsHostEffects> e){this(h,k,s,raw,o,g,l,e,Optional.empty());}
         public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g,Optional<OperandExpression> l){this(h,k,s,raw,o,g,l,Optional.empty());}
         public CicsCommandFact(StatementHeader h,CicsCommandKind k,CicsCommandSyntaxStatus s,String raw,List<CicsOption> o,List<String> g){this(h,k,s,raw,o,g,Optional.empty(),Optional.empty());}
     }

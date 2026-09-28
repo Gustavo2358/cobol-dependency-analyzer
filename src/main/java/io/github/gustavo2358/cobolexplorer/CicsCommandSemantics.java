@@ -35,10 +35,20 @@ public final class CicsCommandSemantics {
         }
         return new CicsCommandSemantics(frontend,facts);
     }
+    record ImplicitArea(String name,CicsCommandSyntax.Option map,Ast.EmbeddedHostRole role) { }
+    static Optional<ImplicitArea> implicitArea(Fact fact) {
+        if(!fact.supported()||fact.command()!=Kind.RECEIVE_MAP&&fact.command()!=Kind.SEND_MAP)return Optional.empty();
+        boolean input=fact.command()==Kind.RECEIVE_MAP;
+        if(fact.options().stream().anyMatch(o->o.name().equals(input?"INTO":"FROM")||o.name().equals("SET")))return Optional.empty();
+        return fact.options().stream().filter(o->o.name().equals("MAP")).findFirst().flatMap(map->map.operand().flatMap(CicsCommandSyntax::literal)
+            .filter(name->!name.isEmpty()&&name.length()<=7&&dataSyntax(name+(input?"I":"O")))
+            .map(name->new ImplicitArea(name+(input?"I":"O"),map,input?Ast.EmbeddedHostRole.WRITE:Ast.EmbeddedHostRole.READ)));
+    }
     private static Optional<HostEffects> hostEffects(Fact fact,Ast.EmbeddedLanguageStatement statement) {
         if(!fact.supported())return Optional.empty();
         if((fact.command()==Kind.RECEIVE_MAP||fact.command()==Kind.SEND_MAP)
-                &&fact.options().stream().noneMatch(o->o.name().equals(fact.command()==Kind.RECEIVE_MAP?"INTO":"FROM")))return Optional.empty();
+                &&fact.options().stream().noneMatch(o->o.name().equals(fact.command()==Kind.RECEIVE_MAP?"INTO":"FROM"))
+                &&statement.hostOperands().stream().noneMatch(h->h.option().equals("IMPLICIT_AREA")))return Optional.empty();
         var hosts=new HashMap<Integer,Ast.EmbeddedHostOperand>();statement.hostOperands().forEach(h->hosts.put(h.optionStart(),h));
         var expressions=new HashMap<Integer,Ast.Expression>();statement.expressionOperands().forEach(e->expressions.put(e.optionStart(),e.expression()));
         var literals=new ArrayList<Integer>();

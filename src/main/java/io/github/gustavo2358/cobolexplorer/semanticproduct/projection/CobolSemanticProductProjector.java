@@ -1,6 +1,7 @@
 package io.github.gustavo2358.cobolexplorer.semanticproduct.projection;
 
 import io.github.gustavo2358.cobolexplorer.Ast;
+import io.github.gustavo2358.cobolexplorer.CicsCommandSemantics;
 import io.github.gustavo2358.cobolexplorer.StorageLayoutSemantics;
 import io.github.gustavo2358.cobolexplorer.StorageAccessSemantics;
 import io.github.gustavo2358.cobolexplorer.ProcedurePerformSemantics;
@@ -996,7 +997,7 @@ public final class CobolSemanticProductProjector {
         if(command.isPresent()) {
             var source=command.get();var codes=new LinkedHashSet<>(source.gaps());codes.add("CICS_COMMAND_EFFECTS_NOT_MODELED");
             var embedded=(Ast.EmbeddedLanguageStatement)plan.position().statement();var hosts=new HashMap<Integer,Ast.EmbeddedHostOperand>();
-            for(var host:embedded.hostOperands())require(hosts.put(host.optionStart(),host)==null,"one canonical command operand per option");
+            for(var host:embedded.hostOperands())if(!host.option().equals("IMPLICIT_AREA"))require(hosts.put(host.optionStart(),host)==null,"one canonical command operand per option");
             var options=new ArrayList<CicsOption>();int ordinal=0;
             for(var option:source.options()) {
                 Optional<DataReference> reference=Optional.empty();var h=hosts.get(option.start());
@@ -1010,15 +1011,24 @@ public final class CobolSemanticProductProjector {
                 }
                 options.add(new CicsOption(option.name(),option.operand(),option.start(),option.end(),reference));
             }
+            Optional<DataReference> implicitArea=Optional.empty();
+            for(var h:embedded.hostOperands())if(h.option().equals("IMPLICIT_AREA")) {
+                var entry=inputs.entryFor(h.reference());addReportGaps(statementId,entry.occurrence(),inputs,provenance(h.reference().meta().provenance()),gaps);
+                if(projectableDataBinding(entry,inputs)&&nominalBinding(entry,dataIds).selected().isPresent())implicitArea=Optional.of(new DataReference(new OperandId(statementId,ordinal++),
+                    h.role()==Ast.EmbeddedHostRole.WRITE?OperandRole.WRITE:OperandRole.READ,nominalBinding(entry,dataIds),provenance(h.reference().meta().provenance()),
+                    Optional.empty(),regionalAccess(inputs,h.reference().meta().id()),List.of(),nominalBinding(entry,dataIds).selected()));
+            }
+            boolean areaProved=implicitArea.isPresent()||source.command()!=CicsCommandSemantics.Kind.RECEIVE_MAP&&source.command()!=CicsCommandSemantics.Kind.SEND_MAP
+                ||options.stream().anyMatch(o->o.name().equals(source.command()==CicsCommandSemantics.Kind.RECEIVE_MAP?"INTO":"FROM"));
             var length=commandLength(embedded,statementId,ordinal,inputs,dataIds);
-            var hostEffects=source.hostEffects().filter(proof->options.stream().allMatch(o->o.operand().isEmpty()
+            var hostEffects=source.hostEffects().filter(proof->areaProved&&options.stream().allMatch(o->o.operand().isEmpty()
                 ||proof.literalOptions().contains(o.start())||o.name().equals("LENGTH")&&length.isPresent()
                 ||o.reference().filter(r->r.logicalWholeItem().isPresent()).isPresent()))
                 .map(proof->new CicsHostEffects(proof.literalOptions()));
             statements.add(new CicsCommandFact(header(statementId,plan.position().ordinal(),containment,statementProvenance,CoverageStatus.PARTIAL,
                 readiness(ReadinessStatus.PARTIAL,"typed CICS command",ReadinessStatus.PARTIAL,"control in ControlTopology",ReadinessStatus.BLOCKED,"command effects not modeled")),
                 CicsCommandKind.valueOf(source.command().name()),source.supported()?CicsCommandSyntaxStatus.SUPPORTED:CicsCommandSyntaxStatus.UNAVAILABLE,
-                source.raw(),options,List.copyOf(codes),length,hostEffects));
+                source.raw(),options,List.copyOf(codes),length,hostEffects,implicitArea));
 
             for(var code:codes)gaps.add(capabilityGap(statementId,code,"Command dimension remains partial",statementProvenance));
             addContainmentGap(containment,statementId,statementProvenance,gaps);return;
