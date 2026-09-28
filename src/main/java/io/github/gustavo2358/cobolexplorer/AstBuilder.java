@@ -1149,7 +1149,9 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     }
 
     private static Optional<Ast.ExitKind> exitKind(ParserRuleContext context) {
+        if(context instanceof CobolParser.StopStatementContext stop&&(stop.RUN()!=null||stop.stopStatementGiving()!=null))return Optional.of(Ast.ExitKind.STOP_RUN);
         if (!(context instanceof CobolParser.ExitStatementContext e)) return Optional.empty();
+        if(e.PROGRAM()!=null)return Optional.of(Ast.ExitKind.PROGRAM);
         if (e.PARAGRAPH()!=null) return Optional.of(Ast.ExitKind.PARAGRAPH);
         if (e.PERFORM()!=null) return Optional.of(e.CYCLE()!=null?Ast.ExitKind.PERFORM_CYCLE:Ast.ExitKind.PERFORM);
         return Optional.empty();
@@ -1158,7 +1160,7 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     private static Optional<StatementEffectSummary> statementEffects(ParserRuleContext context,List<Ast.StatementOperand> operands,
             List<Ast.StatementClause> clauses,Map<ParserRuleContext,Ast.Node> nodes) {
         if(context instanceof CobolParser.DisplayStatementContext)return displayEffects(context,operands,clauses);
-        if(context instanceof CobolParser.ContinueStatementContext||context instanceof CobolParser.ExitStatementContext e&&plainExit(e))
+        if(context instanceof CobolParser.EntryStatementContext||context instanceof CobolParser.ContinueStatementContext||context instanceof CobolParser.ExitStatementContext e&&(plainExit(e)||e.PROGRAM()!=null))
             return Optional.of(new StatementEffectSummary(List.of(),List.of(),List.of(),List.of(),StatementEffectSummary.Bound.NONE,StatementEffectSummary.Bound.NONE,StatementEffectSummary.Bound.NONE,StatementEffectSummary.Environment.NONE,StatementEffectSummary.ValueTransform.NONE,StatementEffectSummary.Proof.NO_OP));
         var targets=new ArrayList<ParserRuleContext>();StatementEffectSummary.Proof proof;
         boolean closed=clauses.isEmpty();

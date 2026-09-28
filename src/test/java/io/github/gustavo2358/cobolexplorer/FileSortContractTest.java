@@ -91,7 +91,13 @@ class FileSortContractTest {
         var p=publish("CONTINUE.\nEXIT.\nGOBACK.");
         var effects=p.path("statementEffects");assertEquals(2,effects.size());
         for(var e:effects){assertEquals("NO_OP",e.path("proof").asText());assertEquals("NONE",e.path("environment").asText());assertEquals("NONE",e.path("unknownWriteBound").asText());assertEquals("NONE",e.path("unknownReadBound").asText());assertTrue(e.path("knownReads").isEmpty());assertTrue(e.path("mayWrites").isEmpty());}
-        assertTrue(publish("EXIT PROGRAM.").path("statementEffects").isEmpty(),"EXIT PROGRAM is a transfer, not NO_OP");
+        var exit=publish("EXIT PROGRAM.");
+        assertEquals("NO_OP",exit.path("statementEffects").get(0).path("proof").asText(),
+                "EXIT PROGRAM has no local storage effect; control is a separate fact");
+        var routes=CicsCommandContractTest.outcomes(exit,exit.path("statements").get(0));
+        assertEquals(Set.of("NORMAL","PROGRAM_RETURN"),routes.stream()
+                .map(o->o.path("kind").asText()).collect(java.util.stream.Collectors.toSet()),
+                "An external unit may be main or called; memory NO_OP must not erase either control alternative");
     }
     @Test void sameFdMayHaveBothSortRolesAndMultipleKeysSurvive()throws Exception {
         var p=publish("SORT S ON ASCENDING KEY SK SK2 USING A GIVING A.\nGOBACK.");

@@ -1391,7 +1391,7 @@ public final class CobolSemanticProduct {
     public enum EffectBound { NONE, ALL }
     public enum EnvironmentEffect { OUTPUT, INPUT, UNKNOWN, NONE }
     public enum EffectValueTransform { NONE, UNKNOWN }
-    public enum EffectProof { NO_OP, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS, SQL_HOST_OPERANDS, DLI_EXTERNAL_OPERANDS, DLI_HOST_OPERANDS, CICS_CONDITION_REGISTRATION }
+    public enum EffectProof { NO_OP, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS, SEARCH_INDEX_MAY, SQL_HOST_OPERANDS, DLI_EXTERNAL_OPERANDS, DLI_HOST_OPERANDS, CICS_CONDITION_REGISTRATION }
     public record EffectSummary(List<OperandId> knownReads,List<OperandId> mayWrites,List<OperandId> mustOverwrite,
             List<OperandId> exposedRegions,EffectBound unknownReadBound,EffectBound unknownWriteBound,
             EffectBound unknownExposureBound,EnvironmentEffect environment,EffectValueTransform values,EffectProof proof) {
@@ -1433,6 +1433,9 @@ public final class CobolSemanticProduct {
                 if(e.proof()!=EffectProof.DISPLAY_SIMPLE&&e.proof()!=EffectProof.NO_OP)require(e.values()==EffectValueTransform.UNKNOWN,
                     "receiver value transform remains uninterpreted");
                 require(e.knownReads().stream().allMatch(id->refs.get(id).role()==OperandRole.READ),"effect read role");
+                if(e.proof()==EffectProof.SEARCH_INDEX_MAY)require(e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()
+                    &&e.unknownReadBound()==EffectBound.ALL&&e.unknownWriteBound()==EffectBound.ALL
+                    &&e.unknownExposureBound()==EffectBound.NONE&&e.environment()==EnvironmentEffect.NONE,"search index remains unknown MAY");
                 if(e.proof()==EffectProof.SQL_HOST_OPERANDS||e.proof()==EffectProof.DLI_EXTERNAL_OPERANDS)require(
                     e.mustOverwrite().isEmpty()&&e.exposedRegions().isEmpty()&&e.unknownReadBound()==EffectBound.ALL
                     &&e.unknownWriteBound()==EffectBound.ALL&&e.unknownExposureBound()==EffectBound.ALL
