@@ -25,3 +25,9 @@ Cada família com CALL posterior e dentro de PERFORM, sem/RESP/NOHANDLE, estado 
 - [SEND TEXT](https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-send-text): FROM/LENGTH/ERASE/FREEKB; erros separados da conclusão.
 - [WRITEQ TD](https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-writeq-td): QUEUE/FROM/LENGTH/SYSID e condições da fila.
 - [DFH7057I W](https://www.ibm.com/docs/en/cics-ts/5.5.0?topic=messages-dfh7057i-w): especificação duplicada de opção ignorada pelo translator.
+
+## Descoberta adicional na qualificação
+
+INQUIRE PROGRAM com subscrito revelou ambiguidade do entry point `identifier()` sem contexto EOF: ANTLR escolhia qualifiedDataName e deixava `(índice)` sem consumo. O bridge agora chama `embeddedIdentifier : identifier EOF`, mantendo a mesma gramática de referências e impedindo aceitar lixo após um prefixo válido. Não há reconhecimento por nome; os oráculos usam ITEM-X(IDX), referência parcial e combinações. Referência de elemento não é promovida a whole item. A alteração compartilhada exige novo replay CardDemo e FAST/provenance.
+
+Três negativos históricos SEND TEXT foram evoluídos para exigir sua nova família e conclusão/condição corretas; os negativos CONTROL/CONVID/opções inválidas continuam intactos.

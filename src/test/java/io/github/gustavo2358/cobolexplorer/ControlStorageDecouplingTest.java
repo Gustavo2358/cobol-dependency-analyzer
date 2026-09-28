@@ -33,6 +33,10 @@ class ControlStorageDecouplingTest {
         assertEquals(Set.of("NORMAL:normal","UNKNOWN_LOCAL:cics/overflow"),CicsCommandContractTest.roles(CicsCommandContractTest.one("SEND MAP('M') NOHANDLE")));
         for(var cmd:List.of("SEND FROM(WS-AREA) MYSTERY NOHANDLE","SEND TEXT FROM(WS-AREA) NOHANDLE","RETURN NOHANDLE","ABEND NOHANDLE","MYSTERY NOHANDLE")) {
             var j=publish(d,"EXEC CICS "+cmd+" END-EXEC.\nGOBACK.");
+            if(cmd.equals("SEND TEXT FROM(WS-AREA) NOHANDLE")) {
+                assertEquals("SEND_TEXT",CicsCommandContractTest.command(j).path("commandKind").asText());
+                assertEquals(Set.of("NORMAL:normal"),CicsCommandContractTest.roles(j));continue;
+            }
             assertTrue(CicsCommandContractTest.outcomes(j,j.path("statements").get(0)).stream().noneMatch(o->o.path("kind").asText().equals("NORMAL")),cmd);
         }
     }

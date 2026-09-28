@@ -2642,6 +2642,11 @@ commentEntry
    : COMMENTENTRYLINE+
    ;
 
+// Complete host reference entry point. EOF resolves identifier/tableCall ambiguity.
+embeddedIdentifier
+   : identifier EOF
+   ;
+
 // lexer rules --------------------------------------------------------------------------------
 
 // keywords

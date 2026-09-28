@@ -797,7 +797,7 @@ public final class CobolSemanticProduct {
         StatementHeader header();
     }
 
-    public enum CicsCommandKind { SYNCPOINT, SYNCPOINT_ROLLBACK, RETURN, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE }
+    public enum CicsCommandKind { SYNCPOINT, SYNCPOINT_ROLLBACK, RETURN, RECEIVE_MAP, SEND_MAP, SEND_TERMINAL, RETRIEVE, ASKTIME, FORMATTIME, ASSIGN, INQUIRE_PROGRAM, SEND_TEXT, WRITEQ_TD }
     public enum OperandExpressionKind { INTEGER, DATA_REFERENCE, LENGTH_OF }
     /** Source expression structure; LENGTH_OF refers to a declaration, not its stored value. */
     public record OperandExpression(OperandExpressionKind kind,Optional<java.math.BigInteger> integer,
@@ -827,21 +827,23 @@ public final class CobolSemanticProduct {
             if(commandKind==CicsCommandKind.SEND_TERMINAL)allowed.addAll(java.util.Set.of("FROM","LENGTH","ERASE"));
             if(commandKind==CicsCommandKind.SEND_MAP||commandKind==CicsCommandKind.RECEIVE_MAP)allowed.addAll(java.util.Set.of("MAP","MAPSET",commandKind==CicsCommandKind.SEND_MAP?"FROM":"INTO"));
             if(commandKind==CicsCommandKind.SEND_MAP)allowed.addAll(java.util.Set.of("CURSOR","ERASE","FREEKB"));
+            allowed.addAll(CicsCommandShape.extra(commandKind));
             for(var o:options) {
                 require(o.start()>=last&&o.end()>o.start()&&o.end()<=rawText.length(),"ordered command options");last=o.end();
-                boolean flag=java.util.Set.of("NOHANDLE","CURSOR","ERASE","FREEKB","ROLLBACK","IMMEDIATE").contains(o.name());
-                shape&=names.add(o.name())&&allowed.contains(o.name())&&(flag?o.operand().isEmpty():o.operand().filter(v->!v.isBlank()).isPresent());
+                boolean flag=CicsCommandShape.flag(commandKind,o.name(),o.operand().isPresent());
+                shape&=(names.add(o.name())||o.name().equals("NOHANDLE")&&o.operand().isEmpty())&&allowed.contains(o.name())&&(flag?o.operand().isEmpty():o.operand().filter(v->!v.isBlank()).isPresent());
                 require(o.reference().isEmpty()||o.operand().isPresent()&&!flag,"command reference has operand");
                 o.reference().ifPresent(r->{require(r.id().statement().equals(header.id()),"command operand owner");
-                    require(r.role()==(java.util.Set.of("RESP","RESP2","INTO").contains(o.name())?OperandRole.WRITE:OperandRole.READ),"command operand role");});
+                    require(r.role()==(CicsCommandShape.writes(commandKind,o.name())?OperandRole.WRITE:OperandRole.READ),"command operand role");});
             }
             if(syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED) {
+                require(gapCodes.contains("CICS_COMMAND_DUPLICATE_FLAG_IGNORED")== (options.stream().filter(o->o.name().equals("NOHANDLE")).count()>1),"duplicate flag warning parity");
                 require(commandKind!=CicsCommandKind.RETURN||(!names.contains("LENGTH")||names.contains("COMMAREA"))&&(!names.contains("IMMEDIATE")||names.contains("TRANSID")),"RETURN option combination");
-                require(shape&&(commandKind==CicsCommandKind.RETURN||commandKind==CicsCommandKind.SYNCPOINT||commandKind==CicsCommandKind.SYNCPOINT_ROLLBACK&&names.contains("ROLLBACK")||names.contains(commandKind==CicsCommandKind.RETRIEVE?"INTO":commandKind==CicsCommandKind.SEND_TERMINAL?"FROM":"MAP")),"supported command syntax");
-                require(gapCodes.stream().allMatch(g->g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"supported syntax has no syntax gap");
-            } else require(gapCodes.stream().anyMatch(g->!g.isBlank()&&!g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")),"unavailable command reason");
-            require(length.isEmpty()||(commandKind==CicsCommandKind.SEND_TERMINAL||commandKind==CicsCommandKind.RETURN)&&names.contains("LENGTH"),"length belongs to terminal LENGTH option");
-            if((commandKind==CicsCommandKind.SEND_TERMINAL||commandKind==CicsCommandKind.RETURN)&&syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED)
+                require(shape&&CicsCommandShape.required(commandKind,names),"supported command syntax");
+                require(gapCodes.stream().allMatch(g->g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")||g.equals("CICS_COMMAND_DUPLICATE_FLAG_IGNORED")),"supported syntax has no syntax gap");
+            } else require(gapCodes.stream().anyMatch(g->!g.isBlank()&&!g.equals("CICS_COMMAND_EFFECTS_NOT_MODELED")&&!g.equals("CICS_COMMAND_DUPLICATE_FLAG_IGNORED")),"unavailable command reason");
+            require(length.isEmpty()||CicsCommandShape.length(commandKind)&&names.contains("LENGTH"),"length belongs to terminal LENGTH option");
+            if(CicsCommandShape.length(commandKind)&&syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED)
                 require(length.isPresent()==names.contains("LENGTH"),"supported LENGTH has structural expression");
             length.flatMap(OperandExpression::reference).ifPresent(r->require(r.id().statement().equals(header.id()),"expression operand owner"));
             Objects.requireNonNull(implicitArea);
@@ -855,6 +857,7 @@ public final class CobolSemanticProduct {
             }
             Objects.requireNonNull(hostEffects);
             if(hostEffects.isPresent()) {
+                require(!CicsCommandShape.extended(commandKind),"extended command implicit effects remain open");
                 require(syntaxStatus==CicsCommandSyntaxStatus.SUPPORTED,"host effects require supported syntax");
                 require(commandKind!=CicsCommandKind.RECEIVE_MAP||names.contains("INTO")||implicitArea.isPresent(),"RECEIVE host area must be explicit");
                 require(commandKind!=CicsCommandKind.SEND_MAP||names.contains("FROM")||implicitArea.isPresent(),"SEND host area must be explicit");

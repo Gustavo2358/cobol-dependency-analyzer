@@ -38,8 +38,10 @@ class TerminalSendContractTest {
     }
     @Test void familyAndUnsupportedNegatives()throws Exception {
         assertEquals("SEND_MAP",c(one("MAP('M') FROM(WS-AREA)")).path("commandKind").asText());
-        for(var s:List.of("TEXT FROM(WS-AREA)","CONTROL ERASE","CONVID(RC) FROM(WS-AREA)"))
-            assertTrue(one(s).path("statements").findValuesAsText("variant").stream().noneMatch("CICS_COMMAND"::equals));
+        for(var s:List.of("TEXT FROM(WS-AREA)","CONTROL ERASE","CONVID(RC) FROM(WS-AREA)")) {
+            if(s.startsWith("TEXT"))assertEquals("SEND_TEXT",c(one(s)).path("commandKind").asText());
+            else assertTrue(one(s).path("statements").findValuesAsText("variant").stream().noneMatch("CICS_COMMAND"::equals));
+        }
         for(var s:List.of("ERASE","FROM()","FROM(WS-AREA) FROM(WS-AREA)","FROM(WS-AREA) MYSTERY","FROM(WS-AREA) LENGTH(FUNCTION LENGTH(WS-AREA))")) {
             var j=one(s);assertEquals("UNAVAILABLE",c(j).path("syntaxStatus").asText());assertTrue(outcomes(j).stream().noneMatch(o->o.path("kind").asText().equals("NORMAL")));
         }

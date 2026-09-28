@@ -17,7 +17,7 @@ final class EmbeddedExpressionSyntax {
         try {
             ParserRuleContext tree;
             if(tokens.LA(1)==CobolParser.INTEGERLITERAL) tree=parser.literal();
-            else tree=parser.identifier();
+            else tree=parser.embeddedIdentifier().identifier();
             if(failed[0]||parser.getCurrentToken().getType()!=Token.EOF)return Optional.empty();
             boolean valid=tree instanceof CobolParser.LiteralContext l&&l.numericLiteral()!=null&&l.numericLiteral().integerLiteral()!=null;
             if(tree instanceof CobolParser.IdentifierContext i)valid=i.qualifiedDataName()!=null||i.tableCall()!=null
@@ -29,7 +29,7 @@ final class EmbeddedExpressionSyntax {
     static List<Host> parse(String raw,int offset,int line,int column,int tokenIndex) {
         var command=CicsCommandSemantics.parse(raw);
         var options=new ArrayList<CicsCommandSyntax.Option>();
-        if(command.filter(c->c.command()==CicsCommandSemantics.Kind.SEND_TERMINAL||c.command()==CicsCommandSemantics.Kind.RETURN).isPresent())options.addAll(command.get().options());
+        if(command.filter(c->CicsCommandSemantics.length(c.command())).isPresent())options.addAll(command.get().options());
         // Non-reference LENGTH operands have their own identity; they are not a write to the measured item.
         new CicsFileControlAnalyzer().parse(raw).ifPresent(file->{
             for(var o:file.options())if(o.syntax().name().equals("LENGTH")&&o.syntax().operand().isPresent()) {
