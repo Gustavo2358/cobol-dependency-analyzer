@@ -780,3 +780,32 @@ TRIM_TRAILING_SPACES. These generic operators are selected by canonical typed
 COBOL syntax. They preserve source supports and modelAssumed confidence.
 Unsupported transforms and runtime functions remain UNKNOWN. V1/V2 serialized
 leaf terms remain unchanged. See the active [campaign](../work/carddemo-values-control.md).
+
+## Source table text — SP 2.60 / qualified source 1.4
+
+NOMINAL_TEXT_SOURCE_V4 adds `tableFields`. Each field has a real storage node
+identity and initializer values linked to real declaration origins. The frontend
+uses typed DISPLAY character extents, fixed OCCURS bounds and proved REDEFINES
+components. Numeric DISPLAY columns participate in offsets; their contents are
+not program names. No physical memory capability is asserted.
+
+This is an index-insensitive summary of each textual field and its overlapping
+textual aliases. Valid constant indices and unknown indices admit the field's
+possible occurrences, with an open remainder. An invalid constant index does not
+publish a query. Every update to a summary is weak; conditions over the summary
+cannot eliminate elements. Copying a table value preserves the predecessor
+snapshot, initializer/assignment supports and index uncertainty. Model VALUEs
+cannot initialize this analysis or grant a kill proof.
+
+Only typed literal group writes are sliced in the producer. Unsupported partial
+writes, ODO, non-DISPLAY geometry and unproved overlays remain unknown. A bounded
+summary can retain obsolete names; it cannot certify an occurrence-specific kill.
+No lower or CFG code reads declaration syntax, member names or statement text.
+
+The wire uses a closed V4 variant; old nominal authorities reject table fields
+and CHOICE terms. Source evidence 1.4 is required, preserving older envelopes and
+requiring full declaration provenance. These facts do not change AIR or CFG.
+
+IBM authorities: [OCCURS](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=entry-occurs-clause),
+[subscripting](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=table-subscripting),
+[REDEFINES](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=entry-redefines-clause).

@@ -240,10 +240,10 @@ public final class CobolSemanticProductProjector {
         var ids=new HashMap<Integer,StatementId>();statements.forEach((ast,id)->ids.put(ast.meta().id(),id));
         return products.scalarMoves().nominalValues().facts(unit).filter(f->!f.queries().isEmpty()).map(f->{
             java.util.function.IntFunction<String> statement=n->"statement:"+Objects.requireNonNull(ids.get(n)).localId();
-            return new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues(f.assignments().stream().anyMatch(a->a.source().extended())?"NOMINAL_TEXT_SOURCE_V3":f.symbols().stream().anyMatch(io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Symbol::modelAssumed)?"NOMINAL_TEXT_SOURCE_V2":"NOMINAL_TEXT_SOURCE_V1",f.symbols(),
+            return new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues(!f.tableFields().isEmpty()?"NOMINAL_TEXT_SOURCE_V4":f.assignments().stream().anyMatch(a->a.source().extended())?"NOMINAL_TEXT_SOURCE_V3":f.symbols().stream().anyMatch(io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Symbol::modelAssumed)?"NOMINAL_TEXT_SOURCE_V2":"NOMINAL_TEXT_SOURCE_V1",f.symbols(),
                 f.assignments().stream().map(a->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Assignment(statement.apply(a.statement()),a.target(),a.source())).toList(),
                 f.conditions().stream().map(c->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Condition(statement.apply(c.statement()),c.predicate())).toList(),
-                f.queries().stream().map(q->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Query(statement.apply(q.statement()),q.node())).toList());
+                f.queries().stream().map(q->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Query(statement.apply(q.statement()),q.node())).toList(),f.tableFields());
         });
     }
 
