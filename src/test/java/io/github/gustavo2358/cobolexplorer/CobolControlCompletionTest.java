@@ -21,4 +21,11 @@ class CobolControlCompletionTest {
         assertTrue(outcomes.stream().anyMatch(o->o.path("kind").asText().equals("NORMAL")));
         assertTrue(outcomes.stream().anyMatch(o->o.path("kind").asText().equals("PROGRAM_RETURN")));
     }
+    @Test void containedProgramExitHasNoMainAlternative()throws Exception {
+        var source="IDENTIFICATION DIVISION.\nPROGRAM-ID. OUTER-P.\nPROCEDURE DIVISION.\nGOBACK.\nIDENTIFICATION DIVISION.\nPROGRAM-ID. INNER-P.\nPROCEDURE DIVISION.\nEXIT PROGRAM.\nCALL 'DEAD'.\nEND PROGRAM INNER-P.\nEND PROGRAM OUTER-P.";
+        var a=AstBoundaryTestSupport.analyze(source,"nested-exit.cbl");
+        var j=CicsAbendContractTest.json(EofUnitBoundaryTest.publish(a,1,StorageLayoutSemantics.Profile.UNSPECIFIED));
+        var outcomes=CicsCommandContractTest.outcomes(j,j.path("statements").get(0));
+        assertEquals(1,outcomes.size());assertEquals("PROGRAM_RETURN",outcomes.get(0).path("kind").asText());
+    }
 }

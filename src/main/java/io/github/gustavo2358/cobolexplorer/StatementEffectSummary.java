@@ -12,7 +12,7 @@ public record StatementEffectSummary(List<Ast.DataReference> knownReads,
     public enum Bound { NONE, ALL }
     public enum Environment { OUTPUT, INPUT, UNKNOWN, NONE }
     public enum ValueTransform { NONE, UNKNOWN }
-    public enum Proof { NO_OP, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS, SQL_HOST_OPERANDS, DLI_EXTERNAL_OPERANDS, DLI_HOST_OPERANDS, CICS_CONDITION_REGISTRATION }
+    public enum Proof { NO_OP, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS, SEARCH_INDEX_MAY, SQL_HOST_OPERANDS, DLI_EXTERNAL_OPERANDS, DLI_HOST_OPERANDS, CICS_CONDITION_REGISTRATION }
     public StatementEffectSummary {
         knownReads=List.copyOf(knownReads);mayWrites=List.copyOf(mayWrites);
         mustOverwrite=List.copyOf(mustOverwrite);exposedRegions=List.copyOf(exposedRegions);
@@ -32,6 +32,8 @@ public record StatementEffectSummary(List<Ast.DataReference> knownReads,
     }
     public boolean completeMutationBound() {return unknownWriteBound==Bound.NONE&&unknownExposureBound==Bound.NONE;}
     public static Optional<StatementEffectSummary> of(Ast.Statement statement) {
+        if(statement instanceof Ast.SearchStatement s&&s.all()&&s.varying()==null&&s.whens().size()==1)
+            return Optional.of(new StatementEffectSummary(List.of(s.searchedReference()),List.of(),List.of(),List.of(),Bound.ALL,Bound.ALL,Bound.NONE,Environment.NONE,ValueTransform.UNKNOWN,Proof.SEARCH_INDEX_MAY));
         if(statement instanceof Ast.ModeledStatement s)return s.effects();
         if(statement instanceof Ast.PreservedStatement s)return s.effects();
         return Optional.empty();

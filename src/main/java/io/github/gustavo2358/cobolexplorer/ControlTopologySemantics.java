@@ -97,7 +97,7 @@ public final class ControlTopologySemantics {
             Target after=i+1<sectionList.size()?entry(sectionIds.get(sectionList.get(i+1).meta().id()),ps):unknown(root,ps);
             Target tail=first.map(p->entry(paragraphIds.get(p.meta().id()),ps)).orElse(complete(id,ps));
             putRegion(id,RegionKind.SECTION,root,direct.isEmpty()?tail:occ(direct.get(0),ps),List.of(),after,ps);
-            statements(direct,id,tail,isolation);
+            sentences(section.children().stream().filter(Ast.Sentence.class::isInstance).map(Ast.Sentence.class::cast).toList(),id,tail,isolation);
         }
         // Each paragraph default is the canonical ordinary relation, not transported list order.
         for(var p:paragraphs) {
@@ -111,12 +111,12 @@ public final class ControlTopologySemantics {
             else if(sectionIds.containsValue(owner))after=complete(owner,ps);
             else if(owner.equals(root)&&!sectionList.isEmpty())after=entry(sectionIds.get(sectionList.get(0).meta().id()),ps);
             makeRegion(id,RegionKind.PARAGRAPH,owner,direct,after,ps);
-            statements(direct,id,complete(id,ps),isolation);
+            sentences(p.sentences(),id,complete(id,ps),isolation);
         }
         var roots=new ArrayList<Ast.Statement>();
         for(var child:division.children())if(child instanceof Ast.Sentence s)roots.addAll(s.statements());
         var end=paragraphs.stream().filter(p->paragraphOwners.get(p.meta().id()).equals(root)).findFirst().map(p->entry(paragraphIds.get(p.meta().id()),rp)).orElse(unknown(root,rp));
-        statements(roots,root,end,isolation);
+        sentences(division.children().stream().filter(Ast.Sentence.class::isInstance).map(Ast.Sentence.class::cast).toList(),root,end,isolation);
         var start=division.procedureEntry().flatMap(Ast.ProcedureEntry::startStatementId).map(nodes::get)
             .filter(Ast.Statement.class::isInstance).map(Ast.Statement.class::cast).filter(ids::containsKey).map(s->occ(s,rp)).orElse(unknown(root,rp));
         putRegion(root,RegionKind.PROCEDURE,"",start,roots.stream().map(ids::get).filter(Objects::nonNull).toList(),unknown(root,rp),rp);
@@ -133,6 +133,22 @@ public final class ControlTopologySemantics {
         return new ControlTopology(fileFlows.isEmpty()?"FRONTEND_CONTROL_TOPOLOGY_R1":"FRONTEND_CONTROL_TOPOLOGY_R2",List.copyOf(occurrences.values()),List.copyOf(regions.values()),
             List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows,sourceContinuations);
     }
+    /** The period frontier is represented only when a source NEXT SENTENCE needs it. */
+    private void sentences(List<Ast.Sentence> sentences,String owner,Target end,String isolation) {
+        Target tail=end;
+        for(int i=sentences.size()-1;i>=0;i--) {
+            var sentence=sentences.get(i);var body=sentence.statements();if(body.isEmpty())continue;
+            var pending=new ArrayDeque<Ast.Node>();pending.add(sentence);boolean escape=false;
+            while(!pending.isEmpty()){var n=pending.removeFirst();escape|=n instanceof Ast.NextSentenceStatement;pending.addAll(Ast.children(n));}
+            if(escape) {
+                String region="region:sentence:"+sentence.meta().id();
+                var p=proof(region,ProofKind.LOCAL_GRAMMAR,"sentence-period-frontier",sentence.meta().provenance(),List.of(isolation));
+                makeRegion(region,RegionKind.SENTENCE,owner,body,tail,p);
+                statements(body,region,complete(region,p),isolation);
+            }else statements(body,owner,tail,isolation);
+            tail=occ(body.get(0),isolation);
+        }
+    }
     private void statements(List<Ast.Statement> list,String owner,Target end,String isolation) {
         for(int i=0;i<list.size();i++) {
             var s=list.get(i);if(!ids.containsKey(s))continue;
@@ -140,6 +156,35 @@ public final class ControlTopologySemantics {
             var next=i+1<list.size()&&ids.containsKey(list.get(i+1))?occ(list.get(i+1),p):end;
             if(!independent){add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(owner,p),"",p);continue;}
             exceptionalEvent(s,p);
+            if(s instanceof Ast.NextSentenceStatement) {
+                String scope=owner;while(!scope.isEmpty()&&regions.get(scope).kind()!=RegionKind.SENTENCE)scope=regions.get(scope).parent();
+                var target=scope.isEmpty()?unknown(owner,p):new Target(TargetKind.ESCAPE,scope,List.of(p));
+                add(s,owner,scope.isEmpty()?OutcomeKind.UNKNOWN_LOCAL:OutcomeKind.EXPLICIT_TRANSFER,"next-sentence",target,"",p);continue;
+            }
+            if(s instanceof Ast.ModeledStatement m&&m.exitKind().filter(k->k==Ast.ExitKind.STOP_RUN||k==Ast.ExitKind.PROGRAM).isPresent()) {
+                if(m.exitKind().get()==Ast.ExitKind.STOP_RUN) {
+                    var stop=proof(id+"/halt",ProofKind.LOCAL_GRAMMAR,"stop-run-terminates-run-unit",s.meta().provenance(),List.of(p));
+                    add(s,owner,OutcomeKind.PROGRAM_HALT,"halt",new Target(TargetKind.PROGRAM_HALT,root,List.of(stop)),"",stop);
+                } else {
+                    var exit=proof(id+"/program-exit",ProofKind.LOCAL_GRAMMAR,unit.parentId()!=null?"exit-program-contained-return":"exit-program-called-return-alternative",s.meta().provenance(),List.of(p));
+                    add(s,owner,OutcomeKind.PROGRAM_RETURN,"return",new Target(TargetKind.PROGRAM_RETURN,root,List.of(exit)),"",exit);
+                    if(unit.parentId()==null) {
+                        var main=proof(id+"/main-exit",ProofKind.LOCAL_GRAMMAR,"exit-program-main-continues-runtime-role-unavailable",s.meta().provenance(),List.of(p));
+                        add(s,owner,OutcomeKind.NORMAL,"normal",next,"",main);
+                    }
+                }
+                continue;
+            }
+            if(s instanceof Ast.PreservedStatement entry&&entry.grammarRule().equals("entryStatement")&&entry.effects().filter(e->e.proof()==StatementEffectSummary.Proof.NO_OP).isPresent()) {
+                var declared=proof(id+"/entry",ProofKind.LOCAL_GRAMMAR,"entry-declaration-in-sequential-flow",s.meta().provenance(),List.of(p));
+                add(s,owner,OutcomeKind.NORMAL,"normal",next,"",declared);continue;
+            }
+            if(s instanceof Ast.SearchStatement search&&search.all()&&search.varying()==null&&search.whens().size()==1) {
+                var region="region:"+id+"/search";putRegion(region,RegionKind.SEARCH,owner,occ(s,p),List.of(),next,p);
+                var match=arm(region,"when-0",RegionKind.SEARCH_ARM,search.whens().get(0).statements(),p,isolation);
+                var miss=search.atEnd()==null?complete(region,p):arm(region,"at-end",RegionKind.SEARCH_ARM,search.atEnd().nestedStatements(),p,isolation);
+                add(s,region,OutcomeKind.BRANCH,"when-0",match,"",p);add(s,region,OutcomeKind.BRANCH,"at-end",miss,"",p);continue;
+            }
             if(s instanceof Ast.ModeledStatement m&&m.exitKind().isPresent()) {
                 var kind=m.exitKind().orElseThrow();String scope=owner;
                 var wanted=kind==Ast.ExitKind.PARAGRAPH?RegionKind.PARAGRAPH:RegionKind.INLINE_BODY;

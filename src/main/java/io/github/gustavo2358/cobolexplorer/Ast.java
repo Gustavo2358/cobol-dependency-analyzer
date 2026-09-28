@@ -475,7 +475,7 @@ public final class Ast {
         public FileIoSurface { files=List.copyOf(files);operands=List.copyOf(operands);options=List.copyOf(options);handlers=List.copyOf(handlers);procedures=List.copyOf(procedures);gapCodes=List.copyOf(gapCodes); }
     }
 
-    public enum ExitKind { PARAGRAPH, PERFORM, PERFORM_CYCLE }
+    public enum ExitKind { PARAGRAPH, PERFORM, PERFORM_CYCLE, PROGRAM, STOP_RUN }
 
     public record ModeledStatement(Meta meta, String grammarRule, String writtenText,
                                    List<StatementOperand> operands,

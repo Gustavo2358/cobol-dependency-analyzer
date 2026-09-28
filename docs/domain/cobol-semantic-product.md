@@ -754,3 +754,7 @@ CICS_COMMAND acrescenta ASKTIME, FORMATTIME, ASSIGN, INQUIRE_PROGRAM, SEND_TEXT 
 ## SP 2.55 — SQL e DL/I com efeitos externos abertos
 
 `SQL_HOST_OPERANDS` e `DLI_EXTERNAL_OPERANDS` conservam referências canônicas de leitura/escrita, bounds READ/WRITE/EXPOSURE `ALL`, ambiente e valores `UNKNOWN`, e nenhum MUST. SQL SELECT INTO/UPDATE/INSERT/DELETE/OPEN/FETCH/CLOSE e IMS CHKP/REPL/ISRT/DLET recebem conclusão normal possível e outcomes externos abertos. Não há prova de sucesso de I/O, status, posição do cursor/PCB ou valores retornados. DECLARE CURSOR é declarativo e não aloca armazenamento COBOL. O parser SQL consome a forma fechada inteira, com limite de 256 níveis de expressão; formas não admitidas permanecem opacas. WHENEVER não tem dispatch modelado. Detalhes e fontes em [W5](../work/carddemo-control-w5.md).
+
+## SP2.56 — controle COBOL
+
+Acrescenta regiões SENTENCE/SEARCH/SEARCH_ARM, escape de SENTENCE, outcome/target PROGRAM_HALT e prova SEARCH_INDEX_MAY. A prova exige READ/WRITE ALL, exposição NONE, ambiente NONE e nenhum MUST; índice/resultado não são inferidos. Contratos de [topologia](control-topology.md) e [W6](../work/carddemo-control-w6.md) definem premissas contextuais e limites.

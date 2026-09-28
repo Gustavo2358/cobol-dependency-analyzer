@@ -154,3 +154,9 @@ coverage. SP2.51 still requires a locality inventory: an unavailable physical-pr
 input and empty facts/bindings express absence of storage analysis explicitly.
 An unavailable FILE event plan with no continuation is not a contradictory claim.
 An explicit event continuation is still validated against structural completion.
+
+## SP2.56 — sentenças, busca e terminações
+
+Uma região `SENTENCE` publica a conclusão do período quando houver NEXT SENTENCE. Seu `ESCAPE` abandona frames inline contidos e liga a conclusão ao contexto procedural ativo; não equivale à continuação do IF/SEARCH. `SEARCH`/`SEARCH_ARM` abstraem a busca interna de SEARCH ALL como decisão match/fim; o corpo WHEN não é uma iteração. O índice permanece MAY desconhecido (`SEARCH_INDEX_MAY`), sem prova de valor ou kill.
+
+`PROGRAM_HALT` representa STOP RUN sem sucessor, distinto de `PROGRAM_RETURN`. Lower publica a alternativa AIR HaltAlternative com controle fechado e efeitos de finalização abertos (o codec atual não admite Halt isolado). EXIT PROGRAM contido retorna; para unidade externa, o papel main/chamado não é conhecido pelo contrato: retorno e continuação são possibilidades distintas. ENTRY não executa uma chamada e não concede nova raiz: há somente continuação sequencial, quando alcançado. Entradas alternativas continuam fora da projeção principal. [Regra e testes W6](../work/carddemo-control-w6.md).
