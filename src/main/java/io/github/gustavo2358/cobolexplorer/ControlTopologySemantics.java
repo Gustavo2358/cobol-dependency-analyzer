@@ -400,7 +400,7 @@ public final class ControlTopologySemantics {
             var literal=p.controls().size()==1&&p.controls().get(0).expression() instanceof Ast.LiteralExpression l?l.integerValue():Optional.<java.math.BigInteger>empty();
             if(literal.isEmpty()) {entry="count-entry";phases.add(phase("count-entry",PhaseKind.PREDICATE,"COUNT_ENTRY",proof,"true","RESUME","false","BODY"));}
         }
-        return new Binding(binding,id,range,endpoint,resume,entry,completion,phases,List.of(proof));
+        return new Binding(binding,id,range,endpoint,resume,entry,completion,phases,List.of(proof),ReentryPolicy.SOURCE_UNDEFINED);
     }
     /** IBM 6.4 pp. 420–423: innermost increment, outward carry, and current FROM resets. */
     private Binding varyingInvocation(String binding,String id,String range,String endpoint,Target resume,Ast.PerformStatement p,String proof,int levels) {
@@ -418,7 +418,7 @@ public final class ControlTopologySemantics {
                 phases.add(levelPhase("reset-"+level+"-"+inner,PhaseKind.EFFECT,"VARY_INITIAL",proof,inner,"next",
                     inner<levels?"reset-"+level+"-"+(inner+1):"test-"+level));
         }
-        return new Binding(binding,id,range,endpoint,resume,"initial-1",(before?"update-":"test-")+levels,phases,List.of(proof));
+        return new Binding(binding,id,range,endpoint,resume,"initial-1",(before?"update-":"test-")+levels,phases,List.of(proof),ReentryPolicy.SOURCE_UNDEFINED);
     }
     private static Phase levelPhase(String id,PhaseKind kind,String operation,String proof,int level,String... edges) {
         var result=new ArrayList<PhaseEdge>();for(int i=0;i<edges.length;i+=2)result.add(new PhaseEdge(edges[i],edges[i+1]));
