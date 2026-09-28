@@ -21,13 +21,14 @@ class ReferenceResolutionManifestTest {
         Map<GrammarCoverageManifest.RuleKey, ReferenceResolutionManifest.Entry> indexed = entries.stream()
                 .collect(Collectors.toMap(ReferenceResolutionManifest.Entry::key, Function.identity()));
 
-        assertEquals(631, entries.size()); // includes DLI and the N-LR APPLY WRITE-ONLY rule
+        assertEquals(632, entries.size()); // includes the complete embedded host entry rule
         assertEquals(entries.size(), indexed.size());
         assertEquals(GrammarCoverageManifest.entries().stream().map(GrammarCoverageManifest.Entry::key).toList(),
                 entries.stream().map(ReferenceResolutionManifest.Entry::key).toList());
         assertTrue(entries.stream().allMatch(entry -> !entry.rationale().isBlank()));
         assertTrue(entries.stream().allMatch(entry -> !entry.policySection().isBlank()));
 
+        assertEntry(indexed, "embeddedIdentifier", ReferenceResolutionManifest.RuleClass.NOT_REFERENCE, null);
         assertEntry(indexed, "qualifiedDataName", ReferenceResolutionManifest.RuleClass.REFERENCE_ORIGIN,
                 ResolutionContracts.ReferenceKind.DATA);
         assertEntry(indexed, "conditionNameReference",
