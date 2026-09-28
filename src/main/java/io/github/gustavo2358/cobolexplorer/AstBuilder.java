@@ -1470,6 +1470,16 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
                 if(expression instanceof Ast.DataReference reference)operands.add(new Ast.EmbeddedHostOperand(host.option(),host.optionStart(),host.role(),reference));
             } finally { embeddedOperandOrigin=previous;retainedEmbeddedOperand=previousRetained; }
         }
+        if(language==Ast.EmbeddedLanguage.CICS)CicsCommandSemantics.parse(raw).flatMap(CicsCommandSemantics::implicitArea).ifPresent(area->{
+            int begin=context.getStart().getStartIndex()+area.map().operandStart();
+            int end=begin+area.map().operand().orElseThrow().length();
+            var p=sourceMap.embeddedOperandProvenance(begin,end);var at=p.expanded();
+            var origin=new Ast.SourceProvenance(at,p.original(),p.includeChain(),false);
+            var span=new Ast.SourceSpan(at.startLine(),at.startColumn(),at.endLine(),at.endColumn(),anchor.span().startToken(),anchor.span().endToken());
+            var meta=new Ast.Meta(nextId++,span,anchor.origin(),origin);
+            var ref=new Ast.DataReference(meta,area.name(),area.name(),List.of(),List.of(),null,Ast.ReferenceUnderstanding.STRUCTURED);
+            operands.add(new Ast.EmbeddedHostOperand("IMPLICIT_AREA",area.map().start(),area.role(),ref));
+        });
         var procedures=new ArrayList<Ast.ProcedureReference>();
         if(language==Ast.EmbeddedLanguage.CICS) {
             var label=CicsHandlerSyntax.label(raw,context.getStart().getStartIndex(),context.getStart().getLine(),context.getStart().getCharPositionInLine(),context.getStart().getTokenIndex());

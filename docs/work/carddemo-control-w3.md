@@ -18,3 +18,14 @@ Processamento local linear no número de opções/referências, com resolução 
 ## Oráculos antes da implementação
 
 INITIAL conserva célula local sem promover seed; DECLARE TABLE antes/depois de grupos independentes não tainta alocação; INCLUDE ausente ainda tainta. BMS input/output explícito e implícito, nome dinâmico, ausente, ambíguo e qualificação; não inferir nome downstream. CICS com modelo/memória ausente preserva normal, unknown control continua fronteira, envelope MAY aberto sem MUST. CardDemo 73, storage/alias/entry, FILE/CICS e modelos; perfis separados do baseline.
+
+## Qualificação do checkpoint
+
+- Runtime congelada `w3-development-03`; CardDemo `w3-carddemo-03`: 73/73 nas quatro etapas. 65 SPs byte-idênticos, oito alterados. Auditoria wire: 73/73; zero perdas de candidatos ou supports físicos. Seis candidatos FILE adicionais em sites alcançados: CCXREF/ACCTDAT/CUSTDAT em COPAUA0C, ACCTDAT em COACCT01 e USRSEC nas duas variantes COSGN00C. São ocorrências, não seis nomes novos.
+- `w3-probes-03`: 66/66 verticais. `w3-physical-01`: oito verticais separadas com perfil IBM 6.4 fixed-display-1047, estado initial e CICS new-logical-level.
+- Frontend FAST passou; lower FAST passou (363 s). Depois do FAST, somente testes/fixtures/documentação: CicsMemoryIndependenceSuite repetida e passou, incluindo SP2.53, negativos wire e porta tipada, handles opacos, memória ausente e BMS ambíguo/dinâmico. Fontes de produção iguais às da runtime congelada.
+- REDs preservados: ausência de continuação no modelo IBM, decoder SP2.53 exigindo sourceContinuations não vazio, referência não resolvida causando exceção. Os dois últimos viraram negativos/positivos permanentes.
+- Testes históricos de SEND cujo SP publica somente UNKNOWN_LOCAL continuam sem sucessor conhecido. W3 não concede autoridade de controle a esses produtos. EXECUTABLE_ONLY conserva a exigência de footprint; a publicação positiva aproveita destinos conhecidos com MAY aberto e nenhum MUST.
+- A matriz histórica completa não foi repetida neste checkpoint. Qualificação integrada de controle/dependencies será repetida após W6. Recursão continua fora desta onda. Nenhum merge.
+
+Autoridade SEND: [IBM SEND MAP](https://www.ibm.com/docs/en/cics-ts/5.6.0?topic=summary-send-map), FROM omitido usa nome do mapa seguido de O. MAPONLY não faz parte do subconjunto admitido neste checkpoint.

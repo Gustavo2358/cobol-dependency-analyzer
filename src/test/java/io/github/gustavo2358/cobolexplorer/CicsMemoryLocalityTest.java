@@ -34,7 +34,7 @@ class CicsMemoryLocalityTest {
             assertFalse(c.path("implicitArea").path("provenance").path("exact").asBoolean());
             assertEquals(2,c.path("options").size(),"do not invent written INTO/FROM");
         }
-        for(var data:List.of("01 OTHER PIC X.","01 G1.\n 05 MAPAI PIC X.\n01 G2.\n 05 MAPAI PIC X.")) {
+        for(var data:List.of("01 UNRELATED PIC X.","01 G1.\n 05 MAPAI PIC X.\n01 G2.\n 05 MAPAI PIC X.")) {
             var c=CicsCommandContractTest.command(CicsAbendContractTest.json(publish(data,"EXEC CICS RECEIVE MAP('MAPA') NOHANDLE END-EXEC.\nGOBACK.",false)));
             assertFalse(c.hasNonNull("implicitArea"));assertFalse(c.hasNonNull("hostEffects"));
         }
