@@ -722,3 +722,21 @@ Conditional contract for composite FILE statements. R2 control topology publishe
 owned FILE_POINT identities and explicit per-use/phase successors; no new source
 statement is invented. Inventory FILE remains 1.6, with the same resources, uses,
 events and effects. Details: [control topology](control-topology.md#file-composite-control--sp-251).
+
+### SP 2.52 — source continuation possibilities
+
+An unsupported completion retains its executable UNKNOWN_LOCAL outcome. The
+frontend may also publish `controlTopology.sourceContinuations`: statement,
+canonical grammar-owned target and proof references with CONTROL_POSSIBILITY.
+This is source-only hypothetical completion, not normal execution or success.
+The target uses the existing symbolic continuation/boundary, preserving PERFORM
+composition without downstream source reconstruction. Known terminal/transfer
+constructs are excluded. A hypothesis, including a proof alias that depends on
+it, cannot authorize any executable outcome, region, boundary, binding, phase,
+FILE point or exceptional event. Typed and wire consumers enforce this boundary.
+
+Only products containing these facts select 2.52. Older products omit the field.
+The lower source-evidence projection may consume the possibility while keeping
+its frontier and proof; executable lowering ignores it. See the
+[W1 contract and oracle](../work/carddemo-control-w1.md). No ALTER or recursive
+PERFORM semantics are introduced by the source possibility representation.
