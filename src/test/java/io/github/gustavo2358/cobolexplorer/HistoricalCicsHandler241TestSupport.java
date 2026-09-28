@@ -4,8 +4,8 @@ import java.util.Optional;
 import io.github.gustavo2358.cobolexplorer.semanticproduct.CobolSemanticPort;
 import io.github.gustavo2358.cobolexplorer.semanticproduct.projection.CobolSemanticProductProjector;
 
-/** Frozen 2.41 producer composition, before the explicitly versioned ABEND capability.
- * Does not downgrade a 2.42 product. Historical semantic assertions remain unchanged. */
+/** Historical CICS 2.41 capability composition, before the explicitly versioned ABEND capability.
+ * Does not downgrade a 2.42 product. Executable semantic assertions remain unchanged; current topology may add separately versioned source-only hypotheses. */
 final class HistoricalCicsHandler241TestSupport {
     static CobolSemanticPort publish(AstBoundaryTestSupport.Analysis a,int index,StorageLayoutSemantics.Profile profile) {
         return publish(a,index,profile,StorageInitialSemantics.EntryMode.UNKNOWN);

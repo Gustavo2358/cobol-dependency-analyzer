@@ -27,6 +27,7 @@ public final class ControlTopologySemantics {
     private final Map<String,Outcome> outcomes=new TreeMap<>();
     private final Map<String,Binding> bindings=new TreeMap<>();
     private final List<FileFlow> fileFlows=new ArrayList<>();
+    private final List<SourceContinuation> sourceContinuations=new ArrayList<>();
     private final List<ExceptionalEvent> exceptionalEvents=new ArrayList<>();
     private final Map<String,Proof> proofs=new TreeMap<>();
     private final Map<String,List<String>> subregions=new HashMap<>();
@@ -126,10 +127,11 @@ public final class ControlTopologySemantics {
             add(e.getKey(),root,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(root,p),"",p);}});
         fileFlows();
         fileRoutes();
+        openControlDestinations();
         for(var r:new ArrayList<>(regions.values()))regions.put(r.id(),new Region(r.id(),r.kind(),r.parent(),r.entry(),occurrences.values().stream().filter(o->o.region().equals(r.id())).map(Occurrence::statement).toList(),
             r.kind()==RegionKind.RANGE?r.regions():subregions.getOrDefault(r.id(),List.of()).stream().sorted().toList(),r.boundary(),r.proofs()));
         return new ControlTopology(fileFlows.isEmpty()?"FRONTEND_CONTROL_TOPOLOGY_R1":"FRONTEND_CONTROL_TOPOLOGY_R2",List.copyOf(occurrences.values()),List.copyOf(regions.values()),
-            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows);
+            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows,sourceContinuations);
     }
     private void statements(List<Ast.Statement> list,String owner,Target end,String isolation) {
         for(int i=0;i<list.size();i++) {
@@ -255,7 +257,43 @@ public final class ControlTopologySemantics {
                 "cics-handle-abend-ordinary-return",s.meta().provenance(),List.of(p)):p;
             completion|=registration;
             add(s,owner,completion?OutcomeKind.NORMAL:OutcomeKind.UNKNOWN_LOCAL,completion?"normal":"unknown",completion?next:unknown(owner,p),"",completionProof);
+            if(!completion&&sourceMayComplete(s)) {
+                var hypothesis=proof(id+"/source-completion",ProofKind.CONTROL_POSSIBILITY,
+                    "completion-not-refuted-in-source",s.meta().provenance(),List.of(p));
+                sourceContinuations.add(new SourceContinuation(id,next,List.of(hypothesis)));
+            }
         }
+    }
+    /** Recognize loss of control-state knowledge without interpreting any ALTER target or update.
+     * Source qualification requires both a mutation occurrence and a qualified transfer.
+     * Destinations remain unproved alternatives in the local procedure namespace. */
+    private void openControlDestinations() {
+        if(!independent)return;
+        var mutations=ids.keySet().stream().filter(s->s instanceof Ast.PreservedStatement p&&p.grammarRule().equals("alterStatement")
+            ||s instanceof Ast.ModeledStatement m&&m.grammarRule().equals("alterStatement")).sorted(Comparator.comparing(ids::get)).toList();
+        if(mutations.isEmpty())return;
+        var transfers=ids.keySet().stream().filter(s->s instanceof Ast.GoToStatement g&&g.goToKind()==Ast.GoToKind.SIMPLE).sorted(Comparator.comparing(ids::get)).toList();
+        for(var transfer:transfers)for(var mutation:mutations) {
+            var id=ids.get(transfer);var prerequisite=ids.get(mutation);
+            var premise=proof(id+"/source-control/"+prerequisite,ProofKind.CONTROL_POSSIBILITY,"local-control-destination-not-refuted-after-unmodeled-mutation",
+                mutation.meta().provenance(),java.util.stream.Stream.concat(occurrences.get(id).proofs().stream(),occurrences.get(prerequisite).proofs().stream()).distinct().toList());
+            for(var paragraph:paragraphs)if(!declarativeRegions.containsKey(paragraphOwners.get(paragraph.meta().id())))
+                sourceContinuations.add(new SourceContinuation(id,entry(paragraphIds.get(paragraph.meta().id()),premise),List.of(premise),List.of(prerequisite)));
+        }
+    }
+    private boolean sourceMayComplete(Ast.Statement statement) {
+        // The grammar owns the hypothetical continuation. Known terminal forms are excluded
+        // even when their operands/effects are not admitted. This is never execution proof.
+        if(statement instanceof Ast.NextSentenceStatement)return false;
+        if(statement instanceof Ast.ModeledStatement m&&Set.of("stopStatement","exitStatement","entryStatement").contains(m.grammarRule()))return false;
+        if(statement instanceof Ast.EmbeddedLanguageStatement&&cics!=null) {
+            if(cics.abendFact(unit.id(),statement.meta().id()).isPresent())return false;
+            var control=cics.fact(unit.id(),statement.meta().id());
+            if(control.isPresent()&&control.get().command()==CicsProgramControlAnalyzer.Command.XCTL)return false;
+            var command=cics.commandFact(unit.id(),statement.meta().id());
+            if(command.isPresent()&&command.get().command()==CicsCommandSemantics.Kind.RETURN)return false;
+        }
+        return true;
     }
     private String procedureRegion(Integer id) { return sectionIds.getOrDefault(id,paragraphIds.get(id)); }
     private String procedureOwner(Integer id) {
