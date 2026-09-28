@@ -29,7 +29,7 @@ final class CicsConditionSyntax {
         return Optional.of(List.copyOf(options));
     }
     static Optional<CobolParser.ProcedureNameContext> label(String raw,CicsCommandSyntax.Option option,int offset,int line,int column,int token) {
-        return option.operand().flatMap(s->CicsHandlerSyntax.labelOperand(raw,s,raw.indexOf('(',option.start())+1,offset,line,column,token));
+        return option.operand().flatMap(s->CicsHandlerSyntax.labelOperand(raw,s,option.operandStart(),offset,line,column,token));
     }
     static Optional<StatementEffectSummary> effects(Ast.Statement statement) {
         if(!(statement instanceof Ast.EmbeddedLanguageStatement s)||s.language()!=Ast.EmbeddedLanguage.CICS)return Optional.empty();

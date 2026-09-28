@@ -35,7 +35,7 @@ final class CicsHostSyntax {
         var result=new ArrayList<Host>();
         for(var option:options) {
             if(option.operand().isEmpty())continue;
-            int begin=raw.indexOf('(',option.start())+1;String operand=option.operand().orElseThrow();
+            int begin=option.operandStart();String operand=option.operand().orElseThrow();
             var identifier=parseReference(operand,raw,begin,sourceOffset,sourceLine,sourceColumn,anchorToken).orElse(null);
             if(identifier==null)continue;
             var role=roles.get(option.start());

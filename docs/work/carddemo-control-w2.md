@@ -11,7 +11,8 @@ Embedded-language syntax must ignore comments while retaining quoted payload and
 source offsets. Floating comments start outside quotes at a separator boundary,
 and stop at the record terminator. Replace comment characters by spaces in a
 private lexical view, preserving CR/LF and UTF-16 offsets; retain raw text and
-SourceMap unchanged. The existing translated EXEC wrapper is handled before
+physical source unchanged. The preprocessor blanks lexer-owned COMMENTLINE spans
+before flattening CICS records; retained host spans keep their original mapping. The existing translated EXEC wrapper is handled before
 masking. Invalid non-separated markers must not become valid syntax. The scanner
 is linear and bounded by payload size.
 

@@ -173,8 +173,22 @@ class CicsFileControlTest {
     }
     @Test void legacyReadDatasetDoesNotGeneralizeOrHideMalformedIdentity() {
         var analyzer=new CicsFileControlAnalyzer();
-        for(String command:REQUIRED.keySet())if(!Set.of("READ","SET").contains(command))
-            assertTrue(analyzer.parse("EXEC CICS "+command+" DATASET('F') "+REQUIRED.get(command)+" END-EXEC").isEmpty(),command);
+        // W2: IBM's explicit compatibility table authorizes these API aliases.
+        // Preserve the full twelve-command matrix and every malformed-input negative below.
+        // Authority: https://public.dhe.ibm.com/ps/products/wsed/fixes/v7.6.0.1/topics/cics_errormessagesthatyoucanignore.html
+        var authorized=Set.of("READ","WRITE","REWRITE","DELETE","STARTBR","READNEXT","READPREV","RESETBR","ENDBR","UNLOCK","SET");
+        assertEquals(12,REQUIRED.size());
+        for(String command:REQUIRED.keySet()) {
+            var actual=analyzer.parse("EXEC CICS "+command+" DATASET('F') "+REQUIRED.get(command)+" END-EXEC");
+            if(!authorized.contains(command))assertTrue(actual.isEmpty(),command);
+            else {
+                var fact=actual.orElseThrow();assertEquals(command,fact.command().name());
+                assertEquals("F",fact.literal().orElseThrow());assertTrue(fact.gaps().isEmpty(),command);
+                assertEquals("FILE",fact.options().get(0).canonicalName());
+                assertEquals("DATASET",fact.options().get(0).syntax().name());
+                assertEquals(CicsFileControlAnalyzer.Role.READ,fact.options().get(0).role());
+            }
+        }
         for(String bad:List.of("READ DATASET('F') FILE('G') INTO(B) RIDFLD(K)",
             "READ DATASET INTO(B) RIDFLD(K)","READ DATASET() INTO(B) RIDFLD(K)",
             "READ DATASET('F') INTO(B) SET(P) RIDFLD(K)","READ DATASET('F'")) {

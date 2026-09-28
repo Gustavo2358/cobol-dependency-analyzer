@@ -41,7 +41,7 @@ final class CicsHandlerSyntax {
         var operation=parse(raw);
         if(operation.isEmpty()||operation.get().action()!=Action.ACTIVATE)return List.of();
         var option=operation.get().options().stream().filter(o->o.name().equals(operation.get().targetKind().name())).findFirst().orElseThrow();
-        int begin=raw.indexOf('(',option.start())+1, end=begin+option.operand().orElseThrow().length();
+        int begin=option.operandStart(), end=begin+option.operand().orElseThrow().length();
         while(begin<end&&Character.isWhitespace(raw.charAt(begin)))begin++;
         while(end>begin&&Character.isWhitespace(raw.charAt(end-1)))end--;
         return List.of(new TargetOperand(option.name(),option.start(),raw.substring(begin,end),
@@ -52,7 +52,7 @@ final class CicsHandlerSyntax {
         var operation=parse(raw);
         if(operation.isEmpty()||operation.get().targetKind()!=TargetKind.LABEL)return Optional.empty();
         var option=operation.get().options().stream().filter(o->o.name().equals("LABEL")).findFirst().orElseThrow();
-        int begin=raw.indexOf('(',option.start())+1;
+        int begin=option.operandStart();
         return labelOperand(raw,option.operand().orElseThrow(),begin,offset,line,column,anchorToken);
     }
     static Optional<CobolParser.ProcedureNameContext> labelOperand(String raw,String syntax,int begin,int offset,int line,int column,int anchorToken) {

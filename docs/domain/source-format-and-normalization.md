@@ -73,3 +73,19 @@ preserva ambos os prefixos e as cláusulas completas dentro da margem 72.
 É uma convenção interna determinística de importação, sem inferência de dialeto
 ou promessa de recuperar a intenção de todo arquivo externo. Indicador inválido
 após a expansão continua sendo erro; não há seleção por arquivo/corpus.
+
+## Comentários em EXEC CICS
+
+O preprocessor usa os tokens COMMENTLINE para substituir por espaços os trechos
+de comentário autorizados antes de achatar os registros do envelope CICS. A
+substituição conserva as posições em code points e os segmentos de origem dos
+operandos; o fonte físico continua preservado. Conteúdo entre aspas, inclusive
+`*>` e aspas duplicadas, não é comentário. Um marcador inline sem separador
+anterior não é apagado. O scanner de opções também aceita comentários no payload
+não achatado e conserva seus offsets; hosts e labels usam o início do operando
+registrado pelo scanner, sem procurar parênteses no texto de comentários.
+
+Autoridade e matriz de aliases FILE/DATASET: [W2](../work/carddemo-control-w2.md).
+Evidência: CicsLexicalCompatibilityTest (comentários *, / e flutuantes, LF/CRLF/CR,
+Unicode, aspas, offsets, todos os aliases autorizados e negativos), mais as
+suítes existentes de normalização, provenance e CICS.
