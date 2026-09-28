@@ -14,6 +14,7 @@ class LogicalMoveSequenceTest {
         var source=work.resolve(name+".cbl");
         Files.writeString(source,ScalarMoveCheckpoint4ATest.program(data,code+"\nGOBACK.").lines()
             .map(s->"       "+s).collect(java.util.stream.Collectors.joining("\n","","\n")));
+        AstBoundaryTestSupport.analyze(Files.readString(source),name+".cbl");
         var out=work.resolve(name);
         ExplorerMain.main(new String[]{"--source",source.toString(),"--copybooks",work.toString(),"--output",out.toString()});
         return new ObjectMapper().readTree(out.resolve("cobol-semantic-product.json").toFile());
@@ -45,7 +46,7 @@ class LogicalMoveSequenceTest {
         assertTrue(m.path("additionalTransfers").get(0).path("target").path("logicalWholeItem").isTextual());
     }
     @Test void overlappingSendingFamilyDoesNotGetExactSequenceAuthority() throws Exception {
-        var p=publish("overlap","01 SRC PIC X(8).\n01 SAME REDEFINES SRC PIC X(8).\n01 DEST PIC X(8).","MOVE SRC TO SAME DEST.");
+        var p=publish("overlap","01 SRC PIC X(8).\n01 SRC-ALIAS REDEFINES SRC PIC X(8).\n01 DEST PIC X(8).","MOVE SRC TO SRC-ALIAS DEST.");
         var m=p.path("statements").get(0);
         assertTrue(m.path("logicalTransfers").isEmpty());
         if(m.path("variant").asText().equals("MOVE")) {

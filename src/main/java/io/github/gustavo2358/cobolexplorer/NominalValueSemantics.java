@@ -64,6 +64,15 @@ public final class NominalValueSemantics {
             if(e instanceof Ast.DataReference ref&&ref.understanding()==Ast.ReferenceUnderstanding.STRUCTURED
                 &&ref.subscriptGroups().isEmpty()&&ref.referenceModification()==null&&references.containsKey(ref.meta().id()))
                 return new NominalValues.Term("READ",references.get(ref.meta().id()));
+            if(e instanceof Ast.FunctionExpression function&&function.arguments().size()==1&&function.referenceModification()==null) {
+                String operator=switch(function.functionName().toUpperCase(Locale.ROOT)) {
+                    case "UPPER-CASE"->function.directions().isEmpty()?"UPPER_ASCII":null;
+                    case "TRIM"->function.directions().isEmpty()?"TRIM_SPACES":function.directions().size()!=1?null:
+                        function.directions().get(0)==Ast.FunctionDirection.LEADING?"TRIM_LEADING_SPACES":"TRIM_TRAILING_SPACES";
+                    default->null;
+                };
+                if(operator!=null)return new NominalValues.Term(operator,"",List.of(term(function.arguments().get(0),references)));
+            }
             if(e instanceof Ast.LiteralExpression literal) {
                 if(literal.logicalText().isPresent())return new NominalValues.Term("LITERAL",literal.logicalText().get().value());
                 if(literal.figurativeText().isPresent())return new NominalValues.Term(literal.figurativeText().get().name(),"");

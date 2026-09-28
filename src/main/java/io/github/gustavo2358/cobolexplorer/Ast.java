@@ -571,10 +571,17 @@ public final class Ast {
             this(meta, OperationCategory.OTHER, operator, operands, writtenText);
         }
     }
+    public enum FunctionDirection { LEADING, TRAILING }
     public record FunctionExpression(Meta meta, String functionName, List<Expression> arguments,
                                      ReferenceModification referenceModification,
-                                     String writtenText) implements Expression {
-        public FunctionExpression { arguments = List.copyOf(arguments); }
+                                     String writtenText, List<FunctionDirection> directions) implements Expression {
+        public FunctionExpression {
+            arguments = List.copyOf(arguments); directions = List.copyOf(directions);
+        }
+        public FunctionExpression(Meta meta, String functionName, List<Expression> arguments,
+                                  ReferenceModification referenceModification, String writtenText) {
+            this(meta, functionName, arguments, referenceModification, writtenText, List.of());
+        }
     }
     public record SpecialRegisterExpression(Meta meta, String registerName,
                                             List<Expression> operands,

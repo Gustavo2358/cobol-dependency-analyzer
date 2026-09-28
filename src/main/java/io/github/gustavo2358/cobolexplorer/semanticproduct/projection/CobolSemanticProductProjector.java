@@ -240,7 +240,7 @@ public final class CobolSemanticProductProjector {
         var ids=new HashMap<Integer,StatementId>();statements.forEach((ast,id)->ids.put(ast.meta().id(),id));
         return products.scalarMoves().nominalValues().facts(unit).filter(f->!f.queries().isEmpty()).map(f->{
             java.util.function.IntFunction<String> statement=n->"statement:"+Objects.requireNonNull(ids.get(n)).localId();
-            return new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues(f.symbols().stream().anyMatch(io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Symbol::modelAssumed)?"NOMINAL_TEXT_SOURCE_V2":"NOMINAL_TEXT_SOURCE_V1",f.symbols(),
+            return new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues(f.assignments().stream().anyMatch(a->a.source().extended())?"NOMINAL_TEXT_SOURCE_V3":f.symbols().stream().anyMatch(io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Symbol::modelAssumed)?"NOMINAL_TEXT_SOURCE_V2":"NOMINAL_TEXT_SOURCE_V1",f.symbols(),
                 f.assignments().stream().map(a->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Assignment(statement.apply(a.statement()),a.target(),a.source())).toList(),
                 f.conditions().stream().map(c->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Condition(statement.apply(c.statement()),c.predicate())).toList(),
                 f.queries().stream().map(q->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Query(statement.apply(q.statement()),q.node())).toList());
@@ -679,7 +679,9 @@ public final class CobolSemanticProductProjector {
                     if(!regionalSequence&&!logicalSequence)capability = bindingCapability(capability, read, "MOVE");
                 }
             }
-            return new StatementPlan(position, capability, entries);
+            if(!capability.supported())effectSummary(move,inputs).ifPresent(e->java.util.stream.Stream.of(e.knownReads(),e.mayWrites())
+                .flatMap(List::stream).map(inputs::optionalEntryFor).filter(Objects::nonNull).forEach(entries::add));
+            return new StatementPlan(position, capability, entries.stream().distinct().toList());
         }
 
         if (position.statement() instanceof Ast.GoToStatement g && GoToSemantics.depending(g))
@@ -758,8 +760,8 @@ public final class CobolSemanticProductProjector {
                 ?r.wholeItemAccess().isPresent():r.regionalAccess().isPresent())
             .map(CobolSemanticProduct.DataReference::id).collect(java.util.stream.Collectors.toSet());
         return new EffectSummary(reads,writes,mapped.apply(e.mustOverwrite()).stream().filter(exact::contains).toList(),exposures,
-            EffectBound.valueOf(e.unknownReadBound().name()),
-            EffectBound.valueOf(e.unknownWriteBound().name()),
+            reads.size()==e.knownReads().size()?EffectBound.valueOf(e.unknownReadBound().name()):EffectBound.ALL,
+            writes.size()==e.mayWrites().size()&&references.stream().filter(r->writes.contains(r.id())).allMatch(r->r.binding().status()==ResolutionStatus.RESOLVED)?EffectBound.valueOf(e.unknownWriteBound().name()):EffectBound.ALL,
             EffectBound.valueOf(e.unknownExposureBound().name()),
             EnvironmentEffect.valueOf(e.environment().name()),EffectValueTransform.valueOf(e.values().name()),EffectProof.valueOf(e.proof().name()));
     }

@@ -766,3 +766,17 @@ Publications with a specified `controlTopology.bindings[].reentryPolicy` require
 an undefined active reentry; UNSPECIFIED grants no additional authority.
 The policy is orthogonal to completion endpoints and phases. See
 [control topology](control-topology.md#sp-257--active-binding-reentry).
+
+### SP 2.58–2.59 — MOVE footprint and source text expressions
+
+2.58 introduces the MOVE_TARGETS effect proof. It bounds receiving MAY writes
+and structured source reads independently of executable value admission. It
+never authorizes MUST, storage exposure or a known value. Unresolved receivers
+keep an open write bound; special registers remain implicit runtime state.
+
+2.59 permits NOMINAL_TEXT_SOURCE_V3. A term may recursively carry exactly one
+argument for UPPER_ASCII, TRIM_SPACES, TRIM_LEADING_SPACES or
+TRIM_TRAILING_SPACES. These generic operators are selected by canonical typed
+COBOL syntax. They preserve source supports and modelAssumed confidence.
+Unsupported transforms and runtime functions remain UNKNOWN. V1/V2 serialized
+leaf terms remain unchanged. See the active [campaign](../work/carddemo-values-control.md).

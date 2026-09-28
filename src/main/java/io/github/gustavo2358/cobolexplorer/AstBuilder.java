@@ -1755,7 +1755,11 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
                 .map(argument -> expression(argument, "function argument")).toList();
         ParserRuleContext modifier = context.referenceModifier();
         return new Ast.FunctionExpression(meta, name == null ? "<unknown>" : clean(sourceText(name)), arguments,
-                modifier == null ? null : referenceModification(modifier), sourceText(context).strip());
+                modifier == null ? null : referenceModification(modifier), sourceText(context).strip(),
+                java.util.stream.Stream.concat(context.LEADING().stream(), context.TRAILING().stream())
+                    .sorted(java.util.Comparator.comparingInt(t -> t.getSymbol().getTokenIndex()))
+                    .map(t -> t.getSymbol().getType() == CobolParser.LEADING
+                        ? Ast.FunctionDirection.LEADING : Ast.FunctionDirection.TRAILING).toList());
     }
 
     private Ast.SpecialRegisterExpression specialRegisterExpression(CobolParser.SpecialRegisterContext context) {

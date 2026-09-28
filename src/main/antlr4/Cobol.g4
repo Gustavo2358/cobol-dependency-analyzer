@@ -2377,7 +2377,7 @@ tableCall
    ;
 
 functionCall
-   : FUNCTION functionName (LPARENCHAR argument (COMMACHAR? argument)* RPARENCHAR)* referenceModifier?
+   : FUNCTION functionName (LPARENCHAR argument (COMMACHAR? argument)* (COMMACHAR? (LEADING | TRAILING))? RPARENCHAR)* referenceModifier?
    ;
 
 referenceModifier
