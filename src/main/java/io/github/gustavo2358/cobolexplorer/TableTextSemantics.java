@@ -37,7 +37,7 @@ final class TableTextSemantics {
         dimensions.forEach((node,dims)->{var shape=shapes.get(node);if(!dims.isEmpty()&&shape!=null&&shape.text())repeated.addAll(ranges.getOrDefault(node,List.of()));});
         for(var entry:dimensions.entrySet()) {
             int node=entry.getKey();var shape=shapes.get(node);
-            if(shape==null||!shape.text()||!data.get(node).children().isEmpty())continue;
+            if(shape==null||!shape.text()||hasStorageChildren(data.get(node)))continue;
             if(ranges.getOrDefault(node,List.of()).stream().noneMatch(r->repeated.stream().anyMatch(t->r.root()==t.root()&&r.start()<t.end()&&t.start()<r.end())))continue;
             var initial=new LinkedHashSet<NominalValues.Initial>();
             if(!models.contains(node))for(var range:ranges.getOrDefault(node,List.of())) {
@@ -110,7 +110,7 @@ final class TableTextSemantics {
         if(d.clauses().stream().anyMatch(c->c instanceof Ast.UsageClause u&&!u.display()||c instanceof Ast.PreservedDataClause))return null;
         var pictures=d.clauses().stream().filter(Ast.PictureClause.class::isInstance).map(Ast.PictureClause.class::cast).toList();
         int width=0;boolean text=false;
-        if(d.children().isEmpty()) {
+        if(!hasStorageChildren(d)) {
             if(pictures.size()!=1)return null;var p=pictures.get(0);
             if(p.textExtent().isPresent()){width=p.textExtent().orElseThrow();text=true;}
             else if(p.integerDigits().isPresent()&&!p.picture().toUpperCase(Locale.ROOT).contains("S"))width=p.integerDigits().orElseThrow();
@@ -118,7 +118,7 @@ final class TableTextSemantics {
         } else {
             if(!pictures.isEmpty())return null;
             for(var c:unit.children().getOrDefault(node,List.of())) {
-                int extent=0;for(int member:c.members()){var s=shape(member);if(s==null)return null;long size=(long)s.width()*s.count();if(size>MAX_WIDTH)return null;extent=Math.max(extent,(int)size);}
+                int extent=0;for(int member:storageMembers(c)){var s=shape(member);if(s==null)return null;long size=(long)s.width()*s.count();if(size>MAX_WIDTH)return null;extent=Math.max(extent,(int)size);}
                 if((long)width+extent>MAX_WIDTH)return null;width+=extent;
             }
         }
@@ -134,9 +134,15 @@ final class TableTextSemantics {
             int start=offset+i*s.width();ranges.computeIfAbsent(node,k->new ArrayList<>()).add(new Range(root,start,s.width()));
             int next=start;
             for(var c:unit.children().getOrDefault(node,List.of())) {
-                int extent=0;for(int member:c.members()){var child=shapes.get(member);if(child==null)return;place(member,root,next,dims,model,budget);extent=Math.max(extent,child.width()*child.count());}next+=extent;
+                int extent=0;for(int member:storageMembers(c)){var child=shapes.get(member);if(child==null)return;place(member,root,next,dims,model,budget);extent=Math.max(extent,child.width()*child.count());}next+=extent;
             }
         }
+    }
+    private static boolean hasStorageChildren(Ast.DataEntry data) {
+        return data.children().stream().anyMatch(c->c.levelKind()!=Ast.DataLevelKind.CONDITION_88);
+    }
+    private List<Integer> storageMembers(StorageComponents.Component component) {
+        return component.members().stream().filter(n->data.get(n).levelKind()!=Ast.DataLevelKind.CONDITION_88).toList();
     }
     private boolean redefining(int node) {
         var current=positions.get(node);

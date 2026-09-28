@@ -853,12 +853,17 @@ branches in the current COBOL activation, stays registered, and cannot manufactu
 a PERFORM return. LINK callee state is outside the current activation. External
 COBOL calls open the current definitions without discarding their possible targets.
 
-PUSH/POP stacks and other event families remain unmodeled. A reachable unmodeled
-POP prevents exclusion of locally declared handler targets: explicitly conditional
-source relations retain these possibilities, including an error continuation.
-These CONTROL_POSSIBILITY facts cannot be executable AIR authority. Dead POP and
-bypassed events do not activate them. This can yield extra source candidates;
-it does not claim exact stack restoration or complete analysis.
+PUSH/POP stacks and other event families remain unmodeled. The producer publishes
+potential restoration relations, including error continuation, with a POP
+prerequisite. Consumers must propagate that prerequisite along the same contextual
+execution path to the event. Reaching the POP somewhere in the unit is insufficient.
+A proved later specific registration (LABEL, DEFAULT or IGNORE) kills the restored
+alternatives for that condition. Replacing ERROR kills restored ERROR alternatives,
+while independently possible specific dispositions survive. Separate entries and
+matched PERFORM calls/returns must not share a restoration merely by source ID.
+These CONTROL_POSSIBILITY facts cannot be executable AIR authority. Dead POP,
+causally later POP without a return path, and bypassed events do not activate them.
+This bounded approximation does not claim exact stack restoration or completeness.
 
 The lowerer validates registration effects, event command/options, version, proofs
 and canonical provenance at both wire and in-memory admission. Qualified source
@@ -867,3 +872,16 @@ projects AIR transitions; its dependency consumer validates and transports the
 qualified source evidence without recognizing CICS syntax or catalog names.
 
 Authorities and independent adversaries: [campaign](../work/carddemo-values-control.md).
+
+### Table geometry and level 88
+
+Table shape and tableFields describe storage-bearing declarations. A CONDITION_88
+child annotates its conditional variable; it does not turn an elementary PIC item
+into a group or add width to any ancestor. Geometry placement ignores those
+components as well as field selection. An 88 VALUE is a predicate value, never
+an initializer for the annotated field or a sibling. Declaration origins, weak
+updates and the index-insensitive open remainder are unchanged.
+
+Authority: IBM [special levels](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=relationships-special-level-numbers)
+and [condition-name VALUE](https://www.ibm.com/docs/en/cobol-zos/6.3?topic=vc-format-2).
+Permanent contrasts: NominalTableTest and lower SourceTableSuite.

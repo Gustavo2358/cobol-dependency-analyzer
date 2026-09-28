@@ -35,6 +35,22 @@ class NominalTableTest {
             assertEquals(Set.of("PROGA001"),values(f));
         }
     }
+    @Test void conditionNamesDoNotAllocateTableStorageOrSeedInitializers() {
+        for(var suffix:List.of("", "\n88 IS-PROGA VALUE 'PROGA001'.", "\n88 IS-OTHER VALUE 'POISON88'.\n88 IS-PROGA VALUE 'PROGA001'.")) {
+            var f=port("01 TABLE-AREA.\n05 ITEM-TARGET PIC X(8) OCCURS 2 VALUE 'PROGA001'."+suffix,
+                "CALL ITEM-TARGET(1).\nGOBACK.").nominalValues().orElseThrow();
+            assertEquals(Set.of("PROGA001"),values(f));
+            assertEquals(8,f.symbols().stream().filter(s->s.node().equals(f.queries().get(0).node())).findFirst().orElseThrow().extent());
+            assertEquals(1,f.tableFields().size());
+        }
+    }
+    @Test void siblingConditionNamesPreserveOffsetsAndOtherFields() {
+        for(var condition:List.of("", "\n88 DESCRIPTION-SET VALUE 'POISON88'.")) {
+            var f=port(MENU.replace("15 ITEM-DESC PIC X(8).","15 ITEM-DESC PIC X(8)."+condition),
+                "CALL ITEM-TARGET(1).\nGOBACK.").nominalValues().orElseThrow();
+            assertEquals(Set.of("PROGA001","PROGB001"),values(f));
+        }
+    }
     @Test void finiteSummaryDoesNotTurnAnIndexedWriteIntoStrongUpdate() {
         var f=port(MENU,"MOVE 'PROGC001' TO ITEM-TARGET(CHOICE-NUM).\nCALL ITEM-TARGET(CHOICE-NUM).\nGOBACK.").nominalValues().orElseThrow();
         var query=f.queries().get(0).node();
