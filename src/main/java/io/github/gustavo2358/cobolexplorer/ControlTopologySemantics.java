@@ -35,6 +35,7 @@ public final class ControlTopologySemantics {
     private final CicsProgramControlAnalyzer.Contribution cics;
     private final boolean independent;
     private final String root;
+    private final Map<Integer,List<SqlWheneverSemantics.Route>> sqlDispatch;
 
     public static ControlTopology analyze(CompilationUnitModel.ProgramUnit unit, SymbolTable symbols,
             ReferenceResolution resolution, ResolutionAnalysisReport report,
@@ -53,6 +54,7 @@ public final class ControlTopologySemantics {
         this.unit=unit;this.ids=ids;this.files=files;this.cics=cics;
         division=unit.program().divisions().stream().filter(d->d.divisionKind()==Ast.DivisionKind.PROCEDURE).findFirst().orElseThrow();
         root="region:procedure:"+division.meta().id();
+        sqlDispatch=SqlWheneverSemantics.analyze(division);
         independent=division.procedureEntry().filter(e->e.inputProof().unaffectedBy(report.frontendState())).isPresent();
         var todo=new ArrayDeque<Ast.Node>();todo.push(division);
         while(!todo.isEmpty()){var n=todo.pop();nodes.put(n.meta().id(),n);Ast.children(n).forEach(todo::push);}
@@ -291,9 +293,17 @@ public final class ControlTopologySemantics {
             }
             if(SqlNormalCompletion.proved(s)) {
                 boolean declaration=SqlCommandSyntax.parse(((Ast.EmbeddedLanguageStatement)s).rawText()).orElseThrow().declaration();
-                var normal=proof(id+"/sql-normal",ProofKind.LOCAL_GRAMMAR,declaration?"db2-cursor-declaration":SqlNormalCompletion.selectInto(((Ast.EmbeddedLanguageStatement)s).rawText())?"db2-select-into-successful-return":"db2-command-possible-return",s.meta().provenance(),List.of(p));
+                var normal=proof(id+"/sql-normal",ProofKind.LOCAL_GRAMMAR,declaration?"db2-nonexecutable-directive":SqlNormalCompletion.selectInto(((Ast.EmbeddedLanguageStatement)s).rawText())?"db2-select-into-successful-return":"db2-command-possible-return",s.meta().provenance(),List.of(p));
                 add(s,owner,OutcomeKind.NORMAL,"normal",next,"",normal);
                 if(declaration)continue;
+                for(var route:sqlDispatch.getOrDefault(s.meta().id(),List.of())) {
+                    var target=route.target().map(ref->targetDeclarations.get(ref.meta().id())).map(this::procedureRegion);
+                    var scopeProof=proof(id+"/sql-scope/"+route.condition(),ProofKind.LOCAL_GRAMMAR,"db2-whenever-lexical-scope",route.directive().meta().provenance(),List.of(normal));
+                    var dispatch=proof(id+"/sql-dispatch/"+route.condition(),target.isPresent()?ProofKind.RESOLVED_TARGET:ProofKind.PARTIAL_UNKNOWN,
+                        target.isPresent()?"db2-whenever-resolved-dispatch":"db2-whenever-target-unavailable",route.target().map(ref->ref.meta().provenance()).orElse(route.directive().meta().provenance()),List.of(scopeProof));
+                    add(s,owner,target.isPresent()?OutcomeKind.EXPLICIT_TRANSFER:OutcomeKind.UNKNOWN_LOCAL,"sql/"+route.condition(),
+                        target.map(region->entry(region,dispatch)).orElseGet(()->unknown(owner,dispatch)),"",dispatch);
+                }
                 var other=proof(id+"/sql-other",ProofKind.PARTIAL_UNKNOWN,"db2-select-into-other-outcomes",s.meta().provenance(),List.of(normal));
                 add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"sql/other",unknown(owner,other),"",other);continue;
             }

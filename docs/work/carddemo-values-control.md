@@ -165,3 +165,38 @@ oracle. Existing expected values were preserved. Lower fast focal suites passed
 round trips. CFG architecture FAST passed after refreshing the reviewed compiled
 API inventory (vc3-expression-cfg-fast-03.log). Final full/corpus and pin gates
 remain campaign obligations.
+
+## VC4 SQL rule and oracle
+
+IBM Db2 [WHENEVER](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=statements-whenever)
+is a lexical precompiler directive. The last preceding directive for each of
+SQLERROR, SQLWARNING and NOT FOUND applies independently, with CONTINUE as default.
+The control producer will publish possible dispatch at the affected SQL command;
+the directive itself completes without executing its target. Canonical resolved
+procedure identities select targets. Unknown bindings retain explicit remainders.
+A source-order pass is linear after ordering typed occurrences; no runtime state
+or downstream source parsing selects a WHENEVER target.
+
+[PREPARE/EXECUTE IMMEDIATE](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=statements-execute-immediate)
+may return to the host application. Their runtime SQL string and external effects
+remain unknown. The existing SQL_HOST_OPERANDS proof retains ALL bounds and MAY
+hosts; no table/program dependency is guessed from string contents. The closed
+syntax domain initially covers named PREPARE FROM host, EXECUTE with ordinary
+USING hosts, and EXECUTE IMMEDIATE host/literal. Descriptor variants stay open.
+The SQL preprocessor already emits one token per complete block; executable AST
+grammar must consume one such token per statement, preserving adjacent commands.
+Oracles cover adjacent blocks, lexical directives after GO TO, independent
+categories, replacement by CONTINUE, unresolved labels and PERFORM continuations.
+
+VC4 SQL checkpoint: adjacent EXEC SQL blocks are separate AST statements;
+WHENEVER categories use lexical replacement and canonical procedure bindings.
+Dynamic PREPARE, EXECUTE and EXECUTE IMMEDIATE retain normal completion plus
+unknown outcomes, with open external effects. No runtime SQL string is analyzed.
+36 focused frontend tests passed. Seven real SP fixtures pass lower reachability
+oracles, and all seven pass four production stages, zero parser errors, strict
+qualified-source wire validation and program candidate oracles. Cases include
+lexically active but runtime-dead directives, canceled directives, dead SQL,
+unresolved labels and a performed paragraph. Evidence: vc4-sql-front-02.log,
+vc4-sql-lower.log, vc4-sql-probes-01/oracle.json. These tests use published
+statement identities; no ordinal is assumed from a statement's source position.
+Remaining VC4 CICS condition state and alternate entries are not yet implemented.

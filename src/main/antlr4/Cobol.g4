@@ -1477,7 +1477,7 @@ execCicsStatement
 // exec sql statement
 
 execSqlStatement
-   : EXECSQLLINE+
+   : EXECSQLLINE
    ;
 
 // exec sql ims statement

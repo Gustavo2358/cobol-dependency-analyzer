@@ -1499,6 +1499,12 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
             operands.add(new Ast.EmbeddedHostOperand("IMPLICIT_AREA",area.map().start(),area.role(),ref));
         });
         var procedures=new ArrayList<Ast.ProcedureReference>();
+        if(language==Ast.EmbeddedLanguage.SQL)SqlCommandSyntax.parse(raw).flatMap(SqlCommandSyntax.Command::directive).flatMap(SqlCommandSyntax.Directive::target).ifPresent(target->{
+            var label=EmbeddedProcedureSyntax.parse(raw,target.syntax(),target.start(),context.getStart().getStartIndex(),context.getStart().getLine(),context.getStart().getCharPositionInLine(),context.getStart().getTokenIndex());
+            var previous=embeddedOperandOrigin;embeddedOperandOrigin=anchor.origin();boolean retained=retainedEmbeddedOperand;retainedEmbeddedOperand=true;
+            try {label.ifPresent(tree->procedures.add(procedureReference(tree)));}
+            finally {embeddedOperandOrigin=previous;retainedEmbeddedOperand=retained;}
+        });
         if(language==Ast.EmbeddedLanguage.CICS) {
             var label=CicsHandlerSyntax.label(raw,context.getStart().getStartIndex(),context.getStart().getLine(),context.getStart().getCharPositionInLine(),context.getStart().getTokenIndex());
             var previous=embeddedOperandOrigin;embeddedOperandOrigin=anchor.origin();

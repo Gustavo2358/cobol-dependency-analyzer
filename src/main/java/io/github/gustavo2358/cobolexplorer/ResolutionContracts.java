@@ -33,6 +33,7 @@ public final class ResolutionContracts {
         REFERENCE_MODIFICATION_LENGTH,
         GO_TO_TARGET,
         CICS_HANDLER_TARGET,
+        SQL_WHENEVER_TARGET,
         GO_TO_SELECTOR,
         PERFORM_FROM,
         PERFORM_THROUGH,
