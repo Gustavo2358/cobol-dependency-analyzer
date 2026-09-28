@@ -26,6 +26,15 @@ final class EmbeddedExpressionSyntax {
             return valid?Optional.of(new Parsed(tree,tokens)):Optional.empty();
         }catch(org.antlr.v4.runtime.misc.ParseCancellationException e){return Optional.empty();}
     }
+    static Optional<ParserRuleContext> parseAt(String operand,String raw,int begin,int offset,int line,int column,int tokenIndex) {
+        var parsed=parse(operand);if(parsed.isEmpty())return Optional.empty();
+        for(var token:parsed.get().tokens().getTokens())if(token instanceof CommonToken t) {
+            t.setText(t.getText());int l=line,c=column;
+            for(int n=0;n<begin+Math.max(0,t.getStartIndex());n++){if(raw.charAt(n)=='\n'){l++;c=0;}else c++;}
+            t.setLine(l);t.setCharPositionInLine(c);t.setStartIndex(offset+begin+t.getStartIndex());t.setStopIndex(offset+begin+t.getStopIndex());t.setTokenIndex(tokenIndex);
+        }
+        return Optional.of(parsed.get().tree());
+    }
     static List<Host> parse(String raw,int offset,int line,int column,int tokenIndex) {
         var command=CicsCommandSemantics.parse(raw);
         var options=new ArrayList<CicsCommandSyntax.Option>();
@@ -39,14 +48,9 @@ final class EmbeddedExpressionSyntax {
         });
         var out=new ArrayList<Host>();
         for(var option:options)if(option.name().equals("LENGTH")&&option.operand().isPresent()) {
-            var parsed=parse(option.operand().orElseThrow());if(parsed.isEmpty())continue;
-            int begin=raw.indexOf('(',option.start())+1;
-            for(var token:parsed.get().tokens().getTokens())if(token instanceof CommonToken t) {
-                t.setText(t.getText());int l=line,c=column;
-                for(int n=0;n<begin+Math.max(0,t.getStartIndex());n++){if(raw.charAt(n)=='\n'){l++;c=0;}else c++;}
-                t.setLine(l);t.setCharPositionInLine(c);t.setStartIndex(offset+begin+t.getStartIndex());t.setStopIndex(offset+begin+t.getStopIndex());t.setTokenIndex(tokenIndex);
-            }
-            out.add(new Host(option.name(),option.start(),parsed.get().tree()));
+            var tree=parseAt(option.operand().orElseThrow(),raw,raw.indexOf('(',option.start())+1,offset,line,column,tokenIndex);
+            if(tree.isEmpty())continue;
+            out.add(new Host(option.name(),option.start(),tree.get()));
         }
         return List.copyOf(out);
     }

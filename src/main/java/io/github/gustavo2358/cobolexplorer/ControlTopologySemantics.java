@@ -245,8 +245,10 @@ public final class ControlTopologySemantics {
                 continue;
             }
             if(SqlNormalCompletion.proved(s)) {
-                var normal=proof(id+"/sql-normal",ProofKind.LOCAL_GRAMMAR,"db2-select-into-successful-return",s.meta().provenance(),List.of(p));
+                boolean declaration=SqlCommandSyntax.parse(((Ast.EmbeddedLanguageStatement)s).rawText()).orElseThrow().declaration();
+                var normal=proof(id+"/sql-normal",ProofKind.LOCAL_GRAMMAR,declaration?"db2-cursor-declaration":SqlNormalCompletion.selectInto(((Ast.EmbeddedLanguageStatement)s).rawText())?"db2-select-into-successful-return":"db2-command-possible-return",s.meta().provenance(),List.of(p));
                 add(s,owner,OutcomeKind.NORMAL,"normal",next,"",normal);
+                if(declaration)continue;
                 var other=proof(id+"/sql-other",ProofKind.PARTIAL_UNKNOWN,"db2-select-into-other-outcomes",s.meta().provenance(),List.of(normal));
                 add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"sql/other",unknown(owner,other),"",other);continue;
             }

@@ -17,9 +17,9 @@ class SqlNormalCompletionTest {
         }
     }
     @Test void fullPayloadAndCardinalityAreRequired() {
-        for(var sql:java.util.List.of("SELECT A, 23, 'x''y' INTO :OUT-A, :OUT-B, :OUT-C FROM S.T", "SELECT C INTO :OUT-A FROM T FETCH FIRST 1 ROW ONLY"))
+        for(var sql:java.util.List.of("SELECT A, 23, 'x''y' INTO :OUT-A, :OUT-B, :OUT-C FROM S.T", "SELECT C INTO :OUT-A FROM T FETCH FIRST 1 ROW ONLY", "SELECT A INTO :OUT-A FROM T WHERE A = 2"))
             assertTrue(SqlNormalCompletion.selectInto("EXEC SQL "+sql+" END-EXEC."),sql);
-        for(var sql:java.util.List.of("SELECT A INTO :OUT-A, :OUT-B FROM T", "SELECT X() INTO :OUT-A FROM T", "SELECT A INTO :OUT-A FROM T FETCH FIRST 0 ROWS ONLY", "SELECT A INTO :OUT-A FROM T END-EXEC EXEC SQL DROP TABLE T", "SELECT 'unfinished INTO :OUT-A FROM T", "SELECT A INTO :OUT-A FROM T; DELETE FROM T", "SELECT A INTO :OUT-A FROM T WHERE A = 2"))
+        for(var sql:java.util.List.of("SELECT A INTO :OUT-A, :OUT-B FROM T", "SELECT X() INTO :OUT-A FROM T", "SELECT A INTO :OUT-A FROM T FETCH FIRST 0 ROWS ONLY", "SELECT A INTO :OUT-A FROM T END-EXEC EXEC SQL DROP TABLE T", "SELECT 'unfinished INTO :OUT-A FROM T", "SELECT A INTO :OUT-A FROM T; DELETE FROM T"))
             assertFalse(SqlNormalCompletion.selectInto("EXEC SQL "+sql+" END-EXEC"),sql);
     }
 }

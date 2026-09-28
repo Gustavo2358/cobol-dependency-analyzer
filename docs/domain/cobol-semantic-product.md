@@ -750,3 +750,7 @@ Destinos da ControlTopology independem de footprint físico. Lower conserva o ef
 ## SP 2.54 — catálogo CICS fechado
 
 CICS_COMMAND acrescenta ASKTIME, FORMATTIME, ASSIGN, INQUIRE_PROGRAM, SEND_TEXT e WRITEQ_TD. Cada família conserva opções, direção host e LENGTH estrutural; nenhum efeito implícito dessas famílias autoriza hostEffects fechado. Conhecimento de controle permanece na topologia. NOHANDLE duplicado sem operando conserva opções e warning CICS_COMMAND_DUPLICATE_FLAG_IGNORED; a paridade warning/duplicação é validada e a capacidade exige SP2.54. [Regra, fontes e testes W4](../work/carddemo-control-w4.md).
+
+## SP 2.55 — SQL e DL/I com efeitos externos abertos
+
+`SQL_HOST_OPERANDS` e `DLI_EXTERNAL_OPERANDS` conservam referências canônicas de leitura/escrita, bounds READ/WRITE/EXPOSURE `ALL`, ambiente e valores `UNKNOWN`, e nenhum MUST. SQL SELECT INTO/UPDATE/INSERT/DELETE/OPEN/FETCH/CLOSE e IMS CHKP/REPL/ISRT/DLET recebem conclusão normal possível e outcomes externos abertos. Não há prova de sucesso de I/O, status, posição do cursor/PCB ou valores retornados. DECLARE CURSOR é declarativo e não aloca armazenamento COBOL. O parser SQL consome a forma fechada inteira, com limite de 256 níveis de expressão; formas não admitidas permanecem opacas. WHENEVER não tem dispatch modelado. Detalhes e fontes em [W5](../work/carddemo-control-w5.md).
