@@ -630,3 +630,4 @@ PREPROCESSOR	cobolWord	PREPROCESSOR	PRESERVED_UNINTERPRETED	NOT_DEPENDENCY_BEARI
 PREPROCESSOR	literal	PREPROCESSOR	PRESERVED_UNINTERPRETED	NOT_DEPENDENCY_BEARING	Preprocessor syntax is explicitly cataloged and has no standalone dependency claim.
 PREPROCESSOR	filename	PREPROCESSOR	PRESERVED_UNINTERPRETED	NOT_DEPENDENCY_BEARING	Preprocessor syntax is explicitly cataloged and has no standalone dependency claim.
 PREPROCESSOR	charDataKeyword	PREPROCESSOR	PRESERVED_UNINTERPRETED	NOT_DEPENDENCY_BEARING	Preprocessor syntax is explicitly cataloged and has no standalone dependency claim.
+COBOL	embeddedIdentifier	GRAMMAR_INFRASTRUCTURE	MODELED	NOT_DEPENDENCY_BEARING	Complete embedded host reference entry; canonical identifier owns semantic structure.

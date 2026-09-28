@@ -28,8 +28,8 @@ final class CicsHostSyntax {
             }
         });
         CicsCommandSemantics.parse(raw).ifPresent(command->{
-            for(var option:command.options())if(Set.of("MAP","MAPSET","FROM","INTO","RESP","RESP2","TRANSID","COMMAREA").contains(option.name())) {
-                options.add(option);roles.put(option.start(),Set.of("INTO","RESP","RESP2").contains(option.name())?Ast.EmbeddedHostRole.WRITE:Ast.EmbeddedHostRole.READ);
+            for(var option:command.options())if(!option.name().equals("LENGTH")&&(Set.of("MAP","MAPSET","FROM","INTO","RESP","RESP2","TRANSID","COMMAREA").contains(option.name())||CicsCommandSemantics.extra(command.command()).contains(option.name()))) {
+                options.add(option);roles.put(option.start(),CicsCommandSemantics.writes(command.command(),option.name())?Ast.EmbeddedHostRole.WRITE:Ast.EmbeddedHostRole.READ);
             }
         });
         var result=new ArrayList<Host>();
@@ -50,7 +50,7 @@ final class CicsHostSyntax {
         var tokens=new CommonTokenStream(lexer);tokens.fill();
         var parser=new CobolParser(tokens);parser.removeErrorListeners();parser.setErrorHandler(new BailErrorStrategy());
         CobolParser.IdentifierContext identifier;
-        try {identifier=parser.identifier();if(failed[0]||parser.getCurrentToken().getType()!=Token.EOF)return Optional.empty();}
+        try {identifier=parser.embeddedIdentifier().identifier();if(failed[0]||parser.getCurrentToken().getType()!=Token.EOF)return Optional.empty();}
         catch(org.antlr.v4.runtime.misc.ParseCancellationException e){return Optional.empty();}
         // Only reference-shaped hosts have an EmbeddedHostOperand today.
         // Do not allocate then discard LENGTH OF / function AST nodes: that breaks preorder identity.
