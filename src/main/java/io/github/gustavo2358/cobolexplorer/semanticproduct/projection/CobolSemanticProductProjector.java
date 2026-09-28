@@ -1,6 +1,7 @@
 package io.github.gustavo2358.cobolexplorer.semanticproduct.projection;
 
 import io.github.gustavo2358.cobolexplorer.Ast;
+import io.github.gustavo2358.cobolexplorer.LogicalMoveSemantics;
 import io.github.gustavo2358.cobolexplorer.CicsCommandSemantics;
 import io.github.gustavo2358.cobolexplorer.StorageLayoutSemantics;
 import io.github.gustavo2358.cobolexplorer.StorageAccessSemantics;
@@ -216,16 +217,16 @@ public final class CobolSemanticProductProjector {
                 !inputs.report().inputComplete(inputs.unitId())
                         ? CobolSemanticProduct.InventoryStatus.INPUT_MISSING
                         : CobolSemanticProduct.InventoryStatus.COMPLETE;
-        EntryInventory entries = entries(inputs, statementIds, inventoryStatus);
+        var fileInventory=files(inputs, declarations.ids(), statementIds, observedOperandIds);
+        var topology=io.github.gustavo2358.cobolexplorer.ControlTopologySemantics.analyze(
+                inputs.selectedSource().unit(), inputs.selectedSource().table(), products.resolution(), products.report(),
+                statementIds, fileInventory, products.cics().orElse(null));
+        EntryInventory entries = entries(inputs, statementIds, inventoryStatus,topology);
         if (entries.gapCodes().contains("DECLARATIVES_NOT_PROJECTED")
                 && inventoryStatus == InventoryStatus.COMPLETE)
             inventoryStatus = InventoryStatus.PARTIAL;
         CobolSemanticProduct.CoverageSummary coverage = coverage(
                 inventoryStatus, statements, inputs.unitSummary());
-        var fileInventory=files(inputs, declarations.ids(), statementIds, observedOperandIds);
-        var topology=io.github.gustavo2358.cobolexplorer.ControlTopologySemantics.analyze(
-                inputs.selectedSource().unit(), inputs.selectedSource().table(), products.resolution(), products.report(),
-                statementIds, fileInventory, products.cics().orElse(null));
         var locality=products.factDependencies().get(unitId);
         if(locality==null&&!topology.fileFlows().isEmpty())locality=io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies.unavailable(
                 provenance(inputs.selectedSource().unit().program().meta().provenance()));
@@ -239,10 +240,10 @@ public final class CobolSemanticProductProjector {
         var ids=new HashMap<Integer,StatementId>();statements.forEach((ast,id)->ids.put(ast.meta().id(),id));
         return products.scalarMoves().nominalValues().facts(unit).filter(f->!f.queries().isEmpty()).map(f->{
             java.util.function.IntFunction<String> statement=n->"statement:"+Objects.requireNonNull(ids.get(n)).localId();
-            return new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues(f.symbols().stream().anyMatch(io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Symbol::modelAssumed)?"NOMINAL_TEXT_SOURCE_V2":"NOMINAL_TEXT_SOURCE_V1",f.symbols(),
+            return new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues(!f.tableFields().isEmpty()?"NOMINAL_TEXT_SOURCE_V4":f.assignments().stream().anyMatch(a->a.source().extended())?"NOMINAL_TEXT_SOURCE_V3":f.symbols().stream().anyMatch(io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Symbol::modelAssumed)?"NOMINAL_TEXT_SOURCE_V2":"NOMINAL_TEXT_SOURCE_V1",f.symbols(),
                 f.assignments().stream().map(a->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Assignment(statement.apply(a.statement()),a.target(),a.source())).toList(),
                 f.conditions().stream().map(c->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Condition(statement.apply(c.statement()),c.predicate())).toList(),
-                f.queries().stream().map(q->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Query(statement.apply(q.statement()),q.node())).toList());
+                f.queries().stream().map(q->new io.github.gustavo2358.cobolexplorer.semanticproduct.NominalValues.Query(statement.apply(q.statement()),q.node())).toList(),f.tableFields());
         });
     }
 
@@ -519,7 +520,7 @@ public final class CobolSemanticProductProjector {
     }
 
     private static EntryInventory entries(ProjectionInputs inputs,
-            Map<Ast.Statement, StatementId> statementIds, InventoryStatus inventoryStatus) {
+            Map<Ast.Statement, StatementId> statementIds, InventoryStatus inventoryStatus,io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology topology) {
         Ast.Program program = inputs.selectedSource().unit().program();
         Ast.Division procedure = null;
         for (Ast.Division division : program.divisions()) {
@@ -590,8 +591,29 @@ public final class CobolSemanticProductProjector {
         List<String> inventoryGaps = new ArrayList<>(List.of("ALTERNATE_ENTRIES_NOT_PROJECTED"));
         if (declaratives && inputs.products().storage().isEmpty()) inventoryGaps.add("DECLARATIVES_NOT_PROJECTED");
         if (inputMissing) inventoryGaps.add("ENTRY_INPUT_INCOMPLETE");
-        return new EntryInventory(inputMissing ? InventoryStatus.INPUT_MISSING : InventoryStatus.PARTIAL,
-                List.of(entry), inventoryGaps);
+        var declared=io.github.gustavo2358.cobolexplorer.AlternateEntrySemantics.analyze(inputs.selectedSource().unit());
+        var all=new ArrayList<EntryFact>();all.add(entry);
+        if(!declared.isEmpty()){inventoryGaps.remove("ALTERNATE_ENTRIES_NOT_PROJECTED");inventoryGaps.add("ENTRY_RUNTIME_CONTRACT_OPEN");}
+        var starts=new HashMap<String,io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.EntryPoint>();topology.entryPoints().forEach(e->starts.put(e.entry(),e));
+        var byHandle=new HashMap<String,StatementId>();statementIds.values().forEach(id->byHandle.put("statement:"+id.localId(),id));
+        for(var declaration:declared) {
+            var point=starts.get(declaration.entry());
+            var target=point!=null&&point.target().kind()==io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.TargetKind.OCCURRENCE?Optional.ofNullable(byHandle.get(point.target().reference())):Optional.<StatementId>empty();
+            var originAt=provenance(declaration.source().meta().provenance());var localGaps=new ArrayList<EntryGap>();
+            declaration.gaps().forEach(code->localGaps.add(new EntryGap(GapScope.ENTRY_START,code,"alternate entry declaration is outside the supported source domain",originAt)));
+            if(target.isEmpty())localGaps.add(new EntryGap(GapScope.ENTRY_START,"ALTERNATE_ENTRY_START_UNAVAILABLE","topology has no supported executable start",originAt));
+            boolean preciseSignature=declaration.parameters()==0&&!inputMissing;
+            if(!preciseSignature)localGaps.add(new EntryGap(GapScope.ENTRY_SIGNATURE,"ENTRY_SIGNATURE_NOT_PROJECTED","actual USING bindings and runtime parameter values remain unknown",originAt));
+            if(inputMissing)localGaps.add(new EntryGap(GapScope.ANALYSIS_INPUT,"ENTRY_INPUT_INCOMPLETE","missing inputs retain their own uncertainty",originAt));
+            all.add(new EntryFact(new EntryId(inputs.boundaryUnit(),declaration.ordinal()),EntryRole.ALTERNATE,declaration.supported()?Availability.KNOWN:Availability.UNAVAILABLE,
+                new ExecutableStart(target.isPresent()?Availability.KNOWN:Availability.UNAVAILABLE,target),
+                new EntrySignature(preciseSignature?Availability.KNOWN:Availability.PARTIAL,Optional.of(declaration.parameters()),ReturningClause.ABSENT),originAt,
+                localGaps.isEmpty()?CoverageStatus.MODELED:CoverageStatus.PARTIAL,
+                readiness(target.isEmpty()?ReadinessStatus.BLOCKED:preciseSignature?ReadinessStatus.SUFFICIENT:ReadinessStatus.PARTIAL,"declared alternate entry",
+                    target.isPresent()?ReadinessStatus.SUFFICIENT:ReadinessStatus.BLOCKED,"topology owns the external start",ReadinessStatus.BLOCKED,"runtime parameter and storage state remain open"),localGaps,
+                declaration.name(),Optional.ofNullable(statementIds.get(declaration.source()))));
+        }
+        return new EntryInventory(inputMissing ? InventoryStatus.INPUT_MISSING : InventoryStatus.PARTIAL,all,inventoryGaps);
     }
 
     private static IndependentStorageSet storageIndependence(ProjectionInputs inputs,
@@ -658,11 +680,8 @@ public final class CobolSemanticProductProjector {
             boolean regionalSequence=(move.corresponding() || move.source() instanceof Ast.LiteralExpression || move.source() instanceof Ast.DataReference)
                     && move.targets().stream().allMatch(Ast.DataReference.class::isInstance)
                     && !sequence.isEmpty()&&sequence.stream().anyMatch(e->e.kind()!=StorageAccessSemantics.MoveKind.UNAVAILABLE);
-            boolean logicalSequence=move.targets().size()>1 && move.source() instanceof Ast.LiteralExpression literal
-                && literal.logicalText().isPresent() && move.targets().stream().filter(Ast.DataReference.class::isInstance)
-                    .map(Ast.DataReference.class::cast).anyMatch(receiver->inputs.products().storage()
-                        .flatMap(st->st.logicalWholeItem(new StorageLayoutSemantics.Key(inputs.unitId(),receiver.meta().id())))
-                        .flatMap(inputs.products().scalarMoves()::declaration).isPresent());
+            boolean logicalSequence=inputs.products().storage().flatMap(st->st.logicalMove(
+                new StorageLayoutSemantics.Key(inputs.unitId(),move.meta().id()))).filter(LogicalMoveSemantics.Fact::admitted).isPresent();
             if(regionalSequence||logicalSequence)capability=Capability.supported("MOVE","REGIONAL_TRANSFER_SEQUENCE");
             List<ReferenceResolution.Entry> entries = new ArrayList<>();
             if (capability.supported()) {
@@ -681,7 +700,9 @@ public final class CobolSemanticProductProjector {
                     if(!regionalSequence&&!logicalSequence)capability = bindingCapability(capability, read, "MOVE");
                 }
             }
-            return new StatementPlan(position, capability, entries);
+            if(!capability.supported())effectSummary(move,inputs).ifPresent(e->java.util.stream.Stream.of(e.knownReads(),e.mayWrites())
+                .flatMap(List::stream).map(inputs::optionalEntryFor).filter(Objects::nonNull).forEach(entries::add));
+            return new StatementPlan(position, capability, entries.stream().distinct().toList());
         }
 
         if (position.statement() instanceof Ast.GoToStatement g && GoToSemantics.depending(g))
@@ -760,8 +781,8 @@ public final class CobolSemanticProductProjector {
                 ?r.wholeItemAccess().isPresent():r.regionalAccess().isPresent())
             .map(CobolSemanticProduct.DataReference::id).collect(java.util.stream.Collectors.toSet());
         return new EffectSummary(reads,writes,mapped.apply(e.mustOverwrite()).stream().filter(exact::contains).toList(),exposures,
-            EffectBound.valueOf(e.unknownReadBound().name()),
-            EffectBound.valueOf(e.unknownWriteBound().name()),
+            reads.size()==e.knownReads().size()?EffectBound.valueOf(e.unknownReadBound().name()):EffectBound.ALL,
+            writes.size()==e.mayWrites().size()&&references.stream().filter(r->writes.contains(r.id())).allMatch(r->r.binding().status()==ResolutionStatus.RESOLVED)?EffectBound.valueOf(e.unknownWriteBound().name()):EffectBound.ALL,
             EffectBound.valueOf(e.unknownExposureBound().name()),
             EnvironmentEffect.valueOf(e.environment().name()),EffectValueTransform.valueOf(e.values().name()),EffectProof.valueOf(e.proof().name()));
     }
@@ -1419,12 +1440,14 @@ public final class CobolSemanticProductProjector {
                     ? ContinuationAvailability.KNOWN : intrinsicEnd ? ContinuationAvailability.NONE : ContinuationAvailability.UNAVAILABLE, next, statementProvenance);
             Optional<WholeItemAccess> access = semantic.wholeItem().filter(entity -> copy != CopySemantics.POSSIBLE_TEXT).map(entity ->
                     new WholeItemAccess(Objects.requireNonNull(dataIds.get(entity), "whole item must be published")));
+            var logicalFact=inputs.products().storage().flatMap(st->st.logicalMove(new StorageLayoutSemantics.Key(inputs.unitId(),move.meta().id())));
             MoveSource source;
             if (move.source() instanceof Ast.LiteralExpression literal) {
+                var logicalText=logicalFact.flatMap(LogicalMoveSemantics.Fact::literal).or(()->literal.logicalText().map(t->t.value()));
                 source = new LiteralSource(new OperandId(statementId, 0),
-                        literal.logicalText().isPresent() ? LiteralKind.ALPHANUMERIC : LiteralKind.UNKNOWN,
-                        literal.value(), provenance(literal.meta().provenance()),
-                        literal.logicalText().map(text -> new TextValue(text.value())));
+                        logicalText.isPresent() ? LiteralKind.ALPHANUMERIC : LiteralKind.UNKNOWN,
+                        logicalText.orElse(literal.value()), provenance(literal.meta().provenance()),
+                        logicalText.map(TextValue::new));
             } else {
                 var read = plan.entries().get(move.targets().size());
                 source = new DataReference(new OperandId(statementId, 0), OperandRole.READ,
@@ -1464,7 +1487,7 @@ public final class CobolSemanticProductProjector {
                     var e=i<effects.size()?effects.get(i):null;var receiver=(Ast.DataReference)move.targets().get(i);
                     MoveSource sending;
                     if(source instanceof LiteralSource literal)sending=new LiteralSource(new OperandId(statementId,i*2),literal.kind(),literal.value(),literal.provenance(),literal.logicalValue());
-                    else {var read=(DataReference)source;sending=new DataReference(new OperandId(statementId,i*2),OperandRole.READ,read.binding(),read.provenance(),Optional.empty(),read.regionalAccess());}
+                    else {var read=(DataReference)source;sending=new DataReference(new OperandId(statementId,i*2),OperandRole.READ,read.binding(),read.provenance(),read.wholeItemAccess(),read.regionalAccess(),List.of(),read.logicalWholeItem());}
                     var logical=inputs.products().storage().flatMap(st->st.logicalWholeItem(new StorageLayoutSemantics.Key(inputs.unitId(),receiver.meta().id()))).map(dataIds::get);
                     var receiving=new DataReference(new OperandId(statementId,i*2+1),OperandRole.WRITE,nominalBinding(plan.entries().get(i),dataIds),provenance(receiver.meta().provenance()),Optional.empty(),regionalAccess(inputs,receiver.meta().id()),List.of(),logical);
                     var effect=e==null?new RegionalMove(RegionalMoveKind.UNAVAILABLE,List.of(),List.of("ACCESS_NOT_PROVEN"))
@@ -1474,24 +1497,21 @@ public final class CobolSemanticProductProjector {
                 fact=new MoveFact(fact.header(),fact.source(),fact.target(),CopySemantics.UNAVAILABLE,fact.normalContinuation(),Optional.empty(),fact.regionalMove(),extra);
             }
             var logicalTransfers=new ArrayList<LogicalTransfer>();
-            if(move.targets().size()>1&&fact.source() instanceof LiteralSource literal&&literal.logicalValue().isPresent()) {
-                var text=literal.logicalValue().orElseThrow().value();var length=text.codePointCount(0,text.length());
+            if(move.targets().size()>1&&logicalFact.isPresent()) {
                 for(int i=0;i<move.targets().size();i++) {
                     var receiver=i==0?fact.target():fact.additionalTransfers().get(i-1).target();
-                    if(receiver.logicalWholeItem().isEmpty())continue;
-                    var entity=inputs.products().storage().orElseThrow().logicalWholeItem(new StorageLayoutSemantics.Key(
-                        inputs.unitId(),move.targets().get(i).meta().id()));
-                    var extent=entity.flatMap(inputs.products().scalarMoves()::declaration);
-                    if(extent.isEmpty())continue;
-                    var n=extent.orElseThrow().extent();
-                    var fitted=length>n?text.substring(0,text.offsetByCodePoints(0,n)):text+" ".repeat(n-length);
-                    logicalTransfers.add(new LogicalTransfer(receiver.id(),new TextValue(fitted)));
+                    var fitted=logicalFact.orElseThrow().fitted().get(move.targets().get(i).meta().id());
+                    // Group aliases use the full logical family rather than scalar
+                    // transfer certificates, which require an elementary declaration.
+                    var entity=inputs.products().storage().orElseThrow().logicalWholeItem(new StorageLayoutSemantics.Key(inputs.unitId(),move.targets().get(i).meta().id()));
+                    if(fitted!=null&&entity.flatMap(inputs.products().scalarMoves()::declaration).isPresent())
+                        logicalTransfers.add(new LogicalTransfer(receiver.id(),new TextValue(fitted)));
                 }
             }
             if(!logicalTransfers.isEmpty())fact=new MoveFact(fact.header(),fact.source(),fact.target(),fact.copySemantics(),
                 fact.normalContinuation(),fact.textAdjustment(),fact.regionalMove(),fact.additionalTransfers(),logicalTransfers);
             statements.add(fact);
-            if (move.source() instanceof Ast.LiteralExpression literal && literal.logicalText().isEmpty()) gaps.add(new Gap(statementId, GapScope.LITERAL_KIND,
+            if (move.source() instanceof Ast.LiteralExpression literal && literal.logicalText().isEmpty() && logicalFact.flatMap(LogicalMoveSemantics.Fact::literal).isEmpty()) gaps.add(new Gap(statementId, GapScope.LITERAL_KIND,
                     LITERAL_KIND_GAP, "literal category is outside the canonical basic text capability",
                     provenance(literal.meta().provenance())));
             for (var gap : moveGaps) gaps.add(new Gap(statementId,

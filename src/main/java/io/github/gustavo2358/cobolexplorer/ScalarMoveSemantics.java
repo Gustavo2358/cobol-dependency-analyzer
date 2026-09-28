@@ -319,7 +319,7 @@ public final class ScalarMoveSemantics {
         return new ScalarMoveSemantics(declarations, moves, calls,
                 new Metrics(counts[0], counts[1], counts[2], counts[3], counts[4]),
                 ifs, performs, evaluates,
-                goTos, procedurePerforms,numbers,factDependencies,storage.map(st->LogicalInitialSemantics.analyze(frontend,resolution,report,st,factDependencies,cics)).orElse(Map.of()),TextConditionSemantics.analyze(frontend,resolution,declarations),NominalValueSemantics.analyze(frontend,resolution,possibleText,storage));
+                goTos, procedurePerforms,numbers,factDependencies,storage.map(st->LogicalInitialSemantics.analyze(frontend,resolution,report,st,factDependencies,cics)).orElse(Map.of()),TextConditionSemantics.analyze(frontend,resolution,declarations),NominalValueSemantics.analyze(frontend,resolution,possibleText,storage,components));
     }
 
     private static Move fact(Optional<ResolutionContracts.SemanticEntityId> whole,

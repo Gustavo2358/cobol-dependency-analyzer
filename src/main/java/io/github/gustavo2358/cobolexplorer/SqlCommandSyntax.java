@@ -4,9 +4,15 @@ import java.util.*;
 
 /** Closed embedded Db2 syntax. Parses source once upstream; never evaluates SQL or database state. */
 final class SqlCommandSyntax {
-    enum Kind { SELECT_INTO, UPDATE, INSERT, DELETE, OPEN, FETCH, CLOSE, DECLARE_CURSOR }
+    enum Kind { SELECT_INTO, UPDATE, INSERT, DELETE, OPEN, FETCH, CLOSE, DECLARE_CURSOR, PREPARE, EXECUTE, EXECUTE_IMMEDIATE, WHENEVER }
     record Host(String operand,int start,Ast.EmbeddedHostRole role) { }
-    record Command(Kind kind,List<Host> hosts) {Command {hosts=List.copyOf(hosts);}boolean declaration(){return kind==Kind.DECLARE_CURSOR;}}
+    enum Condition { SQLERROR, SQLWARNING, NOT_FOUND }
+    record Label(String syntax,int start) { }
+    record Directive(Condition condition,Optional<Label> target) { }
+    record Command(Kind kind,List<Host> hosts,Optional<Directive> directive) {
+        Command {hosts=List.copyOf(hosts);Objects.requireNonNull(directive);}
+        boolean declaration(){return kind==Kind.DECLARE_CURSOR||kind==Kind.WHENEVER;}
+    }
     static Optional<Command> parse(String raw) {
         try {return Optional.of(new Parser(raw).command());}catch(Unproved e){return Optional.empty();}
     }
@@ -45,7 +51,7 @@ final class SqlCommandSyntax {
         final String raw;final List<Token> tokens;final List<Host> hosts=new ArrayList<>();int at,depth;
         Parser(String raw){this.raw=raw;tokens=lex(raw);}
         Command command() {
-            need("EXEC");need("SQL");Kind kind;
+            need("EXEC");need("SQL");Kind kind;Optional<Directive> directive=Optional.empty();
             if(take("SELECT")){query(true);kind=Kind.SELECT_INTO;}
             else if(take("UPDATE")){qualified();need("SET");do {qualified();need("=");value();}while(take(","));where();kind=Kind.UPDATE;}
             else if(take("INSERT")) {
@@ -58,8 +64,27 @@ final class SqlCommandSyntax {
             else if(take("CLOSE")){identifier(true);kind=Kind.CLOSE;}
             else if(take("FETCH")){take("NEXT");take("FROM");identifier(true);need("INTO");targets(Ast.EmbeddedHostRole.WRITE);kind=Kind.FETCH;}
             else if(take("DECLARE")){identifier(true);need("CURSOR");if(take("WITH"))need("HOLD");need("FOR");need("SELECT");query(false);kind=Kind.DECLARE_CURSOR;}
-            else throw new Unproved();
-            need("END-EXEC");take(".");if(at!=tokens.size())throw new Unproved();return new Command(kind,hosts);
+            else if(take("PREPARE")){identifier(true);need("FROM");host(Ast.EmbeddedHostRole.READ);kind=Kind.PREPARE;}
+            else if(take("EXECUTE")) {
+                if(take("IMMEDIATE")){if(peek(":"))host(Ast.EmbeddedHostRole.READ);else if(next().kind()!=TokenKind.STRING)throw new Unproved();kind=Kind.EXECUTE_IMMEDIATE;}
+                else {identifier(true);if(take("USING"))targets(Ast.EmbeddedHostRole.READ);kind=Kind.EXECUTE;}
+            } else if(take("WHENEVER")) {
+                Condition condition;
+                if(take("SQLERROR"))condition=Condition.SQLERROR;
+                else if(take("SQLWARNING"))condition=Condition.SQLWARNING;
+                else {need("NOT");need("FOUND");condition=Condition.NOT_FOUND;}
+                Optional<Label> target=Optional.empty();
+                if(!take("CONTINUE")) {
+                    if(!take("GOTO")){need("GO");need("TO");}
+                    int start=at;identifier(true);
+                    if(take("OF")||take("IN"))identifier(true);
+                    var first=tokens.get(start);String syntax=raw.substring(first.start(),tokens.get(at-1).end());
+                    if(EmbeddedProcedureSyntax.parse(raw,syntax,first.start(),0,1,0,0).isEmpty())throw new Unproved();
+                    target=Optional.of(new Label(syntax,first.start()));
+                }
+                directive=Optional.of(new Directive(condition,target));kind=Kind.WHENEVER;
+            } else throw new Unproved();
+            need("END-EXEC");take(".");if(at!=tokens.size())throw new Unproved();return new Command(kind,hosts,directive);
         }
         void query(boolean into) {
             int selected=0;do {value();selected++;}while(take(","));

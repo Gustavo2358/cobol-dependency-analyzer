@@ -17,9 +17,11 @@ class LocalizedInputCompletenessContractTest {
         for (String prefix : List.of("ENTRY 'ALT'.", "ENTRY 'A'.\nENTRY 'B'.")) {
             var sp = publish("", "MAIN.\n" + prefix + "\nMOVE 'PROGA' TO WS-PGM.\nCALL WS-PGM.\nGOBACK.");
             export("leading-entry", sp);
+            assertEquals(prefix.contains("\n")?3:2,sp.path("entryInventory").path("entries").size());
+            assertEquals(prefix.contains("\n")?2:1,sp.path("controlTopology").path("entryPoints").size());
             assertEquals("MOVE", startFact(sp).path("variant").asText());
             assertEquals("PARTIAL", sp.path("entryInventory").path("status").asText());
-            assertTrue(sp.path("entryInventory").path("gapCodes").toString().contains("ALTERNATE_ENTRIES_NOT_PROJECTED"));
+            assertTrue(sp.path("entryInventory").path("gapCodes").toString().contains("ENTRY_RUNTIME_CONTRACT_OPEN"));
         }
         var perform = publish("", "ENTRY 'ALT'.\nPERFORM DEFINE-PGM.\nCALL WS-PGM.\nGOBACK.\nDEFINE-PGM.\nMOVE 'PROGA' TO WS-PGM.");
         assertEquals(8, startFact(perform).path("header").path("provenance").path("original").path("startLine").asInt(), "PERFORM line");

@@ -766,3 +766,122 @@ Publications with a specified `controlTopology.bindings[].reentryPolicy` require
 an undefined active reentry; UNSPECIFIED grants no additional authority.
 The policy is orthogonal to completion endpoints and phases. See
 [control topology](control-topology.md#sp-257--active-binding-reentry).
+
+### SP 2.58–2.59 — MOVE footprint and source text expressions
+
+2.58 introduces the MOVE_TARGETS effect proof. It bounds receiving MAY writes
+and structured source reads independently of executable value admission. It
+never authorizes MUST, storage exposure or a known value. Unresolved receivers
+keep an open write bound; special registers remain implicit runtime state.
+
+2.59 permits NOMINAL_TEXT_SOURCE_V3. A term may recursively carry exactly one
+argument for UPPER_ASCII, TRIM_SPACES, TRIM_LEADING_SPACES or
+TRIM_TRAILING_SPACES. These generic operators are selected by canonical typed
+COBOL syntax. They preserve source supports and modelAssumed confidence.
+Unsupported transforms and runtime functions remain UNKNOWN. V1/V2 serialized
+leaf terms remain unchanged. See the active [campaign](../work/carddemo-values-control.md).
+
+## Source table text — SP 2.60 / qualified source 1.4
+
+NOMINAL_TEXT_SOURCE_V4 adds `tableFields`. Each field has a real storage node
+identity and initializer values linked to real declaration origins. The frontend
+uses typed DISPLAY character extents, fixed OCCURS bounds and proved REDEFINES
+components. Numeric DISPLAY columns participate in offsets; their contents are
+not program names. No physical memory capability is asserted.
+
+This is an index-insensitive summary of each textual field and its overlapping
+textual aliases. Valid constant indices and unknown indices admit the field's
+possible occurrences, with an open remainder. An invalid constant index does not
+publish a query. Every update to a summary is weak; conditions over the summary
+cannot eliminate elements. Copying a table value preserves the predecessor
+snapshot, initializer/assignment supports and index uncertainty. Model VALUEs
+cannot initialize this analysis or grant a kill proof.
+
+Only typed literal group writes are sliced in the producer. Unsupported partial
+writes, ODO, non-DISPLAY geometry and unproved overlays remain unknown. A bounded
+summary can retain obsolete names; it cannot certify an occurrence-specific kill.
+No lower or CFG code reads declaration syntax, member names or statement text.
+
+The wire uses a closed V4 variant; old nominal authorities reject table fields
+and CHOICE terms. Source evidence 1.4 is required, preserving older envelopes and
+requiring full declaration provenance. These facts do not change AIR or CFG.
+
+IBM authorities: [OCCURS](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=entry-occurs-clause),
+[subscripting](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=table-subscripting),
+[REDEFINES](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=entry-redefines-clause).
+
+## Declared alternate starts — SP 2.61
+
+`SOURCE_DECLARED` entry inventories retain the primary and observed alternate
+ENTRY declarations. Each alternate has a source declaration identity, an optional
+external name and its own signature availability. `controlTopology.entryPoints`
+is the authority for starts; entry/declaration/start identities must agree.
+The `alternate-entry-start` grammar proof licenses only the next executable
+statement after the declaration. Sequential ENTRY remains neutral. Nested
+programs, conflicting names and PROCEDURE DIVISION RETURNING do not acquire
+external roots. Invalid or unavailable starts retain explicit entry gaps.
+
+Each admitted root is a separate external activation. Its PERFORM completion
+binds within that activation; roots do not create edges to each other. USING
+parameters remain unknown. Absent RETURNING is independent of parameter
+uncertainty. A nominal LINKAGE name without a grounded location cannot license
+an executable read or a fabricated local Cell. Its computed target remains open.
+
+Qualified source 1.5 identifies ALTERNATE_ENTRY roots and retains the grammar
+proof; older envelopes cannot carry that authority. Runtime entry/signature
+coverage remains PARTIAL. A trailing ENTRY without an admitted executable start
+is inventoried but does not produce an AIR entry in this capability.
+
+Authority: [IBM Enterprise COBOL ENTRY](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statements-entry-statement).
+Oracles: AlternateEntryTest, AlternateEntrySuite, QualifiedSourceContractTest.
+
+## Runtime condition registrations — SP 2.62 / qualified source 1.6
+
+The canonical control product separates `conditionRegistrations` from
+`conditionEvents`. A registration identifies its source statement, condition,
+LABEL/DEFAULT/IGNORE disposition, optional resolved procedure target and grammar
+proof. An event identifies a possible PGMIDERR on LINK/XCTL, command-local bypass,
+error continuation and the separate default-abend event. All targets retain
+published identities and provenance. LINK successful return has its own ordinary
+proof, independent of the error disposition.
+
+Only event-relevant PGMIDERR/ERROR state is tabulated. Each reaching registration
+keeps its source identity and proofs. Successful replacement kills that condition's
+previous disposition; omitted labels request the system default and suppress
+ERROR fallback. IGNORE and RESP/NOHANDLE admit error continuation. A selected label
+branches in the current COBOL activation, stays registered, and cannot manufacture
+a PERFORM return. LINK callee state is outside the current activation. External
+COBOL calls open the current definitions without discarding their possible targets.
+
+PUSH/POP stacks and other event families remain unmodeled. The producer publishes
+potential restoration relations, including error continuation, with a POP
+prerequisite. Consumers must propagate that prerequisite along the same contextual
+execution path to the event. Reaching the POP somewhere in the unit is insufficient.
+A proved later specific registration (LABEL, DEFAULT or IGNORE) kills the restored
+alternatives for that condition. Replacing ERROR kills restored ERROR alternatives,
+while independently possible specific dispositions survive. Separate entries and
+matched PERFORM calls/returns must not share a restoration merely by source ID.
+These CONTROL_POSSIBILITY facts cannot be executable AIR authority. Dead POP,
+causally later POP without a return path, and bypassed events do not activate them.
+This bounded approximation does not claim exact stack restoration or completeness.
+
+The lowerer validates registration effects, event command/options, version, proofs
+and canonical provenance at both wire and in-memory admission. Qualified source
+1.6 carries the condition state and LINK default-event provenance. The CFG still
+projects AIR transitions; its dependency consumer validates and transports the
+qualified source evidence without recognizing CICS syntax or catalog names.
+
+Authorities and independent adversaries: [campaign](../work/carddemo-values-control.md).
+
+### Table geometry and level 88
+
+Table shape and tableFields describe storage-bearing declarations. A CONDITION_88
+child annotates its conditional variable; it does not turn an elementary PIC item
+into a group or add width to any ancestor. Geometry placement ignores those
+components as well as field selection. An 88 VALUE is a predicate value, never
+an initializer for the annotated field or a sibling. Declaration origins, weak
+updates and the index-insensitive open remainder are unchanged.
+
+Authority: IBM [special levels](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=relationships-special-level-numbers)
+and [condition-name VALUE](https://www.ibm.com/docs/en/cobol-zos/6.3?topic=vc-format-2).
+Permanent contrasts: NominalTableTest and lower SourceTableSuite.

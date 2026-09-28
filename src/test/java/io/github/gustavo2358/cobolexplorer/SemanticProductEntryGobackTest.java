@@ -176,7 +176,9 @@ class SemanticProductEntryGobackTest {
     void alternateEntryRemainsObservedAndDoesNotCloseEntryInventory() {
         var port = publish(program("GOBACK.\nENTRY 'ALT'.\nGOBACK."));
         assertEquals(3, port.statements().size());
-        assertEquals(1, port.entries().size());
+        assertEquals(2, port.entries().size());
+        assertEquals(EntryRole.ALTERNATE,port.entries().get(1).role());
+        assertEquals(port.statements().get(2).header().id(),port.entries().get(1).start().statement().orElseThrow());
         assertEquals(InventoryStatus.PARTIAL, port.entryInventory().status());
         assertInstanceOf(ObservedStatement.class, port.statements().get(1));
         assertEquals(2, port.statements().stream().filter(GobackFact.class::isInstance).count());

@@ -28,13 +28,17 @@ public final class ControlTopologySemantics {
     private final Map<String,Binding> bindings=new TreeMap<>();
     private final List<FileFlow> fileFlows=new ArrayList<>();
     private final List<SourceContinuation> sourceContinuations=new ArrayList<>();
+    private final List<EntryPoint> entryPoints=new ArrayList<>();
     private final List<ExceptionalEvent> exceptionalEvents=new ArrayList<>();
+    private final List<ConditionRegistration> conditionRegistrations=new ArrayList<>();
+    private final List<ConditionEvent> conditionEvents=new ArrayList<>();
     private final Map<String,Proof> proofs=new TreeMap<>();
     private final Map<String,List<String>> subregions=new HashMap<>();
     private final CobolSemanticProduct.FileInventory files;
     private final CicsProgramControlAnalyzer.Contribution cics;
     private final boolean independent;
     private final String root;
+    private final Map<Integer,List<SqlWheneverSemantics.Route>> sqlDispatch;
 
     public static ControlTopology analyze(CompilationUnitModel.ProgramUnit unit, SymbolTable symbols,
             ReferenceResolution resolution, ResolutionAnalysisReport report,
@@ -53,6 +57,7 @@ public final class ControlTopologySemantics {
         this.unit=unit;this.ids=ids;this.files=files;this.cics=cics;
         division=unit.program().divisions().stream().filter(d->d.divisionKind()==Ast.DivisionKind.PROCEDURE).findFirst().orElseThrow();
         root="region:procedure:"+division.meta().id();
+        sqlDispatch=SqlWheneverSemantics.analyze(division);
         independent=division.procedureEntry().filter(e->e.inputProof().unaffectedBy(report.frontendState())).isPresent();
         var todo=new ArrayDeque<Ast.Node>();todo.push(division);
         while(!todo.isEmpty()){var n=todo.pop();nodes.put(n.meta().id(),n);Ast.children(n).forEach(todo::push);}
@@ -125,13 +130,37 @@ public final class ControlTopologySemantics {
         ids.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(e->{if(!occurrences.containsKey(e.getValue())){
             var p=proof(e.getValue()+"/unplaced",ProofKind.PARTIAL_UNKNOWN,"unsupported-region-membership",e.getKey().meta().provenance(),List.of(isolation));
             add(e.getKey(),root,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(root,p),"",p);}});
+        alternateEntries(isolation);
         fileFlows();
         fileRoutes();
         openControlDestinations();
+        openConditionRestorations();
         for(var r:new ArrayList<>(regions.values()))regions.put(r.id(),new Region(r.id(),r.kind(),r.parent(),r.entry(),occurrences.values().stream().filter(o->o.region().equals(r.id())).map(Occurrence::statement).toList(),
             r.kind()==RegionKind.RANGE?r.regions():subregions.getOrDefault(r.id(),List.of()).stream().sorted().toList(),r.boundary(),r.proofs()));
         return new ControlTopology(fileFlows.isEmpty()?"FRONTEND_CONTROL_TOPOLOGY_R1":"FRONTEND_CONTROL_TOPOLOGY_R2",List.copyOf(occurrences.values()),List.copyOf(regions.values()),
-            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows,sourceContinuations);
+            List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows,sourceContinuations,entryPoints,conditionRegistrations,conditionEvents);
+    }
+    private void alternateEntries(String isolation) {
+        var byHandle=new HashMap<String,Ast.Statement>();ids.forEach((source,id)->byHandle.put(id,source));
+        for(var declaration:AlternateEntrySemantics.analyze(unit))if(declaration.supported()) {
+            String id=ids.get(declaration.source());if(id==null)continue;
+            var dependencies=new LinkedHashSet<String>();dependencies.add(isolation);
+            var outcome=outcomes.get("outcome:"+id+"/normal");
+            Target start=outcome==null||!independent?unknown(root,isolation):outcome.target();
+            var seen=new HashSet<String>();
+            while(true) {
+                dependencies.addAll(start.proofs());
+                if(!seen.add(start.kind()+"/"+start.reference())){start=unknown(root,isolation);break;}
+                if(start.kind()==TargetKind.REGION_ENTRY){start=regions.get(start.reference()).entry();continue;}
+                if(start.kind()==TargetKind.COMPLETE){start=boundaries.get(regions.get(start.reference()).boundary()).ordinaryDefault();continue;}
+                if(start.kind()==TargetKind.OCCURRENCE&&byHandle.get(start.reference()) instanceof Ast.PreservedStatement next&&next.entrySurface().isPresent()) {
+                    var step=outcomes.get("outcome:"+start.reference()+"/normal");if(step==null){start=unknown(root,isolation);break;}start=step.target();continue;
+                }
+                break;
+            }
+            var premise=proof(declaration.entry()+"/start",ProofKind.LOCAL_GRAMMAR,"alternate-entry-start",declaration.source().meta().provenance(),List.copyOf(dependencies));
+            entryPoints.add(new EntryPoint(declaration.entry(),id,new Target(start.kind(),start.reference(),List.of(premise)),List.of(premise)));
+        }
     }
     /** The period frontier is represented only when a source NEXT SENTENCE needs it. */
     private void sentences(List<Ast.Sentence> sentences,String owner,Target end,String isolation) {
@@ -156,6 +185,7 @@ public final class ControlTopologySemantics {
             var next=i+1<list.size()&&ids.containsKey(list.get(i+1))?occ(list.get(i+1),p):end;
             if(!independent){add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(owner,p),"",p);continue;}
             exceptionalEvent(s,p);
+            conditionEvent(s,next,p);
             if(s instanceof Ast.NextSentenceStatement) {
                 String scope=owner;while(!scope.isEmpty()&&regions.get(scope).kind()!=RegionKind.SENTENCE)scope=regions.get(scope).parent();
                 var target=scope.isEmpty()?unknown(owner,p):new Target(TargetKind.ESCAPE,scope,List.of(p));
@@ -279,6 +309,17 @@ public final class ControlTopologySemantics {
             }
             if(CicsConditionSyntax.effects(s).isPresent()&&s instanceof Ast.EmbeddedLanguageStatement embedded
                     &&embedded.procedureOperands().stream().allMatch(r->targetDeclarations.containsKey(r.meta().id()))) {
+                var registrationProof=proof(id+"/condition-state",ProofKind.LOCAL_GRAMMAR,"cics-condition-registration",s.meta().provenance(),List.of(p));
+                boolean ignore=CicsCommandSyntax.parse(embedded.rawText()).orElseThrow().name().equals("IGNORE");int labelOrdinal=0;
+                for(var option:CicsConditionSyntax.parse(embedded.rawText()).orElseThrow()) {
+                    var targets=new ArrayList<Target>();
+                    if(option.operand().isPresent()) {
+                        var ref=embedded.procedureOperands().get(labelOrdinal++);var declaration=targetDeclarations.get(ref.meta().id());
+                        var resolved=proof(id+"/condition-target/"+option.name(),ProofKind.RESOLVED_TARGET,"cics-condition-label",ref.meta().provenance(),List.of(registrationProof));
+                        targets.add(entry(procedureRegion(declaration),resolved));
+                    }
+                    conditionRegistrations.add(new ConditionRegistration(id,option.name(),ignore?ConditionAction.IGNORE:targets.isEmpty()?ConditionAction.DEFAULT:ConditionAction.LABEL,targets,List.of(registrationProof)));
+                }
                 var normal=proof(id+"/condition-registration",ProofKind.LOCAL_GRAMMAR,"cics-handle-condition-ordinary-return",s.meta().provenance(),List.of(p));
                 add(s,owner,OutcomeKind.NORMAL,"normal",next,"",normal);continue;
             }
@@ -291,11 +332,24 @@ public final class ControlTopologySemantics {
             }
             if(SqlNormalCompletion.proved(s)) {
                 boolean declaration=SqlCommandSyntax.parse(((Ast.EmbeddedLanguageStatement)s).rawText()).orElseThrow().declaration();
-                var normal=proof(id+"/sql-normal",ProofKind.LOCAL_GRAMMAR,declaration?"db2-cursor-declaration":SqlNormalCompletion.selectInto(((Ast.EmbeddedLanguageStatement)s).rawText())?"db2-select-into-successful-return":"db2-command-possible-return",s.meta().provenance(),List.of(p));
+                var normal=proof(id+"/sql-normal",ProofKind.LOCAL_GRAMMAR,declaration?"db2-nonexecutable-directive":SqlNormalCompletion.selectInto(((Ast.EmbeddedLanguageStatement)s).rawText())?"db2-select-into-successful-return":"db2-command-possible-return",s.meta().provenance(),List.of(p));
                 add(s,owner,OutcomeKind.NORMAL,"normal",next,"",normal);
                 if(declaration)continue;
+                for(var route:sqlDispatch.getOrDefault(s.meta().id(),List.of())) {
+                    var target=route.target().map(ref->targetDeclarations.get(ref.meta().id())).map(this::procedureRegion);
+                    var scopeProof=proof(id+"/sql-scope/"+route.condition(),ProofKind.LOCAL_GRAMMAR,"db2-whenever-lexical-scope",route.directive().meta().provenance(),List.of(normal));
+                    var dispatch=proof(id+"/sql-dispatch/"+route.condition(),target.isPresent()?ProofKind.RESOLVED_TARGET:ProofKind.PARTIAL_UNKNOWN,
+                        target.isPresent()?"db2-whenever-resolved-dispatch":"db2-whenever-target-unavailable",route.target().map(ref->ref.meta().provenance()).orElse(route.directive().meta().provenance()),List.of(scopeProof));
+                    add(s,owner,target.isPresent()?OutcomeKind.EXPLICIT_TRANSFER:OutcomeKind.UNKNOWN_LOCAL,"sql/"+route.condition(),
+                        target.map(region->entry(region,dispatch)).orElseGet(()->unknown(owner,dispatch)),"",dispatch);
+                }
                 var other=proof(id+"/sql-other",ProofKind.PARTIAL_UNKNOWN,"db2-select-into-other-outcomes",s.meta().provenance(),List.of(normal));
                 add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"sql/other",unknown(owner,other),"",other);continue;
+            }
+            if(conditionEvents.stream().anyMatch(e->e.statement().equals(id))
+                    &&cics.fact(unit.id(),s.meta().id()).filter(f->f.command()==CicsProgramControlAnalyzer.Command.LINK).isPresent()) {
+                var returned=proof(id+"/link-normal",ProofKind.LOCAL_GRAMMAR,"cics-link-successful-return",s.meta().provenance(),List.of(p));
+                add(s,owner,OutcomeKind.NORMAL,"normal",next,"",returned);continue;
             }
             boolean completion=division.normalCompletionStatements().contains(s.meta().id());
             if(s instanceof Ast.EmbeddedLanguageStatement)completion=cics!=null&&cics.boundedLocal(unit.id(),s);
@@ -328,6 +382,28 @@ public final class ControlTopologySemantics {
                 sourceContinuations.add(new SourceContinuation(id,entry(paragraphIds.get(paragraph.meta().id()),premise),List.of(premise),List.of(prerequisite)));
         }
     }
+    /** Unknown stack restoration grants source possibilities only, never executable edges. */
+    private void openConditionRestorations() {
+        for(var source:ids.keySet())if(source instanceof Ast.EmbeddedLanguageStatement embedded
+                &&embedded.language()==Ast.EmbeddedLanguage.CICS) {
+            var command=CicsCommandSyntax.parse(embedded.rawText()).orElse(null);
+            if(command==null||!command.name().equals("POP")||!command.ended()||!command.gaps().isEmpty()
+                    ||command.options().size()!=1||!command.options().get(0).name().equals("HANDLE")
+                    ||command.options().get(0).operand().isPresent())continue;
+            var prerequisite=ids.get(source);
+            for(var event:conditionEvents)if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
+                var key=event.id()+"/unknown-restoration/"+prerequisite;
+                var hypothesis=proof(key,ProofKind.CONTROL_POSSIBILITY,"cics-condition-disposition-open-after-unmodeled-restoration",
+                    source.meta().provenance(),event.proofs());
+                var targets=new ArrayList<Target>();targets.add(event.continuation());
+                conditionRegistrations.stream().filter(r->Set.of(event.condition(),"ERROR").contains(r.condition()))
+                    .flatMap(r->r.target().stream()).forEach(targets::add);
+                var seen=new HashSet<String>();
+                for(var target:targets)if(seen.add(target.kind()+"/"+target.reference()))
+                    sourceContinuations.add(new SourceContinuation(event.statement(),new Target(target.kind(),target.reference(),java.util.stream.Stream.concat(target.proofs().stream(),java.util.stream.Stream.of(hypothesis)).distinct().toList()),List.of(hypothesis),List.of(prerequisite)));
+            }
+        }
+    }
     private boolean sourceMayComplete(Ast.Statement statement) {
         // The grammar owns the hypothetical continuation. Known terminal forms are excluded
         // even when their operands/effects are not admitted. This is never execution proof.
@@ -347,6 +423,18 @@ public final class ControlTopologySemantics {
         if(sectionIds.containsKey(id))return root;
         String owner=paragraphOwners.get(id);return sectionIds.containsValue(owner)?root:owner;
     }
+    private void conditionEvent(Ast.Statement statement,Target continuation,String premise) {
+        if(cics==null)return;var command=cics.fact(unit.id(),statement.meta().id()).orElse(null);
+        if(command==null||!command.gaps().isEmpty()
+            ||command.options().stream().anyMatch(o->!Set.of("PROGRAM","COMMAREA","LENGTH","RESP","RESP2","NOHANDLE").contains(o.name()))
+            ||command.options().stream().filter(o->o.name().equals("PROGRAM")).count()!=1
+            ||command.options().stream().map(CicsProgramControlAnalyzer.Option::name).distinct().count()!=command.options().size())return;
+        boolean bypass=command.options().stream().anyMatch(o->Set.of("RESP","NOHANDLE").contains(o.name()));
+        var id="condition-event:"+ids.get(statement)+"/PGMIDERR";
+        var authority=proof(id,ProofKind.LOCAL_GRAMMAR,"cics-pgmiderr-condition-event",statement.meta().provenance(),List.of(premise));
+        var defaultEvent=bypass?"":"event:"+ids.get(statement)+"/"+(command.command()==CicsProgramControlAnalyzer.Command.XCTL?EventOrigin.XCTL_PGMIDERR:EventOrigin.LINK_PGMIDERR);
+        conditionEvents.add(new ConditionEvent(id,ids.get(statement),"PGMIDERR",bypass?EventEligibility.HANDLERS_BYPASSED:EventEligibility.HANDLER_ELIGIBLE,continuation,defaultEvent,List.of(authority)));
+    }
     private void exceptionalEvent(Ast.Statement statement,String premise) {
         if(cics==null)return;
         var abend=cics.abendFact(unit.id(),statement.meta().id()).orElse(null);
@@ -355,16 +443,16 @@ public final class ControlTopologySemantics {
             origin=EventOrigin.EXPLICIT_ABEND;eligibility=EventEligibility.valueOf(abend.eligibility().name());guards=List.of();
         } else {
             var command=cics.fact(unit.id(),statement.meta().id()).orElse(null);
-            if(command==null||command.command()!=CicsProgramControlAnalyzer.Command.XCTL||!command.gaps().isEmpty()
+            if(command==null||!command.gaps().isEmpty()
                 ||command.options().stream().anyMatch(o->!Set.of("PROGRAM","COMMAREA","LENGTH","RESP2").contains(o.name()))
                 ||command.options().stream().filter(o->o.name().equals("PROGRAM")).count()!=1
                 ||command.options().stream().map(CicsProgramControlAnalyzer.Option::name).distinct().count()!=command.options().size())return;
-            origin=EventOrigin.XCTL_PGMIDERR;eligibility=EventEligibility.HANDLER_ELIGIBLE;
+            origin=command.command()==CicsProgramControlAnalyzer.Command.XCTL?EventOrigin.XCTL_PGMIDERR:EventOrigin.LINK_PGMIDERR;eligibility=EventEligibility.HANDLER_ELIGIBLE;
             guards=List.of(EventPremise.CONDITION_RAISED,EventPremise.DEFAULT_DISPOSITION_APPLIES);
         }
         var id="event:"+ids.get(statement)+"/"+origin;
         var proof=proof(id,ProofKind.LOCAL_GRAMMAR,origin==EventOrigin.EXPLICIT_ABEND?
-            "cics-explicit-abend-event":"cics-xctl-pgmiderr-default-abend-event",statement.meta().provenance(),List.of(premise));
+            "cics-explicit-abend-event":origin==EventOrigin.LINK_PGMIDERR?"cics-link-pgmiderr-default-abend-event":"cics-xctl-pgmiderr-default-abend-event",statement.meta().provenance(),List.of(premise));
         exceptionalEvents.add(new ExceptionalEvent(id,ids.get(statement),origin,"TASK_ABEND",eligibility,
             "CURRENT_EXECUTION_LOGICAL_LEVEL","UNAVAILABLE",guards,List.of(proof)));
     }

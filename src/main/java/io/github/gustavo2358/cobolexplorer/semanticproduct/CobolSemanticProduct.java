@@ -57,8 +57,8 @@ public final class CobolSemanticProduct {
     public enum RuntimeTargetKnowledge { UNKNOWN }
 
     public enum Availability { KNOWN, PARTIAL, UNAVAILABLE, INPUT_MISSING }
-    public enum EntryRole { PRIMARY }
-    public enum EntryInventoryScope { PRIMARY_ONLY }
+    public enum EntryRole { PRIMARY, ALTERNATE }
+    public enum EntryInventoryScope { PRIMARY_ONLY, SOURCE_DECLARED }
     /** Availability of the explicit PROCEDURE DIVISION RETURNING/GIVING clause only. */
     public enum ReturningClause { ABSENT, PRESENT, UNKNOWN }
     public enum LocalContinuation { NONE }
@@ -165,8 +165,10 @@ public final class CobolSemanticProduct {
     public record EntryFact(EntryId id, EntryRole role, Availability availability,
                             ExecutableStart start, EntrySignature signature,
                             Provenance provenance, CoverageStatus coverage,
-                            Readiness readiness, List<EntryGap> gaps) {
+                            Readiness readiness, List<EntryGap> gaps,Optional<String> externalName,Optional<StatementId> declaration) {
+        public EntryFact(EntryId id,EntryRole role,Availability availability,ExecutableStart start,EntrySignature signature,Provenance provenance,CoverageStatus coverage,Readiness readiness,List<EntryGap> gaps){this(id,role,availability,start,signature,provenance,coverage,readiness,gaps,Optional.empty(),Optional.empty());}
         public EntryFact {
+            Objects.requireNonNull(externalName);Objects.requireNonNull(declaration);
             id = Objects.requireNonNull(id, "id");
             role = Objects.requireNonNull(role, "role");
             availability = Objects.requireNonNull(availability, "availability");
@@ -218,7 +220,7 @@ public final class CobolSemanticProduct {
                     List.of("PRIMARY_ENTRY_NOT_AVAILABLE", "ALTERNATE_ENTRIES_NOT_PROJECTED"));
         }
 
-        public EntryInventoryScope scope() { return EntryInventoryScope.PRIMARY_ONLY; }
+        public EntryInventoryScope scope() { return entries.stream().anyMatch(e->e.role()==EntryRole.ALTERNATE)?EntryInventoryScope.SOURCE_DECLARED:EntryInventoryScope.PRIMARY_ONLY; }
     }
 
     /** Operand occurrence identity remains distinct from a selected DATA id. */
@@ -1391,7 +1393,7 @@ public final class CobolSemanticProduct {
     public enum EffectBound { NONE, ALL }
     public enum EnvironmentEffect { OUTPUT, INPUT, UNKNOWN, NONE }
     public enum EffectValueTransform { NONE, UNKNOWN }
-    public enum EffectProof { NO_OP, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS, SEARCH_INDEX_MAY, SQL_HOST_OPERANDS, DLI_EXTERNAL_OPERANDS, DLI_HOST_OPERANDS, CICS_CONDITION_REGISTRATION }
+    public enum EffectProof { NO_OP, MOVE_TARGETS, DISPLAY_SIMPLE, INITIALIZE_TARGETS, ACCEPT_TARGET, SET_TARGETS, ARITHMETIC_TARGETS, STRING_TARGETS, UNSTRING_TARGETS, INSPECT_TARGETS, SEARCH_INDEX_MAY, SQL_HOST_OPERANDS, DLI_EXTERNAL_OPERANDS, DLI_HOST_OPERANDS, CICS_CONDITION_REGISTRATION }
     public record EffectSummary(List<OperandId> knownReads,List<OperandId> mayWrites,List<OperandId> mustOverwrite,
             List<OperandId> exposedRegions,EffectBound unknownReadBound,EffectBound unknownWriteBound,
             EffectBound unknownExposureBound,EnvironmentEffect environment,EffectValueTransform values,EffectProof proof) {
@@ -1399,6 +1401,9 @@ public final class CobolSemanticProduct {
             knownReads=List.copyOf(knownReads);mayWrites=List.copyOf(mayWrites);mustOverwrite=List.copyOf(mustOverwrite);
             exposedRegions=List.copyOf(exposedRegions);Objects.requireNonNull(unknownReadBound);Objects.requireNonNull(unknownWriteBound);
             Objects.requireNonNull(unknownExposureBound);Objects.requireNonNull(environment);Objects.requireNonNull(values);Objects.requireNonNull(proof);
+            if(proof==EffectProof.MOVE_TARGETS&&(!mustOverwrite.isEmpty()||!exposedRegions.isEmpty()
+                    ||unknownExposureBound!=EffectBound.NONE||values!=EffectValueTransform.UNKNOWN))
+                throw new IllegalArgumentException("MOVE footprint is MAY-only without exposure or a value proof");
             require(mayWrites.containsAll(mustOverwrite),"MUST must be a known write");
         }
     }
@@ -1867,6 +1872,7 @@ public final class CobolSemanticProduct {
             entryInventory = Objects.requireNonNull(entryInventory, "entryInventory");
             validateState(unit, dataDeclarations, statements, gaps, coverage);
             validateEntries(unit, statements, entryInventory);
+            validateEntryTopology(entryInventory, controlTopology);
             validateStorage(unit, dataDeclarations, statements, Objects.requireNonNull(storage));
             validateFiles(unit, dataDeclarations, Objects.requireNonNull(fileInventory),statements,storage);
             Objects.requireNonNull(storageIndependence);
@@ -2074,6 +2080,23 @@ public final class CobolSemanticProduct {
         }
     }
 
+    private static void validateEntryTopology(EntryInventory inventory, Optional<ControlTopology> topology) {
+        var entries=new HashMap<String,EntryFact>();
+        for(var e:inventory.entries())entries.put("entry:"+e.id().localId(),e);
+        var points=topology.map(ControlTopology::entryPoints).orElse(List.of());
+        var supplied=new HashSet<String>();
+        for(var point:points) {
+            var e=entries.get(point.entry());
+            require(e!=null&&e.role()==EntryRole.ALTERNATE&&e.availability()==Availability.KNOWN,"alternate topology belongs to known entry");
+            require(e.declaration().map(d->"statement:"+d.localId()).orElse("").equals(point.declaration()),"alternate topology declaration agrees");
+            require(point.target().kind()!=ControlTopology.TargetKind.OCCURRENCE||e.start().statement().map(d->"statement:"+d.localId()).orElse("").equals(point.target().reference()),"alternate topology start agrees");
+            require(point.target().kind()==ControlTopology.TargetKind.OCCURRENCE||e.start().statement().isEmpty(),"unavailable alternate topology start");
+            supplied.add(point.entry());
+        }
+        for(var e:inventory.entries())if(e.role()==EntryRole.ALTERNATE&&e.availability()==Availability.KNOWN)
+            require(supplied.contains("entry:"+e.id().localId()),"known alternate requires topology authority");
+    }
+
     private static void validateEntries(UnitId unit, List<StatementFact> statements,
                                         EntryInventory inventory) {
         Set<StatementId> statementIds = new HashSet<>();
@@ -2083,7 +2106,10 @@ public final class CobolSemanticProduct {
         for (EntryFact entry : inventory.entries()) {
             require(entry.id().unit().equals(unit), "entry crossed the unit namespace");
             require(entries.add(entry.id()), "duplicate entry identity");
-            require(roles.add(entry.role()), "duplicate primary entry");
+            require(entry.role()!=EntryRole.PRIMARY||roles.add(entry.role()), "duplicate primary entry");
+            require(entry.role()==EntryRole.ALTERNATE?entry.declaration().isPresent():entry.declaration().isEmpty()&&entry.externalName().isEmpty(),"entry declaration payload");
+            entry.declaration().ifPresent(d->require(d.unit().equals(unit)&&statementIds.contains(d),"alternate declaration belongs to unit"));
+            require(entry.role()!=EntryRole.ALTERNATE||entry.availability()!=Availability.KNOWN||entry.externalName().filter(n->!n.isBlank()).isPresent(),"known alternate has name");
             entry.start().statement().ifPresent(target -> {
                 require(target.unit().equals(unit), "entry start crossed the unit namespace");
                 require(statementIds.contains(target), "entry start must reference a published statement");

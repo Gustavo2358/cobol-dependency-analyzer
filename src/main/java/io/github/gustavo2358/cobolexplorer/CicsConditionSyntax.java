@@ -17,12 +17,13 @@ final class CicsConditionSyntax {
         "TOKENERR","TRANSIDERR","TSIOERR","UNEXPIN","USERIDERR","WRBRK","WRONGSTAT");
     static Optional<List<CicsCommandSyntax.Option>> parse(String raw) {
         var command=CicsCommandSyntax.parse(raw).orElse(null);
-        if(command==null||!command.name().equals("HANDLE")||!command.ended()||!command.gaps().isEmpty()
+        if(command==null||!Set.of("HANDLE","IGNORE").contains(command.name())||!command.ended()||!command.gaps().isEmpty()
                 ||command.options().size()<2||command.options().size()>17)return Optional.empty();
         var first=command.options().get(0);
         if(!first.name().equals("CONDITION")||first.operand().isPresent())return Optional.empty();
         var options=command.options().subList(1,command.options().size());var seen=new HashSet<String>();
         for(var option:options) {
+            if(command.name().equals("IGNORE")&&option.operand().isPresent())return Optional.empty();
             if(!CONDITIONS.contains(option.name())||!seen.add(option.name()))return Optional.empty();
             if(option.operand().isPresent()&&label(raw,option,0,1,0,0).isEmpty())return Optional.empty();
         }

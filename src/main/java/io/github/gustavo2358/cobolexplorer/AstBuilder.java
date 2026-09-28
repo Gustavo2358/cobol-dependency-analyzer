@@ -1144,7 +1144,7 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
         var fileIo = FileIoSyntax.project(context, operandNodes, clauseContexts, clauses);
         var effects=statementEffects(context,operands,clauses,operandNodes);
         return preserved
-                ? new Ast.PreservedStatement(meta, rule(context), sourceText(context).strip(), operands, clauses,effects,fileIo)
+                ? new Ast.PreservedStatement(meta, rule(context), sourceText(context).strip(), operands, clauses,effects,fileIo,context instanceof CobolParser.EntryStatementContext entry?Optional.of(new Ast.EntrySurface(basicLogicalText(entry.literal()),entry.identifier().size())):Optional.empty())
                 : new Ast.ModeledStatement(meta, rule(context), sourceText(context).strip(), operands, clauses,effects,fileIo,exitKind(context));
     }
 
@@ -1499,6 +1499,12 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
             operands.add(new Ast.EmbeddedHostOperand("IMPLICIT_AREA",area.map().start(),area.role(),ref));
         });
         var procedures=new ArrayList<Ast.ProcedureReference>();
+        if(language==Ast.EmbeddedLanguage.SQL)SqlCommandSyntax.parse(raw).flatMap(SqlCommandSyntax.Command::directive).flatMap(SqlCommandSyntax.Directive::target).ifPresent(target->{
+            var label=EmbeddedProcedureSyntax.parse(raw,target.syntax(),target.start(),context.getStart().getStartIndex(),context.getStart().getLine(),context.getStart().getCharPositionInLine(),context.getStart().getTokenIndex());
+            var previous=embeddedOperandOrigin;embeddedOperandOrigin=anchor.origin();boolean retained=retainedEmbeddedOperand;retainedEmbeddedOperand=true;
+            try {label.ifPresent(tree->procedures.add(procedureReference(tree)));}
+            finally {embeddedOperandOrigin=previous;retainedEmbeddedOperand=retained;}
+        });
         if(language==Ast.EmbeddedLanguage.CICS) {
             var label=CicsHandlerSyntax.label(raw,context.getStart().getStartIndex(),context.getStart().getLine(),context.getStart().getCharPositionInLine(),context.getStart().getTokenIndex());
             var previous=embeddedOperandOrigin;embeddedOperandOrigin=anchor.origin();
@@ -1755,7 +1761,11 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
                 .map(argument -> expression(argument, "function argument")).toList();
         ParserRuleContext modifier = context.referenceModifier();
         return new Ast.FunctionExpression(meta, name == null ? "<unknown>" : clean(sourceText(name)), arguments,
-                modifier == null ? null : referenceModification(modifier), sourceText(context).strip());
+                modifier == null ? null : referenceModification(modifier), sourceText(context).strip(),
+                java.util.stream.Stream.concat(context.LEADING().stream(), context.TRAILING().stream())
+                    .sorted(java.util.Comparator.comparingInt(t -> t.getSymbol().getTokenIndex()))
+                    .map(t -> t.getSymbol().getType() == CobolParser.LEADING
+                        ? Ast.FunctionDirection.LEADING : Ast.FunctionDirection.TRAILING).toList());
     }
 
     private Ast.SpecialRegisterExpression specialRegisterExpression(CobolParser.SpecialRegisterContext context) {

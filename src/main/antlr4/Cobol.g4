@@ -1477,7 +1477,7 @@ execCicsStatement
 // exec sql statement
 
 execSqlStatement
-   : EXECSQLLINE+
+   : EXECSQLLINE
    ;
 
 // exec sql ims statement
@@ -2377,7 +2377,7 @@ tableCall
    ;
 
 functionCall
-   : FUNCTION functionName (LPARENCHAR argument (COMMACHAR? argument)* RPARENCHAR)* referenceModifier?
+   : FUNCTION functionName (LPARENCHAR argument (COMMACHAR? argument)* (COMMACHAR? (LEADING | TRAILING))? RPARENCHAR)* referenceModifier?
    ;
 
 referenceModifier
