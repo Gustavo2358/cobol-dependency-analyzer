@@ -31,3 +31,12 @@ Cada família com CALL posterior e dentro de PERFORM, sem/RESP/NOHANDLE, estado 
 INQUIRE PROGRAM com subscrito revelou ambiguidade do entry point `identifier()` sem contexto EOF: ANTLR escolhia qualifiedDataName e deixava `(índice)` sem consumo. O bridge agora chama `embeddedIdentifier : identifier EOF`, mantendo a mesma gramática de referências e impedindo aceitar lixo após um prefixo válido. Não há reconhecimento por nome; os oráculos usam ITEM-X(IDX), referência parcial e combinações. Referência de elemento não é promovida a whole item. A alteração compartilhada exige novo replay CardDemo e FAST/provenance.
 
 Três negativos históricos SEND TEXT foram evoluídos para exigir sua nova família e conclusão/condição corretas; os negativos CONTROL/CONVID/opções inválidas continuam intactos.
+
+## Qualificação final da onda
+
+- Runtime `w4-development-02`; `w4-carddemo-02`: 73/73 em quatro etapas, 73/73 wire. 53 SPs byte-idênticos à W3 e 20 alterados; zero perdas e zero novos candidatos. Supports físicos preservados; os 70 supports condicionais anteriores conservam sua evidência fonte (nenhuma migração física ou evidência sem correspondência).
+- Todos os 36 witnesses D5 publicam família tipada suportada e NORMAL com prova; condições abertas permanecem separadas (`w4-witnesses.json`).
+- `w4-probes-02`: 92/92 nas quatro etapas. CALL posterior/PERFORM, memória ausente e kill posterior comprovado, aliases, terminais e negativos de W1–W3 incluídos. Consulta de programa/fila não cria dependência CALL/FILE.
+- Frontend FAST: 639 testes, zero falhas (86 s). Lower FAST: passou (412 s). CicsCatalogueSuite adicional: 25 casos e 120 mutações inválidas, incluindo wire antigo, enum, role, hostEffects indevidamente fechado e indexed query. Novo teste registrado no FAST para execuções seguintes; passou focalmente após a execução principal.
+- Primeira runtime e seus 73 casos preservados. O único gap da primeira qualificação era INQUIRE com subscrito; o novo replay cobre a correção. Uma tentativa de gate lower foi invalidada pela sobreposição de builds no mesmo diretório, que removeu classes durante javap. O FAST foi repetido sem build concorrente e passou. Não foi falha semântica.
+- Qualificação histórica ampla e combinação W5/W6 serão reexecutadas ao fim do escopo autorizado. W7 não iniciada; sem merge. Modelos IBM e efeitos externos não concedem valor runtime ou MUST.
