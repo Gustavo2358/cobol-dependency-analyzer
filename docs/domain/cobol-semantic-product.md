@@ -715,3 +715,10 @@ The producer carries the distinction from SourceMap through UnitInputProof; no
 consumer infers it from a member name or a provenance URI. SP 2.50 transports this
 input kind; older versions cannot publish it. Source uncertainty preserves the
 kind and remains unavailable.
+
+### SP 2.51 — FILE composite topology
+
+Conditional contract for composite FILE statements. R2 control topology publishes
+owned FILE_POINT identities and explicit per-use/phase successors; no new source
+statement is invented. Inventory FILE remains 1.6, with the same resources, uses,
+events and effects. Details: [control topology](control-topology.md#file-composite-control--sp-251).

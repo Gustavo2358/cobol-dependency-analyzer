@@ -7,7 +7,12 @@ import java.nio.file.*;
 import java.util.*;
 /** Versioned envelope, preserving each existing unit document verbatim in shape. */
 public final class CompilationSemanticProductJsonWriter {
-    private static final ObjectMapper JSON=JsonMapper.builder().enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY).build();
+    private static final ObjectMapper JSON=JsonMapper.builder().enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+        .addMixIn(io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.class,TopologyWire.class).build();
+    private interface TopologyWire {
+        @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY)
+        List<io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology.FileFlow> fileFlows();
+    }
     private CompilationSemanticProductJsonWriter(){}
     public static byte[] serialize(CompilationSemanticProduct product)throws IOException{return JSON.writeValueAsBytes(document(product));}
     public static void write(CompilationSemanticProduct product,Path path)throws IOException{try(var out=Files.newOutputStream(path)){JSON.writeValue(out,document(product));}}
