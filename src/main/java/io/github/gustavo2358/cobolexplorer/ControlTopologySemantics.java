@@ -582,7 +582,17 @@ public final class ControlTopologySemantics {
         for(var use:files.operations().uses()) {
             String id="statement:"+use.statement().localId();var s=byId.get(id);if(s==null)continue;
             var occurrence=occurrences.get(id);var p=occurrence.proofs().get(0);
+            var normal=outcomes.get("outcome:"+id+"/normal");
             for(var route:use.control().routes())for(int i=0;i<route.destinations().size();i++) {
+                // Recovery can retain FILE uses without proving the statement's control scope.
+                // Keep every role, but do not invent continuation or entry to an unbuilt handler.
+                if(normal==null||normal.target().kind()==TargetKind.UNKNOWN_LOCAL) {
+                    var partial=proof(id+"/file/"+use.ordinal()+"/"+route.event()+"/"+i,ProofKind.PARTIAL_UNKNOWN,
+                        "file-statement-control-not-proven",s.meta().provenance(),List.of(p));
+                    add(s,occurrence.region(),OutcomeKind.UNKNOWN_LOCAL,"file/"+use.ordinal()+"/"+route.event()+"/"+i,
+                        unknown(occurrence.region(),partial),"",partial);
+                    continue;
+                }
                 var destination=route.destinations().get(i);Target target;
                 if(destination.kind()==CobolSemanticProduct.FileDestinationKind.HANDLER) {
                     String region="region:"+id+"/file/handler-"+destination.handler().orElseThrow();
@@ -592,7 +602,7 @@ public final class ControlTopologySemantics {
                     var declaration=files.declaratives().stream().filter(d->d.id().equals(destination.declarative().orElseThrow())).findFirst().orElseThrow();
                     var partial=proof(id+"/use-callback",ProofKind.PARTIAL_UNKNOWN,"declarative-callback-binding-not-published",s.meta().provenance(),List.of(p));
                     target=unknown(occurrence.region(),partial);
-                } else target=continuations.getOrDefault(id+"/"+use.ordinal(),outcomes.get("outcome:"+id+"/normal").target());
+                } else target=continuations.getOrDefault(id+"/"+use.ordinal(),normal.target());
                 var premise=proof(id+"/file/"+use.ordinal()+"/"+route.event()+"/"+i,ProofKind.LOCAL_GRAMMAR,
                     "file-event-"+route.event()+"/"+destination.kind(),s.meta().provenance(),List.of(p));
                 add(s,occurrence.region(),OutcomeKind.BRANCH,"file/"+use.ordinal()+"/"+route.event()+"/"+i,target,"",premise);

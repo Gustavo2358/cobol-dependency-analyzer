@@ -178,3 +178,14 @@ not prove that this happens at runtime; no condition evaluation is implied.
 A reached reentry remains open control and effects, with no invented return,
 halt or kill. Source dependency possibilities retain their existing conditional
 authority and do not certify execution through an undefined activation.
+
+## FILE routes after parser recovery
+
+A recovered FILE use can remain in the inventory while its statement has no
+proved normal outcome. In that case every `file/<ordinal>/<event>/<slot>` role
+is still published, with `UNKNOWN_LOCAL` and `PARTIAL_UNKNOWN` evidence rooted
+in the source occurrence. The producer cannot infer handler-region entry,
+internal operand sequencing or statement completion from recovered FILE metadata.
+`PartialFileTopologyTest` covers native operations, callbacks, composites and
+malformed syntax before/after the operation; valid-route authority remains tested
+by `FileTopologyAuthorityTest` and `FileCompositeTopologyTest`.
