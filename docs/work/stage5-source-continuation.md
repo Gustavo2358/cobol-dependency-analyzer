@@ -28,3 +28,8 @@ Frontend PR #77 accompanies lower #52 and analysis-cfg #57. The complete campaig
 population and its final comparison are recorded in analysis-cfg's
 `docs/work/stage5-preexisting-fixes.md` and the local E2E report. Work stays
 IN_PROGRESS under repository policy until review and merge. No merge performed.
+
+The same Draft also carries the independently qualified
+[partial FILE route recovery fix](stage5-partial-file-routes.md). Its cause,
+adversaries, fresh frontend comparison and explicit downstream evidence reuse
+are separate from the normalization qualification above.
