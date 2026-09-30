@@ -71,3 +71,47 @@ handler coverage already passes. GREEN: 77 methods pass across CICS nominal,
 program, FILE, command, handler, host-effects, memory and provenance suites.
 The six new methods also ensure resolved statements do not inherit an unrelated
 statement's gap and no candidate is selected from an ambiguous binding.
+
+## Integrated qualification
+
+- Frontend FAST: PASS, 716 tests, no failures/errors/skips (66.331 s).
+- Frontend qualification-local: PASS, Maven 1,287 tests, zero failures/errors;
+  one existing opt-in discovery test skipped because `semantic.condition.required`
+  was not supplied. Source-normalizer full regression and naming verification pass.
+- Twelve original photo/control runs complete all four production CLI stages in
+  default and explicit IBM/initial/new-logical-level configurations. Six baseline
+  aborts are removed; all six controls retain their five products byte for byte.
+- Twenty-two additional adversarial runs pass candidate, source qualification,
+  provenance, exact continuation and no-cross-WHEN CFG path assertions. Four
+  corruptions of continuation/edge/candidate/support are rejected by the oracle.
+- Two additional JSON sentinels remain OPEN: unsupported JSON GENERATE recovery
+  does not publish a following CALL. The preprocessing abort is fixed, but full
+  JSON grammar/recovery support is not implemented. These two are not reported as
+  passing adversaries. The ordinary preceding CALL and input diagnostics survive.
+- A ten-character program literal in one new probe remains supported RAW evidence
+  with open interpretation, according to the existing eight-character minimal
+  name policy. It is not claimed as an interpreted referenceName.
+
+Fresh frontend replay: 560/560 invocations succeeded (CardDemo 73, PERFORM 39,
+Chaos 48, aliases 14, PERFORM adversaries 25, frontend fixtures 331, prior focals
+29 and frontier payload 1). Of these SPs, 542 are byte-identical to the qualified
+baseline. Eighteen CardDemo SPs remove 74 false cross-WHEN structural continuations
+and add their explicit structural gaps; all other SP fields, canonical normal
+continuations and control topology are unchanged.
+
+All three consumers were rerun for those 18 changed SPs: zero candidate additions,
+losses or support/provenance losses. Their complete CFGs are equal after renaming
+only the publication namespace, and their AIR executable unit fields and qualified
+source units are equal (AIR coverage records the additional gaps). All 73 CardDemo
+programs therefore retain their graph semantics. Consumer bytecode is unchanged;
+2,168 downstream products for the 542 identical SPs are explicitly reused. This
+is not a fresh 560-case downstream replay.
+
+The generic corpus byte-equivalence check intentionally failed its all-identical
+assertion on these 18 deltas; all original logs are retained. A separate audit
+accepts only the explained structural/gap deltas and checks the downstream products.
+No oracle or baseline from earlier campaigns was weakened.
+
+Raw evidence: `.shared-routine-bodies/evidence/publication-fixes-*`.
+Durable report and scripts: `artefatos-e2e/shared-routine-bodies-20260930/publication-fixes`.
+Lower #52 and CFG #57 require only authority repins, not implementation changes.
