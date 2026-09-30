@@ -34,3 +34,24 @@ methods in PreprocessorSuppressTest, PreprocessorEnginePolicyTest,
 SourceNormalizationPreprocessingIntegrationTest and SourceProvenanceTest pass.
 The focal classes are part of FAST. Integrated and corpus checks follow after
 all three checkpoints are assembled.
+
+## Checkpoint 2 — partial EVALUATE and IF completion
+
+The AST retains ordered WHEN groups even when provenance/readiness leaves the
+EVALUATE observed. The structural index now visits each group independently,
+keeping UNKNOWN containment where required; it never concatenates separate
+WHENs into sequential siblings. If that partial structural view lacks an IF
+completion, projection translates the already available canonical IF successor.
+It does not replace a conflicting known successor or create a new proof.
+
+Provenance remains approximate; EVALUATE's original capability predicate and all
+SP validators remain unchanged. No graph edge is added here. This follows the
+existing EVALUATE completion rule and INV-SP-003: frontend facts are authoritative,
+not collection order. The fix also avoids a false structural next-WHEN successor
+when missing data input prevents proving normal completion.
+
+RED: four exception cases plus the missing-COPY false-continuation assertion
+failed before the change. GREEN: all 50 methods in the focal EVALUATE/IF,
+composition and topology-authority suites pass. Six new methods cover split
+EVALUATE/WHEN, normal-source contrast, same-arm tail, OTHER, nested IF/EVALUATE,
+unknown data input, source precision and the exact target of each continuation.

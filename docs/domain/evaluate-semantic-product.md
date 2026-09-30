@@ -35,3 +35,15 @@ shape. SP 2.33.0 is emitted only when this extension is used. The lower uses the
 existing bool Unknown and ordered Branch chain, including the no-OTHER path.
 Uninterpreted condition details remain coverage; they add no global control or
 memory effects. This does not implement the excluded COBOL condition families.
+
+## Partial structural indexing
+
+When EVALUATE remains observed (for example, after physical word continuation),
+its canonical AST WHEN groups still delimit separate statement lists. Projection
+keeps these lists separate with UNKNOWN containment; partial capability never
+makes successive WHENs ordinary siblings. Where structural completion is
+unavailable, an independently published canonical IF successor may fill the
+corresponding structural reference. This transports an existing fact without
+changing EVALUATE admission, physical provenance or control-topology authority.
+`EvaluatePartialContinuationTest` covers exact continuation targets and the
+negative case where missing input supplies no executable completion proof.

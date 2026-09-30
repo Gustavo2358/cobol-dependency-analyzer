@@ -1598,6 +1598,13 @@ public final class CobolSemanticProductProjector {
         var predicate = semanticIf.predicate();
         ContinuationProjection continuation = continuation(plan.position(), statementIds,
                 positionsByStatement, continuations);
+        // An opaque enclosing family may lack a structural continuation, while
+        // the canonical IF product independently proves its normal completion.
+        // Transport that fact; do not derive a successor from flattened children.
+        if (!continuation.exact()) {
+            var canonicalNext = canonicalStatement(semanticIf.nextStatement(), inputs, statementIds);
+            if (canonicalNext.isPresent()) continuation = ContinuationProjection.statement(canonicalNext.orElseThrow());
+        }
         BranchContentProjection branchContent = branchContent(branch, statementIds);
         var textPredicate=inputs.products().scalarMoves().textPredicate(inputs.unitId(),branch.meta().id());
         var textReads=textPredicate.map(io.github.gustavo2358.cobolexplorer.TextConditionSemantics.Predicate::reads).orElse(Set.of());
@@ -2621,8 +2628,11 @@ public final class CobolSemanticProductProjector {
                         CobolSemanticProduct.Branch.THEN, output, evaluates, unit);
                 collectStatementGroup(conditional.elseBranch(), conditional,
                         CobolSemanticProduct.Branch.ELSE, output, evaluates, unit);
-            } else if (statement instanceof Ast.EvaluateStatement e && evaluates.fact(unit, e.meta().id()).structureKnown()) {
-                for (var arm : e.branches()) collectStatementGroup(arm.statements(), e, Branch.EVALUATE_ARM, output, evaluates, unit);
+            } else if (statement instanceof Ast.EvaluateStatement e) {
+                // AST arms remain distinct even when EVALUATE is only observed.
+                // UNKNOWN describes publication precision, not sequential WHENs.
+                var armBranch = evaluates.fact(unit, e.meta().id()).structureKnown() ? Branch.EVALUATE_ARM : Branch.UNKNOWN;
+                for (var arm : e.branches()) collectStatementGroup(arm.statements(), e, armBranch, output, evaluates, unit);
             } else if(fileSurface(statement).isPresent()) {
                 for(var handler:fileSurface(statement).orElseThrow().handlers())
                     collectStatementGroup(handler.clause().nestedStatements(),statement,Branch.FILE_HANDLER,output,evaluates,unit);
