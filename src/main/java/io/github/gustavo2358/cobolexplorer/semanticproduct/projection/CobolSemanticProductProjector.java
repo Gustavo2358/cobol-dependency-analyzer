@@ -1123,6 +1123,7 @@ public final class CobolSemanticProductProjector {
                 var host=embedded.hostOperands().stream().filter(h->h.optionStart()==syntax.start()).reduce((left,right)->{throw new IllegalArgumentException("CICS FILE contribution must have one identity at this position");});
                 if(host.isPresent()) {
                     var h=host.get();var entry=inputs.entryFor(h.reference());
+                    addReportGaps(statementId,entry.occurrence(),inputs,provenance(h.reference().meta().provenance()),gaps);
                     if(projectableDataBinding(entry,inputs))ref=Optional.of(new DataReference(new OperandId(statementId,optionOrdinal++),
                         h.role()==Ast.EmbeddedHostRole.WRITE?OperandRole.WRITE:OperandRole.READ,nominalBinding(entry,dataIds),
                         provenance(h.reference().meta().provenance()),Optional.empty(),regionalAccess(inputs,h.reference().meta().id()),List.of(),
@@ -1165,6 +1166,7 @@ public final class CobolSemanticProductProjector {
                 var host=((Ast.EmbeddedLanguageStatement)plan.position().statement()).hostOperands().stream().filter(h->h.option().equals("PROGRAM")).reduce((left,right)->{throw new IllegalArgumentException("CICS contribution must have one identity at this position");});
                 if(host.isPresent()) {
                     var reference=host.orElseThrow().reference();var entry=inputs.entryFor(reference);
+                    addReportGaps(statementId,entry.occurrence(),inputs,provenance(reference.meta().provenance()),gaps);
                     if(projectableDataBinding(entry,inputs))target=Optional.of(new DataReference(new OperandId(statementId,0),OperandRole.READ,
                         nominalBinding(entry,dataIds),provenance(reference.meta().provenance()),Optional.empty(),regionalAccess(inputs,reference.meta().id()),List.of(),
                         reference.understanding()==Ast.ReferenceUnderstanding.STRUCTURED&&reference.subscriptGroups().isEmpty()&&reference.referenceModification()==null
@@ -1178,6 +1180,7 @@ public final class CobolSemanticProductProjector {
                 var host=((Ast.EmbeddedLanguageStatement)plan.position().statement()).hostOperands().stream().filter(h->h.optionStart()==option.start()).reduce((left,right)->{throw new IllegalArgumentException("CICS contribution must have one identity at this position");});
                 if(!option.name().equals("PROGRAM")&&host.isPresent()) {
                     var h=host.orElseThrow();var entry=inputs.entryFor(h.reference());
+                    addReportGaps(statementId,entry.occurrence(),inputs,provenance(h.reference().meta().provenance()),gaps);
                     if(projectableDataBinding(entry,inputs))ref=Optional.of(new DataReference(new OperandId(statementId,optionOrdinal++),h.role()==Ast.EmbeddedHostRole.WRITE?OperandRole.WRITE:OperandRole.READ,
                         nominalBinding(entry,dataIds),provenance(h.reference().meta().provenance()),Optional.empty(),regionalAccess(inputs,h.reference().meta().id()),List.of(),
                         h.reference().understanding()==Ast.ReferenceUnderstanding.STRUCTURED&&h.reference().subscriptGroups().isEmpty()&&h.reference().referenceModification()==null

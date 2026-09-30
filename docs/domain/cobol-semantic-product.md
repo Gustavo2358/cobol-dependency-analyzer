@@ -885,3 +885,14 @@ updates and the index-insensitive open remainder are unchanged.
 Authority: IBM [special levels](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=relationships-special-level-numbers)
 and [condition-name VALUE](https://www.ibm.com/docs/en/cobol-zos/6.3?topic=vc-format-2).
 Permanent contrasts: NominalTableTest and lower SourceTableSuite.
+
+### CICS nominal incompleteness
+
+Program-control and FILE targets/options transport canonical reference-report
+gaps using the same mapping as typed commands and handlers. A published incomplete
+DATA binding retains NOMINAL_BINDING at its owning statement and the operand's
+source provenance; a missing COPY remains an input gap independently. Capability
+gaps do not substitute for nominal gaps. Literal targets, ambiguous candidates,
+read/write roles and existing physical/control proof remain unchanged.
+`CicsNominalGapTest` covers unresolved/ambiguous names, missing input and isolation
+between statements.

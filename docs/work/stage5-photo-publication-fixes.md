@@ -55,3 +55,19 @@ failed before the change. GREEN: all 50 methods in the focal EVALUATE/IF,
 composition and topology-authority suites pass. Six new methods cover split
 EVALUATE/WHEN, normal-source contrast, same-arm tail, OTHER, nested IF/EVALUATE,
 unknown data input, source precision and the exact target of each continuation.
+
+## Checkpoint 3 — localized CICS nominal gaps
+
+CICS program target/options and FILE options published incomplete DATA bindings
+without the originating reference-report gaps. Project them through the existing
+`addReportGaps` adapter, as the typed-command and handler families already do.
+No resolver, target, memory/control proof, wire version or validator is changed.
+Unresolved and ambiguous bindings stay incomplete; literal targets and the
+candidate set of an ambiguous name remain intact. Gaps retain their originating
+reference provenance and owning statement, including under missing COPY input.
+
+RED: five new methods abort at the nominal-gap contract; neighboring command and
+handler coverage already passes. GREEN: 77 methods pass across CICS nominal,
+program, FILE, command, handler, host-effects, memory and provenance suites.
+The six new methods also ensure resolved statements do not inherit an unrelated
+statement's gap and no candidate is selected from an ambiguous binding.
