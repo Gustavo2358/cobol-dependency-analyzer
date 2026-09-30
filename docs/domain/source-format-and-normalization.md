@@ -89,3 +89,23 @@ Autoridade e matriz de aliases FILE/DATASET: [W2](../work/carddemo-control-w2.md
 Evidência: CicsLexicalCompatibilityTest (comentários *, / e flutuantes, LF/CRLF/CR,
 Unicode, aspas, offsets, todos os aliases autorizados e negativos), mais as
 suítes existentes de normalização, provenance e CICS.
+
+## Continuação entre operandos completos
+
+A continuação com `-` também admite a fronteira entre operandos completos.
+O scanner conserva o estado lexical: palavra partida é concatenada; literal
+aberto mantém seu delimitador de continuação; literais já fechados permanecem
+como tokens separados. Em particular, `'A'` seguido de `'B'` não vira `'A''B'`.
+Uma aspa na coluna física 72 seguida por duas aspas correspondentes no próximo
+registro representa uma aspa no payload do literal continuado. A coluna é medida
+no registro físico, inclusive depois de outra continuação e da expansão de TAB.
+Prefixo de literal (X/NX/N/G/Z) e aspa inicial, assim como delimitadores de dois
+caracteres (`==`, `*>`, `>>`), não podem ser montados entre registros.
+
+Autoridade: [IBM Enterprise COBOL — continuation lines](https://www.ibm.com/docs/en/cobol-zos/6.5.0?topic=b-continuation-lines).
+O tratamento preexistente de registros curtos dentro de literais abertos é
+preservado: não se acrescentam espaços implícitos até a coluna 72. Esta mudança
+não amplia esse domínio. Registros físicos e terminadores continuam preservados;
+o trecho combinado tem origem aproximada, inclusive quando vem de COPY.
+Evidência: `SourceNormalizerTest` e
+`SourceNormalizationPreprocessingIntegrationTest.completeLiteralsRemainDistinctThroughCopyPreprocessing`.

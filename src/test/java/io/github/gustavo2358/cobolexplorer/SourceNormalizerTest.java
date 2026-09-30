@@ -201,6 +201,68 @@ class SourceNormalizerTest {
     }
 
     @Test
+    void continuationBetweenCompleteOperandsPreservesTokenBoundaries() {
+        for (String newline : List.of("\n", "\r\n", "\r")) {
+            for (String quote : List.of("'", "\"")) {
+                String literal = quote + "A" + quote;
+                String second = quote + "B" + quote;
+                String third = quote + "C" + quote;
+                String raw = "       DISPLAY " + literal + newline
+                        + "      -    " + second + newline
+                        + "      -    " + third + "." + newline
+                        + "       GOBACK." + newline;
+                var result = SourceNormalizer.normalize(raw, "operands.cbl", SourceNormalizer.SourceFormat.FIXED);
+                assertEquals("DISPLAY " + literal + " " + second + " " + third + "."
+                        + newline.repeat(3) + "GOBACK." + newline, result.text());
+                var combined = result.sourceMap().provenance(0, result.text().indexOf(newline));
+                assertFalse(combined.exact());
+                assertEquals(1, combined.original().startLine());
+                assertEquals(3, combined.original().endLine());
+                int sentinel = result.text().indexOf("GOBACK");
+                var origin = result.sourceMap().provenance(sentinel, sentinel + 6);
+                assertTrue(origin.exact());
+                assertEquals(4, origin.original().startLine());
+            }
+        }
+        assertEquals("DISPLAY MSG 'B'.\n\n", SourceNormalizerTestSupport.fixed(
+                "       DISPLAY MSG\n      -    'B'.\n"));
+        assertEquals("DISPLAY 'DON''T' 'GO'.\n\n", SourceNormalizerTestSupport.fixed(
+                "       DISPLAY 'DON''T'\n      -    'GO'.\n"));
+        assertEquals("DISPLAY '😀' \"B\".\n\n", SourceNormalizerTestSupport.fixed(
+                "       DISPLAY '😀'\n      -    \"B\".\n"));
+        assertEquals("DISPLAY 'A', 'B'.\n\n", SourceNormalizerTestSupport.fixed(
+                "       DISPLAY 'A',\n      -    'B'.\n"));
+    }
+
+    @Test
+    void quoteAtPhysicalMarginCanContinueAnEscapedQuote() {
+        String payload = "A".repeat(55);
+        String raw = "       DISPLAY '" + payload + "'\n      -    ''B'.\n";
+        assertEquals(72, raw.indexOf('\n'));
+        assertEquals("DISPLAY '" + payload + "''B'.\n\n", SourceNormalizerTestSupport.fixed(raw));
+        // The margin belongs to the last physical record, even after a prior continuation.
+        String head = "       DISPLAY 'A\n";
+        String continued = "      -    '" + "B".repeat(59) + "'\n";
+        assertEquals(72, continued.indexOf('\n'));
+        assertEquals("DISPLAY 'A" + "B".repeat(59) + "''C'.\n\n\n",
+                SourceNormalizerTestSupport.fixed(head + continued + "      -    ''C'.\n"));
+    }
+
+    @Test
+    void completeOperandContinuationCannotSynthesizeAForbiddenDelimiterOrLiteralPrefix() {
+        for (String delimiter : List.of("==", "*>", ">>")) {
+            var failure = assertThrows(IllegalArgumentException.class, () -> SourceNormalizerTestSupport.fixed(
+                    "       " + delimiter.charAt(0) + "\n      -    " + delimiter.charAt(1) + "\n"));
+            assertTrue(failure.getMessage().contains("delimiter"), failure.getMessage());
+        }
+        for (String prefix : List.of("X", "NX", "N", "G", "Z")) {
+            var failure = assertThrows(IllegalArgumentException.class, () -> SourceNormalizerTestSupport.fixed(
+                    "       DISPLAY " + prefix + "\n      -    'AB'.\n"));
+            assertTrue(failure.getMessage().contains("prefix"), failure.getMessage());
+        }
+    }
+
+    @Test
     void continuationRejectsOrphanIncompatibleAndMismatchedRecordsLocally() {
         IllegalArgumentException orphan = assertThrows(IllegalArgumentException.class,
                 () -> SourceNormalizerTestSupport.fixed("      -ORPHAN\n"));
