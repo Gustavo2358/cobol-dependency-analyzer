@@ -77,6 +77,7 @@ public final class ProcedurePerformSemantics {
             var provisional=new LinkedHashMap<Integer,Facts>();
             var performs=nodes.values().stream().filter(Ast.PerformStatement.class::isInstance).map(Ast.PerformStatement.class::cast)
                 .filter(p->structuralCandidate(p)||p.performKind()==Ast.PerformKind.INLINE&&applicable(p)).sorted(Comparator.comparingInt(p->p.meta().id())).toList();
+            if(performs.isEmpty())continue;
             for(var p:performs) {
                 if(applicable(p))legacyRanges.add(new ScalarMoveSemantics.NodeKey(unit.id(),p.meta().id()));
                 var gaps=new LinkedHashSet<String>();if(!complete)gaps.add("PERFORM_INPUT_INCOMPLETE");
@@ -166,6 +167,16 @@ public final class ProcedurePerformSemantics {
                 if(!bodyClosed)gaps.add("PERFORM_RANGE_CONTROL_NOT_PROVEN");
                 provisional.put(item.getKey(),new Facts(f.start(),f.end(),f.procedures(),f.resume(),f.resumeOrigin(),f.loop(),f.times(),f.varying(),f.structureKnown()&&bodyClosed,List.copyOf(gaps)));
             }
+            // These proofs depend on the finalized unit graph, not on the individual caller.
+            // Keep member sets immutable in the cache; resume and body checks remain per call.
+            var uniqueRanges=new LinkedHashSet<Set<Integer>>();
+            var incomingCache=new HashMap<Set<Integer>,Boolean>();
+            for(var other:provisional.values()) {
+                var otherMembers=new HashSet<Integer>();other.procedures().forEach(r->otherMembers.addAll(r.statements()));uniqueRanges.add(Set.copyOf(otherMembers));
+            }
+            var primaryEntry=structure?division.procedureEntry().orElseThrow().startStatementId():Optional.<Integer>empty();
+            var primaryMembers=new HashSet<Integer>();
+            boolean primaryClosed=primaryEntry.isPresent()&&closed(primaryEntry.get(),primaryMembers,Map.of(),next,nodes,unit.id(),moves,ifs,evaluates,goTos,basic,provisional,true,cics);
             // All branches must close; ordinary incoming transfers are checked independently, even if unreachable.
             for(var p:performs) {
                 var f=provisional.get(p.meta().id());var gaps=new LinkedHashSet<>(f.gaps());boolean qualified=f.structureKnown();
@@ -175,18 +186,15 @@ public final class ProcedurePerformSemantics {
                     boundary.put(id,i+1<f.procedures().size()?f.procedures().get(i+1).entry():-1);
                 if(!f.procedures().isEmpty() && !closed(f.procedures().get(0).entry(),members,boundary,next,nodes,unit.id(),moves,ifs,evaluates,goTos,basic,provisional,false,cics))
                     {qualified=false;gaps.add("PERFORM_RANGE_CONTROL_NOT_PROVEN");}
-                var entry=structure?division.procedureEntry().orElseThrow().startStatementId():Optional.<Integer>empty();
-                var primary=new HashSet<Integer>();
-                if(entry.isEmpty()||!closed(entry.get(),primary,Map.of(),next,nodes,unit.id(),moves,ifs,evaluates,goTos,basic,provisional,true,cics)
-                        ||!primary.contains(p.meta().id())||f.resume().filter(primary::contains).isEmpty()
-                        ||members.stream().anyMatch(primary::contains)){qualified=false;gaps.add("PERFORM_ISOLATED_PRIMARY_NOT_PROVEN");}
-                for(var n:nodes.values())if(n instanceof Ast.Statement s && !members.contains(s.meta().id())) {
-                    if(s instanceof Ast.GoToStatement g && (!goTos.closed(unit.id(),g) || goTos.entries(unit.id(),g).stream().anyMatch(members::contains)))
-                        {qualified=false;gaps.add("PERFORM_ORDINARY_INCOMING_NOT_EXCLUDED");}
-                    if(Optional.ofNullable(next.get(s.meta().id())).filter(members::contains).isPresent()){qualified=false;gaps.add("PERFORM_ORDINARY_INCOMING_NOT_EXCLUDED");}
+                if(!primaryClosed||!primaryMembers.contains(p.meta().id())||f.resume().filter(primaryMembers::contains).isEmpty()
+                        ||members.stream().anyMatch(primaryMembers::contains)){qualified=false;gaps.add("PERFORM_ISOLATED_PRIMARY_NOT_PROVEN");}
+                var incomingExcluded=incomingCache.get(members);
+                if(incomingExcluded==null) {
+                    incomingExcluded=ordinaryIncomingExcluded(members,nodes,next,unit.id(),goTos);
+                    incomingCache.put(Set.copyOf(members),incomingExcluded);
                 }
-                for(var other:provisional.values()) {
-                    var otherMembers=new HashSet<Integer>();other.procedures().forEach(r->otherMembers.addAll(r.statements()));
+                if(!incomingExcluded){qualified=false;gaps.add("PERFORM_ORDINARY_INCOMING_NOT_EXCLUDED");}
+                for(var otherMembers:uniqueRanges) {
                     if(!members.equals(otherMembers)&&otherMembers.stream().anyMatch(members::contains)){qualified=false;gaps.add("PERFORM_OVERLAPPING_RANGES");}
                 }
                 result.put(new ScalarMoveSemantics.NodeKey(unit.id(),p.meta().id()),new Facts(f.start(),f.end(),f.procedures(),f.resume(),f.resumeOrigin(),f.loop(),f.times(),f.varying(),qualified,List.copyOf(gaps)));
@@ -195,6 +203,16 @@ public final class ProcedurePerformSemantics {
         }
         return new ProcedurePerformSemantics(result,legacyRanges);
     }
+    private static boolean ordinaryIncomingExcluded(Set<Integer> members,Map<Integer,Ast.Node> nodes,
+            Map<Integer,Integer> next,ResolutionContracts.ProgramUnitId unit,GoToSemantics goTos) {
+        for(var n:nodes.values())if(n instanceof Ast.Statement s&&!members.contains(s.meta().id())) {
+            if(s instanceof Ast.GoToStatement g&&(!goTos.closed(unit,g)
+                    ||goTos.entries(unit,g).stream().anyMatch(members::contains)))return false;
+            if(Optional.ofNullable(next.get(s.meta().id())).filter(members::contains).isPresent())return false;
+        }
+        return true;
+    }
+
     private static boolean closed(int entry,Set<Integer> members,Map<Integer,Integer> boundary,Map<Integer,Integer> next,
             Map<Integer,Ast.Node> nodes,ResolutionContracts.ProgramUnitId unit,Map<ScalarMoveSemantics.NodeKey,ScalarMoveSemantics.Move> moves,
             IfSemantics ifs,EvaluateSemantics evaluates,GoToSemantics goTos,PerformSemantics basic,Map<Integer,Facts> ranges,boolean primary,CicsProgramControlAnalyzer.Contribution cics) {
