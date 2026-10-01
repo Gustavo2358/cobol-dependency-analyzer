@@ -1,6 +1,8 @@
 # STAGE5-JSON-GENERATE — checkpoint 4
 
-Status: IN_PROGRESS
+[Current merge and qualification](analyzer-integration-20261001.md). The checkpoint scope below is historical.
+
+Status: DONE / MERGED
 
 Scope: user-authorized JSON GENERATE grammatical support in frontend PR #77,
 following the three publication fixes. Preserve operand provenance, statement
