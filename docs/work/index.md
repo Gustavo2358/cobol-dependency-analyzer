@@ -1,3 +1,5 @@
+[Integração atual — DONE / MERGED](analyzer-integration-20261001.md): frontend #77 e discovery histórico #59. As entradas anteriores abaixo conservam seus snapshots de trabalho.
+
 [CardDemo values/control — DONE / MERGED](carddemo-values-control-integration.md): capabilities 1–4 and review corrections integrated; point 5 is a separate campaign.
 
 - [Stage-5 JSON GENERATE grammar and source alternatives](stage5-json-generate.md) — IN_PROGRESS, checkpoint 4 in PR #77.

@@ -1,6 +1,8 @@
 # STAGE5-PHOTO-PUBLICATION-FIXES
 
-Status: IN_PROGRESS
+[Current merge and qualification](analyzer-integration-20261001.md). The checkpoint scope below is historical.
+
+Status: DONE / MERGED
 
 Scope: three confirmed frontend aborts, authorized in existing PR #77;
 separate implementation commits for preprocessing SUPPRESS, EVALUATE structural

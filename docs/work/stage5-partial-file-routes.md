@@ -1,6 +1,8 @@
 # STAGE5-PARTIAL-FILE-ROUTES
 
-Status: IN_PROGRESS
+[Current merge and qualification](analyzer-integration-20261001.md). The checkpoint scope below is historical.
+
+Status: DONE / MERGED
 
 Scope: FILE control-route publication when parser recovery did not prove normal
 control. Ship in the existing stage-5 frontend PR #77; preserve the grammar,
