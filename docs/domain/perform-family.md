@@ -25,9 +25,19 @@ Unproved endpoints/membership/activation retain typed partial facts and open con
 
 Algorithm: index nodes, symbols and resolved references; join endpoints by typed
 identity; collect direct paragraph structure and branch membership; validate each
-finite graph with an active/closed worklist. The conservative indexed implementation costs O(P * (N + M)), where P is the
-number of range activations, N the unit graph and M the total range membership; specialization is per callsite, never per iteration count. The profile
-is conservative and deliberately incomplete; no runtime predicate solver is used.
+finite graph with an active/closed worklist. After all provisional callees are
+finalized, compute primary closure once per program unit. Deduplicate immutable
+range member sets and reuse ordinary incoming-edge exclusion for each distinct
+set within that unit. Body closure, callsite membership in the primary graph,
+resume and unequal-range overlap remain checked per callsite. Reuse ends with the
+unit analysis; it does not cross units or executions.
+
+Distinct overlapping ranges can still require quadratic work; the optimization
+removes repeated proofs for shared bodies without claiming a linear bound for
+all inputs. Specialization remains per callsite, never per iteration count. The
+profile is conservative and deliberately incomplete; no runtime predicate solver
+is used. Measurements and regression are recorded in the
+[post-ANTLR qualification](../work/post-antlr-performance.md).
 
 Independent oracles: last strong update across three paragraphs; two distinct
 callsite resumes; structured branch joins; external incoming/escape/overlap/cycle

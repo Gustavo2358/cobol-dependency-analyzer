@@ -82,6 +82,21 @@ is O(inputs × regions), and descendant cell bounds cost their explicit membersh
 size and ancestry depth. There is no subset/path enumeration or arbitrary cutoff.
 Activation specialization is unchanged and remains a measured transitional backend.
 
+Publication validation evaluates proof availability lazily once for the batch of
+`LOGICAL_TEXT` initial conditions and indexes the proven `LOCAL_CELL` subjects.
+Every condition still requires its own closed local cell; the result is not reused
+across publications. Section deduplication uses the unit-local canonical ID,
+avoiding structural hashing of the entire AST subtree.
+
+When `MODEL_STORAGE` inputs exist, synthetic declaration spans are indexed by
+expanded start coordinate with subtree maximum ends. Queries preserve the exact
+strict predicate `a.start < b.end && b.start < a.end`, including nested and point
+spans. Matched declarations determine affected model regions; context/closure
+rules and ordinary missing/unlocated-input prefix rules remain unchanged. The
+general input-by-region scan remains. See the
+[post-ANTLR qualification](../work/post-antlr-performance.md) for measurements and
+differential regression.
+
 ## Tests and evidence
 
 `FactDependencyLocalityTest` is fixed FAST; it covers profile separation, closed/open
