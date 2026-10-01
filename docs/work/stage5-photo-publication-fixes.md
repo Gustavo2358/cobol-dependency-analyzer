@@ -72,7 +72,11 @@ program, FILE, command, handler, host-effects, memory and provenance suites.
 The six new methods also ensure resolved statements do not inherit an unrelated
 statement's gap and no candidate is selected from an ambiguous binding.
 
-## Integrated qualification
+## Integrated qualification at checkpoints 1–3
+
+The historical JSON sentinel limitation below is resolved by
+[checkpoint 4 — JSON GENERATE](stage5-json-generate.md). Original execution
+results remain recorded as observed; new qualification is separate.
 
 - Frontend FAST: PASS, 716 tests, no failures/errors/skips (66.331 s).
 - Frontend qualification-local: PASS, Maven 1,287 tests, zero failures/errors;

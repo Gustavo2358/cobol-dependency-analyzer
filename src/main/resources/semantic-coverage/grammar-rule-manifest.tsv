@@ -631,3 +631,16 @@ PREPROCESSOR	literal	PREPROCESSOR	PRESERVED_UNINTERPRETED	NOT_DEPENDENCY_BEARING
 PREPROCESSOR	filename	PREPROCESSOR	PRESERVED_UNINTERPRETED	NOT_DEPENDENCY_BEARING	Preprocessor syntax is explicitly cataloged and has no standalone dependency claim.
 PREPROCESSOR	charDataKeyword	PREPROCESSOR	PRESERVED_UNINTERPRETED	NOT_DEPENDENCY_BEARING	Preprocessor syntax is explicitly cataloged and has no standalone dependency claim.
 COBOL	embeddedIdentifier	GRAMMAR_INFRASTRUCTURE	MODELED	NOT_DEPENDENCY_BEARING	Complete embedded host reference entry; canonical identifier owns semantic structure.
+COBOL	jsonGenerateStatement	STATEMENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateCountPhrase	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateIndicatingPhrase	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateIndicator	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateEncodingPhrase	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateNamePhrase	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateName	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateSuppressPhrase	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateSuppression	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateWhen	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateWhenValue	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateConvertingPhrase	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.
+COBOL	jsonGenerateConversion	STATEMENT_COMPONENT	PRESERVED_UNINTERPRETED	DEPENDENCY_UNKNOWN	JSON GENERATE syntax and nested references are preserved; generation effects remain unknown.

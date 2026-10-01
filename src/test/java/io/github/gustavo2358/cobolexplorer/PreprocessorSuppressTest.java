@@ -45,7 +45,7 @@ class PreprocessorSuppressTest {
         assertThrows(UnsupportedOperationException.class, () -> preprocess("REPLACE OFF.\n"));
         assertThrows(IllegalStateException.class, () -> PreprocessorEngine.policyFor("unclassifiedRule"));
     }
-    @Test void jsonWitnessPublishesPartialParseInsteadOfPreprocessingAbort() throws Exception {
+    @Test void jsonWitnessPreservesUnknownSemanticsWithoutParserRecovery() throws Exception {
         var source = "IDENTIFICATION DIVISION.\nPROGRAM-ID. JSUP.\nDATA DIVISION.\nWORKING-STORAGE SECTION.\n"
             + "01 OUTPUT-TEXT PIC X(100).\n01 INPUT-TEXT PIC X VALUE 'X'.\nPROCEDURE DIVISION.\n"
             + "JSON GENERATE OUTPUT-TEXT FROM INPUT-TEXT\nSUPPRESS INPUT-TEXT\nEND-JSON.\nGOBACK.\n";
@@ -53,8 +53,17 @@ class PreprocessorSuppressTest {
         Files.writeString(input, source.lines().map(line -> "       " + line + "\n").collect(java.util.stream.Collectors.joining()));
         ExplorerMain.main(new String[]{"--source", input.toString(), "--copybooks", directory.toString(), "--output", directory.resolve("sp").toString()});
         var sp = new ObjectMapper().readTree(directory.resolve("sp/cobol-semantic-product.json").toFile());
-        assertEquals("INPUT_MISSING", sp.path("coverage").path("inventoryStatus").asText());
-        assertTrue(Files.readString(directory.resolve("sp/tree-data.js")).contains("\"phase\":\"PARSER\""),
-            "the parser diagnostic remains published alongside incomplete SP coverage");
+        assertNotEquals("INPUT_MISSING", sp.path("coverage").path("inventoryStatus").asText());
+        assertFalse(Files.readString(directory.resolve("sp/tree-data.js")).contains("\"phase\":\"PARSER\""));
+        assertTrue(sp.path("statements").toString().contains("OBSERVED"));
+        assertTrue(sp.path("statements").toString().contains("GOBACK"));
+        assertFalse(sp.path("gaps").isEmpty(), "syntactic support does not prove generation effects");
+
+        // Malformed input still reports the parse gap after successful preprocessing.
+        Files.writeString(input, Files.readString(input).replace("FROM INPUT-TEXT", "INPUT-TEXT"));
+        ExplorerMain.main(new String[]{"--source", input.toString(), "--copybooks", directory.toString(), "--output", directory.resolve("bad").toString()});
+        var bad = new ObjectMapper().readTree(directory.resolve("bad/cobol-semantic-product.json").toFile());
+        assertEquals("INPUT_MISSING", bad.path("coverage").path("inventoryStatus").asText());
+        assertTrue(Files.readString(directory.resolve("bad/tree-data.js")).contains("\"phase\":\"PARSER\""));
     }
 }

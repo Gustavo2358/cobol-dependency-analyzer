@@ -28,7 +28,7 @@ class GrammarCoverageManifestTest {
             "displayStatement", "divideStatement", "enableStatement", "entryStatement", "evaluateStatement",
             "exhibitStatement", "execCicsStatement", "execSqlStatement", "execSqlImsStatement", "execDliStatement", "exitStatement",
             "generateStatement", "gobackStatement", "goToStatement", "ifStatement", "initializeStatement",
-            "initiateStatement", "inspectStatement", "mergeStatement", "moveStatement", "multiplyStatement",
+            "initiateStatement", "inspectStatement", "jsonGenerateStatement", "mergeStatement", "moveStatement", "multiplyStatement",
             "nextSentenceStatement", "openStatement", "performStatement", "purgeStatement", "readStatement",
             "receiveStatement", "releaseStatement", "returnStatement", "rewriteStatement", "searchStatement",
             "sendStatement", "setStatement", "sortStatement", "startStatement", "stopStatement",
@@ -46,9 +46,9 @@ class GrammarCoverageManifestTest {
         Map<GrammarCoverageManifest.RuleKey, GrammarCoverageManifest.Entry> indexed = entries.stream()
                 .collect(Collectors.toMap(GrammarCoverageManifest.Entry::key, Function.identity()));
 
-        assertEquals(601, expected.stream().filter(key -> key.grammar() == GrammarCoverageManifest.Grammar.COBOL).count());
+        assertEquals(614, expected.stream().filter(key -> key.grammar() == GrammarCoverageManifest.Grammar.COBOL).count());
         assertEquals(31, expected.stream().filter(key -> key.grammar() == GrammarCoverageManifest.Grammar.PREPROCESSOR).count());
-        assertEquals(632, entries.size());
+        assertEquals(645, entries.size());
         assertEquals(entries.size(), indexed.size(), "manifest cannot contain duplicate grammar/rule keys");
         assertEquals(expected, indexed.keySet(), "grammar changes must be explicitly classified in the manifest");
         assertFalse(entries.stream().anyMatch(entry -> entry.rationale().isBlank()));
@@ -57,7 +57,7 @@ class GrammarCoverageManifestTest {
     }
 
     @Test
-    void explicitlyClassifiesAllFiftyOneStatementAlternativesConservatively() throws Exception {
+    void explicitlyClassifiesAllFiftyTwoStatementAlternativesConservatively() throws Exception {
         String grammar = Files.readString(Path.of("src/main/antlr4/Cobol.g4"), StandardCharsets.UTF_8);
         Matcher statementRule = STATEMENT_RULE.matcher(grammar);
         assertTrue(statementRule.find(), "statement rule must exist");
@@ -65,7 +65,7 @@ class GrammarCoverageManifestTest {
         Set<String> grammarStatements = new LinkedHashSet<>();
         while (alternatives.find()) grammarStatements.add(alternatives.group());
 
-        assertEquals(51, STATEMENTS.size());
+        assertEquals(52, STATEMENTS.size());
         assertEquals(STATEMENTS, grammarStatements,
                 "every new or removed statement alternative requires an explicit manifest review");
         Map<String, GrammarCoverageManifest.Entry> statements = GrammarCoverageManifest.entries().stream()

@@ -2639,6 +2639,11 @@ public final class CobolSemanticProductProjector {
             } else if(fileSurface(statement).isPresent()) {
                 for(var handler:fileSurface(statement).orElseThrow().handlers())
                     collectStatementGroup(handler.clause().nestedStatements(),statement,Branch.FILE_HANDLER,output,evaluates,unit);
+            } else if (statement instanceof Ast.PreservedStatement preserved && !preserved.clauses().isEmpty()) {
+                // Canonical clause boundaries survive even when their execution is
+                // unmodeled; two exception bodies are not sequential siblings.
+                for (var clause : preserved.clauses())
+                    collectStatementGroup(clause.nestedStatements(), statement, Branch.UNKNOWN, output, evaluates, unit);
             } else {
                 List<Ast.Statement> nested = new ArrayList<>();
                 for (Ast.Node child : Ast.children(statement))

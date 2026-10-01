@@ -1165,7 +1165,7 @@ sentence
    ;
 
 statement
-   : acceptStatement | addStatement | alterStatement | callStatement | cancelStatement | closeStatement | computeStatement | continueStatement | deleteStatement | disableStatement | displayStatement | divideStatement | enableStatement | entryStatement | evaluateStatement | exhibitStatement | execCicsStatement | execSqlStatement | execSqlImsStatement | execDliStatement | exitStatement | generateStatement | gobackStatement | goToStatement | ifStatement | initializeStatement | initiateStatement | inspectStatement | mergeStatement | moveStatement | multiplyStatement | nextSentenceStatement | openStatement | performStatement | purgeStatement | readStatement | receiveStatement | releaseStatement | returnStatement | rewriteStatement | searchStatement | sendStatement | setStatement | sortStatement | startStatement | stopStatement | stringStatement | subtractStatement | terminateStatement | unstringStatement | writeStatement
+   : acceptStatement | addStatement | alterStatement | callStatement | cancelStatement | closeStatement | computeStatement | continueStatement | deleteStatement | disableStatement | displayStatement | divideStatement | enableStatement | entryStatement | evaluateStatement | exhibitStatement | execCicsStatement | execSqlStatement | execSqlImsStatement | execDliStatement | exitStatement | generateStatement | gobackStatement | goToStatement | ifStatement | initializeStatement | initiateStatement | inspectStatement | jsonGenerateStatement | mergeStatement | moveStatement | multiplyStatement | nextSentenceStatement | openStatement | performStatement | purgeStatement | readStatement | receiveStatement | releaseStatement | returnStatement | rewriteStatement | searchStatement | sendStatement | setStatement | sortStatement | startStatement | stopStatement | stringStatement | subtractStatement | terminateStatement | unstringStatement | writeStatement
    ;
 
 // accept statement
@@ -1626,6 +1626,66 @@ inspectTo
 
 inspectBeforeAfter
    : (BEFORE | AFTER) INITIAL? (identifier | literal)
+   ;
+
+// IBM Enterprise COBOL 6.4 JSON GENERATE (including documented PTF phrases).
+// Ordered phrases and typed exception scopes: never consume opaque tokens up to a period.
+jsonGenerateStatement
+   : JSON GENERATE identifier FROM identifier jsonGenerateCountPhrase?
+     jsonGenerateIndicatingPhrase? jsonGenerateEncodingPhrase? jsonGenerateNamePhrase?
+     jsonGenerateSuppressPhrase? jsonGenerateConvertingPhrase?
+     onExceptionClause? notOnExceptionClause? END_JSON?
+   ;
+
+jsonGenerateCountPhrase
+   : COUNT IN? identifier
+   ;
+
+jsonGenerateIndicatingPhrase
+   : INDICATING jsonGenerateIndicator (ALSO jsonGenerateIndicator)*
+   ;
+
+jsonGenerateIndicator
+   : identifier IS? JSON? NULL USING? (conditionNameReference | literal IN identifier)
+   ;
+
+jsonGenerateEncodingPhrase
+   : ENCODING (identifier | integerLiteral | FROM CODEPAGE)
+   ;
+
+jsonGenerateNamePhrase
+   : NAME OF? jsonGenerateName+
+   ;
+
+jsonGenerateName
+   : identifier IS? (literal | OMITTED)
+   ;
+
+jsonGenerateSuppressPhrase
+   : SUPPRESS jsonGenerateSuppression+
+   ;
+
+jsonGenerateSuppression
+   : identifier jsonGenerateWhen?
+   | (EVERY (NUMERIC | NONNUMERIC)?)? jsonGenerateWhen
+   ;
+
+jsonGenerateWhen
+   : WHEN jsonGenerateWhenValue (OR? jsonGenerateWhenValue)*
+   ;
+
+jsonGenerateWhenValue
+   : ZERO | ZEROS | ZEROES | SPACE | SPACES
+   | LOW_VALUE | LOW_VALUES | HIGH_VALUE | HIGH_VALUES
+   ;
+
+jsonGenerateConvertingPhrase
+   : CONVERTING jsonGenerateConversion (ALSO jsonGenerateConversion)*
+   ;
+
+jsonGenerateConversion
+   : identifier TO? JSON? ((BOOLEAN | BOOL) USING? (conditionNameReference | literal)
+                          | NULL USING? figurativeConstant)
    ;
 
 // merge statement
@@ -2572,7 +2632,7 @@ cobolWord
    : IDENTIFIER 
    | ABORT | AS | ASCII | ASSOCIATED_DATA | ASSOCIATED_DATA_LENGTH | ATTRIBUTE | AUTO | AUTO_SKIP
    | BACKGROUND_COLOR | BACKGROUND_COLOUR | BEEP | BELL | BINARY | BIT | BLINK | BLOB | BOUNDS
-   | CAPABLE | CCSVERSION | CHANGED | CHANNEL | CLOB | CLOSE_DISPOSITION | COBOL | COMMITMENT | CONTROL_POINT | CONVENTION | CRUNCH | CURSOR
+   | CODEPAGE | CAPABLE | CCSVERSION | CHANGED | CHANNEL | CLOB | CLOSE_DISPOSITION | COBOL | COMMITMENT | CONTROL_POINT | CONVENTION | CRUNCH | CURSOR
    | DBCLOB | DEFAULT | DEFAULT_DISPLAY | DEFINITION | DFHRESP | DFHVALUE | DISK | DONTCARE | DOUBLE
    | EBCDIC | EMPTY_CHECK | ENTER | ENTRY_PROCEDURE | EOL | EOS | ERASE | ESCAPE | EVENT | EXCLUSIVE | EXPORT | EXTENDED
    | FOREGROUND_COLOR | FOREGROUND_COLOUR | FULL | FUNCTIONNAME | FUNCTION_POINTER
@@ -2582,7 +2642,7 @@ cobolWord
    | KEPT | KEYBOARD
    | LANGUAGE | LB | LD | LEFTLINE | LENGTH_CHECK | LIBACCESS | LIBPARAMETER | LIBRARY | LIST | LOCAL | LONG_DATE | LONG_TIME | LOWER | LOWLIGHT
    | MMDDYYYY
-   | NAMED | NATIONAL | NATIONAL_EDITED | NETWORK | NO_ECHO | NUMERIC_DATE | NUMERIC_TIME
+   | NAME | NAMED | NATIONAL | NATIONAL_EDITED | NETWORK | NO_ECHO | NUMERIC_DATE | NUMERIC_TIME
    | ODT | ORDERLY | OVERLINE | OWN
    | PASSWORD | PORT | PRINTER | PRIVATE | PROCESS | PROGRAM | PROMPT
    | READER | REAL | RECEIVED | RECURSIVE | REF | REMOTE | REMOVE | REQUIRED | REVERSE_VIDEO
@@ -2630,7 +2690,7 @@ specialRegister
    | DATE | DAY | DAY_OF_WEEK | DEBUG_CONTENTS | DEBUG_ITEM | DEBUG_LINE | DEBUG_NAME | DEBUG_SUB_1 | DEBUG_SUB_2 | DEBUG_SUB_3
    | LENGTH OF? identifier | LINAGE_COUNTER | LINE_COUNTER
    | PAGE_COUNTER
-   | RETURN_CODE
+   | RETURN_CODE | JSON_CODE
    | SHIFT_IN | SHIFT_OUT | SORT_CONTROL | SORT_CORE_SIZE | SORT_FILE_SIZE | SORT_MESSAGE | SORT_MODE_SIZE | SORT_RETURN
    | TALLY | TIME
    | WHEN_COMPILED
@@ -2695,6 +2755,8 @@ BINARY : B I N A R Y;
 BIT : B I T;
 BLANK : B L A N K;
 BLINK : B L I N K;
+BOOL : B O O L;
+BOOLEAN : B O O L E A N;
 BLOB : B L O B;
 BLOCK : B L O C K;
 BOUNDS : B O U N D S;
@@ -2727,6 +2789,7 @@ COLLATING : C O L L A T I N G;
 COL : C O L;
 COLUMN : C O L U M N;
 COM_REG : C O M MINUSCHAR R E G;
+CODEPAGE : C O D E P A G E;
 COMMA : C O M M A;
 APPLY : A P P L Y;
 WRITE_ONLY : W R I T E MINUSCHAR O N L Y;
@@ -2813,6 +2876,7 @@ ELSE : E L S E;
 EMI : E M I;
 EMPTY_CHECK : E M P T Y MINUSCHAR C H E C K;
 ENABLE : E N A B L E;
+ENCODING : E N C O D I N G;
 END : E N D;
 END_ACCEPT : E N D MINUSCHAR A C C E P T;
 END_ADD : E N D MINUSCHAR A D D;
@@ -2823,6 +2887,7 @@ END_DISPLAY : E N D MINUSCHAR D I S P L A Y;
 END_DIVIDE : E N D MINUSCHAR D I V I D E;
 END_EVALUATE : E N D MINUSCHAR E V A L U A T E;
 END_IF : E N D MINUSCHAR I F;
+END_JSON : E N D MINUSCHAR J S O N;
 END_MULTIPLY : E N D MINUSCHAR M U L T I P L Y;
 END_OF_PAGE : E N D MINUSCHAR O F MINUSCHAR P A G E;
 END_PERFORM : E N D MINUSCHAR P E R F O R M;
@@ -2900,6 +2965,7 @@ IN : I N;
 INDEX : I N D E X;
 INDEXED : I N D E X E D;
 INDICATE : I N D I C A T E;
+INDICATING : I N D I C A T I N G;
 INITIAL : I N I T I A L;
 INITIALIZE : I N I T I A L I Z E;
 INITIATE : I N I T I A T E;
@@ -2912,6 +2978,8 @@ INTO : I N T O;
 INVALID : I N V A L I D;
 INVOKE : I N V O K E;
 IS : I S;
+JSON : J S O N;
+JSON_CODE : J S O N MINUSCHAR C O D E;
 JUST : J U S T;
 JUSTIFIED : J U S T I F I E D;
 KANJI : K A N J I;
@@ -2960,6 +3028,7 @@ MORE_LABELS : M O R E MINUSCHAR L A B E L S;
 MOVE : M O V E;
 MULTIPLE : M U L T I P L E;
 MULTIPLY : M U L T I P L Y;
+NAME : N A M E;
 NAMED : N A M E D;
 NATIONAL : N A T I O N A L;
 NATIONAL_EDITED : N A T I O N A L MINUSCHAR E D I T E D;
@@ -2969,6 +3038,7 @@ NETWORK : N E T W O R K;
 NEXT : N E X T;
 NO : N O;
 NO_ECHO : N O MINUSCHAR E C H O;
+NONNUMERIC : N O N N U M E R I C;
 NOT : N O T;
 NULL : N U L L;
 NULLS : N U L L S;

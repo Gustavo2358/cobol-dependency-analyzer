@@ -306,7 +306,9 @@ final class ReferenceOccurrenceCollector {
                 role=ResolutionContracts.ReferenceRole.VALUE_READ;
             if(writes.contains(operand.value().meta().id()))role=ResolutionContracts.ReferenceRole.VALUE_WRITE;
             else if(reads.contains(operand.value().meta().id()))role=ResolutionContracts.ReferenceRole.VALUE_READ;
-            if (operand.context() == Ast.StatementOperandContext.SET_CONDITION_TARGET
+            if (operand.context() == Ast.StatementOperandContext.CONDITION_VALUE) role=ResolutionContracts.ReferenceRole.VALUE_READ;
+            if ((operand.context() == Ast.StatementOperandContext.SET_CONDITION_TARGET
+                    || operand.context() == Ast.StatementOperandContext.CONDITION_VALUE)
                     && operand.value() instanceof Ast.DataReference reference)
                 addDataReference(reference, role, preservation, ResolutionContracts.ReferenceKind.CONDITION,
                         Set.of(ResolutionContracts.ReferenceKind.CONDITION));

@@ -1,5 +1,7 @@
 [CardDemo values/control — DONE / MERGED](carddemo-values-control-integration.md): capabilities 1–4 and review corrections integrated; point 5 is a separate campaign.
 
+- [Stage-5 JSON GENERATE grammar and source alternatives](stage5-json-generate.md) — IN_PROGRESS, checkpoint 4 in PR #77.
+
 - [Stage-5 publication fixes: SUPPRESS, partial EVALUATE and CICS nominal gaps](stage5-photo-publication-fixes.md) — IN_PROGRESS, three implementation checkpoints in PR #77.
 
 R4 active: [WORK-AST-EOF-BOUNDARY-R4](active/WORK-AST-EOF-BOUNDARY-R4/work-item.json). EOF input ownership only; R5–R9 not started.
