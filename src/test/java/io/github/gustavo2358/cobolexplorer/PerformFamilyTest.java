@@ -64,4 +64,54 @@ class PerformFamilyTest {
             assertEquals(1,facts.size());assertFalse(facts.get(0).path("gapCodes").isEmpty());
         }
     }
+
+    private static List<ProcedurePerformSemantics.Facts> analyzedRanges(String source) {
+        var a=AstBoundaryTestSupport.analyze(source,"shared-perform-proofs.cbl");
+        var semantics=ScalarMoveSemantics.analyze(a.build(),a.tables(),a.resolution(),a.report());
+        var unit=a.model().programUnits().get(0).id();
+        return AstBoundaryTestSupport.nodes(a,Ast.PerformStatement.class).stream()
+            .sorted(Comparator.comparingInt(p->p.meta().id()))
+            .map(p->semantics.procedurePerforms().fact(unit,p.meta().id()).orElseThrow()).toList();
+    }
+    @Test void identicalBodiesKeepCallerSpecificPrimaryMembershipAndResume() {
+        var facts=analyzedRanges(source("PERFORM A THRU A.",
+            "DEAD.\nPERFORM A THRU A.\nGOBACK.\nA.\nMOVE 'PROGA' TO WS-PGM."));
+        assertEquals(2,facts.size());
+        assertTrue(facts.get(0).precise(),facts.get(0).gaps().toString());
+        assertTrue(facts.get(1).gaps().contains("PERFORM_ISOLATED_PRIMARY_NOT_PROVEN"));
+        assertEquals(facts.get(0).procedures(),facts.get(1).procedures());
+        assertNotEquals(facts.get(0).resume(),facts.get(1).resume());
+    }
+    @Test void sharedBodyProofsKeepUnreachableIncomingAndUnequalOverlapRefusals() {
+        for(String transfer:List.of("GO TO A.","GO TO MISSING.")) {
+            var facts=analyzedRanges(source("PERFORM A THRU A.\nPERFORM A THRU A.",
+                "DEAD.\n"+transfer+"\nA.\nMOVE 'PROGA' TO WS-PGM."));
+            assertEquals(2,facts.size());
+            for(var fact:facts)assertTrue(fact.gaps().contains("PERFORM_ORDINARY_INCOMING_NOT_EXCLUDED"),fact.gaps().toString());
+        }
+        var facts=analyzedRanges(source("PERFORM A THRU B.\nPERFORM A THRU B.\nPERFORM B THRU C.",
+            "A.\nMOVE 'PROGA' TO WS-PGM.\nB.\nMOVE 'PROGB' TO WS-PGM.\nC.\nMOVE 'PROGC' TO WS-PGM."));
+        assertEquals(3,facts.size());
+        for(var fact:facts)assertTrue(fact.gaps().contains("PERFORM_OVERLAPPING_RANGES"),fact.gaps().toString());
+    }
+
+    @Test void proofsAreIsolatedBetweenProgramUnitsAndExecutions() {
+        String main="PERFORM A THRU A.\nPERFORM A THRU A.";
+        String closed=source(main,"A.\nMOVE 'PROGA' TO WS-PGM.").replace("PROGRAM-ID. FAMILY.","PROGRAM-ID. CLOSED-UNIT.")+"\nEND PROGRAM CLOSED-UNIT.\n";
+        String open=source(main,"DEAD.\nGO TO A.\nA.\nMOVE 'PROGA' TO WS-PGM.").replace("PROGRAM-ID. FAMILY.","PROGRAM-ID. OPEN-UNIT.")+"\nEND PROGRAM OPEN-UNIT.\n";
+        for(var sources:List.of(List.of(closed,open),List.of(open,closed))) {
+            var a=AstBoundaryTestSupport.analyze(String.join("",sources),"unit-proof-scope.cbl");
+            var semantics=ScalarMoveSemantics.analyze(a.build(),a.tables(),a.resolution(),a.report());
+            assertEquals(2,a.model().programUnits().size());
+            for(int i=0;i<2;i++) {
+                var program=a.model().programUnits().get(i);var unit=program.id();
+                var facts=AstBoundaryTestSupport.nodes(program.program()).stream()
+                    .filter(Ast.PerformStatement.class::isInstance)
+                    .map(p->semantics.procedurePerforms().fact(unit,p.meta().id()).orElseThrow()).toList();
+                assertEquals(2,facts.size());
+                for(var fact:facts)assertEquals(sources.get(i).equals(open),
+                    fact.gaps().contains("PERFORM_ORDINARY_INCOMING_NOT_EXCLUDED"),fact.gaps().toString());
+            }
+        }
+    }
 }

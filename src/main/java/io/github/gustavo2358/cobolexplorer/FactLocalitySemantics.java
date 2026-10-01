@@ -59,7 +59,9 @@ public final class FactLocalitySemantics {
         for(var n:layout.nodes())members.computeIfAbsent(baseByNode.get(n.id().node()),k->new ArrayList<>()).add(n);
         var bases=new HashMap<String,StorageLayoutSemantics.Base>();layout.bases().forEach(b->bases.put(base(b.id().node()),b));
         var closeAt=new HashMap<String,Long>();var closeOrigin=new HashMap<String,Ast.SourceProvenance>();
-        for(var section:new HashSet<>(sections.values())) {
+        // Section records include their entire subtree; deduplicate by the unit-local identity.
+        var uniqueSections=new TreeMap<Integer,Ast.Section>();sections.values().forEach(s->uniqueSections.put(s.meta().id(),s));
+        for(var section:uniqueSections.values()) {
             long next=sectionEnds.get(section.meta().id());var nextOrigin=boundaryOrigins.get(section.meta().id());String previous="";
             var roots=section.children().stream().filter(Ast.DataEntry.class::isInstance).map(Ast.DataEntry.class::cast).filter(d->StorageComponents.level(d)>0).toList();
             for(int i=roots.size()-1;i>=0;i--) {var d=roots.get(i);var region=baseByNode.get(d.meta().id());
@@ -71,16 +73,19 @@ public final class FactLocalitySemantics {
             closeAt.put(entry.getKey(),section==null?procedureStart:sectionEnds.get(section.meta().id()));
             closeOrigin.put(entry.getKey(),section==null?program.meta().provenance():boundaryOrigins.get(section.meta().id()));}
         var declarationInputs=new HashMap<String,List<String>>();var context=new HashMap<String,List<String>>();var closure=new HashMap<String,List<String>>();
+        var intervalIndex=gaps.stream().anyMatch(g->g.kind()==InputKind.MODEL_STORAGE)
+            ?modelIntervals(members,positions):null;
         var inputs=new ArrayList<Input>();int ordinal=0;
         for(var gap:gaps) {
+            var matched=gap.kind()==InputKind.MODEL_STORAGE?intervalIndex.overlapping(gap.origin()):List.<ModelNode>of();
+            var modeledRegions=new HashSet<String>();for(var match:matched)modeledRegions.add(match.region());
             var contexts=new ArrayList<String>();var closures=new ArrayList<String>();var declarations=new ArrayList<String>();var input="input:"+ordinal++;
             for(var entry:members.entrySet()) {
                 var b=bases.get(entry.getKey());var root=positions.get(b.id().node()).data();var section=sections.get(root.meta().id());
                 // Prefix proof is intentionally conservative after an unknown insertion.
                 // Allocation/visibility also depend on the entire declaration header.
                 // A COPY inside its clauses may change EXTERNAL/GLOBAL or identity.
-                boolean modeledComponent=entry.getValue().stream().anyMatch(n->positions.get(n.id().node()).data().meta().syntheticModel()
-                    &&overlaps(positions.get(n.id().node()).data().meta().provenance(),gap.origin()));
+                boolean modeledComponent=modeledRegions.contains(entry.getKey());
                 boolean structuralModel=gap.kind()==InputKind.MODEL_STORAGE;
                 boolean affectsContext=structuralModel?modeledComponent:
                     !gap.located()||start(gap.origin())<end(root.meta().provenance().expanded());
@@ -90,12 +95,11 @@ public final class FactLocalitySemantics {
                 if(affectsContext){contexts.add(entry.getKey());context.computeIfAbsent(entry.getKey(),k->new ArrayList<>()).add(input);}
                 if(affectsClosure){closures.add(entry.getKey());closure.computeIfAbsent(entry.getKey(),k->new ArrayList<>()).add(input);}
             }
-            for(var entry:members.values())for(var n:entry) {
+            if(gap.kind()==InputKind.MODEL_STORAGE) {
+                for(var match:matched){var subject=node(match.node());declarations.add(subject);declarationInputs.computeIfAbsent(subject,k->new ArrayList<>()).add(input);}
+            } else for(var entry:members.values())for(var n:entry) {
                 var ast=positions.get(n.id().node()).data();
-                boolean declarationAffected=gap.kind()==InputKind.MODEL_STORAGE
-                    ?ast.meta().syntheticModel()&&overlaps(ast.meta().provenance(),gap.origin())
-                    :!gap.located()||start(gap.origin())<end(ast.meta().provenance().expanded());
-                if(declarationAffected) {
+                if(!gap.located()||start(gap.origin())<end(ast.meta().provenance().expanded())) {
                     var subject=node(n.id().node());declarations.add(subject);declarationInputs.computeIfAbsent(subject,k->new ArrayList<>()).add(input);
                 }
             }
@@ -203,15 +207,63 @@ public final class FactLocalitySemantics {
         }
         return new FactDependencies("FRONTEND_FACT_DEPENDENCY_LOCALITY_R2",inputs,proofs,regions,facts,bindings);
     }
+    private static ModelIntervals modelIntervals(Map<String,List<StorageLayoutSemantics.Node>> members,
+                                                 Map<Integer,StorageComponents.Position> positions) {
+        var nodes=new ArrayList<ModelNode>();
+        for(var entry:members.entrySet())for(var n:entry.getValue()) {
+            var ast=positions.get(n.id().node()).data();
+            if(ast.meta().syntheticModel())nodes.add(new ModelNode(n.id().node(),entry.getKey(),
+                start(ast.meta().provenance()),end(ast.meta().provenance().expanded())));
+        }
+        return new ModelIntervals(nodes);
+    }
+
+    record ModelNode(int node,String region,long start,long end) { }
+
+    /** Unit-local expanded coordinates, with exactly the original strict overlap predicate. */
+    static final class ModelIntervals {
+        private final List<ModelNode> nodes;
+        private final long[] maximumEnd;
+
+        ModelIntervals(List<ModelNode> nodes) {
+            var ordered=new ArrayList<>(nodes);
+            ordered.sort(Comparator.comparingLong(ModelNode::start));
+            this.nodes=List.copyOf(ordered);
+            maximumEnd=new long[Math.max(1,nodes.size()*4)];
+            if(!nodes.isEmpty())build(1,0,nodes.size());
+        }
+
+        private long build(int at,int left,int right) {
+            int middle=(left+right)/2;
+            return maximumEnd[at]=right-left==1?nodes.get(left).end():
+                Math.max(build(at*2,left,middle),build(at*2+1,middle,right));
+        }
+
+        List<ModelNode> overlapping(Ast.SourceProvenance origin) {
+            return overlapping(start(origin),end(origin.expanded()));
+        }
+
+        List<ModelNode> overlapping(long start,long end) {
+            var result=new ArrayList<ModelNode>();
+            if(!nodes.isEmpty())query(1,0,nodes.size(),start,end,result);
+            return result;
+        }
+
+        private void query(int at,int left,int right,long start,long end,List<ModelNode> result) {
+            // A subtree can contain nested spans, so its first start alone is insufficient.
+            if(maximumEnd[at]<=start||nodes.get(left).start()>=end)return;
+            if(right-left==1){result.add(nodes.get(left));return;}
+            int middle=(left+right)/2;
+            query(at*2,left,middle,start,end,result);
+            query(at*2+1,middle,right,start,end,result);
+        }
+    }
     private static String proof(List<Proof> out,ProofKind kind,String subject,String scope,boolean premise,List<String> deps,List<String> inputs,Ast.SourceProvenance p) {
         var id=kind+"/"+subject;out.add(new Proof(id,kind,scope,subject,premise,deps,inputs,"IBM6.4/R2/"+kind,origin(p)));return id;
     }
     private static void fact(List<Fact> out,FactKind kind,String subject,String region,List<String> deps){out.add(new Fact(kind+"/"+subject,kind,subject,region,deps));}
     private static String node(int id){return "storage-node:"+id;}
     private static String base(int id){return "storage-base:"+id;}
-    private static boolean overlaps(Ast.SourceProvenance a,Ast.SourceProvenance b) {
-        return start(a)<end(b.expanded())&&start(b)<end(a.expanded());
-    }
     private static long start(Ast.SourceProvenance p){return ((long)p.expanded().startLine()<<32)+p.expanded().startColumn();}
     private static long end(Ast.SourceLocation p){return ((long)p.endLine()<<32)+p.endColumn();}
     private static CobolSemanticProduct.Provenance origin(Ast.SourceProvenance p){return new CobolSemanticProduct.Provenance(location(p.expanded()),location(p.original()),p.includeChain().stream().map(c->new CobolSemanticProduct.IncludeFrame(c.includingFile(),c.requestedName(),c.includedFile(),c.includeLine())).toList(),p.exact());}

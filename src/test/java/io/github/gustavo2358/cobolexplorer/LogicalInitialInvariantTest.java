@@ -3,6 +3,9 @@ package io.github.gustavo2358.cobolexplorer;
 import com.fasterxml.jackson.databind.*;
 import io.github.gustavo2358.cobolexplorer.semanticproduct.transport.SemanticProductJsonWriter;
 import org.junit.jupiter.api.Test;
+import java.util.*;
+import io.github.gustavo2358.cobolexplorer.semanticproduct.*;
+import static io.github.gustavo2358.cobolexplorer.semanticproduct.CobolSemanticProduct.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LogicalInitialInvariantTest {
@@ -42,5 +45,35 @@ class LogicalInitialInvariantTest {
         }
         var c=constant(publish(data+"\n01 ALT-A REDEFINES REC-A PIC X(16).","MOVE SPACES TO ALT-A.\nGOBACK."));
         assertEquals("POSSIBLE_LOGICAL_TEXT",c.path("kind").asText());
+    }
+
+    private static State state(CobolSemanticPort port,StorageInventory storage,Optional<FactDependencies> graph) {
+        return new State(port.unit(),port.policy(),port.dataDeclarations(),port.statements(),port.gaps(),
+            port.coverage(),port.entryInventory(),port.storageIndependence(),storage,port.fileInventory(),
+            port.sourceDependencies(),port.ordinaryContinuations(),port.controlTopology(),graph,port.nominalValues());
+    }
+    @Test void sharedProofEvaluationStillRejectsOneUnprovedCellAmongValidConstants() {
+        var data=new StringBuilder();
+        for(int i=0;i<40;i++)data.append("01 CONST-").append(i).append(" PIC X(8) VALUE 'PROGA001'.\n");
+        data.append("01 BAD-CELL PIC X(8) VALUE 'PROGB001'.\n01 ALIAS-CELL REDEFINES BAD-CELL PIC X(4).");
+        var a=AstBoundaryTestSupport.analyze(ScalarMoveCheckpoint4ATest.program(data.toString(),"GOBACK."),"proof-cells.cbl");
+        var port=EofUnitBoundaryTest.publish(a,0,StorageLayoutSemantics.Profile.UNSPECIFIED);
+        var storage=port.storage();var conditions=storage.entryState().conditions();
+        assertEquals(40,conditions.stream().filter(c->c.kind()==InitialStorageKind.LOGICAL_TEXT).count());
+        var bad=conditions.stream().filter(c->c.logicalText().equals(Optional.of("PROGB001"))).findFirst().orElseThrow();
+        assertEquals(InitialStorageKind.POSSIBLE_LOGICAL_TEXT,bad.kind());
+        assertDoesNotThrow(()->state(port,storage,port.factDependencies()));
+        var forged=new StorageInitialCondition(bad.node(),InitialStorageKind.LOGICAL_TEXT,List.of(),List.of(),
+            bad.provenance(),InitialStorageProof.DECLARATIVE_INVARIANT,bad.logicalText());
+        for(boolean first:List.of(false,true)) {
+            var changed=new ArrayList<>(conditions);changed.remove(bad);changed.add(first?0:changed.size(),forged);
+            var invalid=new StorageInventory(storage.profile(),storage.nodes(),storage.bases(),storage.views(),
+                storage.gapCodes(),storage.relations(),storage.renames(),new StorageEntryState(storage.entryState().mode(),changed),
+                storage.logicalTextViews(),storage.logicalExactViews());
+            var error=assertThrows(IllegalArgumentException.class,()->state(port,invalid,port.factDependencies()));
+            assertEquals("logical invariant has a closed local cell",error.getMessage());
+        }
+        var absent=assertThrows(IllegalArgumentException.class,()->state(port,storage,Optional.empty()));
+        assertEquals("logical invariant requires local-cell proof",absent.getMessage());
     }
 }

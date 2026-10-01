@@ -1,3 +1,5 @@
+[Desempenho pós-ANTLR — implementação e merge aprovados](post-antlr-performance.md): PR #79; algoritmos, benchmarks e regressão dos 586 casos. O PR registra a integração.
+
 [Integração atual — DONE / MERGED](analyzer-integration-20261001.md): frontend #77 e discovery histórico #59. As entradas anteriores abaixo conservam seus snapshots de trabalho.
 
 [CardDemo values/control — DONE / MERGED](carddemo-values-control-integration.md): capabilities 1–4 and review corrections integrated; point 5 is a separate campaign.

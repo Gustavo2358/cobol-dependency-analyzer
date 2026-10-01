@@ -1832,11 +1832,17 @@ public final class CobolSemanticProduct {
                 require(controlTopology.isPresent(),"fact dependencies require topology contract");
                 FactDependencyContract.validate(factDependencies.get(),storage);
             }
+            // The immutable proof graph is shared by every initial condition in this publication.
+            // Evaluate lazily so publications without invariants pay no additional traversal.
+            Set<String> closedLogicalCells=null;
             for(var condition:storage.entryState().conditions())if(condition.kind()==InitialStorageKind.LOGICAL_TEXT) {
                 require(factDependencies.isPresent(),"logical invariant requires local-cell proof");
-                var graph=factDependencies.orElseThrow();var available=graph.proofAvailability();
-                require(graph.facts().stream().anyMatch(f->f.kind()==FactDependencies.FactKind.LOCAL_CELL
-                    &&f.subject().equals("storage-node:"+condition.node().localId())&&f.dependencies().stream().allMatch(p->Boolean.TRUE.equals(available.get(p)))),"logical invariant has a closed local cell");
+                if(closedLogicalCells==null) {
+                    var graph=factDependencies.orElseThrow();var available=graph.proofAvailability();closedLogicalCells=new HashSet<>();
+                    for(var fact:graph.facts())if(fact.kind()==FactDependencies.FactKind.LOCAL_CELL
+                        &&fact.dependencies().stream().allMatch(p->Boolean.TRUE.equals(available.get(p))))closedLogicalCells.add(fact.subject());
+                }
+                require(closedLogicalCells.contains("storage-node:"+condition.node().localId()),"logical invariant has a closed local cell");
             }
             Objects.requireNonNull(controlTopology);
             if(controlTopology.isPresent()) {

@@ -1,6 +1,8 @@
 package io.github.gustavo2358.cobolexplorer;
 
 import org.junit.jupiter.api.Test;
+import java.util.*;
+import static io.github.gustavo2358.cobolexplorer.FactLocalitySemantics.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static io.github.gustavo2358.cobolexplorer.FactDependencyLocalityTest.*;
 import static io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies.*;
@@ -44,5 +46,38 @@ class ModelInputLocalityTest {
     @Test void modelBoundaryAloneDoesNotCertifyThePreviousOpenRecord() {
         var p=publish("01 RECORD-A.\n05 TARGET PIC X(8).\nEXEC SQL INCLUDE SQLCA END-EXEC.");
         assertFalse(known(p,"TARGET",FactKind.LOCAL_CELL));
+    }
+
+    @Test void indexedModelOverlapsMatchStrictScanAcrossBoundariesAndNesting() {
+        long line=1L<<32;
+        var nodes=new ArrayList<>(List.of(
+            new ModelNode(1,"outer",line,line*4),
+            new ModelNode(2,"inner",line+3,line+8),
+            new ModelNode(3,"inner",line+3,line+8),
+            new ModelNode(4,"point",line+5,line+5),
+            new ModelNode(5,"next",line+8,line*2),
+            new ModelNode(6,"later",line*3+4,line*3+9)));
+        var random=new Random(7301);
+        for(int i=7;i<300;i++) {
+            long start=line*(1+random.nextInt(4))+random.nextInt(12);
+            nodes.add(new ModelNode(i,"region:"+i,start,start+random.nextInt(20)));
+        }
+        Collections.shuffle(nodes,random);
+        var index=new ModelIntervals(nodes);
+        var queries=new ArrayList<long[]>(List.of(new long[]{line,line*4},new long[]{line+8,line+9},
+            new long[]{line+5,line+5},new long[]{line+8,line+8},new long[]{0,line},
+            new long[]{line*5,line*6}));
+        for(int i=0;i<500;i++) {
+            long start=line*random.nextInt(6)+random.nextInt(12);
+            queries.add(new long[]{start,start+random.nextInt(40)});
+        }
+        for(var query:queries) {
+            // Independent oracle: the strict predicate used for source locality before indexing.
+            var expected=nodes.stream().filter(n->n.start()<query[1]&&query[0]<n.end()).toList();
+            var actual=index.overlapping(query[0],query[1]);
+            assertEquals(expected.size(),actual.size(),"overlap multiplicity");
+            assertEquals(new HashSet<>(expected),new HashSet<>(actual),Arrays.toString(query));
+        }
+        assertTrue(new ModelIntervals(List.of()).overlapping(0,Long.MAX_VALUE).isEmpty());
     }
 }
