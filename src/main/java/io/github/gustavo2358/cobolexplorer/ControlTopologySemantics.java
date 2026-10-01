@@ -351,6 +351,13 @@ public final class ControlTopologySemantics {
                 var returned=proof(id+"/link-normal",ProofKind.LOCAL_GRAMMAR,"cics-link-successful-return",s.meta().provenance(),List.of(p));
                 add(s,owner,OutcomeKind.NORMAL,"normal",next,"",returned);continue;
             }
+            if (s instanceof Ast.PreservedStatement json && json.grammarRule().equals("jsonGenerateStatement")) {
+                // Generation/effects remain unknown. The grammar still proves which
+                // bodies may run on success/failure, and where each body completes.
+                add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"unknown",unknown(owner,p),"",p);
+                jsonSourceAlternatives(json, owner, next, p, isolation);
+                continue;
+            }
             boolean completion=division.normalCompletionStatements().contains(s.meta().id());
             if(s instanceof Ast.EmbeddedLanguageStatement)completion=cics!=null&&cics.boundedLocal(unit.id(),s);
             boolean registration=cics!=null&&cics.handlerOrdinaryCompletion(unit.id(),s);
@@ -403,6 +410,23 @@ public final class ControlTopologySemantics {
                     sourceContinuations.add(new SourceContinuation(event.statement(),new Target(target.kind(),target.reference(),java.util.stream.Stream.concat(target.proofs().stream(),java.util.stream.Stream.of(hypothesis)).distinct().toList()),List.of(hypothesis),List.of(prerequisite)));
             }
         }
+    }
+    private void jsonSourceAlternatives(Ast.PreservedStatement json, String owner, Target next, String premise, String isolation) {
+        String id = ids.get(json);
+        var alternatives = new LinkedHashMap<String,SourceContinuation>();
+        for (String role : List.of("onExceptionClause", "notOnExceptionClause")) {
+            var body = json.clauses().stream().filter(c -> c.grammarRule().equals(role))
+                .findFirst().map(Ast.StatementClause::nestedStatements).orElse(List.of());
+            var hypothesis = proof(id + "/json/" + role, ProofKind.CONTROL_POSSIBILITY,
+                "json-generate-" + (role.equals("onExceptionClause") ? "exception" : "success") + "-source-possibility",
+                json.meta().provenance(), List.of(premise));
+            Target target = body.isEmpty() ? next : occ(body.get(0), hypothesis);
+            var alternative = new SourceContinuation(id, target, List.of(hypothesis));
+            alternatives.merge(alternative.identity(), alternative, (left, right) ->
+                new SourceContinuation(id, left.target(), java.util.stream.Stream.concat(left.proofs().stream(), right.proofs().stream()).distinct().toList()));
+            statements(body, owner, next, isolation);
+        }
+        sourceContinuations.addAll(alternatives.values());
     }
     private boolean sourceMayComplete(Ast.Statement statement) {
         // The grammar owns the hypothetical continuation. Known terminal forms are excluded
@@ -582,7 +606,17 @@ public final class ControlTopologySemantics {
         for(var use:files.operations().uses()) {
             String id="statement:"+use.statement().localId();var s=byId.get(id);if(s==null)continue;
             var occurrence=occurrences.get(id);var p=occurrence.proofs().get(0);
+            var normal=outcomes.get("outcome:"+id+"/normal");
             for(var route:use.control().routes())for(int i=0;i<route.destinations().size();i++) {
+                // Recovery can retain FILE uses without proving the statement's control scope.
+                // Keep every role, but do not invent continuation or entry to an unbuilt handler.
+                if(normal==null||normal.target().kind()==TargetKind.UNKNOWN_LOCAL) {
+                    var partial=proof(id+"/file/"+use.ordinal()+"/"+route.event()+"/"+i,ProofKind.PARTIAL_UNKNOWN,
+                        "file-statement-control-not-proven",s.meta().provenance(),List.of(p));
+                    add(s,occurrence.region(),OutcomeKind.UNKNOWN_LOCAL,"file/"+use.ordinal()+"/"+route.event()+"/"+i,
+                        unknown(occurrence.region(),partial),"",partial);
+                    continue;
+                }
                 var destination=route.destinations().get(i);Target target;
                 if(destination.kind()==CobolSemanticProduct.FileDestinationKind.HANDLER) {
                     String region="region:"+id+"/file/handler-"+destination.handler().orElseThrow();
@@ -592,7 +626,7 @@ public final class ControlTopologySemantics {
                     var declaration=files.declaratives().stream().filter(d->d.id().equals(destination.declarative().orElseThrow())).findFirst().orElseThrow();
                     var partial=proof(id+"/use-callback",ProofKind.PARTIAL_UNKNOWN,"declarative-callback-binding-not-published",s.meta().provenance(),List.of(p));
                     target=unknown(occurrence.region(),partial);
-                } else target=continuations.getOrDefault(id+"/"+use.ordinal(),outcomes.get("outcome:"+id+"/normal").target());
+                } else target=continuations.getOrDefault(id+"/"+use.ordinal(),normal.target());
                 var premise=proof(id+"/file/"+use.ordinal()+"/"+route.event()+"/"+i,ProofKind.LOCAL_GRAMMAR,
                     "file-event-"+route.event()+"/"+destination.kind(),s.meta().provenance(),List.of(p));
                 add(s,occurrence.region(),OutcomeKind.BRANCH,"file/"+use.ordinal()+"/"+route.event()+"/"+i,target,"",premise);

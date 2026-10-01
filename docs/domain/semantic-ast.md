@@ -124,3 +124,20 @@ separada dos braços como relações não-node; construtores legados usam UNKNOW
 sem avaliar condição ou normalizar relações abreviadas. IDs/traversal existentes
 não mudam. `Division.normalContinuations` visita listas diretas de IF/THEN/ELSE
 com successor herdado e stack; nested ownership permanece hierárquico.
+
+### JSON GENERATE
+
+The IBM Enterprise COBOL 6.4 JSON GENERATE grammar is preserved as a statement
+with ordered optional phrases and separate ON EXCEPTION / NOT ON EXCEPTION
+bodies. END-JSON and period boundaries retain nested and following statements.
+Operands retain provenance; condition names used by CONVERTING/INDICATING carry
+CONDITION_VALUE and resolve in the CONDITION namespace. JSON-CODE is a special
+register, without a runtime value claim. NAME and CODEPAGE remain context-sensitive.
+
+The producer publishes source control possibilities for success and exception,
+each entering its own body or the enclosing continuation when that body is absent.
+Body completion goes to the enclosing continuation; explicit transfers retain
+their established behavior. Identical alternative destinations are coalesced.
+No JSON generation effect, executable JSON transition or strong overwrite is
+proved. Preserved clause groups are never flattened into sequential siblings.
+Authority and qualification: [JSON GENERATE checkpoint](../work/stage5-json-generate.md).

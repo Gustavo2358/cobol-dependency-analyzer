@@ -1123,6 +1123,7 @@ public final class CobolSemanticProductProjector {
                 var host=embedded.hostOperands().stream().filter(h->h.optionStart()==syntax.start()).reduce((left,right)->{throw new IllegalArgumentException("CICS FILE contribution must have one identity at this position");});
                 if(host.isPresent()) {
                     var h=host.get();var entry=inputs.entryFor(h.reference());
+                    addReportGaps(statementId,entry.occurrence(),inputs,provenance(h.reference().meta().provenance()),gaps);
                     if(projectableDataBinding(entry,inputs))ref=Optional.of(new DataReference(new OperandId(statementId,optionOrdinal++),
                         h.role()==Ast.EmbeddedHostRole.WRITE?OperandRole.WRITE:OperandRole.READ,nominalBinding(entry,dataIds),
                         provenance(h.reference().meta().provenance()),Optional.empty(),regionalAccess(inputs,h.reference().meta().id()),List.of(),
@@ -1165,6 +1166,7 @@ public final class CobolSemanticProductProjector {
                 var host=((Ast.EmbeddedLanguageStatement)plan.position().statement()).hostOperands().stream().filter(h->h.option().equals("PROGRAM")).reduce((left,right)->{throw new IllegalArgumentException("CICS contribution must have one identity at this position");});
                 if(host.isPresent()) {
                     var reference=host.orElseThrow().reference();var entry=inputs.entryFor(reference);
+                    addReportGaps(statementId,entry.occurrence(),inputs,provenance(reference.meta().provenance()),gaps);
                     if(projectableDataBinding(entry,inputs))target=Optional.of(new DataReference(new OperandId(statementId,0),OperandRole.READ,
                         nominalBinding(entry,dataIds),provenance(reference.meta().provenance()),Optional.empty(),regionalAccess(inputs,reference.meta().id()),List.of(),
                         reference.understanding()==Ast.ReferenceUnderstanding.STRUCTURED&&reference.subscriptGroups().isEmpty()&&reference.referenceModification()==null
@@ -1178,6 +1180,7 @@ public final class CobolSemanticProductProjector {
                 var host=((Ast.EmbeddedLanguageStatement)plan.position().statement()).hostOperands().stream().filter(h->h.optionStart()==option.start()).reduce((left,right)->{throw new IllegalArgumentException("CICS contribution must have one identity at this position");});
                 if(!option.name().equals("PROGRAM")&&host.isPresent()) {
                     var h=host.orElseThrow();var entry=inputs.entryFor(h.reference());
+                    addReportGaps(statementId,entry.occurrence(),inputs,provenance(h.reference().meta().provenance()),gaps);
                     if(projectableDataBinding(entry,inputs))ref=Optional.of(new DataReference(new OperandId(statementId,optionOrdinal++),h.role()==Ast.EmbeddedHostRole.WRITE?OperandRole.WRITE:OperandRole.READ,
                         nominalBinding(entry,dataIds),provenance(h.reference().meta().provenance()),Optional.empty(),regionalAccess(inputs,h.reference().meta().id()),List.of(),
                         h.reference().understanding()==Ast.ReferenceUnderstanding.STRUCTURED&&h.reference().subscriptGroups().isEmpty()&&h.reference().referenceModification()==null
@@ -1598,6 +1601,13 @@ public final class CobolSemanticProductProjector {
         var predicate = semanticIf.predicate();
         ContinuationProjection continuation = continuation(plan.position(), statementIds,
                 positionsByStatement, continuations);
+        // An opaque enclosing family may lack a structural continuation, while
+        // the canonical IF product independently proves its normal completion.
+        // Transport that fact; do not derive a successor from flattened children.
+        if (!continuation.exact()) {
+            var canonicalNext = canonicalStatement(semanticIf.nextStatement(), inputs, statementIds);
+            if (canonicalNext.isPresent()) continuation = ContinuationProjection.statement(canonicalNext.orElseThrow());
+        }
         BranchContentProjection branchContent = branchContent(branch, statementIds);
         var textPredicate=inputs.products().scalarMoves().textPredicate(inputs.unitId(),branch.meta().id());
         var textReads=textPredicate.map(io.github.gustavo2358.cobolexplorer.TextConditionSemantics.Predicate::reads).orElse(Set.of());
@@ -2621,11 +2631,19 @@ public final class CobolSemanticProductProjector {
                         CobolSemanticProduct.Branch.THEN, output, evaluates, unit);
                 collectStatementGroup(conditional.elseBranch(), conditional,
                         CobolSemanticProduct.Branch.ELSE, output, evaluates, unit);
-            } else if (statement instanceof Ast.EvaluateStatement e && evaluates.fact(unit, e.meta().id()).structureKnown()) {
-                for (var arm : e.branches()) collectStatementGroup(arm.statements(), e, Branch.EVALUATE_ARM, output, evaluates, unit);
+            } else if (statement instanceof Ast.EvaluateStatement e) {
+                // AST arms remain distinct even when EVALUATE is only observed.
+                // UNKNOWN describes publication precision, not sequential WHENs.
+                var armBranch = evaluates.fact(unit, e.meta().id()).structureKnown() ? Branch.EVALUATE_ARM : Branch.UNKNOWN;
+                for (var arm : e.branches()) collectStatementGroup(arm.statements(), e, armBranch, output, evaluates, unit);
             } else if(fileSurface(statement).isPresent()) {
                 for(var handler:fileSurface(statement).orElseThrow().handlers())
                     collectStatementGroup(handler.clause().nestedStatements(),statement,Branch.FILE_HANDLER,output,evaluates,unit);
+            } else if (statement instanceof Ast.PreservedStatement preserved && !preserved.clauses().isEmpty()) {
+                // Canonical clause boundaries survive even when their execution is
+                // unmodeled; two exception bodies are not sequential siblings.
+                for (var clause : preserved.clauses())
+                    collectStatementGroup(clause.nestedStatements(), statement, Branch.UNKNOWN, output, evaluates, unit);
             } else {
                 List<Ast.Statement> nested = new ArrayList<>();
                 for (Ast.Node child : Ast.children(statement))

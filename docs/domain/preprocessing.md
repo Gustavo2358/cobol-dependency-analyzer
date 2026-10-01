@@ -17,7 +17,10 @@ Cada alternativa top-level de `CobolPreprocessor.startRule` possui classificaç�
 - `EJECT`, `SKIP1`, `SKIP2`, `SKIP3` e `TITLE` são branqueados preservando quebras de linha;
 - compiler options são extraídas e transportadas para a policy de resolução;
 - EXECs são preservados por fronteira opaca para o parser COBOL;
-- texto COBOL comum é mantido;
+- texto COBOL comum é mantido; `SUPPRESS` fora da produção COPY pertence a esse
+  texto e conserva conteúdo/provenance, inclusive em construções cuja gramática
+  COBOL ainda não é suportada. `COPY membro SUPPRESS` continua expandindo o membro;
+  a opção controla listing, não remove o conteúdo semântico;
 - `REPLACE` top-level e `REPLACE OFF` permanecem `UNSUPPORTED` e falham antes do parser COBOL.
 
 COPY ausente, cíclico ou com erro de I/O produz placeholder mapeado e diagnostic. Para membro não encontrado, `Diagnostic.Code.UNRESOLVED_COPY` é a identidade semântica estruturada; `Outcome.unresolved()` é derivado desses fatos, que preservam nome solicitado e localização em ordem determinística. A mensagem humana continua útil, mas seu wording não participa de contagem, composição ou geração de gaps. Ausência de copybook mantém a execução observável como incompleta; não equivale a COPY vazio nem exige interromper fases posteriores quando o placeholder ainda permite construir seus produtos coerentemente. COPY cíclico e falha de I/O conservam a política anterior e não pertencem a esse fallback.

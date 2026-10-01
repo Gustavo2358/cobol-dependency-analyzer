@@ -59,6 +59,27 @@ class SourceNormalizationPreprocessingIntegrationTest {
     }
 
     @Test
+    void completeLiteralsRemainDistinctThroughCopyPreprocessing(@TempDir Path directory) throws Exception {
+        Files.writeString(directory.resolve("BODY.cpy"), "           DISPLAY 'A'\n      -    'B'.\n");
+        String raw="       IDENTIFICATION DIVISION.\n       PROGRAM-ID. LITERALS.\n"
+                +"       PROCEDURE DIVISION.\n       COPY BODY.\n           GOBACK.\n";
+        var normalized=SourceNormalizer.normalize(raw,"main.cbl",SourceNormalizer.SourceFormat.FIXED);
+        var binding=Bindings.cobol();
+        var outcome=new PreprocessorEngine(binding,new CopybookLibrary(directory)).process(normalized.sourceMap(),"main.cbl");
+        assertEquals(0,outcome.errors());
+        assertTrue(outcome.text().contains("DISPLAY 'A' 'B'."),outcome.text());
+        var tokens=new CommonTokenStream(binding.cobolLexer(CharStreams.fromString(outcome.text(),"main.cbl")));
+        tokens.fill();
+        assertEquals(List.of("'A'","'B'"),tokens.getTokens().stream().map(org.antlr.v4.runtime.Token::getText)
+                .filter(t->t.startsWith("'")).toList());
+        var parser=binding.cobolParser(tokens);binding.cobolStart(parser);
+        assertEquals(0,parser.getNumberOfSyntaxErrors());
+        var origin=provenanceOf(outcome,"DISPLAY 'A' 'B'.");
+        assertEquals("BODY.cpy",origin.original().file());assertEquals(List.of("BODY.cpy"),includedFiles(origin));
+        assertFalse(origin.exact());
+    }
+
+    @Test
     void copyFailuresAreLocalizedForMissingCyclicAndUnreadableSources(@TempDir Path directory)
             throws Exception {
         Files.writeString(directory.resolve("CYCLE.cpy"), "       COPY CYCLE.\n");

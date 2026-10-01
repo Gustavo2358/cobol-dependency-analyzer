@@ -21,7 +21,7 @@ class ReferenceResolutionManifestTest {
         Map<GrammarCoverageManifest.RuleKey, ReferenceResolutionManifest.Entry> indexed = entries.stream()
                 .collect(Collectors.toMap(ReferenceResolutionManifest.Entry::key, Function.identity()));
 
-        assertEquals(632, entries.size()); // includes the complete embedded host entry rule
+        assertEquals(645, entries.size()); // includes JSON GENERATE and the embedded host entry rule
         assertEquals(entries.size(), indexed.size());
         assertEquals(GrammarCoverageManifest.entries().stream().map(GrammarCoverageManifest.Entry::key).toList(),
                 entries.stream().map(ReferenceResolutionManifest.Entry::key).toList());
@@ -46,6 +46,8 @@ class ReferenceResolutionManifestTest {
         assertEntry(indexed, "specialRegister", ReferenceResolutionManifest.RuleClass.BUILTIN_NO_BINDING,
                 null);
         assertEntry(indexed, "execSqlStatement", ReferenceResolutionManifest.RuleClass.PRESERVED_UNKNOWN,
+                null);
+        assertEntry(indexed, "jsonGenerateStatement", ReferenceResolutionManifest.RuleClass.PRESERVED_UNKNOWN,
                 null);
         assertEntry(indexed, GrammarCoverageManifest.Grammar.PREPROCESSOR, "copyStatement",
                 ReferenceResolutionManifest.RuleClass.INPUT_BOUNDARY, null);

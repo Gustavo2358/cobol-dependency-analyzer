@@ -18,22 +18,27 @@ class StatementModelAstTest {
                 grammar.indexOf("\n   ;", grammar.indexOf("statement\n   :")));
         Set<String> grammarRules = new LinkedHashSet<>(List.of(alternatives
                 .replace(":", " ").replace("|", " ").trim().split("\\s+")));
-        assertEquals(51, grammarRules.size());
+        assertEquals(52, grammarRules.size());
         assertEquals(grammarRules, AstBuilder.supportedStatementRules());
     }
 
     @Test
     void parsesAllAlternativesWithoutUnsupportedFallbackAndPreservesOperands() throws Exception {
         AstBuildResult result = parse();
+        AstBuildResult json = parse("json-generate.cbl");
         Set<String> findings = new LinkedHashSet<>();
         result.coverage().findings().forEach(f -> findings.add(f.grammarRule()));
+        json.coverage().findings().forEach(f -> findings.add(f.grammarRule()));
         Set<String> missing = new LinkedHashSet<>(AstBuilder.supportedStatementRules());
         missing.removeAll(findings);
         assertTrue(missing.isEmpty(), "missing fixture alternatives: " + missing);
         assertTrue(nodes(result.program(), Ast.UnsupportedStatement.class).isEmpty());
+        assertTrue(nodes(json.program(), Ast.UnsupportedStatement.class).isEmpty());
         assertFalse(nodes(result.program(), Ast.ModeledStatement.class).isEmpty());
         assertEquals(15, nodes(result.program(), Ast.PreservedStatement.class).stream()
                 .map(Ast.PreservedStatement::grammarRule).distinct().count());
+        assertEquals(List.of("jsonGenerateStatement"), nodes(json.program(), Ast.PreservedStatement.class)
+                .stream().map(Ast.PreservedStatement::grammarRule).toList());
         assertEquals(1, nodes(result.program(), Ast.SearchStatement.class).size());
         assertTrue(nodes(result.program(), Ast.StatementOperand.class).stream()
                 .anyMatch(o -> o.value() instanceof Ast.FileReference));
@@ -54,7 +59,11 @@ class StatementModelAstTest {
     }
 
     private static AstBuildResult parse() throws Exception {
-        Path file = Path.of("src/test/resources/cobol/semantic/statements.cbl").toAbsolutePath();
+        return parse("statements.cbl");
+    }
+
+    private static AstBuildResult parse(String name) throws Exception {
+        Path file = Path.of("src/test/resources/cobol/semantic", name).toAbsolutePath();
         String source = SourceNormalizerTestSupport.fixed(Files.readString(file, StandardCharsets.UTF_8));
         GrammarBinding binding = Bindings.cobol();
         Lexer lexer = binding.cobolLexer(CharStreams.fromString(source));
@@ -64,7 +73,7 @@ class StatementModelAstTest {
         assertEquals(0, parser.getNumberOfSyntaxErrors());
         IdentityHashMap<ParseTree, Integer> ids = new IdentityHashMap<>(), sizes = new IdentityHashMap<>();
         index(tree, ids, sizes, new int[]{0});
-        return new AstBuilder(parser, source, SourceMap.identity(source, "statements.cbl"), ids, sizes).build(tree);
+        return new AstBuilder(parser, source, SourceMap.identity(source, name), ids, sizes).build(tree);
     }
 
     private static int index(ParseTree tree, IdentityHashMap<ParseTree, Integer> ids,

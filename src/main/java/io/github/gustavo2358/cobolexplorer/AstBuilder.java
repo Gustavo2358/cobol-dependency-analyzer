@@ -24,7 +24,7 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     private static final Set<String> PRESERVED_STATEMENTS = Set.of(
             "alterStatement", "cancelStatement", "disableStatement", "displayStatement",
             "enableStatement", "entryStatement", "exhibitStatement", "generateStatement",
-            "initiateStatement", "mergeStatement", "purgeStatement", "receiveStatement",
+            "initiateStatement", "jsonGenerateStatement", "mergeStatement", "purgeStatement", "receiveStatement",
             "searchStatement", "sendStatement", "sortStatement", "terminateStatement");
     private final CobolParser parser;
     private final UnicodeText indexedSource;
@@ -627,6 +627,13 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
                     if (evaluate.evaluateWhenOther() != null)
                         pending.push(new CompletionRegion(evaluate.evaluateWhenOther().statement(),next,ordinaryNext));
                 }
+                if (context.jsonGenerateStatement() != null) {
+                    var json = context.jsonGenerateStatement();
+                    if (json.onExceptionClause() != null)
+                        pending.push(new CompletionRegion(json.onExceptionClause().statement(), next, ordinaryNext));
+                    if (json.notOnExceptionClause() != null)
+                        pending.push(new CompletionRegion(json.notOnExceptionClause().statement(), next, ordinaryNext));
+                }
                 if(FileIoSyntax.isNativeStatement(context))for(var clause:FileIoSyntax.handlerContexts(context)) {
                     List<CobolParser.StatementContext> body=null;
                     if(clause instanceof CobolParser.AtEndPhraseContext x)body=x.statement();
@@ -983,6 +990,7 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     }
     @Override public Ast.Node visitExecSqlImsStatement(CobolParser.ExecSqlImsStatementContext ctx) { return buildEmbedded(ctx, Ast.EmbeddedLanguage.SQLIMS); }
     @Override public Ast.Node visitExitStatement(CobolParser.ExitStatementContext ctx) { return modeled(ctx); }
+    @Override public Ast.Node visitJsonGenerateStatement(CobolParser.JsonGenerateStatementContext ctx) { return preserved(ctx); }
     @Override public Ast.Node visitGenerateStatement(CobolParser.GenerateStatementContext ctx) { return preserved(ctx); }
     @Override public Ast.Node visitGobackStatement(CobolParser.GobackStatementContext ctx) {
         return new Ast.GobackStatement(meta(ctx));
@@ -1277,6 +1285,8 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     }
 
     private Ast.Node statementOperand(ParserRuleContext context) {
+        if (context instanceof CobolParser.ConditionNameReferenceContext condition)
+            return conditionNameReference(condition);
         // A native record-name is a qualified DATA reference. The nominal resolver
         // retains its declaration identity; FD ownership is a separate declaration fact.
         if (context instanceof CobolParser.RecordNameContext record)
@@ -1298,6 +1308,9 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
 
     private static Ast.StatementOperandContext statementOperandContext(ParserRuleContext root,
                                                                         ParserRuleContext parent, ParserRuleContext operand) {
+        if (root instanceof CobolParser.JsonGenerateStatementContext
+                && operand instanceof CobolParser.ConditionNameReferenceContext)
+            return Ast.StatementOperandContext.CONDITION_VALUE;
         var fileRole = FileIoSyntax.operandRole(root, operand);
         if (fileRole != null) return Ast.StatementOperandContext.valueOf("FILE_"+fileRole.name());
         if (!(root instanceof CobolParser.SetStatementContext)) return Ast.StatementOperandContext.DEFAULT;
@@ -2311,7 +2324,8 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     }
 
     private static boolean isStatementOperandContext(ParserRuleContext context) {
-        return context instanceof CobolParser.IdentifierContext
+        return context instanceof CobolParser.ConditionNameReferenceContext
+                || context instanceof CobolParser.IdentifierContext
                 || context instanceof CobolParser.QualifiedDataNameContext
                 || context instanceof CobolParser.ProcedureNameContext
                 || context instanceof CobolParser.FileNameContext

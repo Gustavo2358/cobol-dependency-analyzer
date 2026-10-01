@@ -34,7 +34,7 @@ final class SourceNormalizer {
 
     private enum Indicator { NORMAL, COMMENT, PAGE_EJECT_COMMENT, CONTINUATION, DEBUG }
     private enum LineRole { PROGRAM_TEXT, NON_PROGRAM, CONTINUATION_PLACEHOLDER }
-    private enum ContinuationKind { SINGLE_QUOTED_LITERAL, DOUBLE_QUOTED_LITERAL, WORD }
+    private enum ContinuationKind { SINGLE_QUOTED_LITERAL, DOUBLE_QUOTED_LITERAL, TOKEN }
     private enum ProgramIdQualifier { COMMON, INITIAL, LIBRARY, DEFINITION, RECURSIVE }
     private enum CommentEntryState {
         NONE,
@@ -115,7 +115,8 @@ final class SourceNormalizer {
                             file, physical.lineNumber());
                 }
                 case CONTINUATION -> {
-                    appendContinuation(output, area, physical);
+                    appendContinuation(output, area, physical,
+                            physical.lineNumber() == 1 ? null : physicalLines.get(physical.lineNumber() - 2));
                     LOG.trace("event=continuation_resolved source={} phase=NORMALIZATION line={}",
                             file, physical.lineNumber());
                 }
@@ -581,7 +582,7 @@ final class SourceNormalizer {
     }
 
     private static void appendContinuation(List<NormalizedLine> output, String area,
-                                           PhysicalLine physical) {
+                                           PhysicalLine physical, PhysicalLine priorPhysical) {
         int target = output.size() - 1;
         while (target >= 0 && output.get(target).role() == LineRole.CONTINUATION_PLACEHOLDER) {
             target--;
@@ -606,12 +607,7 @@ final class SourceNormalizer {
                     continuation, '\'', physical);
             case DOUBLE_QUOTED_LITERAL -> continuation = literalContinuation(
                     continuation, '"', physical);
-            case WORD -> {
-                if (continuation.isEmpty() || !isCobolWordCharacter(continuation.charAt(0))) {
-                    throw continuationFailure(physical,
-                            "word continuation must begin with a COBOL word character");
-                }
-            }
+            case TOKEN -> continuation = tokenContinuation(previous, continuation, physical, priorPhysical);
         }
         output.set(target, new NormalizedLine(previous + continuation,
                 previousLine.terminator(), previousLine.contentOriginalStart(), physical.contentEnd(),
@@ -643,11 +639,38 @@ final class SourceNormalizer {
         }
         if (openQuote == '\'') return ContinuationKind.SINGLE_QUOTED_LITERAL;
         if (openQuote == '"') return ContinuationKind.DOUBLE_QUOTED_LITERAL;
-        if (!previous.isEmpty() && isCobolWordCharacter(previous.charAt(previous.length() - 1))) {
-            return ContinuationKind.WORD;
+        return ContinuationKind.TOKEN;
+    }
+
+    /** IBM continuation joins words, but consecutive closed literals stay separate tokens. */
+    private static String tokenContinuation(String previous, String continuation,
+                                            PhysicalLine physical, PhysicalLine priorPhysical) {
+        if (previous.isEmpty() || continuation.isEmpty()) {
+            throw continuationFailure(physical, "continuation requires source text on both records");
         }
-        throw continuationFailure(physical,
-                "continuation requires an open literal or a split COBOL word");
+        char last = previous.charAt(previous.length() - 1);
+        char first = continuation.charAt(0);
+        if ((last == '=' && first == '=') || (last == '*' && first == '>')
+                || (last == '>' && first == '>')) {
+            throw continuationFailure(physical, "a two-character delimiter cannot span records");
+        }
+        if (first == '\'' || first == '"') {
+            int start = previous.length();
+            while (start > 0 && isCobolWordCharacter(previous.charAt(start - 1))) start--;
+            String prefix = previous.substring(start).toUpperCase(java.util.Locale.ROOT);
+            if (Set.of("X", "NX", "N", "G", "Z").contains(prefix)) {
+                throw continuationFailure(physical, "literal prefix and opening quote must share a record");
+            }
+            // A quote in column 72 followed by two matching quotes continues the
+            // literal's escaped quote. Inspect the physical record, not merged length.
+            UnicodeText prior = new UnicodeText(priorPhysical.content());
+            if (last == first && prior.length() >= 72 && prior.substring(71, 72).equals(String.valueOf(first))
+                    && continuation.length() > 1 && continuation.charAt(1) == first) {
+                return continuation.substring(1);
+            }
+            return " " + continuation;
+        }
+        return continuation;
     }
 
     private static String literalContinuation(String continuation, char expectedQuote,
