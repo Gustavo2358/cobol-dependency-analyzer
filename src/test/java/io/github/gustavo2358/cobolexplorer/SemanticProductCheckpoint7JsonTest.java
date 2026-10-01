@@ -315,7 +315,7 @@ class SemanticProductCheckpoint7JsonTest {
         Path copybooks = Files.createDirectory(directory.resolve("copybooks"));
         Path output = directory.resolve("output");
 
-        ExplorerMain.main(new String[]{
+        ExplorerMain.main(new String[]{"--json-compression", "none",
                 "--source", FIXTURE.toAbsolutePath().toString(),
                 "--copybooks", copybooks.toString(),
                 "--output", output.toString(), "--logical-text", "disabled"});

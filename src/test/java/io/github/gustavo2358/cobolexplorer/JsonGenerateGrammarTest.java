@@ -151,7 +151,7 @@ class JsonGenerateGrammarTest {
         Files.writeString(input, program("CALL 'BEFORE'.\nCOPY JSONBODY.\nCALL 'AFTER'.\nGOBACK.")
             .lines().map(l -> "       " + l + "\n").collect(java.util.stream.Collectors.joining()));
         var out = directory.resolve("out");
-        ExplorerMain.main(new String[]{"--source", input.toString(), "--copybooks", directory.toString(), "--output", out.toString()});
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source", input.toString(), "--copybooks", directory.toString(), "--output", out.toString()});
         var sp = new ObjectMapper().readTree(out.resolve("cobol-semantic-product.json").toFile());
         assertFalse(Files.readString(out.resolve("tree-data.js")).contains("\"phase\":\"PARSER\""));
         var seen = new HashSet<String>();

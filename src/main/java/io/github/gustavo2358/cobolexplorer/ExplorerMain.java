@@ -30,6 +30,11 @@ public final class ExplorerMain {
         List<Path> copybooks = copybookDirectories(project,
                 argument(args, "--copybooks", "corpus/cpy,corpus/cpy-bms"));
         Path output = project.resolve(argument(args, "--output", "dist"));
+        String jsonSuffix = switch (argument(args, "--json-compression", "zstd")) {
+            case "zstd" -> ".json.zst";
+            case "none" -> ".json";
+            default -> throw new IllegalArgumentException("--json-compression must be zstd or none");
+        };
         var storageProfile = storageProfile(argument(args, "--storage-profile", "unspecified"));
         boolean logicalText=switch(argument(args,"--logical-text","auto")) {
             case "auto"->storageProfile==StorageLayoutSemantics.Profile.UNSPECIFIED;
@@ -45,7 +50,7 @@ public final class ExplorerMain {
         try (AnalysisLogContext logContext = AnalysisLogContext.open(source)) {
             LOG.info("event=analysis_started phase=ANALYSIS output={}", output);
             try {
-                analyze(source, copybooks, output, logContext, progress, analysisStarted, storageProfile,entryMode,cicsMode,logicalText,sourceInventory);
+                analyze(source, copybooks, output, logContext, progress, analysisStarted, storageProfile,entryMode,cicsMode,logicalText,sourceInventory,jsonSuffix);
             } catch (Exception exception) {
                 LOG.error("event=analysis_failed phase={} elapsedMs={} reason={} impact=NO_RESULT",
                         progress.phase, elapsedMs(analysisStarted), exception.getClass().getSimpleName(), exception);
@@ -56,7 +61,7 @@ public final class ExplorerMain {
 
     private static void analyze(Path source, List<Path> copybooks, Path output,
                                 AnalysisLogContext logContext, AnalysisProgress progress,
-                                long analysisStarted, StorageLayoutSemantics.Profile storageProfile,StorageInitialSemantics.EntryMode entryMode,CicsProgramControlAnalyzer.EntryMode cicsMode,boolean logicalText,SourceArtifactInventory sourceInventory) throws Exception {
+                                long analysisStarted, StorageLayoutSemantics.Profile storageProfile,StorageInitialSemantics.EntryMode entryMode,CicsProgramControlAnalyzer.EntryMode cicsMode,boolean logicalText,SourceArtifactInventory sourceInventory,String jsonSuffix) throws Exception {
 
         GrammarBinding binding = Bindings.cobol();
         List<Diagnostic> diagnostics = new ArrayList<>();
@@ -221,17 +226,17 @@ public final class ExplorerMain {
         ResolutionAnalysisReport resolutionReport = ResolutionAnalysisReport.compose(compilationBuild,
                 frontendState, occurrences, resolution, externalClassifications);
         ObservedDependencyWriter.write(ObservedDependencyInventory.from(compilationBuild,resolutionReport),
-                output.resolve("observed-dependencies.json"));
+                output.resolve("observed-dependencies"+jsonSuffix));
         progress.phase = "SEMANTIC_PRODUCT";
         long semanticProductStarted = System.nanoTime();
         var compilationProduct=io.github.gustavo2358.cobolexplorer.semanticproduct.projection.CompilationSemanticProductProjector.project(semanticProducts(compilationBuild,symbolTables,occurrences,resolution,resolutionReport,storageProfile,entryMode,cicsMode,logicalText).withSourceDependencies(preprocessed.sourceDependencies(),preprocessed.sourceDependencyGaps()));
-        io.github.gustavo2358.cobolexplorer.semanticproduct.transport.CompilationSemanticProductJsonWriter.write(compilationProduct,output.resolve("cobol-semantic-compilation.json"));
+        io.github.gustavo2358.cobolexplorer.semanticproduct.transport.CompilationSemanticProductJsonWriter.write(compilationProduct,output.resolve("cobol-semantic-compilation"+jsonSuffix));
         CobolSemanticPort semanticProduct=compilationProduct.units().get(0).product();
         SemanticProductJsonWriter.write(semanticProduct,
-                output.resolve("cobol-semantic-product.json"));
+                output.resolve("cobol-semantic-product"+jsonSuffix));
         // Preserve the original filename as a byte-identical compatibility alias.
-        Files.copy(output.resolve("cobol-semantic-product.json"),
-                output.resolve("semantic-product.json"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(output.resolve("cobol-semantic-product"+jsonSuffix),
+                output.resolve("semantic-product"+jsonSuffix), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         CobolLoweringReadinessConsumer.Audit loweringReadiness =
                 CobolLoweringReadinessConsumer.audit(semanticProduct);
         LOG.debug("event=semantic_product_published phase=SEMANTIC_PRODUCT elapsedMs={} unit={} dataDeclarations={} statements={} gaps={} loweringReadiness={} cfgReadiness={} effectsDataflowReadiness={}",

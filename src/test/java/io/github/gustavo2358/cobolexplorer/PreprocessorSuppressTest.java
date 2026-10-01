@@ -51,7 +51,7 @@ class PreprocessorSuppressTest {
             + "JSON GENERATE OUTPUT-TEXT FROM INPUT-TEXT\nSUPPRESS INPUT-TEXT\nEND-JSON.\nGOBACK.\n";
         var input = directory.resolve("JSUP.cbl");
         Files.writeString(input, source.lines().map(line -> "       " + line + "\n").collect(java.util.stream.Collectors.joining()));
-        ExplorerMain.main(new String[]{"--source", input.toString(), "--copybooks", directory.toString(), "--output", directory.resolve("sp").toString()});
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source", input.toString(), "--copybooks", directory.toString(), "--output", directory.resolve("sp").toString()});
         var sp = new ObjectMapper().readTree(directory.resolve("sp/cobol-semantic-product.json").toFile());
         assertNotEquals("INPUT_MISSING", sp.path("coverage").path("inventoryStatus").asText());
         assertFalse(Files.readString(directory.resolve("sp/tree-data.js")).contains("\"phase\":\"PARSER\""));
@@ -61,7 +61,7 @@ class PreprocessorSuppressTest {
 
         // Malformed input still reports the parse gap after successful preprocessing.
         Files.writeString(input, Files.readString(input).replace("FROM INPUT-TEXT", "INPUT-TEXT"));
-        ExplorerMain.main(new String[]{"--source", input.toString(), "--copybooks", directory.toString(), "--output", directory.resolve("bad").toString()});
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source", input.toString(), "--copybooks", directory.toString(), "--output", directory.resolve("bad").toString()});
         var bad = new ObjectMapper().readTree(directory.resolve("bad/cobol-semantic-product.json").toFile());
         assertEquals("INPUT_MISSING", bad.path("coverage").path("inventoryStatus").asText());
         assertTrue(Files.readString(directory.resolve("bad/tree-data.js")).contains("\"phase\":\"PARSER\""));

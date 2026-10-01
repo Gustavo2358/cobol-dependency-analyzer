@@ -44,7 +44,7 @@ class ResolutionLoggingTest {
     void incompleteReportProducesOneAggregatedDegradationWarning(@TempDir Path directory) throws Exception {
         Path output = directory.resolve("output");
         List<ILoggingEvent> events = capture(ExplorerMain.class, Level.WARN,
-                () -> { ExplorerMain.main(new String[]{"--source", FIXTURE.toAbsolutePath().toString(),
+                () -> { ExplorerMain.main(new String[]{"--json-compression", "none","--source", FIXTURE.toAbsolutePath().toString(),
                         "--copybooks", Files.createDirectory(directory.resolve("cpy")).toString(),
                         "--output", output.toString()}); return null; }).events();
 

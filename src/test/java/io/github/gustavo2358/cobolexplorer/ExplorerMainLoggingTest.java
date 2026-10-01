@@ -25,7 +25,7 @@ class ExplorerMainLoggingTest {
         Path output = Files.createTempDirectory("explorer-logging-success");
         Path copybooks = Files.createTempDirectory("explorer-logging-copybooks");
 
-        List<ILoggingEvent> events = capture(() -> ExplorerMain.main(new String[]{
+        List<ILoggingEvent> events = capture(() -> ExplorerMain.main(new String[]{"--json-compression", "none",
                 "--source", FIXTURE.toAbsolutePath().toString(),
                 "--copybooks", copybooks.toString(), "--output", output.toString()}));
 
@@ -63,14 +63,14 @@ class ExplorerMainLoggingTest {
         Path partial = directory.resolve("partial.cbl");
         Files.writeString(partial, source("COPY MISSINGCP.", "DFHRESP(NORMAL)"),
                 StandardCharsets.UTF_8);
-        List<ILoggingEvent> partialEvents = capture(() -> ExplorerMain.main(new String[]{
+        List<ILoggingEvent> partialEvents = capture(() -> ExplorerMain.main(new String[]{"--json-compression", "none",
                 "--source", partial.toString(), "--copybooks", copybooks.toString(),
                 "--output", directory.resolve("partial-output").toString()}));
 
         Path recovered = directory.resolve("recovered.cbl");
         Files.writeString(recovered, source("", "DFHRESP(IDX)(OTHER)"),
                 StandardCharsets.UTF_8);
-        List<ILoggingEvent> recoveredEvents = capture(() -> ExplorerMain.main(new String[]{
+        List<ILoggingEvent> recoveredEvents = capture(() -> ExplorerMain.main(new String[]{"--json-compression", "none",
                 "--source", recovered.toString(), "--copybooks", copybooks.toString(),
                 "--output", directory.resolve("recovered-output").toString()}));
 
@@ -92,7 +92,7 @@ class ExplorerMainLoggingTest {
     void logsEscapingFailureOnceAtTheOperationalBoundaryAndCleansMdc() throws Exception {
         Path missing = Path.of("/tmp", "missing-cobol-" + System.nanoTime(), "PROGA.cbl");
 
-        CapturedFailure failure = captureFailure(() -> ExplorerMain.main(new String[]{
+        CapturedFailure failure = captureFailure(() -> ExplorerMain.main(new String[]{"--json-compression", "none",
                 "--source", missing.toString(), "--output", Files.createTempDirectory("unused").toString()}));
 
         assertNotNull(failure.thrown());

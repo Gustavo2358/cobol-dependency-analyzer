@@ -11,6 +11,6 @@ public final class ObservedDependencyWriter {
     private ObservedDependencyWriter() { }
     public static void write(ObservedDependencyInventory inventory,Path destination) throws IOException {
         var json=JsonMapper.builder().enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY).build();
-        try(var output=Files.newOutputStream(destination)) { json.writeValue(output,inventory); }
+        try(var output=io.github.gustavo2358.cobolexplorer.transport.JsonFiles.output(Files.newOutputStream(destination),destination)) { json.writeValue(output,inventory); }
     }
 }

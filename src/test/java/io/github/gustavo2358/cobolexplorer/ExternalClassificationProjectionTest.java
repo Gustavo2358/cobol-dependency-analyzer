@@ -236,7 +236,7 @@ class ExternalClassificationProjectionTest {
         Path output = Files.createTempDirectory("external-classification-explorer");
         Path copybooks = Files.createTempDirectory("external-classification-copybooks");
 
-        ExplorerMain.main(new String[]{"--source", POSSIBLE.toAbsolutePath().toString(),
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source", POSSIBLE.toAbsolutePath().toString(),
                 "--copybooks", copybooks.toString(), "--output", output.toString()});
         String text = Files.readString(output.resolve("resolution-data.js"), StandardCharsets.UTF_8);
 
@@ -264,7 +264,7 @@ class ExternalClassificationProjectionTest {
         Path output = Files.createTempDirectory("external-classification-parser-output");
         Path copybooks = Files.createTempDirectory("external-classification-parser-copybooks");
 
-        ExplorerMain.main(new String[]{"--source", source.toString(),
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source", source.toString(),
                 "--copybooks", copybooks.toString(), "--output", output.toString()});
         String text = Files.readString(output.resolve("resolution-data.js"), StandardCharsets.UTF_8);
 

@@ -71,7 +71,7 @@ class ResolutionSnapshotTest {
         Path output = Files.createTempDirectory("resolution-explorer-output");
         Path copybooks = Files.createTempDirectory("resolution-empty-copybooks");
 
-        ExplorerMain.main(new String[]{"--source", FIXTURE.toAbsolutePath().toString(),
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source", FIXTURE.toAbsolutePath().toString(),
                 "--copybooks", copybooks.toString(), "--output", output.toString()});
 
         for (String artifact : List.of("index.html", "ast.html", "symbols.html",

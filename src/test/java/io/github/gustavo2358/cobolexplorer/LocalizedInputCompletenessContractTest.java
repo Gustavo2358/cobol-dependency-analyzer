@@ -107,7 +107,7 @@ class LocalizedInputCompletenessContractTest {
         Files.createDirectories(directory.resolve("copybooks"));
         Path input = directory.resolve("input.cbl");
         Files.writeString(input, source.lines().map(line -> "       " + line + "\n").collect(java.util.stream.Collectors.joining()));
-        ExplorerMain.main(new String[]{"--source", input.toString(), "--copybooks", directory.resolve("copybooks").toString(),
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source", input.toString(), "--copybooks", directory.resolve("copybooks").toString(),
                 "--output", directory.resolve("out").toString()});
         return new ObjectMapper().readTree(directory.resolve("out/cobol-semantic-product.json").toFile());
     }

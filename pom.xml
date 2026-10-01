@@ -20,6 +20,7 @@
   </properties>
 
   <dependencies>
+    <dependency><groupId>com.github.luben</groupId><artifactId>zstd-jni</artifactId><version>1.5.7-20</version></dependency>
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>

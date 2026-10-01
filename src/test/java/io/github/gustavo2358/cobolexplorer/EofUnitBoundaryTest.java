@@ -125,7 +125,7 @@ class EofUnitBoundaryTest {
         for(String suffix:List.of("MOVE .\n","~\n")) {
             var input=directory.resolve("input.cbl");Files.writeString(input,(source("BOUNDARY",CLOSED,false)+suffix).lines().map(l->"       "+l+"\n").collect(java.util.stream.Collectors.joining()));
             var copies=directory.resolve("copies");Files.createDirectories(copies);var out=directory.resolve("out");
-            ExplorerMain.main(new String[]{"--source",input.toString(),"--copybooks",copies.toString(),"--output",out.toString()});
+            ExplorerMain.main(new String[]{"--json-compression", "none","--source",input.toString(),"--copybooks",copies.toString(),"--output",out.toString()});
             var json=new ObjectMapper().readTree(out.resolve("cobol-semantic-product.json").toFile());
             assertTrue(json.path("factDependencies").path("inputs").toString().contains("UNLOCATED_INPUT"));
             assertFalse(json.path("factDependencies").path("inputs").toString().contains("MISSING_COPY"),
