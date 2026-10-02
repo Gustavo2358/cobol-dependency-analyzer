@@ -8,7 +8,7 @@ import java.util.*;
 final class EmbeddedExpressionSyntax {
     record Parsed(ParserRuleContext tree,CommonTokenStream tokens) { }
     record Host(String option,int optionStart,ParserRuleContext tree) { }
-    static boolean supported(String text){return parse(text).isPresent();}
+    static boolean supported(String text){return DirectParseScope.active()?DirectEmbeddedExpressionSyntax.supported(text):parse(text).isPresent();}
     private static Optional<Parsed> parse(String text) {
         var failed=new boolean[1];var listener=new BaseErrorListener(){@Override public void syntaxError(Recognizer<?,?> r,Object s,int l,int c,String m,RecognitionException e){failed[0]=true;}};
         var lexer=new CobolLexer(CharStreams.fromString(text));lexer.removeErrorListeners();lexer.addErrorListener(listener);

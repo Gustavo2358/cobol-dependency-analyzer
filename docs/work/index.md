@@ -1,3 +1,8 @@
+[Parser próprio completo — fechamento aprovado](direct-parser-full.md#fechamento):
+PR #82; 73/73 CardDemo nativos, zero fallback, redução agregada medida de 74,37%
+em parsing + origens + AST. Qualificação completa PASS; o PR registra o merge
+que efetiva o estado DONE. Contratos preservados, modo opt-in e fallback integral.
+
 [Assinatura de entrada sob input parcial — DONE / MERGED](entry-signature-locality.md):
 PR #83; 96 pares até dependências, sem perda nos 88 produtos comparáveis.
 A aceitação IBM dos dois padrões físicos permanece não verificada.

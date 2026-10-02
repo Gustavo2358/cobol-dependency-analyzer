@@ -26,7 +26,7 @@ class NamingGuard(unittest.TestCase):
         self.assertEqual(0,self.run_guard('docs/work/evidence.json',
                 '{"sources":{"'+VENDOR+'-poc":"abc123"}}'))
     def test_json_evidence_does_not_exempt_other_legacy_names(self):
-        for text in (VENDOR+' engine',VENDOR+'-pocket',PURPOSE):
+        for text in (VENDOR+' engine',VENDOR+'-pocket',VENDOR+'-poc-engine',PURPOSE):
             with self.subTest(text=text):
                 self.assertNotEqual(0,self.run_guard('docs/work/evidence.json',
                         '{"repository":"'+VENDOR+'-poc","label":"'+text+'"}'))
@@ -38,8 +38,51 @@ class NamingGuard(unittest.TestCase):
         self.assertNotEqual(0,self.run_guard('src/app.java',VENDOR+'-poc'))
     def test_similar_identifier_is_not_the_canonical_repository(self):
         self.assertNotEqual(0,self.run_guard('docs/product.md',VENDOR+'-pocket'))
-    def test_old_purpose_remains_forbidden(self):
-        self.assertNotEqual(0,self.run_guard('docs/product.md',PURPOSE))
+    def test_measurement_term_in_markdown(self):
+        for text in (PURPOSE, PURPOSE+'s', PURPOSE+'ing', PURPOSE+'.', PURPOSE+'s,', 'A '+PURPOSE.upper()+' measures parsing time.'):
+            with self.subTest(text=text):
+                self.assertEqual(0,self.run_guard('docs/work/performance.md',text))
+    def test_measurement_exception_does_not_hide_product_identifiers(self):
+        for text in ('cobol-'+PURPOSE, PURPOSE+'Runner', PURPOSE+'_engine', PURPOSE+'.App',
+                     VENDOR+' engine with '+PURPOSE+'s'):
+            with self.subTest(text=text):
+                self.assertNotEqual(0,self.run_guard('docs/product.md',text))
+    def test_purpose_in_code_and_machine_readable_labels_stays_forbidden(self):
+        for name,text in (('src/App.java',PURPOSE),
+                          ('docs/work/evidence.yaml','title: '+PURPOSE),
+                          ('docs/work/evidence.json','{"label":"'+PURPOSE+'"}')):
+            with self.subTest(name=name):
+                self.assertNotEqual(0,self.run_guard(name,text))
+    def test_canonical_repository_in_yaml_evidence(self):
+        for suffix in ('yaml','yml'):
+            with self.subTest(suffix=suffix):
+                self.assertEqual(0,self.run_guard('docs/work/evidence.'+suffix,
+                    'pr: https://github.com/example/'+VENDOR+'-poc/pull/80'))
+    def test_yaml_repository_exception_is_exact_and_documentary(self):
+        for name,text in (('docs/work/evidence.yaml','repository: '+VENDOR+'-pocket'),
+                          ('docs/work/evidence.yml','repository: '+VENDOR+'-poc\nname: '+VENDOR+' engine'),
+                          ('src/resource.yaml','repository: '+VENDOR+'-poc')):
+            with self.subTest(name=name,text=text):
+                self.assertNotEqual(0,self.run_guard(name,text))
+    def test_historical_artifact_references_in_markdown(self):
+        for artifact in ('.'+VENDOR+'-run-20261001/evidence/', PURPOSE+'-summary.json',
+                         PURPOSE+'s/', '/tmp/'+VENDOR+'/report.json'):
+            with self.subTest(artifact=artifact):
+                self.assertEqual(0,self.run_guard('docs/work/report.md','Evidence: `'+artifact+'`'))
+    def test_artifact_reference_does_not_exempt_unrelated_prose(self):
+        for text in ('`'+VENDOR+' engine`', '`'+VENDOR+'`', '`'+VENDOR+'.Engine`', '`'+PURPOSE+'.App`',
+                     '`'+VENDOR+'-summary.json` '+VENDOR+' engine',
+                     '`some/'+VENDOR+' engine/`'):
+            with self.subTest(text=text):
+                self.assertNotEqual(0,self.run_guard('docs/work/report.md',text))
+    def test_artifact_exceptions_do_not_apply_to_product_files(self):
+        self.assertNotEqual(0,self.run_guard('src/app.py','path = "'+VENDOR+'-summary.json"'))
+        self.assertNotEqual(0,self.run_guard('src/'+PURPOSE+'-summary.json','{}'))
+    def test_real_documentary_shapes(self):
+        text=('The '+PURPOSE+'s contain 80 runs.\n'
+              'Evidence in `.'+VENDOR+'-post-antlr-implementation-20261001/evidence/`.\n'
+              '- `'+PURPOSE+'-summary.json` and `'+PURPOSE+'s/`: measurements.\n')
+        self.assertEqual(0,self.run_guard('docs/work/performance.md',text,without_rg=True))
     def test_old_path_remains_forbidden(self):
         self.assertNotEqual(0,self.run_guard('src/'+VENDOR+'.txt','source'))
     def test_content_guard_does_not_silently_pass_without_ripgrep(self):

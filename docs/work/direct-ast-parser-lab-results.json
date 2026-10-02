@@ -1,0 +1,567 @@
+{
+  "baseSha": "3646754b14519b0fa95f2a7233bdfce4527ebdba",
+  "environment": "openjdk version \"25.0.4\" 2026-07-21 LTS\nOpenJDK Runtime Environment Temurin-25.0.4+7 (build 25.0.4+7-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4+7 (build 25.0.4+7-LTS, mixed mode, sharing)\n",
+  "definition": "recognition + syntax-origin indexing + semantic AST construction; preprocessing, lexing and presentation export excluded in both modes",
+  "repetitionsPerMode": 5,
+  "order": "AB/BA alternated; fresh JVM each run; G1; Xms256m Xmx2g",
+  "results": [
+    {
+      "source": "corpus/carddemo/cbl/COACCT01.cbl",
+      "variants": {
+        "antlr": {
+          "syntaxMsMedian": 1433.055585,
+          "syntaxMsRange": [
+            1412.692892,
+            1457.61512
+          ],
+          "wallSecondsMedian": 3.55,
+          "cpuSecondsMedian": 9.6,
+          "peakRssKiBMedian": 468648.0,
+          "recognitionMsMedian": 1202.993955,
+          "samples": [
+            {
+              "trial": 0,
+              "spansNanos": [
+                [
+                  1186407118,
+                  37996914,
+                  188288860
+                ]
+              ],
+              "wallSeconds": 3.55,
+              "cpuSeconds": 9.61,
+              "peakRssKiB": 487604.0
+            },
+            {
+              "trial": 1,
+              "spansNanos": [
+                [
+                  1191681405,
+                  48608131,
+                  187472348
+                ]
+              ],
+              "wallSeconds": 3.51,
+              "cpuSeconds": 9.6,
+              "peakRssKiB": 485588.0
+            },
+            {
+              "trial": 2,
+              "spansNanos": [
+                [
+                  1206399189,
+                  37682122,
+                  188974274
+                ]
+              ],
+              "wallSeconds": 3.57,
+              "cpuSeconds": 9.75,
+              "peakRssKiB": 410228.0
+            },
+            {
+              "trial": 3,
+              "spansNanos": [
+                [
+                  1202993955,
+                  41413617,
+                  191026401
+                ]
+              ],
+              "wallSeconds": 3.53,
+              "cpuSeconds": 9.549999999999999,
+              "peakRssKiB": 421516.0
+            },
+            {
+              "trial": 4,
+              "spansNanos": [
+                [
+                  1217216060,
+                  48415762,
+                  191983298
+                ]
+              ],
+              "wallSeconds": 3.56,
+              "cpuSeconds": 9.48,
+              "peakRssKiB": 468648.0
+            }
+          ]
+        },
+        "direct-data-lab": {
+          "syntaxMsMedian": 616.350323,
+          "syntaxMsRange": [
+            604.644638,
+            624.416519
+          ],
+          "wallSecondsMedian": 2.7,
+          "cpuSecondsMedian": 8.48,
+          "peakRssKiBMedian": 377508.0,
+          "recognitionMsMedian": 415.303357,
+          "samples": [
+            {
+              "trial": 0,
+              "spansNanos": [
+                [
+                  415303357,
+                  29332351,
+                  178201033
+                ]
+              ],
+              "wallSeconds": 2.74,
+              "cpuSeconds": 8.43,
+              "peakRssKiB": 364236.0
+            },
+            {
+              "trial": 1,
+              "spansNanos": [
+                [
+                  420749325,
+                  30048922,
+                  165552076
+                ]
+              ],
+              "wallSeconds": 2.7,
+              "cpuSeconds": 8.51,
+              "peakRssKiB": 381784.0
+            },
+            {
+              "trial": 2,
+              "spansNanos": [
+                [
+                  418101438,
+                  31120347,
+                  175194734
+                ]
+              ],
+              "wallSeconds": 2.73,
+              "cpuSeconds": 8.48,
+              "peakRssKiB": 377508.0
+            },
+            {
+              "trial": 3,
+              "spansNanos": [
+                [
+                  403445265,
+                  31194192,
+                  170005181
+                ]
+              ],
+              "wallSeconds": 2.7,
+              "cpuSeconds": 8.51,
+              "peakRssKiB": 379132.0
+            },
+            {
+              "trial": 4,
+              "spansNanos": [
+                [
+                  410569201,
+                  30646817,
+                  175010740
+                ]
+              ],
+              "wallSeconds": 2.67,
+              "cpuSeconds": 8.18,
+              "peakRssKiB": 361924.0
+            }
+          ]
+        }
+      },
+      "syntaxReductionPercent": 56.99048037972651,
+      "target50PercentReached": true,
+      "artifactPairs": 95,
+      "differences": [],
+      "admission": [
+        [
+          "acceptedDivisions=1 fallbackDivisions=0 entries=2582 reasons={}"
+        ],
+        [
+          "acceptedDivisions=1 fallbackDivisions=0 entries=2582 reasons={}"
+        ],
+        [
+          "acceptedDivisions=1 fallbackDivisions=0 entries=2582 reasons={}"
+        ],
+        [
+          "acceptedDivisions=1 fallbackDivisions=0 entries=2582 reasons={}"
+        ],
+        [
+          "acceptedDivisions=1 fallbackDivisions=0 entries=2582 reasons={}"
+        ]
+      ]
+    },
+    {
+      "source": "corpus/carddemo/cbl/COACTUPC.cbl",
+      "variants": {
+        "antlr": {
+          "syntaxMsMedian": 2721.919301,
+          "syntaxMsRange": [
+            2661.128358,
+            2725.754594
+          ],
+          "wallSecondsMedian": 5.47,
+          "cpuSecondsMedian": 12.729999999999999,
+          "peakRssKiBMedian": 398252.0,
+          "recognitionMsMedian": 2481.433423,
+          "samples": [
+            {
+              "trial": 0,
+              "spansNanos": [
+                [
+                  2459730425,
+                  38895676,
+                  195394873
+                ]
+              ],
+              "wallSeconds": 5.36,
+              "cpuSeconds": 12.32,
+              "peakRssKiB": 397764.0
+            },
+            {
+              "trial": 1,
+              "spansNanos": [
+                [
+                  2481433423,
+                  40388716,
+                  200576241
+                ]
+              ],
+              "wallSeconds": 5.51,
+              "cpuSeconds": 12.83,
+              "peakRssKiB": 407388.0
+            },
+            {
+              "trial": 2,
+              "spansNanos": [
+                [
+                  2416338725,
+                  37969414,
+                  206820219
+                ]
+              ],
+              "wallSeconds": 5.41,
+              "cpuSeconds": 12.729999999999999,
+              "peakRssKiB": 402012.0
+            },
+            {
+              "trial": 3,
+              "spansNanos": [
+                [
+                  2482370805,
+                  39188989,
+                  200359507
+                ]
+              ],
+              "wallSeconds": 5.49,
+              "cpuSeconds": 12.799999999999999,
+              "peakRssKiB": 398252.0
+            },
+            {
+              "trial": 4,
+              "spansNanos": [
+                [
+                  2488593784,
+                  38403632,
+                  198757178
+                ]
+              ],
+              "wallSeconds": 5.47,
+              "cpuSeconds": 12.67,
+              "peakRssKiB": 395544.0
+            }
+          ]
+        },
+        "direct-data-lab": {
+          "syntaxMsMedian": 2696.427884,
+          "syntaxMsRange": [
+            2681.457321,
+            2795.121731
+          ],
+          "wallSecondsMedian": 5.48,
+          "cpuSecondsMedian": 13.1,
+          "peakRssKiBMedian": 402208.0,
+          "recognitionMsMedian": 2458.210254,
+          "samples": [
+            {
+              "trial": 0,
+              "spansNanos": [
+                [
+                  2558817074,
+                  38920852,
+                  197383805
+                ]
+              ],
+              "wallSeconds": 5.5,
+              "cpuSeconds": 12.88,
+              "peakRssKiB": 402208.0
+            },
+            {
+              "trial": 1,
+              "spansNanos": [
+                [
+                  2447856334,
+                  36007992,
+                  211958208
+                ]
+              ],
+              "wallSeconds": 5.48,
+              "cpuSeconds": 13.1,
+              "peakRssKiB": 395936.0
+            },
+            {
+              "trial": 2,
+              "spansNanos": [
+                [
+                  2452316172,
+                  33751415,
+                  195389734
+                ]
+              ],
+              "wallSeconds": 5.45,
+              "cpuSeconds": 13.120000000000001,
+              "peakRssKiB": 400096.0
+            },
+            {
+              "trial": 3,
+              "spansNanos": [
+                [
+                  2532357940,
+                  33079384,
+                  199963328
+                ]
+              ],
+              "wallSeconds": 5.51,
+              "cpuSeconds": 12.84,
+              "peakRssKiB": 445672.0
+            },
+            {
+              "trial": 4,
+              "spansNanos": [
+                [
+                  2458210254,
+                  37075190,
+                  201142440
+                ]
+              ],
+              "wallSeconds": 5.48,
+              "cpuSeconds": 13.110000000000001,
+              "peakRssKiB": 403424.0
+            }
+          ]
+        }
+      },
+      "syntaxReductionPercent": 0.9365236137101718,
+      "target50PercentReached": false,
+      "artifactPairs": 95,
+      "differences": [],
+      "admission": [
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ],
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ],
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ],
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ],
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ]
+      ]
+    },
+    {
+      "source": "corpus/carddemo/cbl/COTRTUPC.cbl",
+      "variants": {
+        "antlr": {
+          "syntaxMsMedian": 947.746063,
+          "syntaxMsRange": [
+            943.46507,
+            978.445786
+          ],
+          "wallSecondsMedian": 2.72,
+          "cpuSecondsMedian": 7.640000000000001,
+          "peakRssKiBMedian": 370768.0,
+          "recognitionMsMedian": 782.047371,
+          "samples": [
+            {
+              "trial": 0,
+              "spansNanos": [
+                [
+                  782047371,
+                  16797711,
+                  149749391
+                ]
+              ],
+              "wallSeconds": 2.7,
+              "cpuSeconds": 7.4799999999999995,
+              "peakRssKiB": 355128.0
+            },
+            {
+              "trial": 1,
+              "spansNanos": [
+                [
+                  786123022,
+                  15264867,
+                  144405127
+                ]
+              ],
+              "wallSeconds": 2.72,
+              "cpuSeconds": 7.640000000000001,
+              "peakRssKiB": 372340.0
+            },
+            {
+              "trial": 2,
+              "spansNanos": [
+                [
+                  778921195,
+                  16179498,
+                  152645370
+                ]
+              ],
+              "wallSeconds": 2.77,
+              "cpuSeconds": 7.8,
+              "peakRssKiB": 370328.0
+            },
+            {
+              "trial": 3,
+              "spansNanos": [
+                [
+                  807499316,
+                  16878067,
+                  154068403
+                ]
+              ],
+              "wallSeconds": 2.79,
+              "cpuSeconds": 7.84,
+              "peakRssKiB": 370768.0
+            },
+            {
+              "trial": 4,
+              "spansNanos": [
+                [
+                  778046557,
+                  14703228,
+                  150715285
+                ]
+              ],
+              "wallSeconds": 2.72,
+              "cpuSeconds": 7.64,
+              "peakRssKiB": 371396.0
+            }
+          ]
+        },
+        "direct-data-lab": {
+          "syntaxMsMedian": 978.762382,
+          "syntaxMsRange": [
+            967.595836,
+            993.917089
+          ],
+          "wallSecondsMedian": 2.75,
+          "cpuSecondsMedian": 7.6,
+          "peakRssKiBMedian": 354616.0,
+          "recognitionMsMedian": 807.782341,
+          "samples": [
+            {
+              "trial": 0,
+              "spansNanos": [
+                [
+                  812477897,
+                  15312594,
+                  150511946
+                ]
+              ],
+              "wallSeconds": 2.75,
+              "cpuSeconds": 7.73,
+              "peakRssKiB": 367796.0
+            },
+            {
+              "trial": 1,
+              "spansNanos": [
+                [
+                  806973471,
+                  22859087,
+                  150037594
+                ]
+              ],
+              "wallSeconds": 2.78,
+              "cpuSeconds": 7.6899999999999995,
+              "peakRssKiB": 350560.0
+            },
+            {
+              "trial": 2,
+              "spansNanos": [
+                [
+                  798099448,
+                  16322348,
+                  153174040
+                ]
+              ],
+              "wallSeconds": 2.72,
+              "cpuSeconds": 7.510000000000001,
+              "peakRssKiB": 354616.0
+            },
+            {
+              "trial": 3,
+              "spansNanos": [
+                [
+                  807782341,
+                  13980856,
+                  156999185
+                ]
+              ],
+              "wallSeconds": 2.72,
+              "cpuSeconds": 7.5,
+              "peakRssKiB": 355736.0
+            },
+            {
+              "trial": 4,
+              "spansNanos": [
+                [
+                  828963701,
+                  15840463,
+                  149112925
+                ]
+              ],
+              "wallSeconds": 2.8,
+              "cpuSeconds": 7.6,
+              "peakRssKiB": 352636.0
+            }
+          ]
+        }
+      },
+      "syntaxReductionPercent": -3.2726402367550644,
+      "target50PercentReached": false,
+      "artifactPairs": 95,
+      "differences": [],
+      "admission": [
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ],
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ],
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ],
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ],
+        [
+          "acceptedDivisions=0 fallbackDivisions=1 entries=0 reasons={unsupported data clause: OCCURS=1}"
+        ]
+      ]
+    }
+  ],
+  "productionHashes": {
+    "src/main/antlr4/Cobol.g4": "41b699b877faed5bdf01a104125c0b6401fe83dc75abf09a507720a0cb0dcda4",
+    "src/main/java/io/github/gustavo2358/cobolexplorer/AstBuilder.java": "70f92adcd546eab48bd5f9d1bf6ae25c599eada3c7bc35e96364a99203bb3196",
+    "src/main/java/io/github/gustavo2358/cobolexplorer/DirectDataParser.java": "86335919c4d5547bb4883da29012d12c12797993277cec80b9584c4bf9d6c9bc",
+    "src/main/java/io/github/gustavo2358/cobolexplorer/ExplorerMain.java": "308edc28a8641b8fc360f154f3004b12762befb59ce99ad8ad46f45c0e6f41c6"
+  },
+  "rawEvidence": "../final-evidence relative to the isolated checkout; manifest.json, runs.json, summary.json and per-run products/logs",
+  "rawEvidenceHashes": {
+    "manifest.json": "91fc03908c3cd2ad2c956f1e3f5cfbdda6451b38e75c11dc7b3a1fb8a611d8c9",
+    "runs.json": "0d4f9e776ac71d3f72bf2bce7d0a964c0bd3fc534e293b9699fd1cbc11d202a9",
+    "summary.json": "62a4322559214c57f31602d11fb7560f5c8427fd0b22dfad4050d56e5e642589"
+  }
+}
