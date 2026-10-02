@@ -1,8 +1,12 @@
+[Assinatura de entrada sob input parcial — DONE / MERGED](entry-signature-locality.md):
+PR #83; 96 pares até dependências, sem perda nos 88 produtos comparáveis.
+A aceitação IBM dos dois padrões físicos permanece não verificada.
+
 [Limpeza do snapshot de fontes](../engineering/source-snapshot.md): evidência bruta histórica preservada no Git; fixtures e baselines executáveis mantidos.
 
-[JSON Zstandard — fechamento aprovado](../engineering/json-zstd.md#qualificação-e-fechamento): PR #80; qualificação, compatibilidade e benchmark completo. O PR registra a integração.
+[JSON Zstandard — fechamento aprovado](../engineering/json-zstd.md#qualificação-e-fechamento): PR #80; qualificação, compatibilidade e medições completas. O PR registra a integração.
 
-[Desempenho pós-ANTLR — implementação e merge aprovados](post-antlr-performance.md): PR #79; algoritmos, benchmarks e regressão dos 586 casos. O PR registra a integração.
+[Desempenho pós-ANTLR — implementação e merge aprovados](post-antlr-performance.md): PR #79; algoritmos, medições de desempenho e regressão dos 586 casos. O PR registra a integração.
 
 [Integração atual — DONE / MERGED](analyzer-integration-20261001.md): frontend #77 e discovery histórico #59. As entradas anteriores abaixo conservam seus snapshots de trabalho.
 
