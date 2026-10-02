@@ -120,3 +120,11 @@ Promover para produção exige revisão humana e ampliação da admissão com te
 diferenciais. Para alcançar outros programas, o próximo recorte é OCCURS; para
 ganho uniforme, medir e substituir também os gargalos de PROCEDURE. Os resultados
 positivos de DATA não justificam prometer 50% na CLI ou em todo o corpus.
+
+## Ampliação da medição para o corpus completo
+
+A [rodada integral posterior](direct-ast-corpus.md) cobre 73 variantes CardDemo
+e 13 fontes complementares do checkout, com uma rodada por modo a pedido do usuário.
+No conjunto principal, três programas usam o parser próprio e 70 caem em fallback.
+COACCT01 e CODATE01 superam 50% de redução na etapa sintática; COBSWAIT não.
+As divergências brutas de serialização e os limites da amostra estão discriminados.
