@@ -94,7 +94,7 @@ final class DliCommandSyntax {
     private static boolean host(List<Host> out,CicsCommandSyntax.Option o,String value,int start,Ast.EmbeddedHostRole role,String raw,boolean constant) {
         String stripped=value.strip();
         if(constant&&(CicsCommandSyntax.literal(stripped).isPresent()||!stripped.isEmpty()&&stripped.chars().allMatch(c->c>='0'&&c<='9')))return true;
-        if(CicsHostSyntax.parseReference(value,raw,start,0,1,0,0).isEmpty())return false;
+        if(!CicsHostSyntax.supportsReference(value,raw,start,0,1,0,0))return false;
         out.add(new Host(o.name(),o.start(),value,start,role));return true;
     }
     private static boolean name(String value) {

@@ -120,6 +120,11 @@ dist/                    saída gerada, pronta para abrir
 
 ### Laboratório de parser próprio
 
+`--parser direct-ast-lab` ativa o laboratório de parser COBOL completo próprio:
+preprocessador/lexer atuais, AST e origens próprias, fallback integral em falha.
+A rota efetiva aparece em `event=direct_ast_lab`. O padrão continua ANTLR.
+Detalhes e limites: [laboratório](docs/work/direct-ast-parser-lab.md).
+
 `--parser direct-data-lab` ativa o parser experimental de DATA que gera a AST
 diretamente, com fallback para a gramática original em construções não admitidas.
 O padrão é `--parser antlr`. Consulte [escopo, medição e limites](docs/work/direct-ast-parser-lab.md).

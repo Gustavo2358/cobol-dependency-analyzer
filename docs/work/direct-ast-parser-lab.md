@@ -1,11 +1,51 @@
-# Laboratório de parser DATA direto para AST
+# Laboratório de parser próprio completo para AST
 
 - id: DIRECT-AST-LAB-001
-- title: Parser próprio de declarações DATA com AST direta
+- title: Parser COBOL próprio com AST e fallback integral
 - status: IN_PROGRESS
 - scope: laboratório opt-in no frontend; branch `lab/direct-ast-parser`; sem merge ou mudança de contratos downstream.
 
-## Implementação
+## Caminho completo em qualificação
+
+`--parser direct-ast-lab` mantém a normalização, o preprocessador e o lexer
+existentes. Depois do lexer, copia tokens para valores próprios e reconhece
+IDENTIFICATION, ENVIRONMENT, DATA e PROCEDURE sem instanciar `CobolParser`,
+contexts, árvores ou visitantes ANTLR. O caminho produz a AST canônica e as
+origens necessárias aos produtos existentes.
+
+O compilador `scripts/direct-parser/generate.py` deriva tabelas de reconhecimento
+e descritores tipados das 615 produções de `Cobol.g4`. A execução usa conjuntos
+FIRST, decisões memoizadas em arrays primitivos e um registro plano da derivação
+aceita. As ações semânticas próprias consultam spans tipados sobre esse registro;
+não há uma árvore ANTLR intermediária. O registro também alimenta a apresentação
+sintática existente. As ações são geradas da lógica canônica de `AstBuilder` e
+dos extratores FILE para evitar duas versões independentes das regras semânticas.
+`generate.py --check` detecta alterações que exigem regeneração.
+
+A política de decisão prefere a alternativa completa mais longa, com a ordem
+da gramática como desempate. Decisões contextuais explícitas preservam a
+prioridade vigente em argumentos de função, qualificadores e INSPECT TALLYING.
+Isso não prova equivalência de todas as ambiguidades possíveis da linguagem;
+o laboratório exige evidência diferencial e continua opt-in.
+
+Os leitores de referências e expressões embutidas também são próprios. Uma guarda
+por execução impede construir o parser ANTLR dentro da transação nativa.
+A guarda é isolada por thread e restaurada mesmo em falha. Os testes exercitam
+esse bloqueio e a equivalência de AST, origem, cobertura e diagnósticos.
+
+Falha de reconhecimento, limite de trabalho/memória, erro recuperável de construção
+ou profundidade excessiva descarta a transação inteira. O fallback cria um parser
+ANTLR novo desde o início, com os tokens originais, e usa a AST legada. Não mistura
+fragmentos dos dois caminhos. Falhas da VM como falta de memória não são ocultadas.
+Logs distinguem `native`, `fallback`, motivo e custo da tentativa descartada.
+
+A meta é reduzir em pelo menos 50% reconhecimento + origens + AST no corpus
+completo, com uma execução por modo e programa, sem fallback nos 73 programas.
+A medição do tempo total da CLI fica separada. O default continua `antlr`.
+Os resultados abaixo descrevem o estágio DATA anterior e não demonstram a meta
+do caminho completo.
+
+## Implementação DATA anterior
 
 **Estado atual: [73/73 programas CardDemo sem fallback em DATA](direct-ast-complete.md).**
 Os resultados de três programas e o inventário de 70 fallbacks abaixo são históricos, anteriores à ampliação.
@@ -71,7 +111,7 @@ python3 scripts/direct-data-lab.py --classpath '<classpath obtido acima>' \
   --source corpus/carddemo/cbl/COACTUPC.cbl \
   --source corpus/carddemo/cbl/COTRTUPC.cbl \
   --copybooks corpus/carddemo/cpy,corpus/carddemo/cpy-bms,corpus/cpy,corpus/cpy-bms \
-  --repetitions 5 --output /tmp/direct-data-lab-new
+  --repetitions 1 --output /tmp/direct-data-lab-new
 ```
 
 O diretório de saída deve ser novo. São JVMs frias independentes, ordem AB/BA

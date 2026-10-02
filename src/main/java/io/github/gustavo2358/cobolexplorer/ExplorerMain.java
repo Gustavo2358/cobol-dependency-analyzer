@@ -36,8 +36,8 @@ public final class ExplorerMain {
             default -> throw new IllegalArgumentException("--json-compression must be zstd or none");
         };
         String parserMode = argument(args, "--parser", "antlr");
-        if (!parserMode.equals("antlr") && !parserMode.equals("direct-data-lab"))
-            throw new IllegalArgumentException("--parser must be antlr or direct-data-lab");
+        if (!Set.of("antlr","direct-data-lab","direct-ast-lab").contains(parserMode))
+            throw new IllegalArgumentException("--parser must be antlr, direct-data-lab or direct-ast-lab");
         var storageProfile = storageProfile(argument(args, "--storage-profile", "unspecified"));
         boolean logicalText=switch(argument(args,"--logical-text","auto")) {
             case "auto"->storageProfile==StorageLayoutSemantics.Profile.UNSPECIFIED;
@@ -111,29 +111,13 @@ public final class ExplorerMain {
 
         progress.phase = "PARSING";
         phaseStarted = System.nanoTime();
-        Parser parser = binding.cobolParser(tokens);
-        if (parserMode.equals("direct-data-lab")) {
-            ((io.github.gustavo2358.cobolexplorer.antlr.CobolParser) parser).directDataSession = new DirectDataParser.Session();
-        }
-        parser.removeErrorListeners();
-        parser.addErrorListener(new AntlrDiagnosticListener(binding.name(), Diagnostic.Phase.PARSER,
-                source.getFileName().toString(), diagnostics));
-        long recognitionStarted = System.nanoTime();
-        ParseTree tree = binding.cobolStart(parser);
-        long recognitionNanos = System.nanoTime() - recognitionStarted;
-        if (parserMode.equals("direct-data-lab")) {
-            var session = ((io.github.gustavo2358.cobolexplorer.antlr.CobolParser) parser).directDataSession;
-            LOG.info("event=direct_data_lab acceptedDivisions={} fallbackDivisions={} entries={} reasons={}",
-                    session.acceptedDivisions(), session.fallbackDivisions(), session.entries(), session.fallbackReasons());
-        }
-
-        List<Node> nodes = new ArrayList<>();
-        Map<String, Integer> ruleCounts = new TreeMap<>();
-        IdentityHashMap<ParseTree, Integer> parseIds = new IdentityHashMap<>();
-        IdentityHashMap<ParseTree, Integer> parseSubtreeSizes = new IdentityHashMap<>();
-        long indexingStarted = System.nanoTime();
-        walk(tree, -1, 0, parser, nodes, ruleCounts, parseIds, parseSubtreeSizes);
-        long indexingNanos = System.nanoTime() - indexingStarted;
+        var frontend=CobolFrontend.parse(binding,tokens,normalized,preprocessed.sourceMap(),
+                source.getFileName().toString(),diagnostics,parserMode,preprocessed.errors()==0,lexerErrors==0);
+        try(var nativeSyntax=frontend.route().equals("native")?DirectParseScope.enter():null){
+        var nodes=frontend.nodes();var ruleCounts=frontend.ruleCounts();
+        long recognitionNanos=frontend.recognitionNanos(),indexingNanos=frontend.indexingNanos();
+        if(parserMode.equals("direct-ast-lab"))LOG.info("event=direct_ast_lab route={} fallback={} nativeAttemptNanos={} reason={}",
+                frontend.route(),frontend.route().equals("fallback"),frontend.nativeAttemptNanos(),frontend.fallbackReason());
         int maxDepth = nodes.stream().mapToInt(Node::depth).max().orElse(0);
         long parserErrors = diagnostics.stream().filter(d -> d.phase() == Diagnostic.Phase.PARSER).count();
         LOG.debug("event=parsing_completed phase=PARSING elapsedMs={} nodes={} maxDepth={} parserErrors={}",
@@ -153,12 +137,9 @@ public final class ExplorerMain {
 
         progress.phase = "AST_BUILD";
         phaseStarted = System.nanoTime();
-        CompilationUnitBuildResult compilationBuild = new AstBuilder(parser, normalized,
-                preprocessed.sourceMap(), parseIds, parseSubtreeSizes,
-                preprocessed.errors() == 0 && lexerErrors == 0 && parserErrors == 0)
-                .buildCompilationUnit(tree, source.getFileName().toString());
-        LOG.debug("event=syntax_to_ast_completed parser={} recognitionNanos={} indexingNanos={} astNanos={}",
-                parserMode, recognitionNanos, indexingNanos, System.nanoTime() - phaseStarted);
+        CompilationUnitBuildResult compilationBuild = frontend.ast();
+        LOG.debug("event=syntax_to_ast_completed parser={} route={} recognitionNanos={} indexingNanos={} astNanos={}",
+                parserMode,frontend.route(),recognitionNanos,indexingNanos,frontend.astNanos());
         CompilationUnitModel compilationUnit = compilationBuild.compilationUnit();
         if (compilationUnit.programUnits().isEmpty())
             throw new IllegalStateException("No COBOL program unit was produced by the semantic frontend");
@@ -303,6 +284,7 @@ public final class ExplorerMain {
         LOG.info("event=analysis_completed phase=ANALYSIS elapsedMs={} programUnits={} references={} gaps={} dependencyAnalysisReady={} output={}",
                 elapsedMs(analysisStarted), compilationUnit.programUnits().size(), resolution.entries().size(),
                 resolutionReport.gaps().size(), resolutionReport.completeness().dependencyAnalysisReady(), output);
+        }
     }
 
     static StorageLayoutSemantics.Profile storageProfile(String value) {

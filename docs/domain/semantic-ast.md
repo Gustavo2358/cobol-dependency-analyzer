@@ -156,3 +156,12 @@ FILE/FD/SD com fatos de RECORD e RECORDING MODE, e declarações SQL opacas. Os
 metadados duplicados de RECORD e FileAuxiliary preservam os namespaces e a ordem
 do construtor canônico. A origem normativa continua nas regras de `Cobol.g4` e
 nas referências IBM registradas no [laboratório](../work/direct-ast-parser-lab.md).
+
+
+O modo `--parser direct-ast-lab` estende o laboratório à unidade completa.
+Preprocessador e lexer permanecem vigentes. O reconhecedor próprio e suas ações
+semânticas produzem a AST sem contexts nem visitantes ANTLR, inclusive nas
+referências embutidas. Um registro plano mantém as origens sintáticas observáveis.
+Falha nativa descarta toda a tentativa e executa o frontend legado sobre a unidade
+inteira; a publicação só começa depois da conclusão de um dos caminhos.
+Não há mudança de contratos de IDs, provenance, coverage ou Semantic Product.
