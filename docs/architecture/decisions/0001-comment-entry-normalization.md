@@ -12,7 +12,7 @@ A gramática recebe comment entries pelo token sintético `COMMENTENTRYLINE` (`*
 
 Usar scanner determinístico de registros fixed-format, após classificação exaustiva da indicator area e antes do parser. O catálogo fechado de owners é `programIdParagraph`, `authorParagraph`, `installationParagraph`, `dateWrittenParagraph`, `dateCompiledParagraph`, `securityParagraph` e `remarksParagraph`.
 
-Headers começam em Area A e usam separador gramatical explícito. Pontos no conteúdo são dados; a próxima construção de Area A encerra a entrada, com `END-REMARKS` também reconhecido para `remarksParagraph`. Nenhuma linha é inserida ou removida; texto marcado recebe `exact=false`.
+Headers começam em Area A e usam separador gramatical explícito. Pontos no conteúdo são dados; a próxima construção de Area A encerra a entrada, salvo o banner de compatibilidade REMARKS definido abaixo, com `END-REMARKS` também reconhecido para `remarksParagraph`. Nenhuma linha é inserida ou removida; texto marcado recebe `exact=false`.
 
 ## Rationale
 
@@ -37,3 +37,12 @@ O scanner acompanha as fronteiras aceitas pela gramática, preserva registros f�
 ## Related invariants
 
 INV-AST-002, INV-PROV-001, INV-PROV-002 e INV-COV-002.
+
+## Extensão de compatibilidade — 2026-10-02
+
+Somente no estado `REMARKS_COMMENT_ENTRY`, uma linha iniciada por `*` na Area A
+continua a documentação. `*>` mantém a semântica e a fronteira anteriores.
+A regra é local ao owner; não ignora texto arbitrário até a próxima divisão.
+Preserva o catálogo, as demais fronteiras e a transformação com origem aproximada.
+Contrato e autoridade externa: [source format](../../domain/source-format-and-normalization.md#compatibilidade-de-banners-em-remarks).
+Avaliação e limites: [REMARKS](../../work/remarks-area-a-compatibility.md).

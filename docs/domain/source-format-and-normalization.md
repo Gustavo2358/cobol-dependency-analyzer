@@ -25,7 +25,7 @@ A indicator area possui catálogo fechado: blank, comentário `*`, page-eject `/
 
 Continuação é resolvida por estado lexical para literal com aspas simples, literal com aspas duplas ou palavra. Continuação órfã, após registro incompatível ou fora das categorias suportadas produz diagnóstico/erro localizado; paridade simples de aspas não é o algoritmo.
 
-Comment entries são derivadas dos owners reconhecidos pela gramática e pelas fronteiras de Area A. Pontos dentro do conteúdo não encerram a entrada; `END-REMARKS` é fronteira explícita quando aplicável. Consulte [ADR-0001](../architecture/decisions/0001-comment-entry-normalization.md).
+Comment entries são derivadas dos owners reconhecidos pela gramática e pelas fronteiras de Area A, com a exceção delimitada de banners `REMARKS` descrita abaixo. Pontos dentro do conteúdo não encerram a entrada; `END-REMARKS` é fronteira explícita quando aplicável. Consulte [ADR-0001](../architecture/decisions/0001-comment-entry-normalization.md).
 
 ## Incerteza e diagnostics
 
@@ -109,3 +109,34 @@ não amplia esse domínio. Registros físicos e terminadores continuam preservad
 o trecho combinado tem origem aproximada, inclusive quando vem de COPY.
 Evidência: `SourceNormalizerTest` e
 `SourceNormalizationPreprocessingIntegrationTest.completeLiteralsRemainDistinctThroughCopyPreprocessing`.
+
+## Compatibilidade de banners em REMARKS
+
+Dentro de uma comment-entry `REMARKS` já aberta, uma linha de texto cujo primeiro
+caractere não branco seja `*` nas colunas físicas 8–11 permanece documentação.
+O marcador flutuante `*>` fica excluído desta extensão e conserva seu comportamento
+anterior. As posições são consideradas após a política existente de TAB e margem.
+
+O scanner reutiliza `*>CE`, preserva os registros e os terminadores físicos e
+marca a origem transformada com `exact=false`. O evento TRACE
+`remarks_area_a_asterisk` registra arquivo e linha. A regra vale também ao
+normalizar um COPY que contenha o header `REMARKS.`. Não se transfere estado de
+comentário entre arquivos físicos independentes.
+
+Qualquer outro item na Area A encerra o estado antes de ser processado, inclusive
+COPY, outro owner, uma divisão ou um header desconhecido. `END-REMARKS` continua
+encerrando a entrada também na Area B. Asteriscos fora desse estado, indicador
+inválido, continuação e a margem 72 conservam suas regras. Texto comum na Area A
+sem o asterisco não recebe esta tolerância.
+
+Esta é uma política de compatibilidade do analisador para documentação legada.
+A [IBM define comment-entries na Area B e sem efeito no significado do programa](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=division-optional-paragraphs).
+O [guia de migração registra REMARKS em OS/VS e sua ausência em Enterprise COBOL](https://www.ibm.com/docs/en/cobol-zos/6.5.0?topic=programs-language-elements-that-are-not-supported).
+Essas fontes delimitam a diferença entre a importação do analisador e a linguagem
+do compilador; esta extensão não comprova compilação no ambiente do cliente.
+
+A exclusão de `*>` é necessária: o parser já aceita `PROCEDURE DIVISION` na Area B
+após esse marcador na Area A. Converter o marcador em `*>CE` absorveria a divisão
+e chamadas seguintes como documentação. Esse contraexemplo está em
+`RemarksNormalizationCompatibilityTest`, junto com fronteiras, COPY, Unicode,
+LF/CRLF/CR, provenance e asteriscos fora de REMARKS.

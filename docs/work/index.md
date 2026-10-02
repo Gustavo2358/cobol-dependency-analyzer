@@ -1,3 +1,5 @@
+[Compatibilidade de banners REMARKS — IN_PROGRESS](remarks-area-a-compatibility.md): avaliação local; extensão restrita e contraexemplo de comentário flutuante preservado.
+
 [Assinatura de entrada sob input parcial — DONE / MERGED](entry-signature-locality.md):
 PR #83; 96 pares até dependências, sem perda nos 88 produtos comparáveis.
 A aceitação IBM dos dois padrões físicos permanece não verificada.
