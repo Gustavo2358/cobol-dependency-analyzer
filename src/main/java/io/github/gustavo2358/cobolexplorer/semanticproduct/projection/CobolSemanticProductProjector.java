@@ -544,7 +544,10 @@ public final class CobolSemanticProductProjector {
             start = Optional.of(id);
         }
         EntrySignature signature;
-        if (origin == null || inputMissing) {
+        // DATA-only (or separately owned) input gaps do not erase the canonical
+        // written header. This is the same local input proof used by the start;
+        // parameter bindings, types and storage still have their own gaps.
+        if (origin == null || !entryInputKnown) {
             signature = new EntrySignature(unavailable, Optional.empty(), ReturningClause.UNKNOWN);
         } else if (!origin.signatureClausesPresent()) {
             signature = new EntrySignature(Availability.KNOWN, Optional.of(0), ReturningClause.ABSENT);
@@ -569,7 +572,7 @@ public final class CobolSemanticProductProjector {
                     "parameter contracts and explicit result contract are not fully available", provenance));
         if (inputMissing)
             gaps.add(new EntryGap(GapScope.ANALYSIS_INPUT, "ENTRY_INPUT_INCOMPLETE",
-                    "input remains incomplete; entry localization does not prove signature or data completeness", provenance));
+                    "input remains incomplete; local written signature does not prove parameter bindings or data completeness", provenance));
         for (var missing : inputs.report().frontendState().incompleteCopyDiagnostics())
             if (inputMissing && (program.inputProof().copies().isEmpty() || program.inputProof().copies().contains(missing)))
             gaps.add(new EntryGap(GapScope.ANALYSIS_INPUT, missing.code().name(),

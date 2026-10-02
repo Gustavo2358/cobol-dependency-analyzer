@@ -86,7 +86,7 @@ não são uma previsão para todo o corpus ou outras máquinas.
 - Os **586 Semantic Products e 586 envelopes de compilação são idênticos byte a
   byte**. IDs, fatos, gaps e estados `PARTIAL` foram preservados. AIR/CFG não foram
   reexecutados; seus inputs publicados pelo frontend são idênticos à base.
-- Os benchmarks somam 80 execuções, incluindo escalas, perfis e controles de
+- As medições de desempenho somam 80 execuções, incluindo escalas, perfis e controles de
   instrumentação, com 1.292 comparações adicionais de arquivos idênticas.
 
 Não foi observada regressão de conteúdo no conjunto qualificado. A variação
@@ -95,17 +95,11 @@ dessas duas chaves, com igualdade dos valores JSON e dos demais bytes.
 
 ## Evidência preservada
 
-No workspace de qualificação, os resultados brutos ficam em
-`.proleap-post-antlr-implementation-20261001/evidence/`, relativo à raiz agregadora:
-
-- `qualification-summary.json` e `qualified-corpus-results.json`: consolidação,
-  casos e seis diferenças de ordem identificadas individualmente;
-- `benchmark-summary.json` e `benchmarks/`: método, dispersão, resultados e
-  produtos por execução;
-- `runtime/manifest.json` e `implementation-commit.json`: fontes e binários
-  usados, com hashes e vínculo ao commit da implementação;
-- `full-surefire-reports/`, logs locais/remotos e `baseline-order-control/`:
-  testes e reprodução independente da variação histórica.
+Os caminhos exatos dos resultados brutos, resumos de medições, manifests de
+runtime e logs permanecem no
+[registro histórico imutável](https://github.com/Gustavo2358/proleap-poc/blob/3646754b14519b0fa95f2a7233bdfce4527ebdba/docs/work/post-antlr-performance.md#evidência-preservada).
+Essa referência conserva os nomes usados pela execução original; nenhum arquivo
+de evidência foi renomeado ou removido no fechamento documental.
 
 As tentativas com inventários históricos ausentes foram mantidas; os 55 casos
 afetados foram reexecutados com inventários do mesmo commit baseline. Os dados
