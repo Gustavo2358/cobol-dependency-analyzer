@@ -141,3 +141,12 @@ their established behavior. Identical alternative destinations are coalesced.
 No JSON generation effect, executable JSON transition or strong overwrite is
 proved. Preserved clause groups are never flattened into sequential siblings.
 Authority and qualification: [JSON GENERATE checkpoint](../work/stage5-json-generate.md).
+
+## Laboratório de construção direta
+
+O modo opt-in `--parser direct-data-lab` admite um subconjunto de DATA DIVISION
+por um parser próprio sobre os tokens da gramática. Declarações tipadas produzem
+a mesma AST sem contexts ANTLR intermediários; um registro plano preserva apenas
+a origem e a apresentação sintática. Construções fora do recorte retornam
+transacionalmente ao parser original. Os contratos acima permanecem vigentes.
+Escopo, autoridade e evidência estão no [laboratório](../work/direct-ast-parser-lab.md).

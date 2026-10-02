@@ -274,6 +274,16 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
 
     private Ast.Division buildData(CobolParser.DataDivisionContext context) {
         Ast.Meta meta = meta(context);
+        if (parser.directDataSession != null) {
+            var direct = parser.directDataSession.result(context);
+            if (direct != null) {
+                var result = direct.build(nextId, parseIds.get(context) + 4, sourceMap);
+                nextId = result.nextId();
+                result.coverage().forEach(draft -> recordCoverage(draft.node(), draft.writtenText()));
+                semanticDiagnostics.addAll(result.diagnostics());
+                return new Ast.Division(meta, Ast.DivisionKind.DATA, result.sections());
+            }
+        }
         List<Ast.Node> sections = new ArrayList<>();
         for (CobolParser.DataDivisionSectionContext wrapper : context.dataDivisionSection()) {
             ParserRuleContext sectionContext = dataSectionContext(wrapper);
@@ -683,8 +693,8 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     /** Interpret only the PIC X repetition language, in the canonical frontend.
      * This grammar uses generic pictureChars tokens, so repetition is decoded here
      * without expansion; every other category/edited symbol fails closed. */
-    private static Optional<Integer> elementaryTextExtent(String picture) { return elementaryExtent(picture,'X'); }
-    private static Optional<Integer> elementaryIntegerDigits(String picture) {
+    static Optional<Integer> elementaryTextExtent(String picture) { return elementaryExtent(picture,'X'); }
+    static Optional<Integer> elementaryIntegerDigits(String picture) {
         return elementaryExtent(picture.startsWith("S")||picture.startsWith("s")?picture.substring(1):picture,'9');
     }
     private static Optional<Integer> elementaryExtent(String picture,char category) {
@@ -1814,11 +1824,15 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     }
 
     private static Optional<Ast.LogicalText> basicLogicalText(CobolParser.LiteralContext literal) {
+        return literal.NONNUMERICLITERAL() == null ? Optional.empty()
+                : basicLogicalTextToken(literal.NONNUMERICLITERAL().getText());
+    }
+
+    static Optional<Ast.LogicalText> basicLogicalTextToken(String token) {
         Optional<Ast.LogicalText> logical = Optional.empty();
-        if (literal.NONNUMERICLITERAL() != null) {
+        {
             // NONNUMERICLITERAL also includes national, hex and null-terminated
             // formats. Decode only its basic quoted alternative, with doubled delimiters.
-            String token = literal.NONNUMERICLITERAL().getText();
             if (token.length() >= 2 && (token.charAt(0) == '\'' || token.charAt(0) == '"')) {
                 char delimiter = token.charAt(0);
                 StringBuilder value = new StringBuilder(token.length() - 2);

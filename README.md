@@ -117,3 +117,9 @@ dist/                    saída gerada, pronta para abrir
 ```
 
 [SP2.44 terminal SEND contract and bounded executable stop](docs/domain/terminal-send-r7-r7b.md).
+
+### Laboratório de parser próprio
+
+`--parser direct-data-lab` ativa o parser experimental de DATA que gera a AST
+diretamente, com fallback para a gramática original em construções não admitidas.
+O padrão é `--parser antlr`. Consulte [escopo, medição e limites](docs/work/direct-ast-parser-lab.md).
