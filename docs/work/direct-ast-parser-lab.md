@@ -7,6 +7,9 @@
 
 ## Implementação
 
+**Estado atual: [73/73 programas CardDemo sem fallback em DATA](direct-ast-complete.md).**
+Os resultados de três programas e o inventário de 70 fallbacks abaixo são históricos, anteriores à ampliação.
+
 `--parser direct-data-lab` ativa um parser descendente recursivo próprio para
 um subconjunto de DATA DIVISION. O padrão continua `--parser antlr`.
 O reconhecimento produz declarações tipadas e materializa a AST imutável,
@@ -48,8 +51,7 @@ não uma garantia matemática para qualquer entrada.
 
 A autoridade de compatibilidade deste laboratório é a gramática e a AST vigentes;
 não se introduz nova interpretação do dialeto. Referências oficiais das construções:
-[IBM, data description format 1](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=entry-format-1)
-, [IBM, OCCURS](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=entry-occurs-clause),
+[IBM, data description format 1](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=entry-format-1), [IBM, OCCURS](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=entry-occurs-clause),
 [IBM, RECORD](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=entries-record-clause)
 e [IBM, regras de PICTURE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=clause-data-categories-picture-rules).
 Entradas permissivas da gramática atual não são silenciosamente corrigidas.
@@ -148,5 +150,10 @@ passou nos 73 fontes preprocessados: 73 admissões próprias, zero fallback e ze
 diferenças estruturais, incluindo origens, AST, coverage e diagnósticos. A regressão
 de fixtures comparou 308 entradas, com 240 usando o caminho direto; as 23 rejeições
 de normalização e a falha preexistente continuam explicitadas. FAST local passou.
-A confirmação pela CLI completa com COPY e os novos tempos será registrada no
-relatório de fechamento após o término da execução.
+A [confirmação pela CLI completa](direct-ast-complete.md) também passou: 73/73
+programas, zero fallback, 35.590 declarações, 146 execuções e 1.387 pares de produtos
+com conteúdo equivalente. Uma divergência bruta de ordem de chaves JSON permanece
+discriminada. FAST local/remoto PASS; 1.317 testes completos, zero falhas/erros e um
+skip histórico. O naming preexistente continua bloqueando o gate final da qualificação.
+No total dos 73 programas, parsing combinado caiu 11,9% e a CLI caiu 4,1%; a meta
+universal de 50% não foi atingida. Lexer e PROCEDURE continuam no ANTLR.
