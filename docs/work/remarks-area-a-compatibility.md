@@ -11,6 +11,9 @@ A extensão delimitada é viável para o fixture reconstruído das fotos. O bloq
 era causado pela fronteira estrita de Area A do normalizador. Manter os banners
 como documentação permite publicar Semantic Product, AIR, CFG e dependências.
 A implementação está em branch de avaliação, pendente de revisão e integração.
+O mesmo PR inclui a [preservação após controle CICS parcial](cics-source-preservation.md);
+os sete controles de REMARKS foram repetidos com essa correção e mantiveram o
+JSON de dependências inteiro.
 
 O contrato está em [source format](../domain/source-format-and-normalization.md#compatibilidade-de-banners-em-remarks)
 e no [ADR-0001](../architecture/decisions/0001-comment-entry-normalization.md).
