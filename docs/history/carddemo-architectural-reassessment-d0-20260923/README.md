@@ -34,11 +34,11 @@ explícita para nova execução; a verificação da publicação abaixo é port�
 
 | Pacote | Conteúdo | Arquivos |
 | --- | --- | ---: |
-| [d0-evidence.tar.gz](archives/d0-evidence.tar.gz) | Relatórios originais, matriz, tools, probes e todas as 60 execuções históricas do D0, com manifesto original | 1.080 |
-| [canonical-carddemo-73.tar.gz](archives/canonical-carddemo-73.tar.gz) | Evidência canônica integral dos 73 programas, cenários auxiliares, logs, outputs e manifesto original | 4.788 |
+| [d0-evidence.tar.gz](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/archives/d0-evidence.tar.gz) | Relatórios originais, matriz, tools, probes e todas as 60 execuções históricas do D0, com manifesto original | 1.080 |
+| [canonical-carddemo-73.tar.gz](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/archives/canonical-carddemo-73.tar.gz) | Evidência canônica integral dos 73 programas, cenários auxiliares, logs, outputs e manifesto original | 4.788 |
 | [supporting-references.tar.gz](archives/supporting-references.tar.gz) | Snapshots de código/contratos citados, documentos históricos citados e descritores de runtime | 43 |
 
-Os arquivos compactados somam aproximadamente 76,5 MiB. O
+Os arquivos compactados da publicação original somam aproximadamente 76,5 MiB. O
 [inventário de publicação](PUBLICATION_INVENTORY.json) registra caminho, tamanho,
 SHA-256 e localização de cada um dos **5.911 arquivos** arquivados.
 [ARCHIVES.sha256](ARCHIVES.sha256) verifica os três arquivos compactados.
@@ -79,9 +79,32 @@ originais dessas waves não foram republicados recursivamente; os documentos
 citados e descritores necessários estão no pacote de referências, e os outputs
 das 60 novas execuções históricas feitas no D0 estão integralmente publicados.
 
+## Disponibilidade dos bundles históricos
+
+`d0-evidence.tar.gz` e `canonical-carddemo-73.tar.gz` foram retirados da árvore
+atual para reduzir o snapshot de fontes. Os links da tabela apontam para o commit
+`5a2eaa333fc74da8d1229f7203716e4e775ed060`, que preserva integralmente os arquivos.
+A remoção não altera código, build, testes, fixtures ou dependências da aplicação.
+O snapshot local equivalente passa de aproximadamente 86,40 MB para 9,01 MB.
+
+O inventário, os hashes e o verificador desta publicação continuam descrevendo
+os pacotes originais. Para auditar essa evidência, restaure os dois arquivos antes
+de executar os comandos abaixo. Em um checkout Git que contenha o commit indicado,
+a partir desta pasta:
+
+```bash
+git show 5a2eaa333fc74da8d1229f7203716e4e775ed060:docs/history/carddemo-architectural-reassessment-d0-20260923/archives/d0-evidence.tar.gz > archives/d0-evidence.tar.gz
+git show 5a2eaa333fc74da8d1229f7203716e4e775ed060:docs/history/carddemo-architectural-reassessment-d0-20260923/archives/canonical-carddemo-73.tar.gz > archives/canonical-carddemo-73.tar.gz
+```
+
+Em um snapshot sem `.git`, baixe os arquivos pelos links da tabela para `archives/`.
+A remoção da árvore atual não reescreve o histórico nem reduz o tamanho de um clone
+completo que ainda contenha esses blobs.
+
 ## Verificação e extração
 
-A partir desta pasta, a verificação portátil não executa nenhum produto:
+Depois de restaurar os bundles, a partir desta pasta, a verificação portátil não
+executa nenhum produto:
 
 ```bash
 python3 -B verify-publication.py
