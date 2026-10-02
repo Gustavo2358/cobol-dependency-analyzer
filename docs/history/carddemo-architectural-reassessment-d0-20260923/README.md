@@ -85,7 +85,7 @@ das 60 novas execuções históricas feitas no D0 estão integralmente publicado
 atual para reduzir o snapshot de fontes. Os links da tabela apontam para o commit
 `5a2eaa333fc74da8d1229f7203716e4e775ed060`, que preserva integralmente os arquivos.
 A remoção não altera código, build, testes, fixtures ou dependências da aplicação.
-O snapshot local equivalente passa de aproximadamente 86,40 MB para 9,01 MB.
+O snapshot local equivalente passa de aproximadamente 86,40 MB para 9,18 MB.
 
 O inventário, os hashes e o verificador desta publicação continuam descrevendo
 os pacotes originais. Para auditar essa evidência, restaure os dois arquivos antes
