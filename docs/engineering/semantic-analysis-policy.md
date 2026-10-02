@@ -63,6 +63,25 @@ Comentários em produção devem explicar regra, invariante ou motivo da postura
 
 As gramáticas vendorizadas preservam autoria, copyright e atribuições. Alterá-las só é correto quando a gramática é a origem comprovada do defeito ou quando a superfície suportada muda deliberadamente; fixtures e grammar não são ajustadas apenas para satisfazer produção. `scripts/verify-naming.sh` protege a identidade atual sem remover referências exigidas pelas atribuições das gramáticas e notices, nem reescrever fontes históricas em `docs/history/`. O gate inspeciona somente arquivos rastreados ou novos não ignorados; metadados locais não fazem parte da identidade do projeto.
 
+A guarda distingue identidade de referências documentais:
+
+- Em Markdown sob `docs/`, benchmark e suas formas usuais são vocabulário de
+  medição permitido como palavras isoladas. Identificadores compostos com o nome
+  antigo continuam proibidos, assim como os nomes antigos em código e caminhos
+  versionados do repositório.
+- A identidade exata do repositório `proleap-poc` é permitida em documentos
+  Markdown, JSON, YAML e YML; nomes semelhantes ou compostos não recebem a exceção.
+- Caminhos e nomes de arquivos em spans de código Markdown podem registrar
+  artefatos históricos. A exceção exige um caminho sem espaços ou um nome com
+  extensão de artefato documental, de apresentação ou compactado reconhecida
+  pelo gate; não exclui o restante da linha nem libera nomes isolados ou nomes
+  qualificados de classes do produto.
+  Nenhum arquivo de evidência precisa ser renomeado para satisfazer a guarda.
+
+`scripts/harness/test_naming.py` cobre esses usos e os contracasos em código,
+recursos, documentos mistos e nomes semelhantes. Falta de ferramenta não pode
+converter uma violação em sucesso.
+
 ## INTERNAL-CONTRACT-DEV-001 — contratos internos em desenvolvimento
 
 Contrato interno controlado no mesmo produto pode evoluir por bump explícito,

@@ -36,7 +36,20 @@ import sys
 
 vendor, purpose = sys.argv[1:]
 forbidden = re.compile(re.escape(vendor) + '|' + re.escape(purpose), re.IGNORECASE)
-repository = re.compile(r'(?<!\w)' + re.escape(vendor) + r'-poc(?!\w)')
+repository = re.compile(r'(?<![\w.-])' + re.escape(vendor) + r'-poc(?![\w-]|\.\w)')
+measurement = re.compile(r'(?<![\w.-])' + re.escape(purpose) + r'(?:s|ing|ed)?(?![\w-]|\.\w)', re.IGNORECASE)
+artifact_span = re.compile(r'`([^`\s]+)`')
+artifact_path = re.compile(r'/?[\w.@+-]+(?:/[\w.@+-]+)*/?')
+artifact_extensions = {'.json', '.jsonl', '.csv', '.tsv', '.log', '.txt', '.md',
+                       '.yaml', '.yml', '.html', '.js', '.gz', '.zip', '.tar', '.zst'}
+
+def documentary_artifact(match):
+    value = match[1]
+    # A quoted path or filename is a reference, not a new repository identity.
+    # Prose and bare identifiers inside code spans remain subject to the guard.
+    if artifact_path.fullmatch(value) and ('/' in value or Path(value).suffix.lower() in artifact_extensions):
+        return ''
+    return match[0]
 excluded = {'src/main/antlr4/Cobol.g4', 'src/main/antlr4/CobolPreprocessor.g4', 'THIRD_PARTY_NOTICES.md'}
 paths = subprocess.check_output(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z'])
 contents = []
@@ -47,9 +60,14 @@ for name in sorted(set(paths.decode().split('\0')) - {''}):
     if path.is_symlink() or not path.is_file():
         continue  # Match the original search: no symlink following or deleted files.
     content = path.read_text(errors='replace')
-    if name.startswith('docs/') and name.endswith(('.md', '.json')):
+    if name.startswith('docs/') and name.endswith(('.md', '.json', '.yaml', '.yml')):
         # Exact repository identity in prose and machine-readable documentary evidence only.
         content = repository.sub('', content)
+        if name.endswith('.md'):
+            content = artifact_span.sub(documentary_artifact, content)
+            # Ordinary measurement vocabulary is valid in prose; compound
+            # product identifiers, code and structured labels remain checked.
+            content = measurement.sub('', content)
     if forbidden.search(content):
         contents.append(name)
 if contents:

@@ -141,3 +141,36 @@ their established behavior. Identical alternative destinations are coalesced.
 No JSON generation effect, executable JSON transition or strong overwrite is
 proved. Preserved clause groups are never flattened into sequential siblings.
 Authority and qualification: [JSON GENERATE checkpoint](../work/stage5-json-generate.md).
+
+## Laboratório de construção direta
+
+O modo opt-in `--parser direct-data-lab` admite um subconjunto de DATA DIVISION
+por um parser próprio sobre os tokens da gramática. Declarações tipadas produzem
+a mesma AST sem contexts ANTLR intermediários; um registro plano preserva apenas
+a origem e a apresentação sintática. Construções fora do recorte retornam
+transacionalmente ao parser original. Os contratos acima permanecem vigentes.
+Escopo, autoridade e evidência estão no [laboratório](../work/direct-ast-parser-lab.md).
+
+A ampliação DATA inclui OCCURS (limites, DEPENDING, qualifiers, chaves e índices),
+FILE/FD/SD com fatos de RECORD e RECORDING MODE, e declarações SQL opacas. Os
+metadados duplicados de RECORD e FileAuxiliary preservam os namespaces e a ordem
+do construtor canônico. A origem normativa continua nas regras de `Cobol.g4` e
+nas referências IBM registradas no [laboratório](../work/direct-ast-parser-lab.md).
+
+
+O modo `--parser direct-ast-lab` estende o laboratório à unidade completa.
+Preprocessador e lexer permanecem vigentes. O reconhecedor próprio e suas ações
+semânticas produzem a AST sem contexts nem visitantes ANTLR, inclusive nas
+referências embutidas. Um registro plano mantém as origens sintáticas observáveis.
+Falha nativa descarta toda a tentativa e executa o frontend legado sobre a unidade
+inteira; a publicação só começa depois da conclusão de um dos caminhos.
+Não há mudança de contratos de IDs, provenance, coverage ou Semantic Product.
+
+Na fronteira entre parágrafos e seções de PROCEDURE, o reconhecedor próprio
+consulta `procedureSectionHeader` da gramática vigente e confirma o `DOT_FS`
+seguinte antes de admitir um `paragraph`. Isso impede que o ponto opcional e o
+corpo vazio de `paragraph` consumam o nome de uma seção. A antecipação percorre
+apenas nome, `SECTION`, número de segmento opcional e ponto; reaproveita a
+memoização existente. A gramática e os contratos de AST permanecem iguais.
+`DirectCobolParserTest` exige admissão própria e equivalência integral para essa
+fronteira, incluindo as fixtures `procedure-binding.cbl` e `nominal-references.cbl`.

@@ -19,6 +19,12 @@
 
 grammar Cobol;
 
+@parser::members {
+    { io.github.gustavo2358.cobolexplorer.DirectParseScope.requireLegacyAllowed(); }
+    // Opt-in laboratory session; absent in the production/default parser.
+    public io.github.gustavo2358.cobolexplorer.DirectDataParser.Session directDataSession;
+}
+
 startRule : compilationUnit EOF;
 
 compilationUnit
@@ -369,7 +375,9 @@ commitmentControlClause
 // --- data division --------------------------------------------------------------------
 
 dataDivision
-   : DATA DIVISION DOT_FS dataDivisionSection*
+   : DATA DIVISION DOT_FS
+     {if (directDataSession != null) directDataSession.read(this, _localctx);}
+     dataDivisionSection*
    ;
 
 dataDivisionSection

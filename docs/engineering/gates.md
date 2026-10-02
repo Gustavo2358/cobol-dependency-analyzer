@@ -4,7 +4,7 @@ A política vigente é [LEAN HARNESS / GIT-IS-THE-RECORD](lean-harness.md).
 
 | Comando | Uso |
 | --- | --- |
-| `python3 -B scripts/harness/lean.py fast` | Desenvolvimento: política, compile, testes focais e arquitetura |
+| `python3 -B scripts/harness/lean.py fast` | Desenvolvimento: política, naming do repositório, compile, testes focais e arquitetura |
 | `python3 -B scripts/harness/lean.py docs` | Documentação: navegação, política e higiene Git; sem build |
 | `python3 -B scripts/harness/lean.py ci` | Push/PR: classifica docs/código e executa apenas FAST |
 | `python3 -B scripts/harness/lean.py qualification-local` | Full local sob demanda; PASS / FAIL |

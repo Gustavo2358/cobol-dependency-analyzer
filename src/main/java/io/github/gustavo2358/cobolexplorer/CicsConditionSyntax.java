@@ -25,7 +25,7 @@ final class CicsConditionSyntax {
         for(var option:options) {
             if(command.name().equals("IGNORE")&&option.operand().isPresent())return Optional.empty();
             if(!CONDITIONS.contains(option.name())||!seen.add(option.name()))return Optional.empty();
-            if(option.operand().isPresent()&&label(raw,option,0,1,0,0).isEmpty())return Optional.empty();
+            if(option.operand().isPresent()&&(DirectParseScope.active()?DirectEmbeddedProcedureSyntax.conditionLabel(raw,option,0,1,0,0).isEmpty():label(raw,option,0,1,0,0).isEmpty()))return Optional.empty();
         }
         return Optional.of(List.copyOf(options));
     }

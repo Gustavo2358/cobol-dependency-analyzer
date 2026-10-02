@@ -29,6 +29,7 @@ final class CicsAbendSyntax {
         if(CicsCommandSyntax.literal(text).filter(s->!s.isEmpty()).isPresent())return true;
         // Deliberately bounded DATA syntax. Qualification/subscripts/functions remain unavailable.
         if(text.isEmpty()||!text.codePoints().allMatch(c->c>='A'&&c<='Z'||c>='a'&&c<='z'||c>='0'&&c<='9'||c=='-'))return false;
+        if(DirectParseScope.active())try {return ((DirectSyntax.IdentifierFrame)DirectEmbeddedProcedureSyntax.parseRule(text,"identifier")).qualifiedDataName()!=null;}catch(DirectRecognizer.Unsupported e){return false;}
         var failed=new boolean[1];var listener=new BaseErrorListener(){@Override public void syntaxError(Recognizer<?,?> r,Object s,int l,int c,String m,RecognitionException e){failed[0]=true;}};
         var lexer=new CobolLexer(CharStreams.fromString(text));lexer.removeErrorListeners();lexer.addErrorListener(listener);
         var parser=new CobolParser(new CommonTokenStream(lexer));parser.removeErrorListeners();parser.setErrorHandler(new BailErrorStrategy());

@@ -79,7 +79,7 @@ final class SqlCommandSyntax {
                     int start=at;identifier(true);
                     if(take("OF")||take("IN"))identifier(true);
                     var first=tokens.get(start);String syntax=raw.substring(first.start(),tokens.get(at-1).end());
-                    if(EmbeddedProcedureSyntax.parse(raw,syntax,first.start(),0,1,0,0).isEmpty())throw new Unproved();
+                    if(DirectParseScope.active()?DirectEmbeddedProcedureSyntax.parse(raw,syntax,first.start(),0,1,0,0).isEmpty():EmbeddedProcedureSyntax.parse(raw,syntax,first.start(),0,1,0,0).isEmpty())throw new Unproved();
                     target=Optional.of(new Label(syntax,first.start()));
                 }
                 directive=Optional.of(new Directive(condition,target));kind=Kind.WHENEVER;
@@ -126,7 +126,7 @@ final class SqlCommandSyntax {
         }
         void host(Ast.EmbeddedHostRole role) {
             need(":");var t=next();checkIdentifier(t,true);String operand=raw.substring(t.start(),t.end());
-            if(CicsHostSyntax.parseReference(operand,raw,t.start(),0,1,0,0).isEmpty())throw new Unproved();hosts.add(new Host(operand,t.start(),role));
+            if(!CicsHostSyntax.supportsReference(operand,raw,t.start(),0,1,0,0))throw new Unproved();hosts.add(new Host(operand,t.start(),role));
         }
         void qualified(){identifier(false);if(take("."))identifier(false);}
         void identifier(boolean host){checkIdentifier(next(),host);}

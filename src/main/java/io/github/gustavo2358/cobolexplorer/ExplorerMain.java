@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public final class ExplorerMain {
     private static final Logger LOG = LoggerFactory.getLogger(ExplorerMain.class);
 
-    private record Node(int id, int parent, String kind, String name, String text,
+    record Node(int id, int parent, String kind, String name, String text,
                         int line, int column, int stopLine, int tokenStart, int tokenStop,
                         int depth, int childCount) {}
 
@@ -35,6 +35,9 @@ public final class ExplorerMain {
             case "none" -> ".json";
             default -> throw new IllegalArgumentException("--json-compression must be zstd or none");
         };
+        String parserMode = argument(args, "--parser", "antlr");
+        if (!Set.of("antlr","direct-data-lab","direct-ast-lab").contains(parserMode))
+            throw new IllegalArgumentException("--parser must be antlr, direct-data-lab or direct-ast-lab");
         var storageProfile = storageProfile(argument(args, "--storage-profile", "unspecified"));
         boolean logicalText=switch(argument(args,"--logical-text","auto")) {
             case "auto"->storageProfile==StorageLayoutSemantics.Profile.UNSPECIFIED;
@@ -50,7 +53,7 @@ public final class ExplorerMain {
         try (AnalysisLogContext logContext = AnalysisLogContext.open(source)) {
             LOG.info("event=analysis_started phase=ANALYSIS output={}", output);
             try {
-                analyze(source, copybooks, output, logContext, progress, analysisStarted, storageProfile,entryMode,cicsMode,logicalText,sourceInventory,jsonSuffix);
+                analyze(source, copybooks, output, logContext, progress, analysisStarted, storageProfile,entryMode,cicsMode,logicalText,sourceInventory,jsonSuffix,parserMode);
             } catch (Exception exception) {
                 LOG.error("event=analysis_failed phase={} elapsedMs={} reason={} impact=NO_RESULT",
                         progress.phase, elapsedMs(analysisStarted), exception.getClass().getSimpleName(), exception);
@@ -61,7 +64,7 @@ public final class ExplorerMain {
 
     private static void analyze(Path source, List<Path> copybooks, Path output,
                                 AnalysisLogContext logContext, AnalysisProgress progress,
-                                long analysisStarted, StorageLayoutSemantics.Profile storageProfile,StorageInitialSemantics.EntryMode entryMode,CicsProgramControlAnalyzer.EntryMode cicsMode,boolean logicalText,SourceArtifactInventory sourceInventory,String jsonSuffix) throws Exception {
+                                long analysisStarted, StorageLayoutSemantics.Profile storageProfile,StorageInitialSemantics.EntryMode entryMode,CicsProgramControlAnalyzer.EntryMode cicsMode,boolean logicalText,SourceArtifactInventory sourceInventory,String jsonSuffix,String parserMode) throws Exception {
 
         GrammarBinding binding = Bindings.cobol();
         List<Diagnostic> diagnostics = new ArrayList<>();
@@ -108,17 +111,13 @@ public final class ExplorerMain {
 
         progress.phase = "PARSING";
         phaseStarted = System.nanoTime();
-        Parser parser = binding.cobolParser(tokens);
-        parser.removeErrorListeners();
-        parser.addErrorListener(new AntlrDiagnosticListener(binding.name(), Diagnostic.Phase.PARSER,
-                source.getFileName().toString(), diagnostics));
-        ParseTree tree = binding.cobolStart(parser);
-
-        List<Node> nodes = new ArrayList<>();
-        Map<String, Integer> ruleCounts = new TreeMap<>();
-        IdentityHashMap<ParseTree, Integer> parseIds = new IdentityHashMap<>();
-        IdentityHashMap<ParseTree, Integer> parseSubtreeSizes = new IdentityHashMap<>();
-        walk(tree, -1, 0, parser, nodes, ruleCounts, parseIds, parseSubtreeSizes);
+        var frontend=CobolFrontend.parse(binding,tokens,normalized,preprocessed.sourceMap(),
+                source.getFileName().toString(),diagnostics,parserMode,preprocessed.errors()==0,lexerErrors==0);
+        try(var nativeSyntax=frontend.route().equals("native")?DirectParseScope.enter():null){
+        var nodes=frontend.nodes();var ruleCounts=frontend.ruleCounts();
+        long recognitionNanos=frontend.recognitionNanos(),indexingNanos=frontend.indexingNanos();
+        if(parserMode.equals("direct-ast-lab"))LOG.info("event=direct_ast_lab route={} fallback={} nativeAttemptNanos={} reason={}",
+                frontend.route(),frontend.route().equals("fallback"),frontend.nativeAttemptNanos(),frontend.fallbackReason());
         int maxDepth = nodes.stream().mapToInt(Node::depth).max().orElse(0);
         long parserErrors = diagnostics.stream().filter(d -> d.phase() == Diagnostic.Phase.PARSER).count();
         LOG.debug("event=parsing_completed phase=PARSING elapsedMs={} nodes={} maxDepth={} parserErrors={}",
@@ -138,10 +137,9 @@ public final class ExplorerMain {
 
         progress.phase = "AST_BUILD";
         phaseStarted = System.nanoTime();
-        CompilationUnitBuildResult compilationBuild = new AstBuilder(parser, normalized,
-                preprocessed.sourceMap(), parseIds, parseSubtreeSizes,
-                preprocessed.errors() == 0 && lexerErrors == 0 && parserErrors == 0)
-                .buildCompilationUnit(tree, source.getFileName().toString());
+        CompilationUnitBuildResult compilationBuild = frontend.ast();
+        LOG.debug("event=syntax_to_ast_completed parser={} route={} recognitionNanos={} indexingNanos={} astNanos={}",
+                parserMode,frontend.route(),recognitionNanos,indexingNanos,frontend.astNanos());
         CompilationUnitModel compilationUnit = compilationBuild.compilationUnit();
         if (compilationUnit.programUnits().isEmpty())
             throw new IllegalStateException("No COBOL program unit was produced by the semantic frontend");
@@ -286,6 +284,7 @@ public final class ExplorerMain {
         LOG.info("event=analysis_completed phase=ANALYSIS elapsedMs={} programUnits={} references={} gaps={} dependencyAnalysisReady={} output={}",
                 elapsedMs(analysisStarted), compilationUnit.programUnits().size(), resolution.entries().size(),
                 resolutionReport.gaps().size(), resolutionReport.completeness().dependencyAnalysisReady(), output);
+        }
     }
 
     static StorageLayoutSemantics.Profile storageProfile(String value) {
@@ -348,7 +347,7 @@ public final class ExplorerMain {
         private String phase = "INITIALIZATION";
     }
 
-    private static int walk(ParseTree tree, int parent, int depth, Parser parser,
+    static int walk(ParseTree tree, int parent, int depth, Parser parser,
                             List<Node> nodes, Map<String, Integer> ruleCounts,
                             IdentityHashMap<ParseTree, Integer> parseIds,
                             IdentityHashMap<ParseTree, Integer> parseSubtreeSizes) {
@@ -389,12 +388,28 @@ public final class ExplorerMain {
             name = tree.getClass().getSimpleName();
         }
 
+        var direct = parser instanceof io.github.gustavo2358.cobolexplorer.antlr.CobolParser cobol
+                && cobol.directDataSession != null ? cobol.directDataSession.result(tree) : null;
         nodes.add(new Node(id, parent, kind, name, text, line, column, stopLine,
-                tokenStart, tokenStop, depth, tree.getChildCount()));
+                tokenStart, tokenStop, depth, tree.getChildCount() + (direct == null ? 0 : direct.sectionCount())));
         int subtreeSize = 1;
         for (int i = 0; i < tree.getChildCount(); i++) {
             subtreeSize += walk(tree.getChild(i), id, depth + 1, parser, nodes, ruleCounts,
                     parseIds, parseSubtreeSizes);
+        }
+        if (direct != null) {
+            int base = nodes.size();
+            for (var event : direct.events()) {
+                int eventParent = event.parent() < 0 ? id : base + event.parent();
+                Token first = event.start(), last = event.stop();
+                boolean ruleEvent = event.rule() != null;
+                String eventName = ruleEvent ? event.rule() : tokenName(parser, first);
+                if (ruleEvent) ruleCounts.merge(eventName, 1, Integer::sum);
+                nodes.add(new Node(nodes.size(), eventParent, ruleEvent ? "rule" : "terminal", eventName,
+                        ruleEvent ? "" : first.getText(), first.getLine(), first.getCharPositionInLine(), last.getLine(),
+                        first.getTokenIndex(), last.getTokenIndex(), depth + event.depth() + 1, event.children()));
+            }
+            subtreeSize += direct.events().size();
         }
         parseSubtreeSizes.put(tree, subtreeSize);
         return subtreeSize;
