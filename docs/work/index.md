@@ -1,3 +1,5 @@
+[JSON Zstandard — fechamento aprovado](../engineering/json-zstd.md#qualificação-e-fechamento): PR #80; qualificação, compatibilidade e benchmark completo. O PR registra a integração.
+
 [Desempenho pós-ANTLR — implementação e merge aprovados](post-antlr-performance.md): PR #79; algoritmos, benchmarks e regressão dos 586 casos. O PR registra a integração.
 
 [Integração atual — DONE / MERGED](analyzer-integration-20261001.md): frontend #77 e discovery histórico #59. As entradas anteriores abaixo conservam seus snapshots de trabalho.
