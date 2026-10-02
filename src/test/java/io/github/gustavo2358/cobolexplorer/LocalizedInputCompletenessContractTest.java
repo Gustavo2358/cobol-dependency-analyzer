@@ -35,7 +35,7 @@ class LocalizedInputCompletenessContractTest {
         assertTrue(entry(publish("", "MAIN.\nENTRY 'ALT'.")).path("start").path("statement").isNull());
     }
 
-    @Test void missingDataCopiesPreserveStartButNotInputSignatureOrStorageCompleteness() throws Exception {
+    @Test void missingDataCopiesPreserveStartAndWrittenHeaderButNotInputOrStorageCompleteness() throws Exception {
         for (String copies : List.of("COPY UNKNOWN.", "COPY UNKNOWN.\nCOPY SECOND.")) {
             var sp = publish(copies, "MOVE 'PROGA' TO WS-PGM.\nCALL WS-PGM.\nGOBACK.");
             assertEquals("KNOWN", entry(sp).path("availability").asText());
@@ -43,8 +43,9 @@ class LocalizedInputCompletenessContractTest {
             assertEquals("MOVE", startFact(sp).path("variant").asText());
             assertEquals("INPUT_MISSING", sp.path("coverage").path("inventoryStatus").asText());
             assertEquals("INPUT_MISSING", sp.path("entryInventory").path("status").asText());
-            assertEquals("INPUT_MISSING", entry(sp).path("signature").path("availability").asText());
-            assertTrue(entry(sp).path("signature").path("parameterCount").isNull());
+            assertEquals("KNOWN", entry(sp).path("signature").path("availability").asText());
+            assertEquals(0, entry(sp).path("signature").path("parameterCount").asInt(-1));
+            assertEquals("ABSENT", entry(sp).path("signature").path("returningClause").asText());
             assertEquals("INPUT_MISSING", sp.path("storageIndependence").path("availability").asText());
             assertTrue(Files.readString(directory.resolve("out/resolution-data.js")).contains("UNRESOLVED_COPY"));
             assertTrue(sp.toString().contains("UNRESOLVED_COPY"));

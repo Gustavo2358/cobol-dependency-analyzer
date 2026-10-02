@@ -282,7 +282,9 @@ IDs ou roots projetados; o projector traduz a referência canônica por identida
 ENTRYs iniciais são declarações: a relação primária aponta para o primeiro
 statement executável seguinte. Corpo vazio, altered GO TO sem nó e metadata
 ausente não autorizam fabricar start. Input incompleto exige a prova localizada
-canônica descrita em SP 1.9; inventory e assinatura continuam incompletos. Declaratives
+canônica descrita em SP 1.9; o inventário continua incompleto. A forma escrita
+da assinatura é preservada quando a mesma prova local demonstra que os gaps
+pertencem a DATA ou a outra unidade com fronteira comprovada. Declaratives
 ainda não materializados mantêm gap `DECLARATIVES_NOT_PROJECTED`, start
 indisponível e inventário de statements `PARTIAL`; não há nova modelagem dessas
 regiões neste slice.
