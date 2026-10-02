@@ -4,5 +4,5 @@ status: DONE
 scope:
   - Transporte físico dos artefatos gerados
   - Compatibilidade, regressões, tamanho e tempo
-pr: "#80"
+pr: https://github.com/Gustavo2358/proleap-poc/pull/80
 notes: "Estado de fechamento a incorporar à main pelo PR aprovado; conclusão efetiva requer merge e Fast CI verde. Evidência e limites em docs/engineering/json-zstd.md."

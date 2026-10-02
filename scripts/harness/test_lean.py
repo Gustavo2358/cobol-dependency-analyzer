@@ -111,6 +111,18 @@ class LeanPolicy(unittest.TestCase):
                      'scripts/helper.py', 'pom.xml', 'docs/sources/sources.lock.json', 'docs/fixtures/test.json', 'docs/work/evidence/WORK-001/oracle.json', 'unknown'):
             self.assertEqual('CODE_CHANGE', lean.classify(['README.md', path]))
 
+    def test_fast_stops_on_repository_naming_failure_before_maven(self):
+        def reject_naming(command, **kwargs):
+            if command == ['bash', 'scripts/verify-naming.sh']:
+                raise subprocess.CalledProcessError(1, command)
+        with patch('lean_project.subprocess.run', side_effect=reject_naming) as run:
+            with self.assertRaises(subprocess.CalledProcessError):
+                lean_project.technical_fast(self.root)
+        self.assertEqual(2, run.call_count)
+        self.assertEqual('scripts/harness/test_naming.py', run.call_args_list[0].args[0][-1])
+        self.assertEqual(['bash', 'scripts/verify-naming.sh'], run.call_args_list[1].args[0])
+        self.assertTrue(run.call_args_list[1].kwargs['check'])
+
     def test_local_full_accessible_and_remote_refused_before_any_build(self):
         self.assertTrue(callable(lean_project.full_local))
         with patch.dict(os.environ, {}, clear=True):

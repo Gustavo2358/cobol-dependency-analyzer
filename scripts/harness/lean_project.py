@@ -48,6 +48,7 @@ def maven(*args):
 
 def technical_fast(root):
     subprocess.run([sys.executable, '-B', 'scripts/harness/test_naming.py'], cwd=root, check=True)
+    subprocess.run(['bash', 'scripts/verify-naming.sh'], cwd=root, check=True)
     subprocess.run(maven('clean', '-Dtest=' + ','.join(FAST_TESTS), 'test'), cwd=root, check=True)
     reports = root / 'target/surefire-reports'
     observed = {}

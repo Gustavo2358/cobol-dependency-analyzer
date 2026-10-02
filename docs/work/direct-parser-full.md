@@ -65,12 +65,39 @@ preprocessador, ações de AST ou fallback.
   Fontes, COPY e executável permaneceram com hashes iguais durante a execução.
 - FAST: 755 testes sem falhas, erros ou skips. Suíte completa: 1.326 testes,
   zero falhas/erros e o mesmo skip preexistente. Regressão de normalização PASS.
-  `qualification-local` permanece FAIL apenas pelo naming dos três documentos
-  listados acima; os arquivos e o gate não foram alterados.
+  Naquela execução, `qualification-local` terminou FAIL pelo naming dos três
+  documentos listados acima. A qualificação final abaixo registra a correção.
 
 Os tempos da tabela são da implementação congelada indicada no início. A correção
 posterior não foi objeto de nova medição de desempenho. Evidência da correção em
 `.direct-ast-lab/section-fix-20261002/`, fora do Git, separada da rodada medida.
+
+## Qualificação final do PR
+
+A branch integra a main `bdac887`, preservando as suítes do parser e de assinatura
+de entrada na lista FAST. A guarda documental permite vocabulário de medição em
+Markdown, referências exatas ao repositório em YAML/YML e caminhos de artefatos
+históricos. Código, caminhos versionados e identificadores compostos continuam
+protegidos. O FAST agora executa a checagem real do repositório antes do Maven;
+se ela falha, o harness propaga o erro.
+
+- Naming: 19 testes, incluindo contracasos e execução sem ripgrep, todos PASS.
+- Harness: 13 testes de política e propagação de falha, todos PASS.
+- FAST integrado: PASS, 761 testes Java em 122 suítes, sem falhas, erros ou skips.
+- `qualification-local`: **PASS completo**, incluindo a regressão de normalização
+  e a checagem de naming do repositório. Não há dispensa para os três documentos.
+- Suíte Maven integrada: 1.332 testes, zero falhas/erros e um oracle futuro opt-in
+  fora do perfil padrão. Os três apontamentos documentais não são exceções ignoradas.
+
+A comparação com `30c3a72` confirmou 1.361 classes de parser, lexer e
+preprocessamento byte a byte idênticas. A admissão e equivalência de AST já
+verificadas no CardDemo são evidência reutilizada dessas etapas; a integração do
+projector da main é coberta pelos contratos de assinatura e pela suíte integrada.
+
+Logs desta qualificação ficam em `.direct-ast-lab/naming-fix-20261002/`.
+As medições anteriores conservam seus SHAs e resultados originais. O código do
+parser, lexer e preprocessador não mudou nesta correção do harness; a atualização
+de semântica de assinatura de entrada é a alteração já integrada pela main.
 
 ## Evidência e reprodução
 

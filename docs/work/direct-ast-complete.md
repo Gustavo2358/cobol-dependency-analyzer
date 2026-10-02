@@ -2,6 +2,8 @@
 
 **Critério atingido: 73/73 programas do CardDemo admitidos pelo parser DATA próprio, zero fallback.** Foram reconhecidas 35.590 declarações. Todos os processos terminaram com sucesso; todos os produtos têm conteúdo equivalente ao controle ANTLR.
 
+Esta é a rodada histórica do parser DATA. O [estado atual da qualificação do PR](direct-parser-full.md#qualificação-final-do-pr) inclui o parser completo e a correção posterior do naming.
+
 ## Implementação e fronteira
 
 Foram implementados FILE SECTION com FD/SD, RECORD fixo/variável/faixa e RECORDING MODE; OCCURS com limites, DEPENDING qualificado, chaves e índices; nomes da produção cobolWord; VALUE implícito, cláusulas posteriores e figurative ALL; e declarações SQL preservadas opacas. A admissão é gramatical, sem seleção por nome de programa.

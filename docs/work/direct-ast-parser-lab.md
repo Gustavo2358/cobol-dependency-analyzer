@@ -26,7 +26,8 @@ dos extratores FILE para evitar duas versões independentes das regras semântic
 
 A política de decisão prefere a alternativa completa mais longa, com a ordem
 da gramática como desempate. Decisões contextuais explícitas preservam a
-prioridade vigente em argumentos de função, qualificadores e INSPECT TALLYING.
+prioridade vigente em argumentos de função, qualificadores, INSPECT TALLYING e
+na fronteira entre parágrafos e seções de PROCEDURE.
 Isso não prova equivalência de todas as ambiguidades possíveis da linguagem;
 o laboratório exige evidência diferencial e continua opt-in.
 
@@ -131,12 +132,12 @@ compara cada artefato publicado byte a byte; diferenças não são normalizadas.
 - Varredura de 332 fixtures: 308 comparadas, 223 exercitando o caminho direto;
   23 rejeitadas pela normalização FIXED antes do parser; uma falha preexistente
   reproduzida nos dois modos (`source-dependencies-w3-db2/db2-delete/program.cbl`,
-  NPE por `programId` ausente). Essas 24 entradas não contam como passes do parser.
+  NPE no contexto `programId` do legado, em teste sem preprocessamento). Essas 24 entradas não contam como passes do parser.
 - COACCT01 com preprocessing/COPY real: 2.582 declarações diretas e equivalência
   estrutural integral, incluindo provenance e modelos sintéticos.
 - Suíte Maven completa: 1.312 testes, zero falhas/erros, um skip histórico.
 - `qualification-local`: regressão de normalização executada; gate final de naming
-  falha nos arquivos preexistentes `docs/work/index.md`, `json-zstd.yaml` e
+  falhou, naquela execução, nos arquivos preexistentes `docs/work/index.md`, `json-zstd.yaml` e
   `post-antlr-performance.md`, idênticos à base `3646754b14519b0fa95f2a7233bdfce4527ebdba`.
   O gate não foi enfraquecido e esses documentos não foram alterados.
 
@@ -196,6 +197,8 @@ A [confirmação pela CLI completa](direct-ast-complete.md) também passou: 73/7
 programas, zero fallback, 35.590 declarações, 146 execuções e 1.387 pares de produtos
 com conteúdo equivalente. Uma divergência bruta de ordem de chaves JSON permanece
 discriminada. FAST local/remoto PASS; 1.317 testes completos, zero falhas/erros e um
-skip histórico. O naming preexistente continua bloqueando o gate final da qualificação.
+skip histórico. Naquela execução, o naming bloqueou o gate final.
+A [qualificação atual](direct-parser-full.md#qualificação-final-do-pr) registra a
+correção posterior da guarda documental, preservando os resultados históricos.
 No total dos 73 programas, parsing combinado caiu 11,9% e a CLI caiu 4,1%; a meta
 universal de 50% não foi atingida. Lexer e PROCEDURE continuam no ANTLR.
