@@ -165,3 +165,12 @@ referências embutidas. Um registro plano mantém as origens sintáticas observ�
 Falha nativa descarta toda a tentativa e executa o frontend legado sobre a unidade
 inteira; a publicação só começa depois da conclusão de um dos caminhos.
 Não há mudança de contratos de IDs, provenance, coverage ou Semantic Product.
+
+Na fronteira entre parágrafos e seções de PROCEDURE, o reconhecedor próprio
+consulta `procedureSectionHeader` da gramática vigente e confirma o `DOT_FS`
+seguinte antes de admitir um `paragraph`. Isso impede que o ponto opcional e o
+corpo vazio de `paragraph` consumam o nome de uma seção. A antecipação percorre
+apenas nome, `SECTION`, número de segmento opcional e ponto; reaproveita a
+memoização existente. A gramática e os contratos de AST permanecem iguais.
+`DirectCobolParserTest` exige admissão própria e equivalência integral para essa
+fronteira, incluindo as fixtures `procedure-binding.cbl` e `nominal-references.cbl`.

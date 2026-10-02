@@ -2,7 +2,7 @@
 
 Estado: PASS de admissão e equivalência no corpus. Laboratório opt-in; não implica equivalência universal da linguagem.
 
-- Implementação: `2e604535cff027979df5427e7f7787fdf1db7000`; branch `lab/direct-ast-parser`; [PR #82](https://github.com/Gustavo2358/proleap-poc/pull/82).
+- Implementação medida: `2e604535cff027979df5427e7f7787fdf1db7000`; branch `lab/direct-ast-parser`; [PR #82](https://github.com/Gustavo2358/proleap-poc/pull/82).
 - Fonte: CardDemo `59cc6c2fd7ebd7ef7925cad552a01a4b8b6e4d5e`; 44 fontes upstream e 29 variantes UniKix. A seleção integral e a ordem de COPY estão preservadas.
 - **73/73 unidades completas pelo parser próprio, zero fallback; 146/146 processos com exit code zero.** Lexer e preprocessador preservados, com hashes das classes idênticos ao laboratório anterior.
 - Uma execução por programa e modo. JVM fria por processo, ordem AB/BA alternada, G1, heap 256 MiB–2 GiB, mesma JVM e dependências, DEBUG habilitado nos dois modos, JSON sem compressão. Não houve aquecimento ou descarte de amostras.
@@ -35,8 +35,42 @@ O ganho não é uniforme: 56/73 programas superaram 50%; 72/73 ficaram mais ráp
 - Diagnósticos e gaps semânticos preexistentes continuam publicados. Admissão própria não significa que toda análise de negócio esteja completa.
 - O parser próprio inclui as quatro divisions e os leitores de referências/expressões embutidas. As ações semânticas consultam spans próprios em um registro plano, sem contexts, árvores ou visitantes ANTLR.
 - A guarda de execução proíbe instanciar o parser ANTLR no caminho próprio. Em falha nativa, nenhuma AST parcial é publicada; o fallback reinicia o parser e construtor legados sobre os tokens originais.
-- Testes diferenciais: 308 fixtures comparadas, 196 nativas, 112 em fallback; 23 rejeitadas antes do parser pela normalização FIXED e uma falha preexistente reproduzida nos dois caminhos. Testes adicionais cobrem ambiguidades, Unicode, SQL/CICS, bloqueio arquitetural e fallback com erro de sintaxe/lexer.
-- FAST local e remoto PASS. Suíte completa local: 1.322 testes, zero falhas/erros, um skip preexistente; teste adicional de SQL/CICS/Unicode validado depois. Regressão de normalização PASS. O wrapper `qualification-local` terminou FAIL pelo naming preexistente em três documentos (`docs/work/index.md`, `json-zstd.yaml`, `post-antlr-performance.md`); o gate não foi enfraquecido.
+- Testes diferenciais na implementação medida: 308 fixtures comparadas, 196 nativas, 112 em fallback; 23 rejeitadas antes do parser pela normalização FIXED e uma falha preexistente reproduzida nos dois caminhos. Testes adicionais cobrem ambiguidades, Unicode, SQL/CICS, bloqueio arquitetural e fallback com erro de sintaxe/lexer.
+- Validação da implementação medida: FAST local e remoto PASS. Suíte completa local: 1.322 testes, zero falhas/erros, um skip preexistente; teste adicional de SQL/CICS/Unicode validado depois. Regressão de normalização PASS. O wrapper `qualification-local` terminou FAIL pelo naming preexistente em três documentos (`docs/work/index.md`, `json-zstd.yaml`, `post-antlr-performance.md`); o gate não foi enfraquecido.
+
+## Correção posterior: fronteira entre parágrafo e SECTION
+
+As fixtures `resolution/procedure-binding.cbl` e `semantic/nominal-references.cbl`
+expunham a mesma decisão incorreta: como `paragraph` permite ponto ausente e corpo
+vazio, o reconhecedor consumia o nome de uma seção como parágrafo. A correção
+consulta `procedureSectionHeader` e seu ponto final antes dessa decisão. Essa
+antecipação usa as tabelas e a memoização próprias; não altera gramática, lexer,
+preprocessador, ações de AST ou fallback.
+
+- Os dois casos agora exigem `route=native` em teste, com AST, nós/origens,
+  contagens, coverage e diagnósticos iguais ao ANTLR. Casos vizinhos cobrem seção
+  inicial, após parágrafos, seções vazias consecutivas, segmentos, nomes numéricos,
+  palavras admitidas como nomes, comentários e parágrafos sem ponto. Cabeçalhos
+  inválidos continuam em fallback e preservam os diagnósticos legados.
+- A auditoria original só normalizava os fontes, sem preprocessamento. Depois da
+  correção, ela compara 308 fixtures: 198 nativas e 110 em fallback. As 23 rejeições
+  de normalização e a falha idêntica no legado permanecem discriminadas.
+- Reexecução dos **112 fallbacks originais com preprocessamento: 112/112 nativos,
+  zero fallback e equivalência integral**. Os diagnósticos existentes de COPY
+  não resolvido em três fixtures permanecem; admissão não implica input completo.
+- Regressão funcional posterior pela CLI: **73/73 CardDemo nativos, zero fallback**;
+  1.387 artefatos equivalentes ao ANTLR preservado. Destes, 1.386 são byte a byte
+  idênticos; um `symbol-data.js` difere apenas na ordem de duas chaves de objeto
+  JSON. Conteúdo e ordem dos arrays são iguais; os outputs brutos foram preservados.
+  Fontes, COPY e executável permaneceram com hashes iguais durante a execução.
+- FAST: 755 testes sem falhas, erros ou skips. Suíte completa: 1.326 testes,
+  zero falhas/erros e o mesmo skip preexistente. Regressão de normalização PASS.
+  `qualification-local` permanece FAIL apenas pelo naming dos três documentos
+  listados acima; os arquivos e o gate não foram alterados.
+
+Os tempos da tabela são da implementação congelada indicada no início. A correção
+posterior não foi objeto de nova medição de desempenho. Evidência da correção em
+`.direct-ast-lab/section-fix-20261002/`, fora do Git, separada da rodada medida.
 
 ## Evidência e reprodução
 

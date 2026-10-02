@@ -35,6 +35,43 @@ class DirectCobolParserTest {
             assertEquals("native",own.result().route(),body+own.result().fallbackReason());equivalent(parse(source,"antlr"),own,body);
         }
     }
+    @Test void procedureSectionsUseNativePathAndPreserveParagraphBoundaries(){
+        for(String body:List.of(
+            "S SECTION. P. GOBACK.",
+            "P. CONTINUE. S SECTION. Q. GOBACK.",
+            "S-FIRST SECTION. S-SECOND SECTION. S-THIRD SECTION. GOBACK.",
+            "P. CONTINUE. S SECTION 42. Q. CONTINUE. T SECTION 99. GOBACK.",
+            "100 SECTION. 200. CONTINUE. 300 SECTION 01. 400. GOBACK.",
+            "ASCII SECTION. BINARY. CONTINUE. P. GOBACK.",
+            "P CONTINUE. Q GOBACK.",
+            "P. CONTINUE. s\n*> section boundary comment\nsection. Q. GOBACK.")){
+            var source=SourceMap.identity(program(body),"test.cbl");
+            var base=parse(source,"antlr");var own=parse(source,"direct-ast-lab");
+            assertEquals(List.of(),base.diagnostics(),body);
+            assertEquals("native",own.result().route(),body+own.result().fallbackReason());
+            equivalent(base,own,body);
+        }
+    }
+    @Test void procedureSectionFixturesNeverFallBack() throws Exception {
+        for(String name:List.of("resolution/procedure-binding.cbl","semantic/nominal-references.cbl")){
+            var file=Path.of("src/test/resources/cobol").resolve(name);
+            var source=SourceNormalizer.normalize(Files.readString(file),file.toString(),
+                    SourceNormalizer.SourceFormat.FIXED).sourceMap();
+            var base=parse(source,"antlr");var own=parse(source,"direct-ast-lab");
+            assertEquals(List.of(),base.diagnostics(),name);
+            assertEquals("native",own.result().route(),name+own.result().fallbackReason());
+            equivalent(base,own,name);
+        }
+    }
+    @Test void malformedProcedureSectionsStillFallBack(){
+        for(String body:List.of("P. CONTINUE. S SECTION GOBACK.","S SECTION 42 43. GOBACK.")){
+            var source=SourceMap.identity(program(body),"test.cbl");
+            var base=parse(source,"antlr");var own=parse(source,"direct-ast-lab");
+            assertFalse(base.diagnostics().isEmpty(),body);
+            assertEquals("fallback",own.result().route(),body);
+            equivalent(base,own,body);
+        }
+    }
     @Test void embeddedOperandsUseOnlyNativeSyntax(){
         for(String body:List.of(
             "\n*>EXECSQL EXEC SQL WHENEVER SQLERROR GO TO SQL-ERR END-EXEC\n. GOBACK. SQL-ERR. GOBACK.",

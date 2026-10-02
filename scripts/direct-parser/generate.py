@@ -81,6 +81,7 @@ for f in first:
 write('DirectGrammar','final class DirectGrammar {\n'+
       ' static final String GRAMMAR_SHA256="'+hashlib.sha256(grammar.encode()).hexdigest()+'";\n'+
       ' static final int ARGUMENT='+str(roots[ids['argument']])+', INSPECT_ITEM='+str(roots[ids['inspectAllLeading']])+', IDENTIFIER='+str(roots[ids['identifier']])+', QUALIFIED='+str(roots[ids['qualifiedDataName']])+', ARITHMETIC='+str(roots[ids['arithmeticExpression']])+', IDENTIFIER_RULE='+str(ids['identifier'])+', QUALIFIED_RULE='+str(ids['qualifiedDataName'])+', QUALIFIER='+str(roots[ids['qualifiedInData']])+';\n'+
+      ' static final int PARAGRAPH='+str(roots[ids['paragraph']])+', SECTION_HEADER='+str(roots[ids['procedureSectionHeader']])+';\n'+
       ' static final String[] NAMES={'+','.join('"'+n+'"' for n in names)+'};\n'+
       ' static final int[] ROOTS={'+','.join(map(str,roots))+'};\n'+
       ' static final int[][] CODE=decode(new String[]{\n'+',\n'.join('"'+r+'"' for r in rows)+'});\n'+

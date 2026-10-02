@@ -30,6 +30,13 @@ final class DirectRecognizer {
         int cached=memo.get(key);if(cached!=Integer.MIN_VALUE)return cached;
         int[] code=DirectGrammar.CODE[n];int kind=code[0],end=-1;
         if(!DirectGrammar.NULLABLE[n]&&!DirectGrammar.starts(n,token(p).getType()))return -1;
+        // paragraph allows an omitted period and an empty body. Reserve a complete
+        // section header for procedureSection before paragraph* consumes its name.
+        // The grammar header only looks ahead through name, SECTION and segment number.
+        if(n==DirectGrammar.PARAGRAPH){
+            int header=match(DirectGrammar.SECTION_HEADER,p);
+            if(header>p&&token(header).type()==DirectSyntax.DOT_FS){memo.put(key,-1);return -1;}
+        }
         // An INSPECT counter followed by FOR belongs to the next inspectFor,
         // rather than the repeated inspectAllLeading operand of the previous counter.
         if(n==DirectGrammar.INSPECT_ITEM){int ref=match(DirectGrammar.IDENTIFIER,p);if(ref>=0&&token(ref).type()==DirectSyntax.FOR){memo.put(key,-1);return -1;}}
