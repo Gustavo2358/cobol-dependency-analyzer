@@ -2,7 +2,7 @@
 
 **TYPE E: defeito de integridade, não partial semantics.** Profile explícito permite chegar ao assembler, que constrói um fragmento com 30 labels pendentes em cada variante CBACT04C. O validator real retorna INVALID_IR; a publicação é corretamente recusada. Não foi desligado validator nem serializada AIR inválida como saída aceita.
 
-O [probe externo](tools/F7Probe.java) invoca decoder/admission/assembler reais, observa o registro de LocalIds por reflexão **somente leitura** e executa AirValidator. Reproduz exatamente 30 I-02, traversal completo e 19.283 obrigações semânticas no checkout. IDs e 30 contagens coincidem com o probe canônico. ZIP reproduz 30 I-02 separadamente. Obrigações semânticas não são confundidas com labels ausentes.
+O [probe externo](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/tools/F7Probe.java) invoca decoder/admission/assembler reais, observa o registro de LocalIds por reflexão **somente leitura** e executa AirValidator. Reproduz exatamente 30 I-02, traversal completo e 19.283 obrigações semânticas no checkout. IDs e 30 contagens coincidem com o probe canônico. ZIP reproduz 30 I-02 separadamente. Obrigações semânticas não são confundidas com labels ausentes.
 
 ## Mecanismo demonstrado
 
@@ -19,7 +19,7 @@ Não é pruning de `PerformActivationDemand`: com operações FILE, `inContext` 
 | statement:229 | statement:230 DISPLAY | 416 → 418 | 11 |
 
 
-Os 30 são três classes de target em 11 contextos de PERFORM. Os 11 são entry-only (`procedures=[]`), verificados em f7-input-facts.json; falta de frontier torna o fecho maior e expõe handlers fora do inventário inicial. A [matriz completa de 60 linhas](probes/f7-labels.csv) contém para **cada** erro: operation, source statement/linha, target label/statement/linha, contexto, expected materializer e razão de ausência. [Raw checkout](probes/f7-03.json), [raw ZIP](probes/f7-05.json). Os números por grupo acima são confirmados abaixo pela matriz, e devem ser lidos sem somar F7 à partição F1–F6.
+Os 30 são três classes de target em 11 contextos de PERFORM. Os 11 são entry-only (`procedures=[]`), verificados em f7-input-facts.json; falta de frontier torna o fecho maior e expõe handlers fora do inventário inicial. A [matriz completa de 60 linhas](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/probes/f7-labels.csv) contém para **cada** erro: operation, source statement/linha, target label/statement/linha, contexto, expected materializer e razão de ausência. [Raw checkout](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/probes/f7-03.json), [raw ZIP](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/probes/f7-05.json). Os números por grupo acima são confirmados abaixo pela matriz, e devem ser lidos sem somar F7 à partição F1–F6.
 
 ## Implicação de escala e obrigação futura
 

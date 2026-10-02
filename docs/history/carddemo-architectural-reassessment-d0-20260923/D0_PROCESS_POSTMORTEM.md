@@ -23,7 +23,7 @@ Amostra estratificada de dez fontes reais, mesmos bytes e resolução do runner,
 
 COACTUPC histórico falha em `SOURCE_DEPENDENCY_OWNER_UNPROVED` durante semantic product, embora o wrapper classifique o motivo como PREPROCESSING_FAILED. O stderr preservado demonstra a fase real. W8 corrige/ultrapassa essa barreira e expõe F2. Isso é melhora de uma fronteira, não regressão F2 exclusiva de W8.
 
-CBACT01C pré-positive tinha 103 OBSERVED e **zero PERFORM_PROCEDURE**; W5 tem 69 OBSERVED e 34 PERFORM_PROCEDURE. O antigo produto chegava ao fim sem o controle positivo novo. A publicação mais expressiva expôs consumer invariants contraditórios e storage gates; voltar a OBSERVED para restaurar 9/10 esconderia os fatos. F5 já existia como gap em COADM01C pré-positive, mas não era blocker de pipeline. [Comparação de qualidade](probes/history-quality.json).
+CBACT01C pré-positive tinha 103 OBSERVED e **zero PERFORM_PROCEDURE**; W5 tem 69 OBSERVED e 34 PERFORM_PROCEDURE. O antigo produto chegava ao fim sem o controle positivo novo. A publicação mais expressiva expôs consumer invariants contraditórios e storage gates; voltar a OBSERVED para restaurar 9/10 esconderia os fatos. F5 já existia como gap em COADM01C pré-positive, mas não era blocker de pipeline. [Comparação de qualidade](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/probes/history-quality.json).
 
 Não há evidência para afirmar que os 69 atuais bloqueariam exatamente nas mesmas famílias em W5. A amostra prova a falha sistêmica que um gate real teria sinalizado; código comum e witnesses explicam sua extensão atual. Não extrapolar contagens históricas não executadas.
 

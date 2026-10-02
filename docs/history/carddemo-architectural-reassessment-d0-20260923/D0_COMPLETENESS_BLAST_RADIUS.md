@@ -36,7 +36,7 @@ Os 12 F5 têm 122–263 bindings resolvidos nos seis checkout sources, apesar do
 
 Reter nome fonte de um target é distinto de provar um candidate alcançável. Gate B deve exigir provenance/support, remainders de source/model/control e negativos por site. Nem `INPUT_MISSING` implica NO CFG, nem CFG parcial autoriza “nenhuma dependência existe”.
 
-A análise completa de declarações/refs está em [storage-blast-radius.json](probes/storage-blast-radius.json) e [f5-resolution.json](probes/f5-resolution.json). Declarações internas de DFHAID/DFHBMSCA são **UNKNOWN por ausência de entrada autêntica**, explicitamente sem catálogo inventado.
+A análise completa de declarações/refs está em [storage-blast-radius.json](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/probes/storage-blast-radius.json) e [f5-resolution.json](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/probes/f5-resolution.json). Declarações internas de DFHAID/DFHBMSCA são **UNKNOWN por ausência de entrada autêntica**, explicitamente sem catálogo inventado.
 
 ## Contraprova à tese de apagamento absoluto
 

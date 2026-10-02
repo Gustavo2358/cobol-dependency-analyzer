@@ -1,3 +1,5 @@
+[Limpeza do snapshot de fontes](../engineering/source-snapshot.md): evidência bruta histórica preservada no Git; fixtures e baselines executáveis mantidos.
+
 [JSON Zstandard — fechamento aprovado](../engineering/json-zstd.md#qualificação-e-fechamento): PR #80; qualificação, compatibilidade e benchmark completo. O PR registra a integração.
 
 [Desempenho pós-ANTLR — implementação e merge aprovados](post-antlr-performance.md): PR #79; algoritmos, benchmarks e regressão dos 586 casos. O PR registra a integração.
