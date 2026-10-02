@@ -21,7 +21,7 @@ class PartialFileTopologyTest {
         Files.writeString(input,source.lines().map(line->"       "+line+"\n").collect(java.util.stream.Collectors.joining()));
         var evidence=Path.of("target/partial-file-topology",name);Files.createDirectories(evidence);
         Files.copy(input,evidence.resolve("FROUTES.cbl"),StandardCopyOption.REPLACE_EXISTING);
-        ExplorerMain.main(new String[]{"--source",input.toString(),"--copybooks",path.resolve("copybooks").toString(),"--output",path.resolve("sp").toString()});
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source",input.toString(),"--copybooks",path.resolve("copybooks").toString(),"--output",path.resolve("sp").toString()});
         return new ObjectMapper().readTree(path.resolve("sp/cobol-semantic-product.json").toFile());
     }
     private static List<JsonNode> fileOutcomes(JsonNode sp) {

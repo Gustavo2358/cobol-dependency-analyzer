@@ -149,7 +149,7 @@ class CicsProgramControlTest {
         java.nio.file.Files.writeString(source,ScalarMoveCheckpoint4ATest.program("01 WS-PGM PIC X(8).",
             "EXEC CICS LINK PROGRAM('PROGA') END-EXEC.\nEXEC CICS XCTL PROGRAM(WS-PGM) NOHANDLE END-EXEC.\nGOBACK.").lines().map(line->"       "+line).collect(java.util.stream.Collectors.joining("\n","","\n")));
         var output=directory.resolve("out");
-        ExplorerMain.main(new String[]{"--source",source.toString(),"--copybooks",directory.toString(),"--output",output.toString(),"--storage-profile","ibm-enterprise-6.4-fixed-display-1047@1"});
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source",source.toString(),"--copybooks",directory.toString(),"--output",output.toString(),"--storage-profile","ibm-enterprise-6.4-fixed-display-1047@1"});
         var doc=new com.fasterxml.jackson.databind.ObjectMapper().readTree(output.resolve("cobol-semantic-product.json").toFile());
         int sites=0;for(var statement:doc.path("statements"))if(statement.path("variant").asText().equals("CICS_PROGRAM_CONTROL"))sites++;
         assertEquals(2,sites);assertTrue(java.nio.file.Files.size(output.resolve("resolution-data.js"))>0);

@@ -12,7 +12,7 @@ class LogicalTextDefaultTest {
         var source=work.resolve(name+".cbl");
         Files.writeString(source, ScalarMoveCheckpoint4ATest.program("01 REC-A.\n05 PGM-A PIC X(8).\n05 CODE-A PIC X(4).", "MOVE 'PROGA   1234' TO REC-A.\nCALL PGM-A.\nGOBACK.").lines().map(line->"       "+line).collect(java.util.stream.Collectors.joining("\n","","\n")));
         var out=work.resolve(name);
-        var args=new java.util.ArrayList<String>(java.util.List.of("--source",source.toString(),"--copybooks",work.toString(),"--output",out.toString()));
+        var args=new java.util.ArrayList<String>(java.util.List.of("--json-compression","none","--source",source.toString(),"--copybooks",work.toString(),"--output",out.toString()));
         args.addAll(java.util.List.of(options));
         ExplorerMain.main(args.toArray(String[]::new));
         return new ObjectMapper().readTree(out.resolve("cobol-semantic-product.json").toFile());
@@ -23,7 +23,7 @@ class LogicalTextDefaultTest {
             "MOVE REC-A TO DEST-A.\nMOVE RANGE-A TO DEST-A.\nGOBACK.");
         Files.writeString(source,program.lines().map(line->"       "+line).collect(java.util.stream.Collectors.joining("\n","","\n")));
         var out=work.resolve("sources");
-        ExplorerMain.main(new String[]{"--source",source.toString(),"--copybooks",work.toString(),"--output",out.toString()});
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source",source.toString(),"--copybooks",work.toString(),"--output",out.toString()});
         var sp=new ObjectMapper().readTree(out.resolve("cobol-semantic-product.json").toFile());
         for(int i=0;i<2;i++) {
             var ref=sp.path("statements").get(i).path("source").path("reference");

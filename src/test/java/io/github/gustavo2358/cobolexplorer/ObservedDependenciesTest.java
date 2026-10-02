@@ -12,7 +12,7 @@ class ObservedDependenciesTest {
         for(String code:new String[]{"COPY PRIVATE-COPY.\nCALL 'PROGA'.","CALL 'PROGA'.\nCOPY PRIVATE-COPY."}) {
             Path source=directory.resolve("input.cbl"),output=directory.resolve("output");
             Files.writeString(source,ScopedInputTest.unit("OBSERVED-PGM","01 ARG PIC X.",code).lines().map(l->"       "+l).collect(java.util.stream.Collectors.joining("\n"))+"\n");
-            ExplorerMain.main(new String[]{"--source",source.toString(),"--output",output.toString()});
+            ExplorerMain.main(new String[]{"--json-compression", "none","--source",source.toString(),"--output",output.toString()});
             var json=new ObjectMapper();var observed=json.readTree(output.resolve("observed-dependencies.json").toFile());
             assertEquals("OBSERVED_ONLY",observed.path("sites").get(0).path("knowledge").asText());
             assertEquals("UNKNOWN",observed.path("sites").get(0).path("reachability").asText());

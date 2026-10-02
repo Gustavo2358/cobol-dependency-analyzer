@@ -1,5 +1,7 @@
 # COBOL Structure Atlas
 
+[Artefatos `.json.zst`: uso, identidade e compatibilidade](docs/engineering/json-zstd.md).
+
 Storage W6–W8: [qualified profile, tests and limits](docs/engineering/storage-w8-qualification.md). Human review pending; no merge.
 
 Explorador visual da jornada `parse tree → AST → tabela de símbolos → resolução de referências` para programas COBOL. O projeto gera páginas estáticas que podem ser abertas localmente, sem servidor nem dependências web externas.

@@ -100,7 +100,7 @@ public final class SemanticProductJsonWriter {
     public static void write(CobolSemanticPort port, Path destination) throws IOException {
         Objects.requireNonNull(destination, "destination");
         var publication = document(Objects.requireNonNull(port, "port"));
-        try (var output = Files.newOutputStream(destination)) {
+        try (var output = io.github.gustavo2358.cobolexplorer.transport.JsonFiles.output(Files.newOutputStream(destination),destination)) {
             JSON.writeValue(output, publication);
         }
     }

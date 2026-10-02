@@ -139,7 +139,7 @@ class FrontendLoggingTest {
         Files.writeString(source, cobol);
 
         List<ILoggingEvent> events = capture(ExplorerMain.class, Level.WARN,
-                () -> ExplorerMain.main(new String[]{"--source", source.toString(),
+                () -> ExplorerMain.main(new String[]{"--json-compression", "none","--source", source.toString(),
                         "--copybooks", copybooks.toString(), "--output", output.toString()}));
 
         List<ILoggingEvent> warnings = events.stream()

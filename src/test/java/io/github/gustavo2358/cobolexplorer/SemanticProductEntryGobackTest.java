@@ -214,7 +214,7 @@ class SemanticProductEntryGobackTest {
     void compositionPublishesCanonicalBoundaryFilename(@TempDir Path directory) throws Exception {
         Path copybooks = Files.createDirectory(directory.resolve("copybooks"));
         Path output = directory.resolve("output");
-        ExplorerMain.main(new String[]{"--source", FIXTURE.toAbsolutePath().toString(),
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source", FIXTURE.toAbsolutePath().toString(),
                 "--copybooks", copybooks.toString(), "--output", output.toString()});
         byte[] canonical = Files.readAllBytes(output.resolve("cobol-semantic-product.json"));
         assertArrayEquals(canonical, Files.readAllBytes(output.resolve("semantic-product.json")));

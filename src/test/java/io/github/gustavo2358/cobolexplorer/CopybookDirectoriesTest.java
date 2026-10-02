@@ -43,7 +43,7 @@ class CopybookDirectoriesTest {
                 + "       END PROGRAM MAIN.\n", StandardCharsets.UTF_8);
         Files.writeString(second.resolve("SECOND.cpy"), "       01 SECOND-FIELD PIC X.\n", StandardCharsets.UTF_8);
 
-        ExplorerMain.main(new String[]{
+        ExplorerMain.main(new String[]{"--json-compression", "none",
                 "--source", source.toString(),
                 "--copybooks", first + "," + second,
                 "--output", output.toString()});

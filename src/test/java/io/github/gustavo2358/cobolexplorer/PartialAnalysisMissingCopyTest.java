@@ -130,7 +130,7 @@ class PartialAnalysisMissingCopyTest {
         Path sourceFile = directory.resolve(fileName);
         Path output = directory.resolve(fileName + "-output");
         Files.writeString(sourceFile, source, StandardCharsets.UTF_8);
-        ExplorerMain.main(new String[]{"--source", sourceFile.toString(),
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source", sourceFile.toString(),
                 "--copybooks", copybooks.toString(), "--output", output.toString()});
         return Files.readString(output.resolve("resolution-data.js"), StandardCharsets.UTF_8);
     }

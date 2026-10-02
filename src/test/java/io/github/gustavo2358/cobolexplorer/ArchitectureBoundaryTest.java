@@ -374,6 +374,7 @@ class ArchitectureBoundaryTest {
                 || reference.equals(SEMANTIC_PORT_INTERNAL)
                 || reference.equals(SEMANTIC_PRODUCT_INTERNAL)
                 || reference.startsWith(SEMANTIC_PRODUCT_INTERNAL + '$')
+                || reference.equals("io/github/gustavo2358/cobolexplorer/transport/JsonFiles")
                 || reference.equals(JSON_WRITER_INTERNAL)
                 || reference.startsWith(JSON_WRITER_INTERNAL + '$');
     }

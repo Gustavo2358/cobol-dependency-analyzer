@@ -16,7 +16,7 @@ class LogicalMoveSequenceTest {
             .map(s->"       "+s).collect(java.util.stream.Collectors.joining("\n","","\n")));
         AstBoundaryTestSupport.analyze(Files.readString(source),name+".cbl");
         var out=work.resolve(name);
-        ExplorerMain.main(new String[]{"--source",source.toString(),"--copybooks",work.toString(),"--output",out.toString()});
+        ExplorerMain.main(new String[]{"--json-compression", "none","--source",source.toString(),"--copybooks",work.toString(),"--output",out.toString()});
         return new ObjectMapper().readTree(out.resolve("cobol-semantic-product.json").toFile());
     }
     @Test void dataSourceHasOneOrderedTransferPerReceiver() throws Exception {
