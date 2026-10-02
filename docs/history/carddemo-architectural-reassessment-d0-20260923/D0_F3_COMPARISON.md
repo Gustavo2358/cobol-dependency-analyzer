@@ -14,7 +14,7 @@ Fonte real: `app/app-authorization-ims-db2-mq/cbl/CBPAUP0C.cbl`. EVALUATE `state
 
 `EvaluateAdmission` admite saída de um braço quando interna ao braço ou igual ao successor local do pai. Não considera a boundary comum cujo default ordinário aparece em `ordinaryContinuations`. O projector põe o successor ordinário nos filhos OBSERVED, enquanto o pai mantém a ausência de sucessor local. É o mesmo choque de significados visto em F2.
 
-O probe [AST CBPAUP0C](probes/ast-control/CBPAUP0C.json) confirma os mapas separados; o SP e stderr originais ficam no diretório canônico por programa. Valores DIBSTAT desconhecidos e efeitos DLI não explicam essa contradição. Não é necessário executar IMS para reconhecer END-EVALUATE, entry dos arms e seus términos.
+O probe [AST CBPAUP0C](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/probes/ast-control/CBPAUP0C.json) confirma os mapas separados; o SP e stderr originais ficam no diretório canônico por programa. Valores DIBSTAT desconhecidos e efeitos DLI não explicam essa contradição. Não é necessário executar IMS para reconhecer END-EVALUATE, entry dos arms e seus términos.
 
 Esqueleto esperado: `EVAL58 → arm(GB) → SET62 → Complete(EVAL58) → Complete(P2000)`; no contexto ordinário a boundary leva a EXIT66; no PERFORM que termina em P2000 devolve ao caller; no THRU até P2000-EXIT continua a EXIT66 e conclui ali. EVAL69 é análogo. Arms com GO TO/retorno explícito não recebem conclusão normal inventada.
 

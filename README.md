@@ -22,12 +22,16 @@ Para gerar a jornada do programa padrão:
 ./run.sh
 ```
 
-Abra os artefatos em `dist/`:
+Após a execução, abra os artefatos em `dist/`:
 
 - `index.html`: parse tree;
 - `ast.html`: AST semântica;
 - `symbols.html`: tabela de símbolos;
 - `resolution.html`: bindings nominais e cobertura conservadora.
+
+Os diretórios `dist/`, `dist-cbstm03a/` e `dist-cbstm03d/` são gerados localmente e
+não acompanham o snapshot de fontes. Os comandos desta página os recriam; a
+interface original permanece em `src/main/resources/web/`.
 
 As páginas funcionam via `file://`. A navegação permite seguir um elemento semântico até sua origem na parse tree.
 

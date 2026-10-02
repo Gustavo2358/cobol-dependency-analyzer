@@ -8,3 +8,8 @@
 **/__pycache__/
 
 *.pyc
+
+# Reproducible CLI outputs; UI sources remain in src/main/resources/web.
+/dist/
+/dist-cbstm03a/
+/dist-cbstm03d/
