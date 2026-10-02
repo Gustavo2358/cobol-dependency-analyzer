@@ -5,7 +5,9 @@
 - status: IN_PROGRESS
 - scope: laboratório opt-in no frontend; branch `lab/direct-ast-parser`; sem merge ou mudança de contratos downstream.
 
-## Caminho completo em qualificação
+## Caminho completo qualificado no corpus
+
+**Resultado: 73/73 programas completos sem fallback, 74,37% de redução em parsing + origens + AST e 1.387 pares de artefatos idênticos.** [Medição completa e dados por programa](direct-parser-full.md).
 
 `--parser direct-ast-lab` mantém a normalização, o preprocessador e o lexer
 existentes. Depois do lexer, copia tokens para valores próprios e reconhece
@@ -47,7 +49,7 @@ do caminho completo.
 
 ## Implementação DATA anterior
 
-**Estado atual: [73/73 programas CardDemo sem fallback em DATA](direct-ast-complete.md).**
+**Marco anterior: [73/73 programas CardDemo sem fallback em DATA](direct-ast-complete.md).**
 Os resultados de três programas e o inventário de 70 fallbacks abaixo são históricos, anteriores à ampliação.
 
 `--parser direct-data-lab` ativa um parser descendente recursivo próprio para
