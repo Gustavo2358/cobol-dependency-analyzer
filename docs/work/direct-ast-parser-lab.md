@@ -2,8 +2,14 @@
 
 - id: DIRECT-AST-LAB-001
 - title: Parser COBOL próprio com AST e fallback integral
-- status: IN_PROGRESS
-- scope: laboratório opt-in no frontend; branch `lab/direct-ast-parser`; sem merge ou mudança de contratos downstream.
+- status: DONE
+- scope: parser próprio opt-in no frontend, AST canônica e fallback integral; contratos downstream preservados.
+- pr: [#82](https://github.com/Gustavo2358/proleap-poc/pull/82)
+
+O estado DONE deste fechamento tem vigência com o merge do PR #82 e os checks
+aprovados. O PR registra o SHA e a data efetivos da integração. A implementação
+foi qualificada em `66bd4d29cc9876217642666e1db96a9595a25755`; o fechamento final
+altera somente documentação. [Critérios, compatibilidade e limites](direct-parser-full.md#fechamento).
 
 ## Caminho completo qualificado no corpus
 

@@ -99,6 +99,39 @@ As medições anteriores conservam seus SHAs e resultados originais. O código d
 parser, lexer e preprocessador não mudou nesta correção do harness; a atualização
 de semântica de assinatura de entrada é a alteração já integrada pela main.
 
+## Fechamento
+
+Fechamento e merge autorizados em 2 de outubro de 2026 no
+[PR #82](https://github.com/Gustavo2358/proleap-poc/pull/82). O registro DONE passa
+a valer com o merge e os checks aprovados; Git/GitHub registram o SHA e a data
+efetivos. O código qualificado é `66bd4d29cc9876217642666e1db96a9595a25755`.
+O commit de fechamento contém somente documentação.
+
+Critérios atendidos:
+
+- 73/73 programas CardDemo pelo caminho próprio, zero fallback e produtos
+  equivalentes ao controle ANTLR, incluindo dependências observadas.
+- Redução agregada medida de 74,37% em reconhecimento + origens + AST; o tempo
+  total de CLI caiu 28,05%. A amostra e o SHA medidos permanecem os originais.
+- Correção de SECTION com testes obrigatórios e 112/112 fallbacks originais
+  admitidos quando submetidos ao preprocessamento existente.
+- FAST, suíte completa, regressão de normalização, naming e documentação PASS;
+  os dois checks remotos do código qualificado estão aprovados.
+
+Contratos, versões e pins de consumidores não mudam neste PR. As comparações
+preservam IDs, provenance, coverage, diagnósticos, Semantic Product e dependências
+observadas nos casos qualificados. A atualização do projector de assinatura de
+entrada pertence à main integrada e tem contratos próprios na suíte completa.
+Lowering, AIR e CFG não foram reexecutados neste fechamento documental; a evidência
+de compatibilidade é a fronteira publicada pelo frontend. Nenhum repin downstream
+faz parte deste fechamento.
+
+O modo padrão continua `antlr`; `--parser direct-ast-lab` permanece opt-in e mantém
+o fallback integral. O resultado não afirma cobertura universal de COBOL nem ganho
+mínimo de 50% em cada programa. Gaps e estados parciais existentes continuam
+visíveis. Os relatórios anteriores permanecem como história, com seus resultados
+originais, inclusive falhas já corrigidas.
+
 ## Evidência e reprodução
 
 Dados por execução estão em [CSV das 146 medições](direct-parser-full-measurements.csv).
