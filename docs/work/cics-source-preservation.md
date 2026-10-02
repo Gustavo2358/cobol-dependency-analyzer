@@ -70,7 +70,7 @@ junto com [REMARKS](remarks-area-a-compatibility.md), ainda sem integração.
 
 - RED: três falhas em quatro testes; controles terminais/malformados passaram.
 - GREEN focal: 34 testes, zero falhas/erros/skips.
-- FAST final: 752 testes, zero falhas/erros/skips.
+- FAST antes da integração: 752 testes, zero falhas/erros/skips.
 - 34 pares pelas quatro CLIs de produção: nenhum candidato anterior de programa
   ou arquivo removido. Dez casos recuperaram um alvo de programa cada; o caso
   de arquivo recuperou INPUTDAT nos usos OPEN, READ e CLOSE.
@@ -113,3 +113,18 @@ A qualification-local anterior de 1319 testes pertence à mudança REMARKS. Não
 foi repetida como gate da correção CICS: as fronteiras alteradas foram exercitadas
 pelo FAST, pelas famílias focais e pelos pares E2E. O corpus anterior de 96 casos
 continua evidência de REMARKS, não é apresentado como nova execução deste fix.
+
+
+## Integração com a main atualizada
+
+A main `96e7ab2` incorporou o parser próprio opt-in durante a auditoria.
+O merge na branch, `f9285170f954bdea232525bf72a54996c1627be4`, preservou a união
+sem duplicatas das 124 suítes FAST, incluindo parser, REMARKS e CICS.
+
+- FAST integrado: 775 testes, zero falhas/erros/skips.
+- Os 41 casos finais foram executados novamente e mantiveram todo o JSON de
+  dependências idêntico ao resultado já qualificado.
+- Cinco casos de CICS/REMARKS também foram executados com `--parser direct-ast-lab`;
+  os cinco JSONs ficaram idênticos ao modo padrão.
+- Evidência: `integration-comparison.json`, `check-integration.py`,
+  `integration-fast.log`, `runtime-integrated.json` e produtos brutos locais.
