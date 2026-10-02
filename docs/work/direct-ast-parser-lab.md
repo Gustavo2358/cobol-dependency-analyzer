@@ -12,21 +12,31 @@ um subconjunto de DATA DIVISION. O padrão continua `--parser antlr`.
 O reconhecimento produz declarações tipadas e materializa a AST imutável,
 sem construir contexts ANTLR para o corpo DATA admitido nem executar o visitante
 DATA original. Preprocessing, lexer e as demais divisions continuam usando ANTLR.
-Este é o primeiro experimento de substituição; não é um parser COBOL completo.
+O modo cobre DATA; lexer e PROCEDURE ainda não foram substituídos.
 
 A implementação deriva das regras atuais de `Cobol.g4`. A regra PIC original
 permanece intacta para o controle ANTLR. A leitura direta de PIC é linear.
-WORKING-STORAGE, LINKAGE e LOCAL-STORAGE admitem níveis 1–49, 77 e 88,
-nomes IDENTIFIER/FILLER, PIC, USAGE, VALUE explícito ao final da declaração,
-REDEFINES simples, GLOBAL, EXTERNAL sem BY, JUSTIFIED, SYNCHRONIZED e BLANK.
-O código e seus testes definem a admissão exata; essa lista não declara suporte
-completo às combinações permitidas pelo dialeto.
+O reconhecimento próprio cobre as formas DATA presentes nos 73 programas do
+CardDemo fixado: WORKING-STORAGE, LINKAGE, FILE SECTION com FD/SD, RECORD e
+RECORDING MODE; níveis 1–49, 77 e 88; nomes da produção `cobolWord` e nomes
+omitidos; PIC, USAGE, VALUE explícito/implícito, intervalos e figurative ALL;
+REDEFINES; OCCURS com limites, DEPENDING qualificado, chaves e índices;
+declarações EXEC SQL preservadas opacas. LOCAL-STORAGE sem LD e cláusulas simples
+de visibilidade/alinhamento de apresentação continuam admitidas.
 
-OCCURS, RENAMES, FILE SECTION, nomes reservados ambíguos, VALUE implícito e
-outras construções fora desse recorte devolvem **toda a DATA DIVISION** ao parser
-ANTLR, restaurando a posição original dos tokens. Nenhuma declaração parcial é
-publicada. Erros internos não são capturados como fallback. Cada execução possui
-uma sessão independente, sem cache global. Logs registram admissão e motivo de fallback.
+A cobertura não usa nomes de programas ou listas de arquivos em produção.
+O teste de paridade verifica o conjunto de tokens de `cobolWord` contra a gramática.
+FILE e OCCURS produzem fatos tipados; o registro de origens não substitui a
+construção semântica. O gate `DirectDataCorpusCheck` exige simultaneamente
+admissão própria sem fallback e equivalência integral da AST/origens/coverage.
+
+Construções fora do recorte, como RENAMES, referências subscriptadas em OCCURS,
+LOCAL-STORAGE com LD e cláusulas FILE não implementadas, ainda devolvem **toda a
+DATA DIVISION** ao parser ANTLR. A posição original dos tokens é restaurada e
+nenhuma declaração parcial é publicada. Erros internos não são capturados como
+fallback. Cada execução possui uma sessão independente, sem cache global.
+Logs registram admissão e motivo de fallback. A aprovação do corpus exige zero
+fallback em todos os 73 programas; ter um exit code zero não basta.
 
 Um registro plano de origens preserva IDs, regras, spans e linhas da apresentação
 sintática. Ele não reconstrói semântica; a AST consome os drafts tipados. IDs de AST,
@@ -39,6 +49,8 @@ não uma garantia matemática para qualquer entrada.
 A autoridade de compatibilidade deste laboratório é a gramática e a AST vigentes;
 não se introduz nova interpretação do dialeto. Referências oficiais das construções:
 [IBM, data description format 1](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=entry-format-1)
+, [IBM, OCCURS](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=entry-occurs-clause),
+[IBM, RECORD](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=entries-record-clause)
 e [IBM, regras de PICTURE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=clause-data-categories-picture-rules).
 Entradas permissivas da gramática atual não são silenciosamente corrigidas.
 Aplicam-se INV-AST-001/002/003 e os contratos de provenance e coverage existentes.
@@ -68,7 +80,7 @@ lexer e exportação nos dois modos. Tempo total da CLI, CPU e RSS são separado
 O executor preserva comandos, logs, hashes de fontes/COPY/build/dependências e
 compara cada artefato publicado byte a byte; diferenças não são normalizadas.
 
-## Validação e limites
+## Validação inicial e limites históricos
 
 - Nove testes diferenciais, incluindo PIC, VALUE, hierarquia, Unicode, CRLF,
   erros, múltiplos programas, isolamento e fallback.
@@ -87,7 +99,7 @@ compara cada artefato publicado byte a byte; diferenças não são normalizadas.
 - FAST final: PASS, 37,2 s; inclui `DirectDataParserTest` no conjunto obrigatório.
 - `lean.py docs`: PASS. Naming reproduzido separadamente na base com os mesmos três arquivos.
 
-## Resultado final — 2 de outubro de 2026
+## Medição inicial — 2 de outubro de 2026
 
 Temurin 25.0.4, cinco repetições por modo/programa (30 JVMs). Medianas:
 
@@ -117,8 +129,8 @@ hashes do código/build medido antes do commit desta branch. Nenhum baseline foi
 ## Próxima decisão
 
 Promover para produção exige revisão humana e ampliação da admissão com testes
-diferenciais. Para alcançar outros programas, o próximo recorte é OCCURS; para
-ganho uniforme, medir e substituir também os gargalos de PROCEDURE. Os resultados
+diferenciais. A ampliação de DATA é autorizada nesta sessão até eliminar fallback nos 73
+programas. Ganho uniforme também exige medir os gargalos restantes de PROCEDURE. Os resultados
 positivos de DATA não justificam prometer 50% na CLI ou em todo o corpus.
 
 ## Ampliação da medição para o corpus completo
@@ -128,3 +140,13 @@ e 13 fontes complementares do checkout, com uma rodada por modo a pedido do usu�
 No conjunto principal, três programas usam o parser próprio e 70 caem em fallback.
 COACCT01 e CODATE01 superam 50% de redução na etapa sintática; COBSWAIT não.
 As divergências brutas de serialização e os limites da amostra estão discriminados.
+
+## Ampliação da implementação para 73 programas
+
+A implementação foi ampliada após o levantamento dos fallbacks. `DirectDataCorpusCheck`
+passou nos 73 fontes preprocessados: 73 admissões próprias, zero fallback e zero
+diferenças estruturais, incluindo origens, AST, coverage e diagnósticos. A regressão
+de fixtures comparou 308 entradas, com 240 usando o caminho direto; as 23 rejeições
+de normalização e a falha preexistente continuam explicitadas. FAST local passou.
+A confirmação pela CLI completa com COPY e os novos tempos será registrada no
+relatório de fechamento após o término da execução.

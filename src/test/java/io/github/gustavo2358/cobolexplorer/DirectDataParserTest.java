@@ -61,11 +61,44 @@ class DirectDataParserTest {
             equal(program("01 ITEM PIC " + pic + tail + "."),true);
         equal(program("01 ITEM PIC ."),false);
     }
-    @Test void ambiguousAndUnsupportedFormsRollBackEntireDivision() {
-        for(String data:List.of("01 ITEM PIC X.\n01 TABLE-ITEM OCCURS 3 TIMES PIC X.",
-                "01 BINARY PIC X.", "01 ITEM PIC X VALUE 'A' BINARY.", "01 ITEM PIC X VALUE NAME.",
+    @Test void unsupportedFormsRollBackEntireDivision() {
+        for (String data : List.of("01 ITEM OCCURS TABLE-SIZE(1) PIC X.",
                 "01 ITEM PIC X.\n66 ALIAS RENAMES ITEM.", "01 ITEM PIC X.\nLOCAL-STORAGE SECTION.\nLD L."))
-            equal(program(data),false);
+            equal(program(data), false);
+    }
+    @Test void namesAndValueClausesFollowTheGrammarAlternatives() {
+        for (String data : List.of("01 BINARY PIC X.", "01 ITEM PIC X VALUE 'A' BINARY.",
+                "01 ITEM PIC X VALUE NAME.", "01 ITEM VALUE 'A' USAGE DISPLAY.",
+                "01 ITEM VALUE ALL 'A'.", "01 PIC X.", "01 ITEM PIC X.\n88 READY 'Y'."))
+            equal(program(data), true);
+    }
+    @Test void occursBuildsBoundsQualifiedReferencesSortKeysAndIndexes() {
+        for (String clause : List.of("OCCURS 3 TIMES", "OCCURS 0 TO 12 TIMES DEPENDING ON WS-COUNT OF WS-ROOT",
+                "OCCURS WS-COUNT", "OCCURS 5 ASCENDING KEY IS WS-KEY INDEXED BY WS-IDX WS-IDY"))
+            equal(program("01 WS-ROOT.\n05 WS-COUNT PIC 9.\n05 ITEM " + clause + " PIC X."), true);
+    }
+    @Test void fileDescriptionsPreserveRecordFactsAuxiliaryNodesAndDeclarationOrder() {
+        for (String clause : List.of("", "RECORDING MODE IS F", "RECORD CONTAINS 80 CHARACTERS",
+                "RECORD CONTAINS 10 TO 80 CHARACTERS", "RECORD IS VARYING IN SIZE FROM 10 TO 80 DEPENDING ON WS-LEN",
+                "RECORD IS VARYING DEPENDING ON WS-LEN", "IS EXTERNAL GLOBAL")) {
+            String source = program("01 WS-LEN PIC 99.").replace("WORKING-STORAGE SECTION.",
+                    "FILE SECTION.\nFD DATA-FILE " + clause + ".\n01 FILE-REC PIC X(80).\nSD SORT-FILE.\n01 SORT-REC PIC X.\nWORKING-STORAGE SECTION.");
+            equal(source, true);
+        }
+        equal(program("01 ITEM PIC X.").replace("WORKING-STORAGE SECTION.",
+                "FILE SECTION.\nFD DATA-FILE.\nRECORDING MODE F.\nRECORD CONTAINS 80.\n01 FILE-REC PIC X(80).\nWORKING-STORAGE SECTION."), true);
+    }
+    @Test void sqlDeclarationsRemainOpaqueAndPreserveHierarchy() {
+        equal(program("01 ITEM PIC X.\n*>EXECSQL EXEC SQL INCLUDE SQLCA END-EXEC\n.\n01 WS-NEXT PIC X."), true);
+    }
+    @Test void cobolWordTokenSetMatchesTheGrammar() throws Exception {
+        String grammar = Files.readString(Path.of("src/main/antlr4/Cobol.g4"));
+        String alternatives = grammar.split("\\ncobolWord\\n", 2)[1].split(";", 2)[0].replace(":", "");
+        Set<Integer> expected = new HashSet<>();
+        for (String word : alternatives.split("\\|")) expected.add(CobolParser.class.getField(word.strip()).getInt(null));
+        var method = DirectDataParser.class.getDeclaredMethod("wordToken", int.class); method.setAccessible(true);
+        for (int token = 1; token <= CobolParser.VOCABULARY.getMaxTokenType(); token++)
+            assertEquals(expected.contains(token), method.invoke(null, token), CobolParser.VOCABULARY.getSymbolicName(token));
     }
     @Test void literalsRangesAndUnicodeKeepSourceCoordinates() {
         equal(program("01 ITEM PIC X(3) VALUE 'á😀'.\n88 READY VALUE 'A' THRU 'Z' ZERO 12 TRUE X'FF'."),true);
@@ -79,7 +112,7 @@ class DirectDataParserTest {
     @Test void multipleProgramsAndSessionsDoNotShareResults() {
         equal(program("01 ITEM PIC X.") + program("01 ITEM PIC 9.").replace("LAB","OTHER"),true);
         equal(program("01 ITEM PIC X."),true);
-        equal(program("01 ITEM OCCURS 2 TIMES PIC X."),false);
+        equal(program("01 ITEM OCCURS 2 TIMES PIC X."),true);
     }
     @Test void existingFixturesPreserveAstOrTheSameFailure() throws Exception {
         int directFiles = 0, baselineFailures = 0, compared = 0;
@@ -126,7 +159,7 @@ class DirectDataParserTest {
     @Test void adversarialLevelsAndClauseOrdersPreserveFallback() {
         for (String level : List.of("+01", "-1", "0", "50", "999999999999999999999999999"))
             equal(program(level + " ITEM PIC X."), false);
-        for (String clause : List.of("VALUE 'A' USAGE DISPLAY", "VALUE ALL 'A'", "PIC X OCCURS 2 TIMES", "VALUE 'A',", "PIC X EXTERNAL BY 'N'"))
+        for (String clause : List.of("VALUE 'A',", "PIC X EXTERNAL BY 'N'"))
             equal(program("01 ITEM " + clause + "."), false);
         equal(program("01 ITEM IS GLOBAL PIC X."), true);
         equal(program("01 ITEM BLANK WHEN ZERO PIC 9 SYNC RIGHT."), true);

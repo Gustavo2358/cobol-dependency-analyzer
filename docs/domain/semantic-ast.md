@@ -150,3 +150,9 @@ a mesma AST sem contexts ANTLR intermediários; um registro plano preserva apena
 a origem e a apresentação sintática. Construções fora do recorte retornam
 transacionalmente ao parser original. Os contratos acima permanecem vigentes.
 Escopo, autoridade e evidência estão no [laboratório](../work/direct-ast-parser-lab.md).
+
+A ampliação DATA inclui OCCURS (limites, DEPENDING, qualifiers, chaves e índices),
+FILE/FD/SD com fatos de RECORD e RECORDING MODE, e declarações SQL opacas. Os
+metadados duplicados de RECORD e FileAuxiliary preservam os namespaces e a ordem
+do construtor canônico. A origem normativa continua nas regras de `Cobol.g4` e
+nas referências IBM registradas no [laboratório](../work/direct-ast-parser-lab.md).
