@@ -437,16 +437,16 @@ public final class ControlTopologySemantics {
             if(cics.abendFact(unit.id(),statement.meta().id()).isPresent())return false;
             var control=cics.fact(unit.id(),statement.meta().id());
             if(control.isPresent()&&control.get().command()==CicsProgramControlAnalyzer.Command.XCTL)
-                return control.get().options().stream().anyMatch(o->localConditionReturn(o.name(),o.operand()));
+                return control.get().options().stream().anyMatch(o->localConditionEvidence(o.name()));
             var command=cics.commandFact(unit.id(),statement.meta().id());
             if(command.isPresent()&&command.get().command()==CicsCommandSemantics.Kind.RETURN)
-                return command.get().options().stream().anyMatch(o->localConditionReturn(o.name(),o.operand()));
+                return command.get().options().stream().anyMatch(o->localConditionEvidence(o.name()));
         }
         return true;
     }
-    private static boolean localConditionReturn(String name,Optional<String> operand) {
-        return name.equals("NOHANDLE")&&operand.isEmpty()
-            ||name.equals("RESP")&&operand.filter(value->!value.isBlank()).isPresent();
+    private static boolean localConditionEvidence(String name) {
+        // Recognized source option only. Operand qualification belongs to executable authority.
+        return name.equals("NOHANDLE")||name.equals("RESP");
     }
     private String procedureRegion(Integer id) { return sectionIds.getOrDefault(id,paragraphIds.get(id)); }
     private String procedureOwner(Integer id) {

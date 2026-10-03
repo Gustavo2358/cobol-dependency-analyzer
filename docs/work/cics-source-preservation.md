@@ -18,15 +18,17 @@ Isso elimina a qualificação do CALL seguinte mesmo com tratamento local explí
 A reprodução até dependências termina COMPLETE, com a ocorrência inventariada
 mas sem candidato. É um falso negativo do modelo de possibilidades da fonte.
 
-Usar as opções canônicas já analisadas: NOHANDLE sem operando ou RESP com
-operando não vazio permite uma hipótese CONTROL_POSSIBILITY para a continuação
-simbólica já conhecida. A regra vale para gaps atuais e futuros nessas famílias;
+Usar as opções já reconhecidas pelo scanner: evidência explícita de NOHANDLE
+ou RESP permite uma hipótese CONTROL_POSSIBILITY para a continuação simbólica
+já conhecida, mesmo quando a forma do operando não pode ser qualificada. A regra vale para gaps atuais e futuros nessas famílias;
 não exige modelar cada opção antes de preservar a dependência. RESP2 isolado não
 ativa tratamento local. ABEND, GOBACK, STOP e formas terminais sem essa evidência
 continuam excluídos. Formas suportadas mantêm sua qualificação existente.
 
-Garantia LANGUAGE_GUARANTEED: uma condição pode retornar localmente com RESP/NOHANDLE.
-Garantia ARCHITECTURE_GUARANTEED: CONTROL_POSSIBILITY nunca autoriza AIR executável.
+Garantia LANGUAGE_GUARANTEED: nas formas qualificadas, uma condição pode retornar
+localmente com RESP/NOHANDLE. Para formas não qualificadas, a continuidade é uma
+hipótese de produto, não uma garantia IBM. Garantia ARCHITECTURE_GUARANTEED:
+CONTROL_POSSIBILITY nunca autoriza AIR executável.
 Não se afirma que uma condição necessariamente ocorrerá ou que o comando
 desconhecido tem efeitos conhecidos. Gaps e UNKNOWN_LOCAL permanecem. O algoritmo
 é linear no número de opções, sem nova análise de texto ou mudança de wire.
@@ -38,8 +40,9 @@ desconhecido tem efeitos conhecidos. Gaps e UNKNOWN_LOCAL permanecem. O algoritm
 - XCTL com opção desconhecida e RESP/NOHANDLE: mesma continuidade hipotética;
   alvo do próprio XCTL preservado. A opção fictícia é teste de gap futuro,
   não exemplo de sintaxe IBM válida.
-- RESP2 isolado, flags malformadas e NOHANDLE dentro de literal não autorizam
-  essa continuidade; RETURN simples, GOBACK, STOP e ABEND continuam terminais.
+- RESP2 isolado e NOHANDLE dentro de literal não autorizam essa continuidade;
+  RETURN simples, GOBACK, STOP e ABEND continuam terminais. Formas reconhecíveis
+  de RESP/NOHANDLE com operandos não qualificáveis preservam apenas hipóteses.
 - Composição em IF/PERFORM, alvos literais/dinâmicos e arquivos: a continuidade
   usa o destino da gramática; não usa a posição incidental no JSON.
 - Efeitos desconhecidos conservam candidatos condicionais; sobrescrita conhecida
@@ -128,3 +131,44 @@ sem duplicatas das 124 suítes FAST, incluindo parser, REMARKS e CICS.
   os cinco JSONs ficaram idênticos ao modo padrão.
 - Evidência: `integration-comparison.json`, `check-integration.py`,
   `integration-fast.log`, `runtime-integrated.json` e produtos brutos locais.
+
+
+## Revisão da autoridade — 2026-10-03
+
+O contraexemplo `XCTL PROGRAM('FIRSTPGM') RESP()` confirmou um problema vizinho:
+antes desta revisão, publicava NORMAL, evento PGMIDERR qualificado e dependência
+AFTERPGM com EXECUTABLE_FLOW, terminando COMPLETE. Reconhecimento de opção estava
+sendo promovido a uma prova de tratamento local.
+
+O parser preserva opções, payload, offsets e alvo. Operandos RESP/RESP2 sem uma
+referência de dados reconhecida pela gramática existente, ou repetidos, recebem
+gap explícito. Esse gap bloqueia boundedLocal, eventos de condição e outros facts
+fortes que exigem a forma qualificada. Não há rejeição do programa nem perda do
+alvo. O nome reconhecido RESP/NOHANDLE basta para a hipótese de fonte, incluindo
+RESP vazio/ausente e NOHANDLE com operando. Literais contendo essas palavras não
+são opções ativas. Essa decisão está na [política semântica](../engineering/semantic-analysis-policy.md#reconhecimento-de-fonte-e-autoridade-de-execução).
+
+Oracle: AFTERPGM presente, PARTIAL, CONTROL_POSSIBILITY, sem NORMAL/evento de
+condição qualificado no comando e sem autoridade/aresta executável para AFTERPGM.
+RESP(RC) e NOHANDLE qualificados mantêm a autoridade existente; código morto
+permanece sem candidato. A revisão altera deliberadamente os antigos negativos
+sobre forma de operando; a evidência bruta anterior permanece preservada.
+
+Validação da revisão:
+
+- RED: 6 testes, uma falha esperada no contraexemplo, sem erros.
+- GREEN focal: 41 testes, zero falhas/erros/skips.
+- FAST: 777 testes, zero falhas/erros/skips.
+- 18 pares E2E, com os quatro estágios concluídos: doze formas não qualificadas
+  mantêm AFTERPGM exclusivamente por SOURCE_CONTROL_POSSIBLE, com PARTIAL,
+  CONTROL_POSSIBILITY e sem Invoke/aresta executável de AFTERPGM na AIR.
+- Controles válidos e terminais mantiveram o JSON inteiro; código morto manteve
+  zero candidatos. Nenhum candidato anterior foi removido nos 18 pares.
+- Os 41 casos anteriores do PR foram reexecutados: JSON de dependências inteiro
+  idêntico. Três controles com parser próprio também ficaram idênticos ao padrão.
+- Evidência local: `artefatos-e2e/cics-authority-20261003/`, com checker,
+  comparação estruturada, comandos, fontes sintéticas e artefatos brutos.
+
+O próprio alvo FIRSTPGM continua reconhecido; a revisão remove somente a
+continuação executável indevida após o comando não qualificado. Não se afirma
+que toda a AIR ficou vazia nem se remove informação conhecida do comando.
