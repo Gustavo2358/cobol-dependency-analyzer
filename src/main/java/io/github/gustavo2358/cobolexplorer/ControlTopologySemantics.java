@@ -429,18 +429,24 @@ public final class ControlTopologySemantics {
         sourceContinuations.addAll(alternatives.values());
     }
     private boolean sourceMayComplete(Ast.Statement statement) {
-        // The grammar owns the hypothetical continuation. Known terminal forms are excluded
-        // even when their operands/effects are not admitted. This is never execution proof.
+        // The grammar owns the hypothetical continuation. Terminal success does not rule
+        // out a local CICS condition return. This is never execution proof.
         if(statement instanceof Ast.NextSentenceStatement)return false;
         if(statement instanceof Ast.ModeledStatement m&&Set.of("stopStatement","exitStatement","entryStatement").contains(m.grammarRule()))return false;
         if(statement instanceof Ast.EmbeddedLanguageStatement&&cics!=null) {
             if(cics.abendFact(unit.id(),statement.meta().id()).isPresent())return false;
             var control=cics.fact(unit.id(),statement.meta().id());
-            if(control.isPresent()&&control.get().command()==CicsProgramControlAnalyzer.Command.XCTL)return false;
+            if(control.isPresent()&&control.get().command()==CicsProgramControlAnalyzer.Command.XCTL)
+                return control.get().options().stream().anyMatch(o->localConditionEvidence(o.name()));
             var command=cics.commandFact(unit.id(),statement.meta().id());
-            if(command.isPresent()&&command.get().command()==CicsCommandSemantics.Kind.RETURN)return false;
+            if(command.isPresent()&&command.get().command()==CicsCommandSemantics.Kind.RETURN)
+                return command.get().options().stream().anyMatch(o->localConditionEvidence(o.name()));
         }
         return true;
+    }
+    private static boolean localConditionEvidence(String name) {
+        // Recognized source option only. Operand qualification belongs to executable authority.
+        return name.equals("NOHANDLE")||name.equals("RESP");
     }
     private String procedureRegion(Integer id) { return sectionIds.getOrDefault(id,paragraphIds.get(id)); }
     private String procedureOwner(Integer id) {

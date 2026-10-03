@@ -733,7 +733,13 @@ canonical grammar-owned target and proof references with CONTROL_POSSIBILITY.
 This is source-only hypothetical completion, not normal execution or success.
 The target uses the existing symbolic continuation/boundary, preserving PERFORM
 composition without downstream source reconstruction. Known terminal/transfer
-constructs are excluded. A hypothesis, including a proof alias that depends on
+constructs are excluded. For an unmodeled RETURN/XCTL, locally recognizable
+RESP/NOHANDLE source evidence permits a local condition-return hypothesis, even
+when its operand form cannot be qualified for execution: terminal success does
+not prove terminal failure. RESP2 alone does not enable it. Gaps and executable
+UNKNOWN_LOCAL remain explicit. Recognizing an option does not authorize NORMAL
+or a qualified condition event. See [CICS source preservation](../work/cics-source-preservation.md).
+A hypothesis, including a proof alias that depends on
 it, cannot authorize any executable outcome, region, boundary, binding, phase,
 FILE point or exceptional event. Typed and wire consumers enforce this boundary.
 

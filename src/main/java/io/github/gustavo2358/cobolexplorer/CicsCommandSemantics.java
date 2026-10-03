@@ -132,7 +132,7 @@ public final class CicsCommandSemantics {
         }
         return Optional.of(new Fact(kind,supported?SyntaxStatus.SUPPORTED:SyntaxStatus.UNAVAILABLE,raw,s.options(),List.copyOf(gaps)));
     }
-    private static boolean dataSyntax(String text) {
+    static boolean dataSyntax(String text) {
         var failed=new boolean[1];var listener=new BaseErrorListener(){@Override public void syntaxError(Recognizer<?,?> r,Object s,int l,int c,String m,RecognitionException e){failed[0]=true;}};
         var lexer=new CobolLexer(CharStreams.fromString(text));lexer.removeErrorListeners();lexer.addErrorListener(listener);
         if(DirectParseScope.active())try {var ref=((DirectSyntax.EmbeddedIdentifierFrame)DirectEmbeddedProcedureSyntax.parseRule(text,"embeddedIdentifier")).identifier();return ref.qualifiedDataName()!=null||ref.tableCall()!=null;}catch(DirectRecognizer.Unsupported e){return false;}

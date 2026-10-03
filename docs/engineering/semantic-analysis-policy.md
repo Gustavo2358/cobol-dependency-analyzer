@@ -24,6 +24,28 @@ Em resolução futura de dependências dinâmicas, conservar o conjunto de targe
 
 Para algoritmos não triviais, registrar de forma curta: domínio de entrada, invariante, argumento de soundness, limite de completeness, terminação e ordem de complexidade. O objetivo é revelar premissas ocultas, não exigir prova formal.
 
+## Reconhecimento de fonte e autoridade de execução
+
+O frontend pode ser deliberadamente mais permissivo que um compilador. Uma
+construção reconhecível, mas não plenamente qualificável, pode preservar
+possibilidades de dependência, desde que retenha incerteza explícita e não receba
+autoridade executável por esse reconhecimento. Não é necessário demonstrar que
+um compilador específico aceita a forma para manter a evidência de fonte.
+
+Há três níveis de autoridade:
+
+1. Semântica qualificada: permite os fatos e destinos executáveis cobertos pela prova.
+2. Forma reconhecível com semântica incompleta: permite CONTROL_POSSIBILITY e
+   candidatos condicionais, com PARTIAL; não permite NORMAL nem fluxo executável.
+3. Estrutura insuficiente para reconhecer uma possibilidade com destino seguro:
+   conserva UNKNOWN/gap, payload e provenance disponíveis.
+
+As hipóteses usam a estrutura e os limites reconhecidos pelo frontend. Palavras
+em literais ou comentários não constituem opções ativas. Limites da sintaxe de
+operandos podem impedir uma prova forte, mas não devem apagar um alvo de fonte
+que continua reconhecível. A mesma restrição vale para eventos de condições,
+facts de memória e outras autoridades fortes, além das arestas de controle.
+
 ## Fronteiras de análise
 
 Preservar a separação descrita no [pipeline arquitetural](../architecture/pipeline.md):

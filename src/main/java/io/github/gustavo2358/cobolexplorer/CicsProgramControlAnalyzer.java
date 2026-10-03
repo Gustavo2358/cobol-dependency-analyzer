@@ -116,12 +116,20 @@ public final class CicsProgramControlAnalyzer {
         if(syntax.isEmpty()||!Set.of("LINK","XCTL").contains(syntax.get().name()))return Optional.empty();
         var command=Command.valueOf(syntax.get().name());var options=new ArrayList<Option>();
         var gaps=new LinkedHashSet<>(syntax.get().gaps());boolean ended=syntax.get().ended();
+        var responses=new HashSet<String>();
         for(var source:syntax.get().options()) {
             var option=source.name();var operand=source.operand();
             options.add(new Option(option,operand,source.start(),source.end()));
             if(!Set.of("PROGRAM","COMMAREA","LENGTH","CHANNEL","RESP","RESP2","NOHANDLE","INPUTMSG","INPUTMSGLEN","SYSID","SYNCONRETURN","TRANSID","DATALENGTH").contains(option))gaps.add("CICS_UNMODELED_OPTION");
             if(command==Command.XCTL&&Set.of("SYSID","SYNCONRETURN","TRANSID","DATALENGTH").contains(option))gaps.add("CICS_OPTION_INVALID_FOR_COMMAND");
             if((option.equals("NOHANDLE")||option.equals("SYNCONRETURN"))==operand.isPresent())gaps.add("CICS_OPTION_OPERAND_SHAPE");
+            // Preserve recognized options and targets; only qualified response operands
+            // may support boundedLocal, condition events and other executable facts.
+            if(Set.of("RESP","RESP2").contains(option)) {
+                if(operand.map(String::strip).filter(CicsCommandSemantics::dataSyntax).isEmpty())
+                    gaps.add("CICS_OPTION_OPERAND_SHAPE");
+                if(!responses.add(option))gaps.add("CICS_COMMAND_DUPLICATE_OPTION");
+            }
         }
         var targets=options.stream().filter(o->o.name().equals("PROGRAM")).toList();
         Optional<String> literal=Optional.empty(),host=Optional.empty();int start=0,end=0;

@@ -1,3 +1,12 @@
+[Compatibilidade de banners REMARKS — fechamento aprovado](remarks-area-a-compatibility.md#fechamento):
+PR #85; extensão restrita, limites físicos e controles de dependências preservados.
+O merge do PR efetiva o estado DONE.
+
+
+[Preservar dependências após controle CICS parcial — fechamento aprovado](cics-source-preservation.md#fechamento):
+PR #85; FAST 777, 18 pares de autoridade e 41 regressões idênticas. Possibilidades
+de fonte permanecem distintas de execução; o merge do PR efetiva o estado DONE.
+
 [Parser próprio completo — fechamento aprovado](direct-parser-full.md#fechamento):
 PR #82; 73/73 CardDemo nativos, zero fallback, redução agregada medida de 74,37%
 em parsing + origens + AST. Qualificação completa PASS; o PR registra o merge

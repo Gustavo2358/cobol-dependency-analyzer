@@ -175,6 +175,16 @@ final class SourceNormalizer {
             }
 
             boolean areaA = startsInAreaA(line);
+            // Legacy REMARKS banners may start with an asterisk in Area A.
+            // Keep this compatibility rule local to the open documentation entry;
+            // every other Area A item still ends it before normal processing.
+            if (areaA && state == CommentEntryState.REMARKS_COMMENT_ENTRY
+                    && isRemarksBanner(line)) {
+                output.add(asCommentEntry(normalizedLine, line));
+                LOG.trace("event=remarks_area_a_asterisk source={} phase=NORMALIZATION line={}",
+                        file, lineIndex + 1);
+                continue;
+            }
             if (areaA) {
                 if (state == CommentEntryState.PROGRAM_NAME_PENDING
                         || state == CommentEntryState.PROGRAM_QUALIFIER_PENDING) {
@@ -224,6 +234,12 @@ final class SourceNormalizer {
                     PROGRAM_OPTIONAL_PERIOD, COMMENT_ENTRY, REMARKS_COMMENT_ENTRY -> { }
         }
         return output;
+    }
+
+    private static boolean isRemarksBanner(String line) {
+        int start = firstNonSpace(line, 0);
+        // Floating comments already have lexer semantics and boundary behavior.
+        return start >= 0 && line.charAt(start) == '*' && !line.startsWith("*>", start);
     }
 
     private static CommentEntryHeader commentEntryHeader(String line) {
