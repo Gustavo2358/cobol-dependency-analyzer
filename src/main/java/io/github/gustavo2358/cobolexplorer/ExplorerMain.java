@@ -235,6 +235,10 @@ public final class ExplorerMain {
         // Preserve the original filename as a byte-identical compatibility alias.
         Files.copy(output.resolve("cobol-semantic-product"+jsonSuffix),
                 output.resolve("semantic-product"+jsonSuffix), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        var gapAssessment = io.github.gustavo2358.cobolexplorer.semanticproduct.consumer.SemanticGapAssessment.assess(
+                compilationProduct.units().stream().map(u -> u.product()).toList());
+        io.github.gustavo2358.cobolexplorer.semanticproduct.transport.GapAssessmentWriter.write(gapAssessment,
+                output.resolve("semantic-gap-assessment" + jsonSuffix), output.resolve("gap-assessment-data.js"));
         CobolLoweringReadinessConsumer.Audit loweringReadiness =
                 CobolLoweringReadinessConsumer.audit(semanticProduct);
         LOG.debug("event=semantic_product_published phase=SEMANTIC_PRODUCT elapsedMs={} unit={} dataDeclarations={} statements={} gaps={} loweringReadiness={} cfgReadiness={} effectsDataflowReadiness={}",

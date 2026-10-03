@@ -35,7 +35,7 @@ final class ZstdArtifactTest {
         String fixture=Path.of("src/test/resources/cobol/semantic/semantic-product-entry-goback.cbl").toAbsolutePath().toString();
         ExplorerMain.main(new String[]{"--source",fixture,"--copybooks",directory.toString(),"--output",plain.toString(),"--json-compression","none"});
         ExplorerMain.main(new String[]{"--source",fixture,"--copybooks",directory.toString(),"--output",zipped.toString()});
-        for(String name:java.util.List.of("cobol-semantic-product","cobol-semantic-compilation","observed-dependencies","semantic-product")) {
+        for(String name:java.util.List.of("cobol-semantic-product","cobol-semantic-compilation","observed-dependencies","semantic-product","semantic-gap-assessment")) {
             assertFalse(Files.exists(zipped.resolve(name+".json")));
             assertArrayEquals(Files.readAllBytes(plain.resolve(name+".json")),JsonFiles.read(zipped.resolve(name+".json.zst")),name);
         }

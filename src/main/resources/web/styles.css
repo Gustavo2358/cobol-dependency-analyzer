@@ -397,3 +397,6 @@ footer b { color: var(--muted); }
   .tree-location { display: none; }
   footer { gap: 18px; }
 }
+
+.gap-assessment-link { margin: 0; padding: 14px 20px; border-bottom: 1px solid var(--line); font-size: 12px; }
+.gap-assessment-link a { color: var(--cyan); text-underline-offset: 3px; }

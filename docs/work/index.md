@@ -123,3 +123,8 @@ como registros/handoffs cross-repo para `air-java`, `cobol-lower` e
 [Scope and contract](file-composite-control.md); [qualification](file-composite-qualification.md).
 SP2.51 per-use control for OPEN/CLOSE and SORT/MERGE without procedure callbacks.
 IN_PROGRESS: implemented and qualified locally, awaiting review; no merge.
+
+## Reconciliação de gaps — em review
+
+- [WORK-GAP-RECONCILIATION-001](gap-reconciliation.json): avaliação por ocorrência e painel de diagnósticos.
+- [Contrato e regras](../domain/gap-assessment.md).

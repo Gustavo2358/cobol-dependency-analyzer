@@ -1,0 +1,1341 @@
+{
+  "baseline": {
+    "proleap-poc": "c43b1410ac9235d906ccc90392d5f3bf82399ac1",
+    "cobol-lower": "19cf1fe9a59997f48868a51332487417753e6fce",
+    "air-java": "7d77330099f46117281fdcbb08304e20d68f5672",
+    "analysis-ir": "fc229ef64eadf26c9ca093a544dad2928ae17dc2",
+    "analysis-cfg": "ae3b23d9e853f15fff64ebb49fa40be9391670ba"
+  },
+  "carddemo": "59cc6c2fd7ebd7ef7925cad552a01a4b8b6e4d5e",
+  "verification": {
+    "sources": 73,
+    "stages": 292,
+    "byteIdenticalArtifacts": 727,
+    "metricsOnlyArtifacts": [
+      {
+        "source": "app/app-transaction-type-db2/cbl/COTRTLIC.cbl",
+        "paths": [
+          "/metrics/RegionalValues.accumulatorStatesChanged",
+          "/metrics/RegionalValues.contextualEdges",
+          "/metrics/RegionalValues.edgeContributionJoins",
+          "/metrics/RegionalValues.edgeTransferInvocations",
+          "/metrics/RegionalValues.initializationAttempts",
+          "/metrics/RegionalValues.joinEntriesVisited",
+          "/metrics/RegionalValues.nodesPopped",
+          "/metrics/RegionalValues.nodesTransferred",
+          "/metrics/RegionalValues.operationsTransferred",
+          "/metrics/RegionalValues.publishedStatesChanged",
+          "/metrics/RegionalValues.worklistAttempts",
+          "/metrics/RegionalValues.worklistPushes"
+        ]
+      },
+      {
+        "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN00C.cl2",
+        "paths": [
+          "/fileDependencies/metrics/StorageValues.duplicatePushesSuppressed",
+          "/fileDependencies/metrics/StorageValues.worklistAttempts"
+        ]
+      },
+      {
+        "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN02C.cl2",
+        "paths": [
+          "/metrics/RegionalValues.maxWorklistSize"
+        ]
+      }
+    ],
+    "rawGapRecordsChecked": 38824,
+    "evidencePointersChecked": 32904,
+    "counts": {
+      "raw": 38824,
+      "superseded": 10774,
+      "partial": 10995,
+      "open": 17055,
+      "pending": 28050
+    },
+    "byCode": {
+      "MOVE_IDENTITY_NOT_PROVEN": {
+        "OPEN": 2697,
+        "PARTIAL": 2472
+      },
+      "SCALAR_WHOLE_ITEM_NOT_PROVEN": {
+        "OPEN": 2467,
+        "PARTIAL": 1838
+      },
+      "OBSERVED_STATEMENT_UNSUPPORTED": {
+        "PARTIAL": 2471,
+        "SUPERSEDED": 1139,
+        "OPEN": 774
+      },
+      "PERFORM_RANGE_CONTROL_NOT_PROVEN": {
+        "PARTIAL": 2055
+      },
+      "IF_OUTSIDE_SIMPLE_PROFILE": {
+        "OPEN": 1694,
+        "PARTIAL": 302
+      },
+      "CONDITION_SEMANTICS_NOT_AVAILABLE": {
+        "OPEN": 1694,
+        "SUPERSEDED": 125,
+        "PARTIAL": 141
+      },
+      "CONDITION_REFERENCE_KIND_NOT_PROJECTED": {
+        "OPEN": 1587
+      },
+      "PERFORM_PROVENANCE_INCOMPLETE": {
+        "OPEN": 1437
+      },
+      "LITERAL_KIND_NOT_PUBLISHED": {
+        "OPEN": 1329
+      },
+      "PERFORM_INPUT_INCOMPLETE": {
+        "OPEN": 1297
+      },
+      "OBSERVED_STATEMENT_PARTIAL": {
+        "PARTIAL": 650,
+        "SUPERSEDED": 3,
+        "OPEN": 10
+      },
+      "PERFORM_RESUME_NOT_PROVEN": {
+        "PARTIAL": 401
+      },
+      "PRESERVED_REFERENCE_CONTAINER": {
+        "OPEN": 385
+      },
+      "NORMAL_CONTINUATION_NOT_AVAILABLE": {
+        "OPEN": 254
+      },
+      "PERFORM_ORDERED_RANGE_NOT_PROVEN": {
+        "PARTIAL": 240
+      },
+      "CICS_COMMAND_EFFECTS_NOT_MODELED": {
+        "PARTIAL": 179,
+        "OPEN": 36
+      },
+      "PERFORM_PROCEDURE_STRUCTURE_NOT_PROVEN": {
+        "PARTIAL": 171
+      },
+      "MOVE_TARGET_CARDINALITY_OUTSIDE_CAPABILITY": {
+        "OPEN": 161
+      },
+      "CONTINUATION_NOT_PROJECTED": {
+        "OPEN": 142
+      },
+      "REFERENCE_UNRESOLVED_DECLARATION_NOT_FOUND": {
+        "OPEN": 120
+      },
+      "CICS_FILE_OUTCOME_VALUES_UNKNOWN": {
+        "OPEN": 109
+      },
+      "CICS_FILE_HOST_BINDING_UNAVAILABLE": {
+        "OPEN": 95
+      },
+      "CALL_RUNTIME_NOT_RESOLVED": {
+        "OPEN": 91
+      },
+      "MOVE_NON_LITERAL_SOURCE_OUTSIDE_CAPABILITY": {
+        "OPEN": 81
+      },
+      "CALL_ARGUMENTS_NOT_PROJECTED": {
+        "OPEN": 80
+      },
+      "CALL_SURFACE_OUTSIDE_FIRST_SLICE": {
+        "OPEN": 80
+      },
+      "PERFORM_ENDPOINT_NOT_UNIQUE_LOCAL_PARAGRAPH": {
+        "PARTIAL": 75
+      },
+      "GO_TO_PROVENANCE_INCOMPLETE": {
+        "OPEN": 74
+      },
+      "CICS_EFFECTS_SIGNATURE_PARTIAL": {
+        "OPEN": 58
+      },
+      "CICS_HANDLER_STATE_UNKNOWN": {
+        "OPEN": 57
+      },
+      "PERFORM_UNTIL_PREDICATE_NOT_PROVEN": {
+        "OPEN": 32
+      },
+      "PERFORM_VARYING_CONTROL_ITEM_NOT_PROVEN": {
+        "OPEN": 31
+      },
+      "PERFORM_VARYING_PREDICATE_NOT_PROVEN": {
+        "OPEN": 31
+      },
+      "GO_TO_ALTER_IN_UNIT": {
+        "OPEN": 28
+      },
+      "CICS_HANDLER_EXECUTION_STATE_NOT_MODELED": {
+        "OPEN": 18
+      },
+      "EXTERNAL_INFERRED_CICS_POSSIBLE_INTRINSIC": {
+        "OPEN": 17
+      },
+      "PERFORM_OVERLAPPING_RANGES": {
+        "OPEN": 14
+      },
+      "CONTAINMENT_NOT_PROJECTED": {
+        "SUPERSEDED": 3993,
+        "OPEN": 13
+      },
+      "CICS_FILE_HANDLER_STATE_UNKNOWN": {
+        "OPEN": 12
+      },
+      "CICS_ABEND_DISPATCH_NOT_MODELED": {
+        "OPEN": 9
+      },
+      "MOVE_NON_DATA_TARGET_OUTSIDE_CAPABILITY": {
+        "OPEN": 9
+      },
+      "PERFORM_VARYING_FROM_NOT_PROVEN": {
+        "OPEN": 8
+      },
+      "EVALUATE_CONTINUATION_NOT_PROVEN": {
+        "OPEN": 7
+      },
+      "EVALUATE_SUBJECT_NOT_PROVEN": {
+        "OPEN": 5
+      },
+      "CALL_NORMAL_CONTINUATION_NOT_AVAILABLE": {
+        "OPEN": 4
+      },
+      "EVALUATE_PREDICATE_NOT_MODELED": {
+        "OPEN": 3
+      },
+      "REFERENCE_UNSUPPORTED_UNSUPPORTED_GRAMMAR_FORM": {
+        "OPEN": 2
+      },
+      "CICS_COMMAND_DUPLICATE_FLAG_IGNORED": {
+        "OPEN": 1
+      },
+      "CICS_CONDITION_VALUES_UNKNOWN": {
+        "OPEN": 1
+      },
+      "DYNAMIC_CALL_TARGET_VALUE_UNKNOWN": {
+        "OPEN": 1
+      },
+      "PERFORM_ISOLATED_PRIMARY_FLOW_NOT_PROVEN": {
+        "SUPERSEDED": 1506
+      },
+      "PERFORM_ISOLATED_PRIMARY_NOT_PROVEN": {
+        "SUPERSEDED": 2055
+      },
+      "PERFORM_LINEAR_MOVE_BODY_NOT_PROVEN": {
+        "SUPERSEDED": 1517
+      },
+      "PERFORM_ORDINARY_INCOMING_NOT_EXCLUDED": {
+        "SUPERSEDED": 436
+      }
+    },
+    "byRule": {
+      "INVOCATION_PUBLISHED": 2942,
+      "COMPOSITION_REPLACES_ISOLATION": 5514,
+      "NO_MATCHING_RULE": 17055,
+      "TOPOLOGY_MEMBERSHIP": 3993,
+      "EFFECT_SUMMARY_PUBLISHED": 3121,
+      "NO_OP_WITH_CONTROL": 1142,
+      "CICS_HOST_EFFECTS_PUBLISHED": 179,
+      "NOMINAL_ASSIGNMENT_PUBLISHED": 4310,
+      "TEXT_PREDICATE_PUBLISHED": 286,
+      "NOMINAL_CONDITION_PUBLISHED": 282
+    },
+    "result": "PASS"
+  },
+  "programs": [
+    {
+      "source": "app/cbl/COACTUPC.cbl",
+      "sourceSha256": "b5bb7d6ccad022e0fc91b4dd1e971f49d184adf89b56abdce14eccff35b39396",
+      "counts": {
+        "raw": 2713,
+        "superseded": 397,
+        "partial": 1119,
+        "open": 1197,
+        "pending": 2316
+      },
+      "spSha256": "37354d59b761fc86dc56d1c56830dfd5888703597b0606dfe944d5202a55ce54",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COACTUPC.cl2",
+      "sourceSha256": "e944b2b469cf737296489e87158801cfe1a174e2965b5bb9ad5006fc65a2b176",
+      "counts": {
+        "raw": 2697,
+        "superseded": 391,
+        "partial": 1120,
+        "open": 1186,
+        "pending": 2306
+      },
+      "spSha256": "7f76a865e829acea75dc1c89d7fe2553a21ad16df938812a7f7551e978c3bbd6",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-transaction-type-db2/cbl/COTRTLIC.cbl",
+      "sourceSha256": "916a5fe2279ad626147990d8f86fac1e4b296f827889485b020cc310b5323601",
+      "counts": {
+        "raw": 1341,
+        "superseded": 385,
+        "partial": 408,
+        "open": 548,
+        "pending": 956
+      },
+      "spSha256": "2944562a6c16b45d58e23c0f0f7959c434d20e7732a73e288c8762e145a33420",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": true
+    },
+    {
+      "source": "app/app-authorization-ims-db2-mq/cbl/COPAUS0C.cbl",
+      "sourceSha256": "7ab6dadad6d9d738f6a0cb402f394c25ccda5f7fef26ad644feeb76c11065254",
+      "counts": {
+        "raw": 1046,
+        "superseded": 320,
+        "partial": 353,
+        "open": 373,
+        "pending": 726
+      },
+      "spSha256": "7ea9701769fd4a55faa787e012df1daee79af132c882f6cafcf75b46a181937f",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COCRDLIC.cbl",
+      "sourceSha256": "d6a9210ad3062bd657881fc3f0d2a7368db3ff4869594e0d6a878d8f410d87b6",
+      "counts": {
+        "raw": 983,
+        "superseded": 263,
+        "partial": 338,
+        "open": 382,
+        "pending": 720
+      },
+      "spSha256": "a8968b862d63f23d0f75d030cfbd836ef8c0dba5be2ad2e0b5ab89ca6a4d473f",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COCRDLIC.cl2",
+      "sourceSha256": "d6a9210ad3062bd657881fc3f0d2a7368db3ff4869594e0d6a878d8f410d87b6",
+      "counts": {
+        "raw": 983,
+        "superseded": 263,
+        "partial": 338,
+        "open": 382,
+        "pending": 720
+      },
+      "spSha256": "20873971ee6d507f2e406a2888b1a3462901bddb872bf2b6a6b92eb689b7c9f4",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COCRDUPC.cbl",
+      "sourceSha256": "c245cf383a4a3f721773a13ca231eb76bd5ae75c1830d58c7aba898a554a0de9",
+      "counts": {
+        "raw": 916,
+        "superseded": 223,
+        "partial": 338,
+        "open": 355,
+        "pending": 693
+      },
+      "spSha256": "aa947722cbe421c6c787c50934e13c08ef03b1b6a87a1713761665b29d7f9164",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COCRDUPC.cl2",
+      "sourceSha256": "3ffeeb3d3c53e64e632bde36771dbbcf080e92ed4168d30d90c21e4dc198e6ef",
+      "counts": {
+        "raw": 916,
+        "superseded": 224,
+        "partial": 339,
+        "open": 353,
+        "pending": 692
+      },
+      "spSha256": "7b1362b319c48e795fd3f2a3e4c720bd51b5f9b2b1d67ab0c7c5bb411a4d46a7",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBACT04C.cbl",
+      "sourceSha256": "5084bb8b0c9a0f0199f737487ae1863f12e43cabbdc459a62b6b67bedc683cc4",
+      "counts": {
+        "raw": 833,
+        "superseded": 207,
+        "partial": 207,
+        "open": 419,
+        "pending": 626
+      },
+      "spSha256": "c9b14aa30194f3419a654f66f8cd5c1a679f387054e7fe522e25918fc59a3855",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBACT04C.cbl",
+      "sourceSha256": "76dea08b410b653ee2fa967c564e9f2e992b7c09f52b2d1fbb5a212149aefbce",
+      "counts": {
+        "raw": 831,
+        "superseded": 207,
+        "partial": 207,
+        "open": 417,
+        "pending": 624
+      },
+      "spSha256": "3248bb4f9eb661c3f165f9f03a6c68406fb2dc052260c8c867bad588f2d1cab1",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COTRN00C.cbl",
+      "sourceSha256": "51479f131b4fb300008403f0c4f9fdbde56f22a7fb341c782492da29f0d23bbe",
+      "counts": {
+        "raw": 891,
+        "superseded": 288,
+        "partial": 298,
+        "open": 305,
+        "pending": 603
+      },
+      "spSha256": "5fca5aeca6f9c6caa03bf07d6de1cc84fb41b74d74e34f2217888621eb2c92b8",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN00C.cl2",
+      "sourceSha256": "51479f131b4fb300008403f0c4f9fdbde56f22a7fb341c782492da29f0d23bbe",
+      "counts": {
+        "raw": 891,
+        "superseded": 288,
+        "partial": 298,
+        "open": 305,
+        "pending": 603
+      },
+      "spSha256": "f67f7e01859df87dfad2d7bafcceabc2715410068b55c136479610cbcc80b978",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": true
+    },
+    {
+      "source": "app/app-transaction-type-db2/cbl/COTRTUPC.cbl",
+      "sourceSha256": "c16e40c391c0ad2d3e797a0e01144ef5b78d3b0db0a1771411a95a9d08b01f67",
+      "counts": {
+        "raw": 864,
+        "superseded": 274,
+        "partial": 283,
+        "open": 307,
+        "pending": 590
+      },
+      "spSha256": "c35fce1d7c05209faffcbd984bec37a2c4e4e6cadeb496d00b96f630eee4f5e5",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COUSR00C.cbl",
+      "sourceSha256": "831433c6ec8306038c85cb86a8307f91dca48c26ef33a997f402187cbd9f4e04",
+      "counts": {
+        "raw": 879,
+        "superseded": 290,
+        "partial": 296,
+        "open": 293,
+        "pending": 589
+      },
+      "spSha256": "ac0ed2063115c75cbc68e5630ed83967084168e92f6ad978f45a44689e2f152f",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR00C.cl2",
+      "sourceSha256": "831433c6ec8306038c85cb86a8307f91dca48c26ef33a997f402187cbd9f4e04",
+      "counts": {
+        "raw": 879,
+        "superseded": 290,
+        "partial": 296,
+        "open": 293,
+        "pending": 589
+      },
+      "spSha256": "eb0a42ae2dcd6ddd1550970254b97de4bb3f6f1eccc7ffec42de498c8100606c",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBTRN02C.cbl",
+      "sourceSha256": "708f3cadc555acab63f11e2f3238f5372ac7180e6b01197bf960d96bf0d2e83f",
+      "counts": {
+        "raw": 801,
+        "superseded": 229,
+        "partial": 105,
+        "open": 467,
+        "pending": 572
+      },
+      "spSha256": "ba22ddc1e3877311f5500f9b937f2a8c77cefd8900b897d3bfc80d1c5b4c9300",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBTRN02C.cbl",
+      "sourceSha256": "136ab808a10d01814269a4a29bd6c249b1b86952d0abded98419458db43f2aef",
+      "counts": {
+        "raw": 799,
+        "superseded": 229,
+        "partial": 105,
+        "open": 465,
+        "pending": 570
+      },
+      "spSha256": "07c58e3991f8c82dc5bf25d0d733e40baecb609df19827b6155921a3b67e8113",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBTRN03C.cbl",
+      "sourceSha256": "8691e625502b7efcfd7ba4ae61797132e7b68f3fd5fedcdcc7dd6488f6871eef",
+      "counts": {
+        "raw": 777,
+        "superseded": 254,
+        "partial": 125,
+        "open": 398,
+        "pending": 523
+      },
+      "spSha256": "1e5c50951a2a48e54ad0b904329595c943f7ff7cde6e01fa46bf1c31b76bec41",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBTRN03C.cbl",
+      "sourceSha256": "c9c5428073cbe19c1cd19fc066ed99972560c209a80b4aea3bae3cc5e20a3536",
+      "counts": {
+        "raw": 775,
+        "superseded": 254,
+        "partial": 125,
+        "open": 396,
+        "pending": 521
+      },
+      "spSha256": "63f18783418950d0f628353d516f47ca6add43140a0f8445ea76f06655ffbd96",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBSTM03A.CBL",
+      "sourceSha256": "23c8753b6b4e0c24d4560c83861fe8162626bab195faec0fe88cf80b8bf432b5",
+      "counts": {
+        "raw": 646,
+        "superseded": 132,
+        "partial": 188,
+        "open": 326,
+        "pending": 514
+      },
+      "spSha256": "0a484abf69bb8965c00aee0679616d8588f6161de9adc6f37e10595b5bee190f",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COTRN02C.cbl",
+      "sourceSha256": "dc33b4c797a98d2732070a223f43cc78992c2846681163a032e376630742b1ed",
+      "counts": {
+        "raw": 857,
+        "superseded": 349,
+        "partial": 163,
+        "open": 345,
+        "pending": 508
+      },
+      "spSha256": "ec0b2b8cb83d29c09a48d21e29d33bf93c5c972785a7e3c30a1c9b430011d825",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN02C.cl2",
+      "sourceSha256": "dc33b4c797a98d2732070a223f43cc78992c2846681163a032e376630742b1ed",
+      "counts": {
+        "raw": 857,
+        "superseded": 349,
+        "partial": 163,
+        "open": 345,
+        "pending": 508
+      },
+      "spSha256": "2184d77e8364cebb407660ec03ec109eca07694e7f2499b609bb2e190b65d39e",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": true
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBSTM03A.cbl",
+      "sourceSha256": "382c4131561a7843704fb84212c5d15b69ed5fa7b69101ee999680880a1d8879",
+      "counts": {
+        "raw": 609,
+        "superseded": 128,
+        "partial": 171,
+        "open": 310,
+        "pending": 481
+      },
+      "spSha256": "b1466083cc94e294c4353646f46787950ceb98f2569feaf79c34c73484f05b17",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-authorization-ims-db2-mq/cbl/COPAUA0C.cbl",
+      "sourceSha256": "224856ce6ef1b7417aefcec033a36a9315c0005decf9f11d21d11e9240e3f8fa",
+      "counts": {
+        "raw": 647,
+        "superseded": 169,
+        "partial": 145,
+        "open": 333,
+        "pending": 478
+      },
+      "spSha256": "92621864c9916f3e9b1c20c65494dd22113be259bf87a1fd2cf314dee1a50a9a",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBEXPORT.cbl",
+      "sourceSha256": "598e3c9055b96b79266910e080bc24048eb308ee61afc828c06dbade9f501d38",
+      "counts": {
+        "raw": 536,
+        "superseded": 128,
+        "partial": 128,
+        "open": 280,
+        "pending": 408
+      },
+      "spSha256": "980ded973df9c4fe5672adafdbe67fd53316d01ccd6937e00130b80aa5bc4c11",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COACTVWC.cbl",
+      "sourceSha256": "4f1e55176f69edfb55b7af7a161aceb8c3bc3bd1b2924a704a76256e0e751b54",
+      "counts": {
+        "raw": 530,
+        "superseded": 141,
+        "partial": 205,
+        "open": 184,
+        "pending": 389
+      },
+      "spSha256": "c88a0928c490184dcc2131c7341ff81f6b4ad9ca7e6934f92e504cae7328c8d1",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COACTVWC.cl2",
+      "sourceSha256": "4f1e55176f69edfb55b7af7a161aceb8c3bc3bd1b2924a704a76256e0e751b54",
+      "counts": {
+        "raw": 530,
+        "superseded": 141,
+        "partial": 205,
+        "open": 184,
+        "pending": 389
+      },
+      "spSha256": "5665bf234fbb9f16beff93621c7cfeff7ece8cf37b83ddeb287ec5d3b6abc0fc",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-authorization-ims-db2-mq/cbl/COPAUS1C.cbl",
+      "sourceSha256": "27a969cbee69426fa1056053e676041430e99399912f0e27ee1f1a454093c21e",
+      "counts": {
+        "raw": 516,
+        "superseded": 140,
+        "partial": 152,
+        "open": 224,
+        "pending": 376
+      },
+      "spSha256": "5aab288fc4ff0b7c6a51205689333a07019e7c5a77dcbb1e19915b50702f906e",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COCRDSLC.cbl",
+      "sourceSha256": "d5af307fb4b1a155f03df9eea14b402d866a332360e14a1e37dbefe59b73363b",
+      "counts": {
+        "raw": 509,
+        "superseded": 136,
+        "partial": 194,
+        "open": 179,
+        "pending": 373
+      },
+      "spSha256": "928e6615e86e0008e5c24fb3037f39eb19780c811a0fe52771755db72992319c",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COCRDSLC.cl2",
+      "sourceSha256": "d5af307fb4b1a155f03df9eea14b402d866a332360e14a1e37dbefe59b73363b",
+      "counts": {
+        "raw": 509,
+        "superseded": 136,
+        "partial": 194,
+        "open": 179,
+        "pending": 373
+      },
+      "spSha256": "ea24f98192fa2087fbe728338499f0ad586d0d23b22f0ff9d2f57b627af93e02",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-vsam-mq/cbl/COACCT01.cbl",
+      "sourceSha256": "92776ed2801da1148839a9ed98b6537de4b41e0c7f050c8dcaae0d4e4ea543b5",
+      "counts": {
+        "raw": 545,
+        "superseded": 183,
+        "partial": 74,
+        "open": 288,
+        "pending": 362
+      },
+      "spSha256": "130ee41baf4b9e87c7b2cfb975bbbc11c9e3d7a85f3276d6e34784540d2f05bd",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CORPT00C.cbl",
+      "sourceSha256": "0b06bd5d4f38f17871de8985c439dfce7ed30d28e02b6ffeb8459e0cd8db4fc2",
+      "counts": {
+        "raw": 586,
+        "superseded": 237,
+        "partial": 113,
+        "open": 236,
+        "pending": 349
+      },
+      "spSha256": "b5d8043272e69ad63ec54188fca4da7f2ea95e570dd62ce239a6952337c8c19f",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CORPT00C.cl2",
+      "sourceSha256": "0b06bd5d4f38f17871de8985c439dfce7ed30d28e02b6ffeb8459e0cd8db4fc2",
+      "counts": {
+        "raw": 586,
+        "superseded": 237,
+        "partial": 113,
+        "open": 236,
+        "pending": 349
+      },
+      "spSha256": "8ef3bb28460ee550c4dcf3e16b1319f41eea22a65020d4871a43d385cf5d786a",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBTRN01C.cbl",
+      "sourceSha256": "55c2aebd59528aa42b28878ba5ca4d17a00b3548fc25e4ce1529710d366fd576",
+      "counts": {
+        "raw": 500,
+        "superseded": 152,
+        "partial": 80,
+        "open": 268,
+        "pending": 348
+      },
+      "spSha256": "e2ddaf7bba43ff3baaf0ae2d8ba089583c7e6ecc886b3354551c038d59d63b2a",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBTRN01C.cbl",
+      "sourceSha256": "18cebdd95bff49b5316c271204fb20f59d2dd72615bc1715498c9cc8a50187f7",
+      "counts": {
+        "raw": 498,
+        "superseded": 152,
+        "partial": 80,
+        "open": 266,
+        "pending": 346
+      },
+      "spSha256": "483ad30e3c69c3edaf4b4489ba52fb36b8c512771061e3b2031b1d5e62c0b677",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COBIL00C.cbl",
+      "sourceSha256": "b5c46039eb8fd2f7ed7d3ca379172e56fa87385a369023bef706b04986fe1cfb",
+      "counts": {
+        "raw": 538,
+        "superseded": 204,
+        "partial": 96,
+        "open": 238,
+        "pending": 334
+      },
+      "spSha256": "1c072bc377f033f5bf0892639b4cd41487513d71bf459b1b1718115dcc593d7c",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COBIL00C.cl2",
+      "sourceSha256": "b5c46039eb8fd2f7ed7d3ca379172e56fa87385a369023bef706b04986fe1cfb",
+      "counts": {
+        "raw": 538,
+        "superseded": 204,
+        "partial": 96,
+        "open": 238,
+        "pending": 334
+      },
+      "spSha256": "36abfa6f1d254ce3419a490c05d1ae13b1ec85c844fb9cf14cb3f6abddc9151f",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBACT01C.cbl",
+      "sourceSha256": "f8eb6e3a561ff96a1889a8f777a8998850a11dddae221da2c5018067d7b95551",
+      "counts": {
+        "raw": 453,
+        "superseded": 125,
+        "partial": 73,
+        "open": 255,
+        "pending": 328
+      },
+      "spSha256": "99808d5474b918a15b945fe65f57092400d2ea136c4145a72f99886195a27b06",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-vsam-mq/cbl/CODATE01.cbl",
+      "sourceSha256": "97fcba3faa272c98778eb7ef50ef87faec7290168e24a9b1714996453d660ddb",
+      "counts": {
+        "raw": 473,
+        "superseded": 150,
+        "partial": 66,
+        "open": 257,
+        "pending": 323
+      },
+      "spSha256": "84b5d145b6a07a0fbb59e8cb07bc526a2f302830ef91dd3df3b8a875e1f07343",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBIMPORT.cbl",
+      "sourceSha256": "0eccb28695cb3a8ea6f6ea7da26d1b48a4529787f6130b2c98bead33bc661967",
+      "counts": {
+        "raw": 374,
+        "superseded": 84,
+        "partial": 84,
+        "open": 206,
+        "pending": 290
+      },
+      "spSha256": "a47ef92d8641f1800cd78eaccb884dee5a0333be401863c8f129257ff6c5e9d5",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COUSR02C.cbl",
+      "sourceSha256": "85d36699cbd3079320e689576ea8406d07ad78901f4f3a68a129b869359b46ca",
+      "counts": {
+        "raw": 429,
+        "superseded": 163,
+        "partial": 92,
+        "open": 174,
+        "pending": 266
+      },
+      "spSha256": "c717f24b94eed40d36472ea3cb0cb0cbd70833cd6b641e84a3a37ae591af2ea7",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR02C.cl2",
+      "sourceSha256": "85d36699cbd3079320e689576ea8406d07ad78901f4f3a68a129b869359b46ca",
+      "counts": {
+        "raw": 429,
+        "superseded": 163,
+        "partial": 92,
+        "open": 174,
+        "pending": 266
+      },
+      "spSha256": "5ae57dbc50344f0a2ac8ea5c1a841932d6160b6ed8f35f3207b23466690d2569",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-authorization-ims-db2-mq/cbl/CBPAUP0C.cbl",
+      "sourceSha256": "309468a5c4745f92c6dcf6ed28b396334b2f131ced78eb43eda962a63d2b174e",
+      "counts": {
+        "raw": 270,
+        "superseded": 43,
+        "partial": 111,
+        "open": 116,
+        "pending": 227
+      },
+      "spSha256": "fdf0a2c9355537679eb406bcca818b7c950e68e7d8484f321abcddffc0eb38c6",
+      "spUnchanged": true,
+      "analysisStatus": "COMPLETE",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COUSR03C.cbl",
+      "sourceSha256": "bcd68f08c145b3b9b9c809a7082834e9519d78b6f363a0d1c5ff9d9576dcf888",
+      "counts": {
+        "raw": 346,
+        "superseded": 132,
+        "partial": 74,
+        "open": 140,
+        "pending": 214
+      },
+      "spSha256": "4b7cee5482d9f04c758e4e7f386f5474dfe0a47a1eb03052aae7967bedf6b6cc",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR03C.cl2",
+      "sourceSha256": "bcd68f08c145b3b9b9c809a7082834e9519d78b6f363a0d1c5ff9d9576dcf888",
+      "counts": {
+        "raw": 346,
+        "superseded": 132,
+        "partial": 74,
+        "open": 140,
+        "pending": 214
+      },
+      "spSha256": "dad03caada4be966263a9318d590886d90b5136eeee75a4182aab8761fd133b9",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COMEN01C.cbl",
+      "sourceSha256": "c77747b4caaf00b45177a6449562b7f59ec336db832937595edef8b32fdce6fa",
+      "counts": {
+        "raw": 251,
+        "superseded": 69,
+        "partial": 78,
+        "open": 104,
+        "pending": 182
+      },
+      "spSha256": "05a69f936dd1fa6ad561717f61bf2d071a26b48413d18b5cdb99419ad7cd7ed8",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COTRN01C.cbl",
+      "sourceSha256": "fc24ff879ac6ae12bc6817554cb756f14c5e86e0ca2dd0037af49599887f03c0",
+      "counts": {
+        "raw": 256,
+        "superseded": 80,
+        "partial": 72,
+        "open": 104,
+        "pending": 176
+      },
+      "spSha256": "3278e4ba87a4d888cc3e320066051e3a0a046395e130172003a9cd143f231afc",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN01C.cl2",
+      "sourceSha256": "fc24ff879ac6ae12bc6817554cb756f14c5e86e0ca2dd0037af49599887f03c0",
+      "counts": {
+        "raw": 256,
+        "superseded": 80,
+        "partial": 72,
+        "open": 104,
+        "pending": 176
+      },
+      "spSha256": "3aea1c6e01e37799c76a5800e2215ba9da52e22419a339e0c64e4b4c65a02c2d",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COUSR01C.cbl",
+      "sourceSha256": "aa131b1e3382dc6d101b42f1c97d4fb0c2fdd706819ed9f9a0187c82b30f3019",
+      "counts": {
+        "raw": 273,
+        "superseded": 105,
+        "partial": 53,
+        "open": 115,
+        "pending": 168
+      },
+      "spSha256": "fba2895e10ca07ba2bdc703334c65910d1beeaa8cc5c2363db3da712553b9c85",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR01C.cl2",
+      "sourceSha256": "aa131b1e3382dc6d101b42f1c97d4fb0c2fdd706819ed9f9a0187c82b30f3019",
+      "counts": {
+        "raw": 273,
+        "superseded": 105,
+        "partial": 53,
+        "open": 115,
+        "pending": 168
+      },
+      "spSha256": "199a86d8318d0a56b7aaf94b9e204798df769122a410d3c5b1748125e67ceeaf",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COMEN01C.cl2",
+      "sourceSha256": "ad5e376ac9221b21b8ce47597a5ca17fc1f39dc913793c814c6675e9b046fc09",
+      "counts": {
+        "raw": 223,
+        "superseded": 59,
+        "partial": 74,
+        "open": 90,
+        "pending": 164
+      },
+      "spSha256": "9dba4b94350346692a5099d3ea17568cacb17bff9705e2e46180485e6bb50287",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COADM01C.cbl",
+      "sourceSha256": "4e49afda5f685f3ebeb95ed04a93cf88df93d39c66d8d7f9ba2b9a3e00a1f690",
+      "counts": {
+        "raw": 216,
+        "superseded": 57,
+        "partial": 74,
+        "open": 85,
+        "pending": 159
+      },
+      "spSha256": "1191b9df1f1756ab19a2e53a56a647d2b097161fc96008259063f42b6a2bb839",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COADM01C.cl2",
+      "sourceSha256": "69842c4dd419ed70365682d65423d2744173f3eec695b25b5ed27bd29289608d",
+      "counts": {
+        "raw": 204,
+        "superseded": 54,
+        "partial": 67,
+        "open": 83,
+        "pending": 150
+      },
+      "spSha256": "bc8a6876fca9b63574f17a6a80e3d0aee85a955c3c82fc55c5089b308d6ba161",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-authorization-ims-db2-mq/cbl/PAUDBLOD.CBL",
+      "sourceSha256": "5694a2ed8a12dd4dc82717b401c655866a0e1f9abb0acf395151ead2b0cb31a7",
+      "counts": {
+        "raw": 178,
+        "superseded": 41,
+        "partial": 79,
+        "open": 58,
+        "pending": 137
+      },
+      "spSha256": "1641a3e38a3ee6a751309fd13a5513180d26033121a04882a3351b1f3fb93785",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBACT01C.cbl",
+      "sourceSha256": "426cf9bd190b777104bb964e9d5a2929197ed7621f8b334f229ef12e60e63966",
+      "counts": {
+        "raw": 174,
+        "superseded": 40,
+        "partial": 38,
+        "open": 96,
+        "pending": 134
+      },
+      "spSha256": "38b04348edd9e6cf6c83c6d6d67b1bf9a4bc2e52f040014bf17915bdf685dff5",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COSGN00C.cbl",
+      "sourceSha256": "4f901ae6b113eebae60ae1d94b30f8cb9906d031a4419770bf56980bdf97e377",
+      "counts": {
+        "raw": 184,
+        "superseded": 58,
+        "partial": 20,
+        "open": 106,
+        "pending": 126
+      },
+      "spSha256": "5b1214917085eae683a4b351bc871d571f14a44afd6f712c6f3bc4515c004834",
+      "spUnchanged": true,
+      "analysisStatus": "COMPLETE",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COSGN00C.cl2",
+      "sourceSha256": "4f901ae6b113eebae60ae1d94b30f8cb9906d031a4419770bf56980bdf97e377",
+      "counts": {
+        "raw": 184,
+        "superseded": 58,
+        "partial": 20,
+        "open": 106,
+        "pending": 126
+      },
+      "spSha256": "615fce6789f21101a6455f2299f9cc5bd82b769f2cf3d407d6d14ff7a0fadfc2",
+      "spUnchanged": true,
+      "analysisStatus": "COMPLETE",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-authorization-ims-db2-mq/cbl/DBUNLDGS.CBL",
+      "sourceSha256": "13c409d1b14b52c4d334c9297aaa7dafa209901569f809127f3831d780722e33",
+      "counts": {
+        "raw": 139,
+        "superseded": 26,
+        "partial": 61,
+        "open": 52,
+        "pending": 113
+      },
+      "spSha256": "41b48282d2042cca6f6d07b435ea60ded900af82690a6da1b99a0ccaf3685b00",
+      "spUnchanged": true,
+      "analysisStatus": "COMPLETE",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBACT03C.cbl",
+      "sourceSha256": "ee1019bc3ef7bc4e0f807b6e9b7167c9386ee7c2f647c63dfddc6fc464487855",
+      "counts": {
+        "raw": 149,
+        "superseded": 36,
+        "partial": 26,
+        "open": 87,
+        "pending": 113
+      },
+      "spSha256": "9eff04b0382a6ae790c503490039ecac6eb34d11f7409899afbfd0e4a194bd43",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBCUS01C.cbl",
+      "sourceSha256": "233dbc3bc33a3b9ac555922085a92be56e88d16316bff624b5723c4c36c99714",
+      "counts": {
+        "raw": 149,
+        "superseded": 36,
+        "partial": 26,
+        "open": 87,
+        "pending": 113
+      },
+      "spSha256": "f5b512896aa46fdd16c25c14b87099f8e30d74888e9cf0aacf4d879b6991c232",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBACT02C.cbl",
+      "sourceSha256": "d290cbbbec1e25859847d9dfe6b28040cd6b09c3b71747e39de7b4713d838e76",
+      "counts": {
+        "raw": 147,
+        "superseded": 36,
+        "partial": 25,
+        "open": 86,
+        "pending": 111
+      },
+      "spSha256": "d4f82089217d5447a52cdb999f85fea75246f1667f5ef36cf65023b2bc33d6ce",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBACT03C.cbl",
+      "sourceSha256": "2e16c29ee12fd20eec4500278f49d1430fe6aec4dd0a0963188ed62ccce9e171",
+      "counts": {
+        "raw": 147,
+        "superseded": 36,
+        "partial": 26,
+        "open": 85,
+        "pending": 111
+      },
+      "spSha256": "9496a61b6f00a081edce1bd1c655082d844740a50e6c9f0ae668c69c88f43c56",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBCUS01C.cbl",
+      "sourceSha256": "494b1ca4ab8a4334eef77d2b87cc7df266f80cbeab2a3f191e9c776d4437d497",
+      "counts": {
+        "raw": 147,
+        "superseded": 36,
+        "partial": 26,
+        "open": 85,
+        "pending": 111
+      },
+      "spSha256": "9444b43106ea0f2b3874370f7f4720bd577fe7f300a0e5f3b5ef6de73f646ef4",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBACT02C.cbl",
+      "sourceSha256": "f81506881aec5d44d340d8b125efe67e2b355343c8893ab6bc95e2cb72c292b7",
+      "counts": {
+        "raw": 145,
+        "superseded": 36,
+        "partial": 25,
+        "open": 84,
+        "pending": 109
+      },
+      "spSha256": "0f1252264d5865574f89a2f9d4a5b6aee4fc80f3518513d3170102bc2b830654",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-authorization-ims-db2-mq/cbl/PAUDBUNL.CBL",
+      "sourceSha256": "cf174417cd833193fec178a782fa8d7cabb95da9a8c2ca709af598c45f485625",
+      "counts": {
+        "raw": 134,
+        "superseded": 30,
+        "partial": 58,
+        "open": 46,
+        "pending": 104
+      },
+      "spSha256": "882d94a2adc26bafcae5bf6ca4eedc4aa481baf56799e0e42bce85f6306ef2b9",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-authorization-ims-db2-mq/cbl/COPAUS2C.cbl",
+      "sourceSha256": "57232060f8bdaecc679b74e93fcf91d93cffd400326c001bd187ab5fad14789e",
+      "counts": {
+        "raw": 84,
+        "superseded": 3,
+        "partial": 11,
+        "open": 70,
+        "pending": 81
+      },
+      "spSha256": "261e730e061a610bd7d23bf608b34734abab0f08a8c0aff67dff67a1fda3b002",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CBSTM03B.CBL",
+      "sourceSha256": "ac004f7f40dcb3f2a14dfb83a743f83fed9383675bc93452f3424c40cb6475a7",
+      "counts": {
+        "raw": 93,
+        "superseded": 13,
+        "partial": 16,
+        "open": 64,
+        "pending": 80
+      },
+      "spSha256": "1a4612e16c40eecab6fac445a505fa485de4a9cd1834e1d23d17e1eedaf28ddd",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBSTM03B.cbl",
+      "sourceSha256": "c183707f0dae0b5e9387373fc3624f0462ad95ccbbb6c8a34167591e206bcbf8",
+      "counts": {
+        "raw": 93,
+        "superseded": 13,
+        "partial": 16,
+        "open": 64,
+        "pending": 80
+      },
+      "spSha256": "fa685e63497c922f4489e9a545ab129ac03f44ce4de98ca332239b49425a36d5",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/app-transaction-type-db2/cbl/COBTUPDT.cbl",
+      "sourceSha256": "0213fd5718c6aadd3fba6bbfb1818456d75d10843181bff63aca9ff57d39e87c",
+      "counts": {
+        "raw": 149,
+        "superseded": 73,
+        "partial": 37,
+        "open": 39,
+        "pending": 76
+      },
+      "spSha256": "24a45b42ba70bdd4197cbd88d0b6b618c35b18881f6391193b22376b85713615",
+      "spUnchanged": true,
+      "analysisStatus": "PARTIAL",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CSUTLDTC.cbl",
+      "sourceSha256": "05565b6ca61098097391bd6ae14268eb122d41c76570d2336253b0cdb5a961fa",
+      "counts": {
+        "raw": 56,
+        "superseded": 5,
+        "partial": 12,
+        "open": 39,
+        "pending": 51
+      },
+      "spSha256": "46305c370c795cf9d43adf61bb167a895c46a6a90187d35322d49723d5597b02",
+      "spUnchanged": true,
+      "analysisStatus": "COMPLETE",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/CSUTLDTC.cbl",
+      "sourceSha256": "58c165dcfc3927232c02c152c673e3dee551587b85e7fe56ca67325c980eebb6",
+      "counts": {
+        "raw": 38,
+        "superseded": 3,
+        "partial": 4,
+        "open": 31,
+        "pending": 35
+      },
+      "spSha256": "c1682e7cc050265ce85943d437836c3f8c987e7bc5b93e6716887d408388f61e",
+      "spUnchanged": true,
+      "analysisStatus": "COMPLETE",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "app/cbl/COBSWAIT.cbl",
+      "sourceSha256": "38a8d28235e58509776f5c8c74c113d5848a7ac68fab753c55ab887221c3b43a",
+      "counts": {
+        "raw": 9,
+        "superseded": 0,
+        "partial": 1,
+        "open": 8,
+        "pending": 9
+      },
+      "spSha256": "c5f381a2aaf28fbae92893d1abef3f0b7c61bf915da52ac62ae42193be00347f",
+      "spUnchanged": true,
+      "analysisStatus": "COMPLETE",
+      "dependencyMetricsChanged": false
+    },
+    {
+      "source": "samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/SDSF.cbl",
+      "sourceSha256": "d01b013e55ef4f7b76044ef98fa30fa077ec8d0a6847efab7f2c466087264027",
+      "counts": {
+        "raw": 1,
+        "superseded": 0,
+        "partial": 1,
+        "open": 0,
+        "pending": 1
+      },
+      "spSha256": "2ff801035e5ca8bb779081332e204f00cb0727734397287b6cf96d0e7b61f045",
+      "spUnchanged": true,
+      "analysisStatus": "COMPLETE",
+      "dependencyMetricsChanged": false
+    }
+  ]
+}

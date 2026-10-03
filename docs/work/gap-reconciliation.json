@@ -1,0 +1,6 @@
+{
+  "id": "WORK-GAP-RECONCILIATION-001",
+  "title": "Reconcile legacy diagnostics with published evidence",
+  "status": "IN_PROGRESS",
+  "scope": ["read-only semantic gap assessment", "generated diagnostic UI", "regression validation"]
+}
