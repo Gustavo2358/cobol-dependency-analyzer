@@ -2,7 +2,7 @@
 
 - id: CICS-SOURCE-PRESERVATION-001
 - title: Manter possibilidades de continuação local em CICS não modelado
-- status: IN_PROGRESS
+- status: DONE
 - scope: possibilidades de fonte no frontend; contrato existente SP 2.52; E2E até dependencies.json
 
 ## Regra e decisão
@@ -13,9 +13,9 @@ uma condição. [RETURN](https://www.ibm.com/docs/en/cics-ts/6.x?topic=summary-r
 pode gerar CHANNELERR, INVREQ ou LENGERR, inclusive com CHANNEL e INPUTMSG.
 A terminação no caminho de sucesso não prova que todos os caminhos terminam.
 
-O frontend atual exclui todo RETURN/XCTL não modelado de `sourceContinuations`.
-Isso elimina a qualificação do CALL seguinte mesmo com tratamento local explícito.
-A reprodução até dependências termina COMPLETE, com a ocorrência inventariada
+O frontend anterior à correção excluía todo RETURN/XCTL não modelado de `sourceContinuations`.
+Isso eliminava a qualificação do CALL seguinte mesmo com tratamento local explícito.
+A reprodução anterior à correção terminava COMPLETE, com a ocorrência inventariada
 mas sem candidato. É um falso negativo do modelo de possibilidades da fonte.
 
 Usar as opções já reconhecidas pelo scanner: evidência explícita de NOHANDLE
@@ -68,8 +68,9 @@ confirmados com programas válidos. Nenhum compilador IBM foi executado.
 ## Resultado da qualificação
 
 A correção reutiliza SP 2.52 e os consumidores existentes. Nenhum contrato,
-modelo AIR ou filtro global de alcance foi alterado. Está pronta para revisão
-junto com [REMARKS](remarks-area-a-compatibility.md), ainda sem integração.
+modelo AIR ou filtro global de alcance foi alterado. Foi aprovada junto com
+[REMARKS](remarks-area-a-compatibility.md) no [PR #85](https://github.com/Gustavo2358/proleap-poc/pull/85).
+O fechamento abaixo é efetivado pelo merge desse PR na main.
 
 - RED: três falhas em quatro testes; controles terminais/malformados passaram.
 - GREEN focal: 34 testes, zero falhas/erros/skips.
@@ -172,3 +173,22 @@ Validação da revisão:
 O próprio alvo FIRSTPGM continua reconhecido; a revisão remove somente a
 continuação executável indevida após o comando não qualificado. Não se afirma
 que toda a AIR ficou vazia nem se remove informação conhecida do comando.
+
+
+## Fechamento
+
+Fechamento documental e merge autorizados em 3 de outubro de 2026 no
+[PR #85](https://github.com/Gustavo2358/proleap-poc/pull/85). O merge desse PR,
+registrado no Git, efetiva o estado DONE. Implementação qualificada:
+`c56030624cdbdaf7d4b5cbf6673a2b741051fca1`; FAST 777 e CI remoto aprovados.
+A alteração final de fechamento é somente documental e usa o gate documental.
+
+Os 18 pares da revisão de autoridade, os 41 JSONs de regressão idênticos e os três
+controles com parser próprio sustentam o resultado final. Os limites de CICS e
+os estados PARTIAL permanecem; não se reivindica completude geral do catálogo.
+A política dos três níveis de autoridade e os contratos de fonte estão atualizados.
+Os consumidores e pins listados neste documento não foram alterados.
+
+Evidências locais versionadas: `artefatos-e2e` commits `ccdff617` (revisão de
+RESP/NOHANDLE) e `f5dcaea` (auditoria anterior). O registro de merge e a prova de
+igualdade de conteúdo da main ficam em `cics-authority-20261003/closure/`.

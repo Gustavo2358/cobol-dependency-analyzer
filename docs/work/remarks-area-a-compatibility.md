@@ -2,7 +2,7 @@
 
 - id: REMARKS-AREA-A-001
 - title: Aceitar documentação com asterisco na Area A dentro de REMARKS
-- status: IN_PROGRESS
+- status: DONE
 - scope: normalizador fixed-format, contratos focais, documentação e avaliação E2E
 
 ## Conclusão
@@ -10,7 +10,8 @@
 A extensão delimitada é viável para o fixture reconstruído das fotos. O bloqueio
 era causado pela fronteira estrita de Area A do normalizador. Manter os banners
 como documentação permite publicar Semantic Product, AIR, CFG e dependências.
-A implementação está em branch de avaliação, pendente de revisão e integração.
+Implementação e qualificação aprovadas no [PR #85](https://github.com/Gustavo2358/proleap-poc/pull/85).
+O fechamento abaixo é efetivado pelo merge desse PR na main.
 O mesmo PR inclui a [preservação após controle CICS parcial](cics-source-preservation.md);
 os sete controles de REMARKS foram repetidos com essa correção e mantiveram o
 JSON de dependências inteiro.
@@ -68,3 +69,18 @@ de regressões nem aceitação de todo texto legado. O fixture é uma reconstru�
 sintética das fotos. Não executamos compilador IBM nem tivemos os bytes e a JCL
 do fonte original do ChangeMan. As regras IBM e a política de importação do
 analisador têm propósitos distintos, explicitados no documento de domínio.
+
+
+## Fechamento
+
+Fechamento documental e merge autorizados em 3 de outubro de 2026 no
+[PR #85](https://github.com/Gustavo2358/proleap-poc/pull/85). O merge desse PR,
+registrado no Git, efetiva o estado DONE. Os limites de importação e as premissas
+da avaliação permanecem explícitos neste documento.
+
+A revisão final do frontend é `c56030624cdbdaf7d4b5cbf6673a2b741051fca1`.
+FAST final: 777 testes, zero falhas/erros/skips; CI remoto aprovado. Após a revisão
+de autoridade CICS, os 41 casos anteriores do PR, incluindo os sete controles
+REMARKS, foram reexecutados e mantiveram todo o JSON de dependências idêntico.
+A qualification-local e o corpus amplo anteriores continuam registrados como
+evidência reutilizada, sem serem apresentados como nova execução.
