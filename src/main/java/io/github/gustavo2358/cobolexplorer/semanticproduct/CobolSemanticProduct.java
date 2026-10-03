@@ -1876,7 +1876,7 @@ public final class CobolSemanticProduct {
             gaps = List.copyOf(gaps);
             coverage = Objects.requireNonNull(coverage, "coverage");
             entryInventory = Objects.requireNonNull(entryInventory, "entryInventory");
-            validateState(unit, dataDeclarations, statements, gaps, coverage);
+            validateState(unit, dataDeclarations, statements, gaps, coverage, controlTopology);
             validateEntries(unit, statements, entryInventory);
             validateEntryTopology(entryInventory, controlTopology);
             validateStorage(unit, dataDeclarations, statements, Objects.requireNonNull(storage));
@@ -2125,7 +2125,7 @@ public final class CobolSemanticProduct {
 
     private static void validateState(UnitId unit, List<DataDeclaration> declarations,
                                       List<StatementFact> statements, List<Gap> gaps,
-                                      CoverageSummary coverage) {
+                                      CoverageSummary coverage, Optional<ControlTopology> topology) {
         Map<DataItemId, DataDeclaration> dataById = new LinkedHashMap<>();
         for (DataDeclaration declaration : declarations) {
             require(declaration.id().unit().equals(unit),
@@ -2161,7 +2161,7 @@ public final class CobolSemanticProduct {
             gapsByStatement.computeIfAbsent(gap.statement(), ignored -> new java.util.ArrayList<>())
                     .add(gap);
         }
-        validateLocalizedIncompleteness(statements, gapsByStatement);
+        validateLocalizedIncompleteness(statements, gapsByStatement, new DiagnosticEvidence(topology));
         validateCoverage(statements, coverage);
     }
 
@@ -2492,12 +2492,20 @@ public final class CobolSemanticProduct {
     }
 
     private static void validateLocalizedIncompleteness(
-            List<StatementFact> statements, Map<StatementId, List<Gap>> gaps) {
+            List<StatementFact> statements, Map<StatementId, List<Gap>> gaps, DiagnosticEvidence evidence) {
         for (StatementFact statement : statements) {
             StatementId id = statement.header().id();
             List<Gap> localized = gaps.getOrDefault(id, List.of());
+            String handle = "statement:" + id.localId();
+            boolean noOp = statement instanceof ObservedStatement o
+                    && o.effects().filter(e -> e.proof() == EffectProof.NO_OP).isPresent()
+                    && evidence.localControl(handle);
+            boolean currentCapability = noOp || statement instanceof ProcedurePerformFact && evidence.invocation(handle)
+                    || !(statement instanceof ObservedStatement) && statement.header().coverage() == CoverageStatus.PARTIAL
+                    && statement.header().readiness().lowering().status() == ReadinessStatus.SUFFICIENT
+                    && evidence.membership(handle);
             if (statement.header().coverage() != CoverageStatus.MODELED)
-                require(!localized.isEmpty(),
+                require(!localized.isEmpty() || statement.header().coverage() != CoverageStatus.INPUT_MISSING && currentCapability,
                         "non-modeled statement must retain a localized gap");
             if (statement instanceof CallFact call)
                 require(hasGap(localized, GapScope.RUNTIME_CALL_TARGET,
@@ -2511,13 +2519,13 @@ public final class CobolSemanticProduct {
                                 == GapScope.LITERAL_KIND),
                         "unknown literal kind must retain a literal-kind gap");
             }
-            if (statement instanceof ObservedStatement observed)
+            if (statement instanceof ObservedStatement observed && !noOp)
                 require(hasGap(localized, GapScope.CAPABILITY, observed.gapCode()),
                         "observed unmodeled statement must retain its capability gap");
             if (statement.header().containment().branch() == Branch.UNKNOWN) {
                 require(statement.header().coverage() != CoverageStatus.MODELED,
                         "unknown containment cannot be hidden by MODELED coverage");
-                require(localized.stream().anyMatch(gap -> gap.scope() == GapScope.STRUCTURE),
+                require(evidence.membership(handle) || localized.stream().anyMatch(gap -> gap.scope() == GapScope.STRUCTURE),
                         "unknown containment must retain a structural gap");
             }
             if (references(statement).stream()

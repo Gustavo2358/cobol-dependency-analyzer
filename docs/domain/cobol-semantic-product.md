@@ -904,3 +904,16 @@ gaps do not substitute for nominal gaps. Literal targets, ambiguous candidates,
 read/write roles and existing physical/control proof remain unchanged.
 `CicsNominalGapTest` covers unresolved/ambiguous names, missing input and isolation
 between statements.
+
+
+## Gaps atuais — SP 2.63
+
+A publicação com `controlTopology` usa SP 2.63.0. A obrigação de um gap localizado
+pode ser satisfeita pela prova positiva atual correspondente: membership,
+invocação de PERFORM ou NO_OP com controle local fechado. O predicado textual
+validado dispensa o gap de predicado indisponível. Perfis especializados continuam
+limitados; suas restrições de isolamento não são gaps da análise composicional.
+
+Esta regra substitui as exigências históricas acima de gap incondicional para
+OBSERVED ou containment UNKNOWN. Gaps de input, literal desconhecido, binding e
+runtime mantêm suas obrigações próprias. [Contrato atual e limites](active-gaps.md).

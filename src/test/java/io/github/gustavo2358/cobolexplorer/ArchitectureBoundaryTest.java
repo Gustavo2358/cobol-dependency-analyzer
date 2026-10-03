@@ -174,7 +174,7 @@ class ArchitectureBoundaryTest {
                     + violations);
         }
 
-        Path sourcePath = Path.of("src/main/java/io/github/gustavo2358/cobolexplorer/"
+        Path sourcePath = Path.of("src/test/java/io/github/gustavo2358/cobolexplorer/"
                 + "semanticproduct/consumer/CobolLoweringReadinessConsumer.java");
         String source = Files.readString(sourcePath);
         Set<String> forbiddenImports = new LinkedHashSet<>();

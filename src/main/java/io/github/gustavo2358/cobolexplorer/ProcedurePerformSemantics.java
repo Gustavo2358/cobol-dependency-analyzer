@@ -18,7 +18,7 @@ public final class ProcedurePerformSemantics {
     public record Facts(Optional<Endpoint> start, Optional<Endpoint> end, List<Paragraph> procedures,
                         Optional<Integer> resume, Ast.SourceProvenance resumeOrigin, Optional<Loop> loop, Optional<Count> times, Optional<Varying> varying,boolean structureKnown,List<String> gaps) {
         public Facts { procedures=List.copyOf(procedures); gaps=List.copyOf(gaps); }
-        public boolean precise() { return gaps.isEmpty(); }
+        public boolean precise() { return structureKnown && gaps.isEmpty(); }
     }
     private final Map<ScalarMoveSemantics.NodeKey,Facts> facts;
     private final Set<ScalarMoveSemantics.NodeKey> completions;
@@ -187,13 +187,13 @@ public final class ProcedurePerformSemantics {
                 if(!f.procedures().isEmpty() && !closed(f.procedures().get(0).entry(),members,boundary,next,nodes,unit.id(),moves,ifs,evaluates,goTos,basic,provisional,false,cics))
                     {qualified=false;gaps.add("PERFORM_RANGE_CONTROL_NOT_PROVEN");}
                 if(!primaryClosed||!primaryMembers.contains(p.meta().id())||f.resume().filter(primaryMembers::contains).isEmpty()
-                        ||members.stream().anyMatch(primaryMembers::contains)){qualified=false;gaps.add("PERFORM_ISOLATED_PRIMARY_NOT_PROVEN");}
+                        ||members.stream().anyMatch(primaryMembers::contains)){qualified=false;}
                 var incomingExcluded=incomingCache.get(members);
                 if(incomingExcluded==null) {
                     incomingExcluded=ordinaryIncomingExcluded(members,nodes,next,unit.id(),goTos);
                     incomingCache.put(Set.copyOf(members),incomingExcluded);
                 }
-                if(!incomingExcluded){qualified=false;gaps.add("PERFORM_ORDINARY_INCOMING_NOT_EXCLUDED");}
+                if(!incomingExcluded){qualified=false;}
                 for(var otherMembers:uniqueRanges) {
                     if(!members.equals(otherMembers)&&otherMembers.stream().anyMatch(members::contains)){qualified=false;gaps.add("PERFORM_OVERLAPPING_RANGES");}
                 }

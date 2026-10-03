@@ -54,7 +54,6 @@ public final class CobolSemanticProductProjector {
     private static final String DYNAMIC_TARGET_GAP =
             "DYNAMIC_CALL_TARGET_VALUE_UNKNOWN";
     private static final String LITERAL_KIND_GAP = "LITERAL_KIND_NOT_PUBLISHED";
-    private static final String CONTAINMENT_GAP = "CONTAINMENT_NOT_PROJECTED";
     private static final String CONDITION_SEMANTICS_GAP =
             "CONDITION_SEMANTICS_NOT_AVAILABLE";
     private static final String CONDITION_REFERENCE_GAP =
@@ -221,6 +220,23 @@ public final class CobolSemanticProductProjector {
         var topology=io.github.gustavo2358.cobolexplorer.ControlTopologySemantics.analyze(
                 inputs.selectedSource().unit(), inputs.selectedSource().table(), products.resolution(), products.report(),
                 statementIds, fileInventory, products.cics().orElse(null));
+        var diagnosticEvidence = new io.github.gustavo2358.cobolexplorer.semanticproduct.DiagnosticEvidence(Optional.of(topology));
+        var gapOwners = gaps.stream().map(Gap::statement).collect(java.util.stream.Collectors.toSet());
+        for (var statement : statements) {
+            var h = statement.header(); var handle = "statement:" + h.id().localId();
+            if (h.containment().branch() == Branch.UNKNOWN && !diagnosticEvidence.membership(handle))
+                gaps.add(new Gap(h.id(), GapScope.STRUCTURE, "CONTROL_MEMBERSHIP_NOT_PROVEN",
+                        "current control topology does not prove the statement region", h.provenance()));
+            if (statement instanceof ProcedurePerformFact && !diagnosticEvidence.invocation(handle)
+                    && !gapOwners.contains(h.id()))
+                gaps.add(new Gap(h.id(), GapScope.CAPABILITY, "PERFORM_CONTROL_NOT_PROVEN",
+                        "current topology does not prove invocation and resume", h.provenance()));
+            if (statement instanceof ObservedStatement observed
+                    && !(observed.effects().filter(e -> e.proof() == EffectProof.NO_OP).isPresent()
+                        && diagnosticEvidence.localControl(handle)))
+                gaps.add(new Gap(h.id(), GapScope.CAPABILITY, observed.gapCode(),
+                        "statement values, effects or local control remain incomplete", h.provenance()));
+        }
         EntryInventory entries = entries(inputs, statementIds, inventoryStatus,topology);
         if (entries.gapCodes().contains("DECLARATIVES_NOT_PROJECTED")
                 && inventoryStatus == InventoryStatus.COMPLETE)
@@ -1054,8 +1070,7 @@ public final class CobolSemanticProductProjector {
                 CicsCommandKind.valueOf(source.command().name()),source.supported()?CicsCommandSyntaxStatus.SUPPORTED:CicsCommandSyntaxStatus.UNAVAILABLE,
                 source.raw(),options,List.copyOf(codes),length,hostEffects,implicitArea));
 
-            for(var code:codes)gaps.add(capabilityGap(statementId,code,"Command dimension remains partial",statementProvenance));
-            addContainmentGap(containment,statementId,statementProvenance,gaps);return;
+            for(var code:codes)gaps.add(capabilityGap(statementId,code,"Command dimension remains partial",statementProvenance));return;
         }
         var abend=inputs.products().cics().flatMap(c->c.abendFact(inputs.unitId(),plan.position().statement().meta().id()));
         if(abend.isPresent()) {
@@ -1065,8 +1080,7 @@ public final class CobolSemanticProductProjector {
                 readiness(ReadinessStatus.PARTIAL,"typed ABEND event",ReadinessStatus.BLOCKED,"ABEND dispatch not modeled",ReadinessStatus.BLOCKED,"ABEND runtime effects not modeled")),
                 CicsAbendEventKind.ABEND,CicsAbendEligibility.valueOf(source.eligibility().name()),source.raw(),options,List.copyOf(codes)));
 
-            for(var code:codes)gaps.add(capabilityGap(statementId,code,"ABEND event dimension remains partial",statementProvenance));
-            addContainmentGap(containment,statementId,statementProvenance,gaps);return;
+            for(var code:codes)gaps.add(capabilityGap(statementId,code,"ABEND event dimension remains partial",statementProvenance));return;
         }
         var handler=inputs.products().cics().flatMap(c->c.handlerFact(inputs.unitId(),plan.position().statement().meta().id()));
         if(handler.isPresent()) {
@@ -1100,7 +1114,6 @@ public final class CobolSemanticProductProjector {
             if(source.targetKind()==io.github.gustavo2358.cobolexplorer.CicsHandlerSemantics.TargetKind.PROGRAM&&program.isEmpty())codes.add("CICS_HANDLER_PROGRAM_BINDING_UNAVAILABLE");
             var label=source.labelTarget().map(t->new CicsHandlerLabelTarget(new ProcedureId(inputs.boundaryUnit(),t.identity().localId()),provenance(t.declarationOrigin())));
             var entry=canonicalStatement(source.labelTarget().flatMap(t->t.entry()),inputs,statementIds);
-            if(containment.branch()==Branch.UNKNOWN)codes.add(CONTAINMENT_GAP);
             statements.add(new CicsHandlerFact(header(statementId,plan.position().ordinal(),containment,statementProvenance,CoverageStatus.PARTIAL,
                 readiness(ReadinessStatus.PARTIAL,"typed handler operation",ReadinessStatus.BLOCKED,"handler state and dispatch not modeled",ReadinessStatus.BLOCKED,"CICS effects not modeled")),
                 CicsHandlerKind.ABEND,CicsHandlerAction.valueOf(source.action().name()),CicsHandlerTargetKind.valueOf(source.targetKind().name()),source.targetSyntax(),
@@ -1110,8 +1123,7 @@ public final class CobolSemanticProductProjector {
                 source.raw(),options,List.copyOf(codes),inputs.products().cics().filter(c->c.handlerRegistrationEffects(inputs.unitId(),plan.position().statement().meta().id()))
                     .map(c->CicsRegistrationEffects.NO_APPLICATION_MEMORY)));
 
-            for(var code:codes)gaps.add(capabilityGap(statementId,code,"Handler operation retained; execution/state/dispatch remain unproved",statementProvenance));
-            addContainmentGap(containment,statementId,statementProvenance,gaps);return;
+            for(var code:codes)gaps.add(capabilityGap(statementId,code,"Handler operation retained; execution/state/dispatch remain unproved",statementProvenance));return;
         }
 
         var cicsFile=inputs.products().cics().flatMap(c->c.fileFact(inputs.unitId(),plan.position().statement().meta().id()));
@@ -1155,8 +1167,7 @@ public final class CobolSemanticProductProjector {
             statements.add(new CicsFileFact(header(statementId,plan.position().ordinal(),containment,statementProvenance,CoverageStatus.PARTIAL,
                 readiness(ReadinessStatus.PARTIAL,"CICS FILE typed target/options",ReadinessStatus.PARTIAL,"CICS condition control",ReadinessStatus.PARTIAL,"CICS effects depend on outcomes and operand footprints")),
                 source.command().name(),source.raw(),CicsFileTargetMode.valueOf(source.targetMode().name()),target,options,condition,next,ordinary,"cics-ts.file@1",List.copyOf(codes)));
-            for(var code:codes)gaps.add(capabilityGap(statementId,code,"CICS FILE dimension remains partial",statementProvenance));
-            addContainmentGap(containment,statementId,statementProvenance,gaps);return;
+            for(var code:codes)gaps.add(capabilityGap(statementId,code,"CICS FILE dimension remains partial",statementProvenance));return;
         }
 
         var cics=inputs.products().cics().flatMap(c->c.fact(inputs.unitId(),plan.position().statement().meta().id()));
@@ -1205,14 +1216,12 @@ public final class CobolSemanticProductProjector {
             statements.add(new CicsFact(header(statementId,plan.position().ordinal(),containment,statementProvenance,CoverageStatus.PARTIAL,
                 readiness(ReadinessStatus.PARTIAL,"CICS program target surface",ReadinessStatus.PARTIAL,"CICS conditions remain conservative",ReadinessStatus.PARTIAL,"external effects and signature partial")),
                 CicsCommand.valueOf(source.command().name()),source.raw(),target,options,condition,next,ordinary,"cics-ts.program@1",List.copyOf(codes)));
-            for(var code:codes)gaps.add(capabilityGap(statementId,code,"CICS dimension remains partial",statementProvenance));
-            addContainmentGap(containment,statementId,statementProvenance,gaps);return;
+            for(var code:codes)gaps.add(capabilityGap(statementId,code,"CICS dimension remains partial",statementProvenance));return;
         }
 
         if (plan.position().statement() instanceof Ast.GoToStatement g && GoToSemantics.depending(g)) {
             var proof=inputs.products().scalarMoves().goTos().conditionalFact(inputs.unitId(),g.meta().id());
             var codes=new LinkedHashSet<>(proof.gaps());
-            if(containment.branch()==Branch.UNKNOWN)codes.add(CONTAINMENT_GAP);
             Optional<DataReference> selector=Optional.empty();
             for(var ref:plan.entries()) if(projectableDataBinding(ref,inputs)) {
                 selector=Optional.of(new DataReference(new OperandId(statementId,0),OperandRole.READ,nominalBinding(ref,dataIds),
@@ -1232,30 +1241,29 @@ public final class CobolSemanticProductProjector {
             }
             var status=codes.isEmpty()?ReadinessStatus.SUFFICIENT:ReadinessStatus.PARTIAL;
             statements.add(new ConditionalGoToFact(header(statementId,plan.position().ordinal(),containment,statementProvenance,
-                codes.isEmpty()?CoverageStatus.MODELED:CoverageStatus.PARTIAL,
+                weakest(codes.isEmpty()?CoverageStatus.MODELED:CoverageStatus.PARTIAL, containmentCoverage(containment)),
                 readiness(status,"ordered conditional destinations",status,"explicit alternatives and normal continuation",
                     ReadinessStatus.NOT_APPLICABLE,"control transfer produces no value")),selector,proof.integerSelector().isPresent(),
                 provenance(proof.selectorOrigin()),destinations,
                 new NormalContinuation(proof.continuation().isPresent()?ContinuationAvailability.KNOWN:ContinuationAvailability.UNAVAILABLE,
                     canonicalStatement(proof.continuation(),inputs,statementIds),provenance(proof.continuationOrigin())),List.copyOf(codes)));
-            for(var code:codes)gaps.add(new Gap(statementId,code.equals(CONTAINMENT_GAP)?GapScope.STRUCTURE:GapScope.CAPABILITY,code,"Conditional GO TO proof incomplete; known destinations retained",statementProvenance));
+            for(var code:codes)gaps.add(new Gap(statementId,GapScope.CAPABILITY,code,"Conditional GO TO proof incomplete; known destinations retained",statementProvenance));
             return;
         }
 
         if (plan.position().statement() instanceof Ast.GoToStatement g && plan.capability().supported()) {
             var proof=inputs.products().scalarMoves().goTos().fact(inputs.unitId(),g.meta().id());
             var codes=new ArrayList<>(proof.gaps());
-            if(containment.branch()==Branch.UNKNOWN)codes.add(CONTAINMENT_GAP);
             var entry=canonicalStatement(proof.entry(),inputs,statementIds);
             if(entry.isEmpty() && codes.isEmpty())codes.add("GO_TO_TARGET_ENTRY_UNAVAILABLE");
             var status=codes.isEmpty()?ReadinessStatus.SUFFICIENT:ReadinessStatus.PARTIAL;
             statements.add(new GoToFact(header(statementId,plan.position().ordinal(),containment,statementProvenance,
-                codes.isEmpty()?CoverageStatus.MODELED:CoverageStatus.PARTIAL,
+                weakest(codes.isEmpty()?CoverageStatus.MODELED:CoverageStatus.PARTIAL, containmentCoverage(containment)),
                 readiness(status,"local unconditional paragraph transfer",status,"explicit target without fallthrough",
                     ReadinessStatus.NOT_APPLICABLE,"control transfer produces no value")),
                 proof.target().map(t->new GoToTarget(new ProcedureId(inputs.boundaryUnit(),t.identity().localId()),provenance(t.paragraphOrigin()))),
                 provenance(proof.referenceOrigin()),entry,entry.isPresent()?proof.entryOrigin().map(CobolSemanticProductProjector::provenance):Optional.empty(),codes));
-            for(var code:codes)gaps.add(new Gap(statementId,code.equals(CONTAINMENT_GAP)?GapScope.STRUCTURE:GapScope.CAPABILITY,code,"GO TO target control proof unavailable",statementProvenance));
+            for(var code:codes)gaps.add(new Gap(statementId,GapScope.CAPABILITY,code,"GO TO target control proof unavailable",statementProvenance));
             return;
         }
 
@@ -1270,7 +1278,6 @@ public final class CobolSemanticProductProjector {
             var codes=new ArrayList<>(proof.gaps());
             if(partialBasic(p,inputs))for(var code:inputs.products().scalarMoves().performs().fact(inputs.unitId(),p.meta().id()).gaps())
                 if(!codes.contains(code))codes.add(code);
-            if(containment.branch()==Branch.UNKNOWN)codes.add(CONTAINMENT_GAP);
             int[] operandOrdinal={0};
             java.util.function.Function<ProcedurePerformSemantics.Loop,PerformLoop> projectLoop=l->{
                 var references=new ArrayList<DataReference>();var predicate=l.predicate();
@@ -1318,9 +1325,9 @@ public final class CobolSemanticProductProjector {
                 }
                 return new PerformVarying(v.levels(),controls,v.afterLoops().stream().map(projectLoop).toList());
             });
-            var status=codes.isEmpty()?ReadinessStatus.SUFFICIENT:ReadinessStatus.PARTIAL;
+            var status=proof.precise() && codes.isEmpty()?ReadinessStatus.SUFFICIENT:ReadinessStatus.PARTIAL;
             statements.add(new ProcedurePerformFact(header(statementId,plan.position().ordinal(),containment,statementProvenance,
-                codes.isEmpty()?CoverageStatus.MODELED:CoverageStatus.PARTIAL,
+                weakest(proof.precise() && codes.isEmpty()?CoverageStatus.MODELED:CoverageStatus.PARTIAL, containmentCoverage(containment)),
                 readiness(status,"typed paragraph range",status,"activation-specific continuation",ReadinessStatus.PARTIAL,"general effects not published")),
                 proof.start().map(endpoint),proof.end().map(endpoint),paragraphs,
                 new NormalContinuation(proof.resume().isPresent()?ContinuationAvailability.KNOWN:ContinuationAvailability.UNAVAILABLE,
@@ -1328,7 +1335,7 @@ public final class CobolSemanticProductProjector {
                 partialBasic(p,inputs)||paragraphs.isEmpty()&&proof.start().flatMap(ProcedurePerformSemantics.Endpoint::entry).isPresent()
                     ?PerformPublicationKind.STRUCTURAL_FACTS:PerformPublicationKind.LEGACY_PROFILE,
                 canonicalStatement(proof.start().flatMap(ProcedurePerformSemantics.Endpoint::entry),inputs,statementIds)));
-            for(var code:codes)gaps.add(new Gap(statementId,code.equals(CONTAINMENT_GAP)?GapScope.STRUCTURE:GapScope.CAPABILITY,code,"PERFORM range proof unavailable",statementProvenance));
+            for(var code:codes)gaps.add(new Gap(statementId,GapScope.CAPABILITY,code,"PERFORM range proof unavailable",statementProvenance));
             return;
         }
 
@@ -1365,7 +1372,6 @@ public final class CobolSemanticProductProjector {
                             ReadinessStatus.SUFFICIENT, "GOBACK concludes the current program invocation",
                             ReadinessStatus.SUFFICIENT, "GOBACK has no local successor",
                             ReadinessStatus.BLOCKED, "GOBACK runtime result and lifecycle effects are not published")))));
-            addContainmentGap(containment, statementId, statementProvenance, gaps);
             return;
         }
 
@@ -1405,19 +1411,11 @@ public final class CobolSemanticProductProjector {
                     plan.capability().kind(),
                     plan.capability().shape(), plan.capability().gapCode(), observedContinuation(plan.position().statement(), inputs, statementIds), references,
                     effectSummary(plan.position().statement(),inputs).map(e->projectEffects(e,referenceIds,references))));
-            gaps.add(new CobolSemanticProduct.Gap(statementId,
-                    CobolSemanticProduct.GapScope.CAPABILITY,
-                    plan.capability().gapCode(),
-                    typedCapabilityFamily
-                            ? "typed statement shape is outside the current MOVE/CALL capability"
-                            : finding.reason(),
-                    statementProvenance));
             if (statementCoverage == CobolSemanticProduct.CoverageStatus.INPUT_MISSING)
                 gaps.add(new CobolSemanticProduct.Gap(statementId,
                         CobolSemanticProduct.GapScope.ANALYSIS_INPUT,
                         OBSERVED_INPUT_MISSING_GAP,
                         finding.reason(), statementProvenance));
-            addContainmentGap(containment, statementId, statementProvenance, gaps);
             for (var entry:plan.entries())
                 addReportGaps(statementId, entry.occurrence(), inputs,
                         provenance(entry.occurrence().meta().provenance()), gaps);
@@ -1523,7 +1521,6 @@ public final class CobolSemanticProductProjector {
             for (var gap : moveGaps) gaps.add(new Gap(statementId,
                     gap == ScalarMoveSemantics.Gap.NORMAL_CONTINUATION_NOT_AVAILABLE ? GapScope.STRUCTURE : GapScope.CAPABILITY,
                     gap.name(), "canonical elementary MOVE proof unavailable", statementProvenance));
-            addContainmentGap(containment, statementId, statementProvenance, gaps);
             for (var operand : plan.entries()) {
                 addReportGaps(statementId, operand.occurrence(), inputs,
                         provenance(operand.occurrence().meta().provenance()), gaps);
@@ -1590,7 +1587,6 @@ public final class CobolSemanticProductProjector {
             if (!surface.firstSlice()) gaps.add(capabilityGap(statementId, "CALL_SURFACE_OUTSIDE_FIRST_SLICE",
                     "USING, result or handler clause absence is not established", statementProvenance));
             addUnprojectedCallSurfaceGaps(statementId, call, statementProvenance, gaps);
-            addContainmentGap(containment, statementId, statementProvenance, gaps);
             if (entry != null) {
                 addReportGaps(statementId, entry.occurrence(), inputs,
                         provenance(entry.occurrence().meta().provenance()), gaps);
@@ -1671,7 +1667,7 @@ public final class CobolSemanticProductProjector {
                 arm(semanticIf.thenArm(), inputs, statementIds), arm(semanticIf.elseArm(), inputs, statementIds),
                 semanticIf.simpleProfile() ? IfProfile.SIMPLE_TEXT_EQUALITY : IfProfile.OUTSIDE_SLICE);
         statements.add(fact);
-        if (predicate.availability() != IfSemantics.Availability.KNOWN)
+        if (predicate.availability() != IfSemantics.Availability.KNOWN && fact.condition().textPredicate().isEmpty())
             gaps.add(new CobolSemanticProduct.Gap(statementId,
                 CobolSemanticProduct.GapScope.CONDITION_SEMANTICS,
                 CONDITION_SEMANTICS_GAP,
@@ -1687,7 +1683,6 @@ public final class CobolSemanticProductProjector {
             gaps.add(new CobolSemanticProduct.Gap(statementId,
                     CobolSemanticProduct.GapScope.STRUCTURE, BRANCH_CONTENT_GAP,
                     branchContent.detail(), statementProvenance));
-        addContainmentGap(containment, statementId, statementProvenance, gaps);
         for (ReferenceResolution.Entry entry : plan.entries()) {
             if (projectableDataBinding(entry, inputs))
                 requireBindingGapWhenNeeded(ifHeader, entry, gaps);
@@ -1737,7 +1732,6 @@ public final class CobolSemanticProductProjector {
                     reasons.isEmpty()?ReadinessStatus.SUFFICIENT:ReadinessStatus.PARTIAL,"explicit regional transfer sequence"))),
                 first.source(),first.target(),CopySemantics.UNAVAILABLE,continuation,Optional.empty(),Optional.of(first.effect()),transfers.subList(1,transfers.size())));
         for(var reason:reasons)gaps.add(new Gap(id,reason.equals("NORMAL_CONTINUATION_NOT_AVAILABLE")?GapScope.STRUCTURE:GapScope.CAPABILITY,reason,"canonical CORRESPONDING effect or continuation remains partial",origin));
-        addContainmentGap(containment,id,origin,gaps);
         for(var operand:plan.entries())addReportGaps(id,operand.occurrence(),inputs,provenance(operand.occurrence().meta().provenance()),gaps);
     }
     private static DataReference implicitReference(StorageAccessSemantics.Access access,ProjectionInputs inputs,
@@ -1799,11 +1793,10 @@ public final class CobolSemanticProductProjector {
         }
         var next = canonicalStatement(proof.nextStatement(), inputs, ids);
         if (next.isEmpty()) codes.add("EVALUATE_CONTINUATION_NOT_PROVEN");
-        if (containment.branch()==Branch.UNKNOWN) codes.add(CONTAINMENT_GAP);
         var uniqueCodes = codes.stream().distinct().toList();
         var status = uniqueCodes.isEmpty() ? ReadinessStatus.SUFFICIENT : ReadinessStatus.PARTIAL;
         output.add(new EvaluateFact(header(id, plan.position().ordinal(), containment, origin,
-            uniqueCodes.isEmpty() ? CoverageStatus.MODELED : CoverageStatus.PARTIAL,
+            weakest(uniqueCodes.isEmpty() ? CoverageStatus.MODELED : CoverageStatus.PARTIAL, containmentCoverage(containment)),
             readiness(status, "typed literal selection", status, "explicit ordered arms and normal completion",
                 ReadinessStatus.PARTIAL, "runtime subject value unknown")), subject, arms, other, otherStatements,
             new NormalContinuation(next.isPresent() ? ContinuationAvailability.KNOWN : ContinuationAvailability.UNAVAILABLE, next, origin), uniqueCodes));
@@ -1811,7 +1804,7 @@ public final class CobolSemanticProductProjector {
             addReportGaps(id, entry.occurrence(), inputs, provenance(entry.occurrence().meta().provenance()), gaps);
             requireBindingGapWhenNeeded(output.get(output.size()-1).header(), entry, gaps);
         }
-        for (var code : uniqueCodes) gaps.add(new Gap(id, code.equals(CONTAINMENT_GAP) ? GapScope.STRUCTURE : GapScope.CAPABILITY,
+        for (var code : uniqueCodes) gaps.add(new Gap(id, GapScope.CAPABILITY,
                 code, "EVALUATE retains explicit partial proof", origin));
     }
 
@@ -1834,18 +1827,6 @@ public final class CobolSemanticProductProjector {
                 new CobolSemanticProduct.ReadinessClaim(cfg,
                         "statement containment awaits structural parent projection"),
                 readiness.effectsDataflow());
-    }
-
-    private static void addContainmentGap(
-            CobolSemanticProduct.Containment containment,
-            CobolSemanticProduct.StatementId statementId,
-            CobolSemanticProduct.Provenance provenance,
-            List<CobolSemanticProduct.Gap> gaps) {
-        if (containment.branch() != CobolSemanticProduct.Branch.UNKNOWN) return;
-        gaps.add(new CobolSemanticProduct.Gap(statementId,
-                CobolSemanticProduct.GapScope.STRUCTURE, CONTAINMENT_GAP,
-                "statement is nested under a structural parent not projected in this checkpoint",
-                provenance));
     }
 
     private static ReferenceResolution.Entry onlyEntry(StatementPlan plan) {
