@@ -30,3 +30,5 @@ como domínio atual sem contrato materializado.
 - [R7 exceptional handler source semantics](cics-exceptional-handlers.md) — SP2.45, source-only selection and entry.
 
 - [Gaps ativos do SP 2.63 e painel canônico](active-gaps.md).
+
+- [Valores numéricos e MOVE DISPLAY](numeric-move.md).
