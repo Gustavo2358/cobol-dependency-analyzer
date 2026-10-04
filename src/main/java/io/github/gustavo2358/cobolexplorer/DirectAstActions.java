@@ -1808,6 +1808,12 @@ final class DirectAstActions  {
         Optional<java.math.BigInteger> value=integer==null?Optional.empty():Optional.of(new java.math.BigInteger(integer.getText()));
         if(numeric!=null&&numeric.ZERO()!=null)value=Optional.of(java.math.BigInteger.ZERO);
         var figurative=context instanceof DirectSyntax.LiteralFrame l?l.figurativeConstant():null;
+        if(figurative!=null&&figurative.ALL()==null&&(figurative.ZERO()!=null||figurative.ZEROS()!=null||figurative.ZEROES()!=null))value=Optional.of(java.math.BigInteger.ZERO);
+        Optional<java.math.BigDecimal> number=value.map(java.math.BigDecimal::new);
+        if(numeric!=null&&numeric.NUMERICLITERAL()!=null&&!numeric.NUMERICLITERAL().getText().contains(",")&&!numeric.NUMERICLITERAL().getText().toUpperCase(java.util.Locale.ROOT).contains("E")) {
+            try { number=Optional.of(new java.math.BigDecimal(numeric.NUMERICLITERAL().getText())); }
+            catch(NumberFormatException ex) { number=Optional.empty(); }
+        }
         Optional<Ast.FigurativeText> textKind=Optional.empty();
         if(figurative!=null&&figurative.ALL()==null) {
             if(figurative.SPACE()!=null||figurative.SPACES()!=null)textKind=Optional.of(Ast.FigurativeText.SPACES);
@@ -1815,7 +1821,7 @@ final class DirectAstActions  {
             else if(figurative.HIGH_VALUE()!=null||figurative.HIGH_VALUES()!=null)textKind=Optional.of(Ast.FigurativeText.HIGH_VALUES);
         }
         return new Ast.LiteralExpression(meta(context), logical.map(Ast.LogicalText::value)
-                .orElseGet(() -> unquote(raw)), raw, logical, value,textKind,context instanceof DirectSyntax.LiteralFrame l&&l.booleanLiteral()!=null?Optional.of(l.booleanLiteral().TRUE()!=null):Optional.empty());
+                .orElseGet(() -> unquote(raw)), raw, logical, value,textKind,context instanceof DirectSyntax.LiteralFrame l&&l.booleanLiteral()!=null?Optional.of(l.booleanLiteral().TRUE()!=null):Optional.empty(),number);
     }
 
     private static Optional<Ast.LogicalText> basicLogicalText(DirectSyntax.LiteralFrame literal) {

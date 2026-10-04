@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 public final class SemanticProductJsonWriter {
     public static final String SCHEMA = "cobol-semantic-product";
-    public static final String CONTRACT_VERSION = "2.64.0";
+    public static final String CONTRACT_VERSION = "2.65.0";
 
     private record NominalDocument(String authority,List<NominalSymbolDocument> symbols,
             List<NominalAssignmentDocument> assignments,List<NominalConditionDocument> conditions,
@@ -352,7 +352,7 @@ public final class SemanticProductJsonWriter {
                                     new TextValueDocument(a.result().logicalDomain(), a.result().value(), a.result().logicalExtent()),
                                     provenance(a.provenance()))).orElse(null), move.regionalMove().map(m->new RegionalMoveDocument(m.kind(),m.bytes(),m.gapCodes())).orElse(null),move.additionalTransfers().stream().map(t->new MoveTransferDocument(moveSource(t.source()),dataReference(t.target()),new RegionalMoveDocument(t.effect().kind(),t.effect().bytes(),t.effect().gapCodes()))).toList(),
                         move.logicalTransfers().stream().map(t->new LogicalTransferDocument(operandHandle(t.target()),
-                            new TextValueDocument(t.value().logicalDomain(),t.value().value(),t.value().logicalExtent()))).toList());
+                            new TextValueDocument(t.value().logicalDomain(),t.value().value(),t.value().logicalExtent()))).toList(),move.integerTransfers().stream().map(t->new IntegerTransferDocument(operandHandle(t.target()),t.value().map(Object::toString).orElse(null))).toList());
         }
         if(fact instanceof CobolSemanticProduct.CicsCommandFact c)return new CicsCommandDocument(header(c.header()),c.commandKind(),c.syntaxStatus(),c.rawText(),
             c.options().stream().map(o->new CicsOptionDocument(o.name(),o.operand().orElse(null),o.start(),o.end(),o.reference().map(SemanticProductJsonWriter::dataReference).orElse(null))).toList(),c.gapCodes(),c.length().map(e->new OperandExpressionDocument(e.kind(),e.integer().map(Object::toString).orElse(null),e.reference().map(SemanticProductJsonWriter::dataReference).orElse(null),provenance(e.provenance()))).orElse(null),c.hostEffects().orElse(null),c.implicitArea().map(SemanticProductJsonWriter::dataReference).orElse(null));
@@ -661,8 +661,10 @@ public final class SemanticProductJsonWriter {
     private record MoveDocument(StatementHeaderDocument header, MoveSourceDocument source,
                                 DataReferenceDocument target, CobolSemanticProduct.CopySemantics copySemantics,
                                 ContinuationDocument normalContinuation, TextAdjustmentDocument textAdjustment, RegionalMoveDocument regionalMove,List<MoveTransferDocument> additionalTransfers,
-                                @JsonInclude(JsonInclude.Include.NON_EMPTY) List<LogicalTransferDocument> logicalTransfers) implements StatementDocument { }
+                                @JsonInclude(JsonInclude.Include.NON_EMPTY) List<LogicalTransferDocument> logicalTransfers,
+                                @JsonInclude(JsonInclude.Include.NON_EMPTY) List<IntegerTransferDocument> integerTransfers) implements StatementDocument { }
 
+    private record IntegerTransferDocument(String target,String value) { }
     private record TextAdjustmentDocument(CobolSemanticProduct.TextAdjustmentRule rule, int receiverExtent,
                                             TextValueDocument result, ProvenanceDocument provenance) { }
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")

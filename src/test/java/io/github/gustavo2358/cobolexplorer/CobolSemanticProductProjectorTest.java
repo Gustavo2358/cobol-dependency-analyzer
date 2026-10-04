@@ -512,14 +512,14 @@ class CobolSemanticProductProjectorTest {
     }
 
     @Test
-    void onlyCanonicalBasicTextLiteralsGainCategory() {
+    void canonicalTextAndNumericLiteralsGainTheirOwnCategory() {
         CobolSemanticPort port = CobolSemanticPort.open(project(
                 analyze(MULTIPLE_SOURCE, SOURCE_NAME)));
 
         assertEquals(List.of(CobolSemanticProduct.LiteralKind.ALPHANUMERIC,
-                CobolSemanticProduct.LiteralKind.ALPHANUMERIC, CobolSemanticProduct.LiteralKind.UNKNOWN),
+                CobolSemanticProduct.LiteralKind.ALPHANUMERIC, CobolSemanticProduct.LiteralKind.NUMERIC),
                 port.moves().stream().map(move -> ((LiteralSource) move.source()).kind()).toList());
-        assertEquals(1, port.gaps().stream().filter(gap ->
+        assertEquals(0, port.gaps().stream().filter(gap ->
                 gap.scope() == CobolSemanticProduct.GapScope.LITERAL_KIND
                         && gap.code().equals("LITERAL_KIND_NOT_PUBLISHED")).count());
     }

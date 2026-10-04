@@ -49,7 +49,7 @@ public final class ProcedurePerformSemantics {
             ReferenceResolution resolution,ResolutionAnalysisReport report,
             Map<ResolutionContracts.SemanticEntityId,ScalarMoveSemantics.ScalarText> scalars,
             Map<ScalarMoveSemantics.NodeKey,ScalarMoveSemantics.Move> moves,IfSemantics ifs,
-            EvaluateSemantics evaluates,GoToSemantics goTos,PerformSemantics basic,NumericControlSemantics numbers,CicsProgramControlAnalyzer.Contribution cics,ConditionNameSemantics conditionNames) {
+            EvaluateSemantics evaluates,GoToSemantics goTos,PerformSemantics basic,IntegerSemantics numbers,CicsProgramControlAnalyzer.Contribution cics,ConditionNameSemantics conditionNames) {
         var result=new HashMap<ScalarMoveSemantics.NodeKey,Facts>();
         var legacyRanges=new HashSet<ScalarMoveSemantics.NodeKey>();
         var refs=new HashMap<ScalarMoveSemantics.NodeKey,ReferenceResolution.Entry>();

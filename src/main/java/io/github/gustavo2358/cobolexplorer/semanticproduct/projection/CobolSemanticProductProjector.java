@@ -730,7 +730,9 @@ public final class CobolSemanticProductProjector {
                     && !sequence.isEmpty()&&sequence.stream().anyMatch(e->e.kind()!=StorageAccessSemantics.MoveKind.UNAVAILABLE);
             boolean logicalSequence=inputs.products().storage().flatMap(st->st.logicalMove(
                 new StorageLayoutSemantics.Key(inputs.unitId(),move.meta().id()))).filter(LogicalMoveSemantics.Fact::admitted).isPresent();
-            if(regionalSequence||logicalSequence)capability=Capability.supported("MOVE","REGIONAL_TRANSFER_SEQUENCE");
+            boolean integerSequence=!inputs.products().scalarMoves().integerMoves().transfers(inputs.unitId(),move.meta().id()).isEmpty()
+                &&move.targets().stream().allMatch(Ast.DataReference.class::isInstance);
+            if(regionalSequence||logicalSequence||integerSequence)capability=Capability.supported("MOVE","REGIONAL_TRANSFER_SEQUENCE");
             List<ReferenceResolution.Entry> entries = new ArrayList<>();
             if (capability.supported()) {
                 for(var receiver:move.targets()) {
@@ -738,14 +740,14 @@ public final class CobolSemanticProductProjector {
                 require(target.occurrence().role() == ResolutionContracts.ReferenceRole.VALUE_WRITE,
                         "MOVE target role must come from the canonical occurrence");
                 entries.add(target);
-                if(!regionalSequence&&!logicalSequence)capability = bindingCapability(capability, target, "MOVE");
+                if(!regionalSequence&&!logicalSequence&&!integerSequence)capability = bindingCapability(capability, target, "MOVE");
                 }
                 if (move.source() instanceof Ast.DataReference source) {
                     var read = inputs.entryFor(source);
                     require(read.occurrence().role() == ResolutionContracts.ReferenceRole.VALUE_READ,
                             "MOVE source role must come from the canonical occurrence");
                     entries.add(read);
-                    if(!regionalSequence&&!logicalSequence)capability = bindingCapability(capability, read, "MOVE");
+                    if(!regionalSequence&&!logicalSequence&&!integerSequence)capability = bindingCapability(capability, read, "MOVE");
                 }
             }
             if(!capability.supported())effectSummary(move,inputs).ifPresent(e->java.util.stream.Stream.of(e.knownReads(),e.mayWrites())
@@ -1468,6 +1470,10 @@ public final class CobolSemanticProductProjector {
             CobolSemanticProduct.CoverageStatus bindingCoverage = bindingCoverage(entry);
             ScalarMoveSemantics.Move semantic = inputs.products().scalarMoves().move(inputs.unitId(), move.meta().id());
             CopySemantics copy = CopySemantics.valueOf(semantic.copy().name());
+            var integerFacts=inputs.products().scalarMoves().integerMoves().transfers(inputs.unitId(),move.meta().id());
+            var integerByTarget=new HashMap<Integer,io.github.gustavo2358.cobolexplorer.IntegerMoveSemantics.Transfer>();
+            integerFacts.forEach(t->integerByTarget.put(t.target(),t));
+            boolean integersComplete=integerFacts.size()==move.targets().size();
             boolean intrinsicEnd=inputs.products().scalarMoves().performs().intrinsicExit(inputs.unitId(),move.meta().id())
                 || inputs.products().scalarMoves().procedurePerforms().completion(inputs.unitId(),move.meta().id());
             var moveGaps=semantic.gaps().stream().filter(g -> !intrinsicEnd || g != ScalarMoveSemantics.Gap.NORMAL_CONTINUATION_NOT_AVAILABLE).toList();
@@ -1478,21 +1484,21 @@ public final class CobolSemanticProductProjector {
             });
             NormalContinuation continuation = new NormalContinuation(next.isPresent()
                     ? ContinuationAvailability.KNOWN : intrinsicEnd ? ContinuationAvailability.NONE : ContinuationAvailability.UNAVAILABLE, next, statementProvenance);
-            Optional<WholeItemAccess> access = semantic.wholeItem().filter(entity -> copy != CopySemantics.POSSIBLE_TEXT).map(entity ->
+            Optional<WholeItemAccess> access = semantic.wholeItem().or(()->Optional.ofNullable(integerByTarget.get(move.targets().get(0).meta().id())).map(t->t.receiver())).filter(entity -> copy != CopySemantics.POSSIBLE_TEXT).map(entity ->
                     new WholeItemAccess(Objects.requireNonNull(dataIds.get(entity), "whole item must be published")));
             var logicalFact=inputs.products().storage().flatMap(st->st.logicalMove(new StorageLayoutSemantics.Key(inputs.unitId(),move.meta().id())));
             MoveSource source;
             if (move.source() instanceof Ast.LiteralExpression literal) {
                 var logicalText=logicalFact.flatMap(LogicalMoveSemantics.Fact::literal).or(()->literal.logicalText().map(t->t.value()));
                 source = new LiteralSource(new OperandId(statementId, 0),
-                        logicalText.isPresent() ? LiteralKind.ALPHANUMERIC : LiteralKind.UNKNOWN,
-                        logicalText.orElse(literal.value()), provenance(literal.meta().provenance()),
+                        logicalText.isPresent() ? LiteralKind.ALPHANUMERIC : literal.numericValue().isPresent()?LiteralKind.NUMERIC:LiteralKind.UNKNOWN,
+                        logicalText.orElseGet(()->literal.numericValue().map(Object::toString).orElse(literal.value())), provenance(literal.meta().provenance()),
                         logicalText.map(TextValue::new));
             } else {
                 var read = plan.entries().get(move.targets().size());
                 source = new DataReference(new OperandId(statementId, 0), OperandRole.READ,
                         nominalBinding(read, dataIds, inputs), provenance(move.source().meta().provenance()),
-                        semantic.sourceWholeItem().map(entity -> new WholeItemAccess(
+                        semantic.sourceWholeItem().or(()->inputs.products().scalarMoves().integerMoves().source(inputs.unitId(),move.meta().id())).map(entity -> new WholeItemAccess(
                                 Objects.requireNonNull(dataIds.get(entity), "source whole item must be published"))), regionalAccess(inputs, move.source().meta().id()),List.of(),
                         inputs.products().storage().flatMap(st -> st.logicalWholeItem(new StorageLayoutSemantics.Key(inputs.unitId(),move.source().meta().id()))
                             .or(() -> Optional.of(st.move(new StorageLayoutSemantics.Key(inputs.unitId(),move.meta().id())))
@@ -1529,7 +1535,7 @@ public final class CobolSemanticProductProjector {
                     if(source instanceof LiteralSource literal)sending=new LiteralSource(new OperandId(statementId,i*2),literal.kind(),literal.value(),literal.provenance(),literal.logicalValue());
                     else {var read=(DataReference)source;sending=new DataReference(new OperandId(statementId,i*2),OperandRole.READ,read.binding(),read.provenance(),read.wholeItemAccess(),read.regionalAccess(),List.of(),read.logicalWholeItem());}
                     var logical=inputs.products().storage().flatMap(st->st.logicalWholeItem(new StorageLayoutSemantics.Key(inputs.unitId(),receiver.meta().id()))).map(dataIds::get);
-                    var receiving=new DataReference(new OperandId(statementId,i*2+1),OperandRole.WRITE,nominalBinding(plan.entries().get(i),dataIds,inputs),provenance(receiver.meta().provenance()),Optional.empty(),regionalAccess(inputs,receiver.meta().id()),List.of(),logical);
+                    var receiving=new DataReference(new OperandId(statementId,i*2+1),OperandRole.WRITE,nominalBinding(plan.entries().get(i),dataIds,inputs),provenance(receiver.meta().provenance()),Optional.ofNullable(integerByTarget.get(receiver.meta().id())).map(t->new WholeItemAccess(dataIds.get(t.receiver()))),regionalAccess(inputs,receiver.meta().id()),List.of(),logical);
                     var effect=e==null?new RegionalMove(RegionalMoveKind.UNAVAILABLE,List.of(),List.of("ACCESS_NOT_PROVEN"))
                         :new RegionalMove(RegionalMoveKind.valueOf(e.kind().name()),e.bytes(),e.reasons().stream().map(Enum::name).toList());
                     extra.add(new MoveTransfer(sending,receiving,effect));
@@ -1550,11 +1556,17 @@ public final class CobolSemanticProductProjector {
             }
             if(!logicalTransfers.isEmpty())fact=new MoveFact(fact.header(),fact.source(),fact.target(),fact.copySemantics(),
                 fact.normalContinuation(),fact.textAdjustment(),fact.regionalMove(),fact.additionalTransfers(),logicalTransfers);
+            var integerTransfers=new ArrayList<IntegerTransfer>();
+            for(int i=0;i<move.targets().size();i++) {
+                var proof=integerByTarget.get(move.targets().get(i).meta().id());
+                if(proof!=null)integerTransfers.add(new IntegerTransfer(new OperandId(statementId,i*2+1),proof.value()));
+            }
+            if(!integerTransfers.isEmpty())fact=new MoveFact(fact.header(),fact.source(),fact.target(),fact.copySemantics(),fact.normalContinuation(),fact.textAdjustment(),fact.regionalMove(),fact.additionalTransfers(),fact.logicalTransfers(),integerTransfers);
             statements.add(fact);
-            if (move.source() instanceof Ast.LiteralExpression literal && literal.logicalText().isEmpty() && logicalFact.flatMap(LogicalMoveSemantics.Fact::literal).isEmpty()) gaps.add(new Gap(statementId, GapScope.LITERAL_KIND,
+            if (source instanceof LiteralSource literal && literal.kind()==LiteralKind.UNKNOWN) gaps.add(new Gap(statementId, GapScope.LITERAL_KIND,
                     LITERAL_KIND_GAP, "literal category is outside the canonical basic text capability",
-                    provenance(literal.meta().provenance())));
-            for (var gap : moveGaps) gaps.add(new Gap(statementId,
+                    literal.provenance()));
+            for (var gap : moveGaps) if(!integersComplete||gap==ScalarMoveSemantics.Gap.NORMAL_CONTINUATION_NOT_AVAILABLE) gaps.add(new Gap(statementId,
                     gap == ScalarMoveSemantics.Gap.NORMAL_CONTINUATION_NOT_AVAILABLE ? GapScope.STRUCTURE : GapScope.CAPABILITY,
                     gap.name(), "canonical elementary MOVE proof unavailable", statementProvenance));
             for (var operand : plan.entries()) {

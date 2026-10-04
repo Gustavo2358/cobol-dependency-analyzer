@@ -1226,11 +1226,17 @@ public final class CobolSemanticProduct {
     public record LogicalTransfer(OperandId target,TextValue value) {
         public LogicalTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
     }
+    public record IntegerTransfer(OperandId target,Optional<java.math.BigInteger> value) {
+        public IntegerTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
+    }
     public record MoveFact(StatementHeader header, MoveSource source,
                            DataReference target, CopySemantics copySemantics,
-                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<RegionalMove> regionalMove, List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers) implements StatementFact {
+                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<RegionalMove> regionalMove, List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers,List<IntegerTransfer> integerTransfers) implements StatementFact {
+        public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<RegionalMove> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers) {
+            this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,additionalTransfers,logicalTransfers,List.of());
+        }
         public MoveFact {
-            additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);
+            additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);integerTransfers=List.copyOf(integerTransfers);
             require(logicalTransfers.isEmpty()||source instanceof LiteralSource literal&&literal.logicalValue().isPresent(),"logical transfer requires a proved literal");
             var logicalTargets=new HashSet<OperandId>();
             for(var transfer:logicalTransfers) {
@@ -2176,6 +2182,31 @@ public final class CobolSemanticProduct {
 
     private static void validateReferences(StatementFact statement,
                                            Map<DataItemId, DataDeclaration> declarations) {
+        if(statement instanceof MoveFact move&&!move.integerTransfers().isEmpty()) {
+            var receivers=new HashMap<OperandId,DataReference>();receivers.put(move.target().id(),move.target());
+            move.additionalTransfers().forEach(t->receivers.put(t.target().id(),t.target()));
+            var ordered=new ArrayList<DataReference>();ordered.add(move.target());move.additionalTransfers().forEach(t->ordered.add(t.target()));
+            int ordinal=0;var seen=new HashSet<OperandId>();
+            require(move.header().provenance().exact()&&move.copySemantics()==CopySemantics.UNAVAILABLE,"integer MOVE requires exact source and its own transfer proof");
+            for(var proof:move.integerTransfers()) {
+                var receiver=receivers.get(proof.target());
+                require(seen.add(proof.target())&&receiver!=null&&receiver.wholeItemAccess().isPresent(),"distinct whole integer receiver required");
+                var d=declarations.get(receiver.wholeItemAccess().orElseThrow().data());
+                require(d!=null&&d.scalarInteger().isPresent()&&receiver.provenance().exact(),"integer receiver requires local type proof");
+                int digits=d.scalarInteger().orElseThrow().digits();
+                if(move.source() instanceof LiteralSource l) {
+                    require(l.kind()==LiteralKind.NUMERIC&&l.provenance().exact()&&proof.value().isPresent(),"integer literal proof required");
+                    var v=proof.value().orElseThrow();
+                    require(v.signum()>=0&&v.toString().length()<=digits&&new java.math.BigDecimal(l.value()).compareTo(new java.math.BigDecimal(v))==0,"integer value must equal source and fit receiver");
+                } else {
+                    var r=(DataReference)move.source();
+                    require(proof.value().isEmpty()&&r.wholeItemAccess().isPresent()&&r.provenance().exact(),"integer DATA proof required");
+                    var source=declarations.get(r.wholeItemAccess().orElseThrow().data());
+                    require(source!=null&&source.scalarInteger().isPresent()&&source.scalarInteger().orElseThrow().digits()<=digits,"integer DATA may not narrow");
+                    require(proof.target().equals(ordered.get(ordinal++).id()),"DATA transfer requires a proved prefix preserving the sending value");
+                }
+            }
+        }
         if(statement instanceof ConditionalGoToFact g && g.selectorInteger()) {
             var d=declarations.get(g.selector().orElseThrow().wholeItemAccess().orElseThrow().data());
             require(d!=null&&d.scalarInteger().isPresent(),"integer selector references integer declaration");
@@ -2510,7 +2541,7 @@ public final class CobolSemanticProduct {
                     && o.effects().filter(e -> e.proof() == EffectProof.NO_OP).isPresent()
                     && evidence.localControl(handle);
             boolean modeledSet=sets.contains(handle)&&evidence.localControl(handle);
-            boolean currentCapability = noOp || modeledSet || conditions.contains(handle)&&evidence.localControl(handle) || statement instanceof ProcedurePerformFact && evidence.invocation(handle)
+            boolean currentCapability = statement instanceof MoveFact m&&m.integerTransfers().size()==1+m.additionalTransfers().size()&&evidence.localControl(handle) || noOp || modeledSet || conditions.contains(handle)&&evidence.localControl(handle) || statement instanceof ProcedurePerformFact && evidence.invocation(handle)
                     || !(statement instanceof ObservedStatement) && statement.header().coverage() == CoverageStatus.PARTIAL
                     && statement.header().readiness().lowering().status() == ReadinessStatus.SUFFICIENT
                     && evidence.membership(handle);

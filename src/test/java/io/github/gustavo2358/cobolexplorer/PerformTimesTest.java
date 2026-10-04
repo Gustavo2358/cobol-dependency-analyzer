@@ -17,7 +17,7 @@ class PerformTimesTest {
                 var source=Files.readAllLines(path).stream().map(line->line.substring(7)).collect(java.util.stream.Collectors.joining("\n"));
                 var bytes=SemanticProductJsonWriter.serialize(ScalarMoveCheckpoint4ATest.publish(source));
                 var sp=new ObjectMapper().readTree(bytes);var facts=PerformFamilyTest.ranges(sp);
-                assertFalse(facts.isEmpty(),name);assertEquals("2.64.0",sp.path("contractVersion").asText());
+                assertFalse(facts.isEmpty(),name);assertEquals("2.65.0",sp.path("contractVersion").asText());
                 for(var p:facts) {
                     assertEquals(!partial.contains(name),p.path("header").path("readiness").path("lowering").path("status").asText().equals("SUFFICIENT"),name+": "+p.path("gapCodes"));
                     assertTrue(p.path("times").isObject(),name);

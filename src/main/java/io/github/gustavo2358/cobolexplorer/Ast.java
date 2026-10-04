@@ -561,9 +561,10 @@ public final class Ast {
     }
     public enum FigurativeText { SPACES, LOW_VALUES, HIGH_VALUES }
     public record LiteralExpression(Meta meta, String value, String rawLexeme,
-                                    Optional<LogicalText> logicalText, Optional<java.math.BigInteger> integerValue, Optional<FigurativeText> figurativeText,Optional<Boolean> booleanValue) implements Expression {
+                                    Optional<LogicalText> logicalText, Optional<java.math.BigInteger> integerValue, Optional<FigurativeText> figurativeText,Optional<Boolean> booleanValue,Optional<java.math.BigDecimal> numericValue) implements Expression {
+        public LiteralExpression(Meta meta,String value,String rawLexeme,Optional<LogicalText> logicalText,Optional<java.math.BigInteger> integerValue,Optional<FigurativeText> figurativeText,Optional<Boolean> booleanValue) {this(meta,value,rawLexeme,logicalText,integerValue,figurativeText,booleanValue,integerValue.map(java.math.BigDecimal::new));}
         public LiteralExpression(Meta meta,String value,String rawLexeme,Optional<LogicalText> logicalText,Optional<java.math.BigInteger> integerValue,Optional<FigurativeText> figurativeText) {this(meta,value,rawLexeme,logicalText,integerValue,figurativeText,Optional.empty());}
-        public LiteralExpression { logicalText = Objects.requireNonNull(logicalText); integerValue=Objects.requireNonNull(integerValue);figurativeText=Objects.requireNonNull(figurativeText);Objects.requireNonNull(booleanValue); }
+        public LiteralExpression { logicalText = Objects.requireNonNull(logicalText); integerValue=Objects.requireNonNull(integerValue);figurativeText=Objects.requireNonNull(figurativeText);Objects.requireNonNull(booleanValue);Objects.requireNonNull(numericValue); }
         public LiteralExpression(Meta meta,String value,String rawLexeme,Optional<LogicalText> logicalText,Optional<java.math.BigInteger> integerValue) { this(meta,value,rawLexeme,logicalText,integerValue,Optional.empty()); }
         public LiteralExpression(Meta meta,String value,String rawLexeme,Optional<LogicalText> logicalText) { this(meta,value,rawLexeme,logicalText,Optional.empty()); }
         public LiteralExpression(Meta meta, String value, String rawLexeme) {
