@@ -426,9 +426,12 @@ class CobolSemanticProductProjectorTest {
         assertTrue(port.children(branch.header().id(),
                 CobolSemanticProduct.Branch.ELSE).isEmpty());
         assertEquals(Optional.of(call), branch.continuation());
-        assertTrue(branch.condition().references().isEmpty(),
-                "the DATA-only ConditionSurface must not fabricate a condition-name identity");
-        assertTrue(port.gaps().stream().anyMatch(gap ->
+        var parent = port.dataDeclarations().stream().filter(d -> d.canonicalName().equals("FLAG")).findFirst().orElseThrow();
+        assertEquals(List.of(parent.id()), branch.condition().references().stream()
+                .map(r -> r.binding().selected().orElseThrow()).toList());
+        assertTrue(port.conditionNames().orElseThrow().predicates().stream().anyMatch(p ->
+                p.statement().equals("statement:" + branch.header().id().localId()) && p.tree().complete()));
+        assertFalse(port.gaps().stream().anyMatch(gap ->
                 gap.statement().equals(branch.header().id())
                         && gap.code().equals("CONDITION_REFERENCE_KIND_NOT_PROJECTED")));
         assertFalse(port.gaps().stream().anyMatch(gap -> gap.statement().equals(branch.header().id()) && gap.code().equals("CONTAINMENT_NOT_PROJECTED")));

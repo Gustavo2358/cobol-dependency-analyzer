@@ -908,7 +908,7 @@ between statements.
 
 ## Gaps atuais — SP 2.63
 
-A publicação com `controlTopology` usa SP 2.63.0. A obrigação de um gap localizado
+SP 2.63 introduziu a regra para publicações com `controlTopology`. A obrigação de um gap localizado
 pode ser satisfeita pela prova positiva atual correspondente: membership,
 invocação de PERFORM ou NO_OP com controle local fechado. O predicado textual
 validado dispensa o gap de predicado indisponível. Perfis especializados continuam
@@ -917,3 +917,15 @@ limitados; suas restrições de isolamento não são gaps da análise composicio
 Esta regra substitui as exigências históricas acima de gap incondicional para
 OBSERVED ou containment UNKNOWN. Gaps de input, literal desconhecido, binding e
 runtime mantêm suas obrigações próprias. [Contrato atual e limites](active-gaps.md).
+
+
+## Condições 88 e SET — SP 2.64
+
+A versão corrente do produtor é 2.64.0. `conditionNames` publica definições e usos
+nominais de 88, valores/intervalos, árvores de predicados e atribuições SET
+ordenadas. A semântica fica nos fatos canônicos do frontend; projector e consumidor
+somente traduzem esses fatos. Os 88 não alocam armazenamento nem tornam seu pai
+um grupo. Gaps redundantes de capability são satisfeitos por essas provas;
+obrigações independentes de input, controle, binding e runtime permanecem.
+
+[Contrato, regras, limites e complexidade](condition-names.md).

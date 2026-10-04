@@ -338,6 +338,8 @@ class ArchitectureBoundaryTest {
     private static List<Class<?>> semanticProductTypes() throws ClassNotFoundException {
         List<Class<?>> types = new ArrayList<>();
         addNestedTypes(CobolSemanticProduct.class, types);
+        addNestedTypes(io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.class, types);
+        types.add(io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNameContract.class);
         types.add(CobolSemanticPort.class);
         types.add(Class.forName(
                 "io.github.gustavo2358.cobolexplorer.semanticproduct.MaterializedCobolSemanticPort"));
@@ -368,7 +370,8 @@ class ArchitectureBoundaryTest {
         String topology = "io/github/gustavo2358/cobolexplorer/semanticproduct/ControlTopology";
         String facts = "io/github/gustavo2358/cobolexplorer/semanticproduct/FactDependencies";
         String nominal = "io/github/gustavo2358/cobolexplorer/semanticproduct/NominalValues";
-        return reference.equals(nominal) || reference.startsWith(nominal + '$')
+        return reference.equals("io/github/gustavo2358/cobolexplorer/semanticproduct/ConditionNames") || reference.startsWith("io/github/gustavo2358/cobolexplorer/semanticproduct/ConditionNames$")
+                || reference.equals(nominal) || reference.startsWith(nominal + '$')
                 || reference.equals(facts) || reference.startsWith(facts + '$')
                 || reference.equals(topology) || reference.startsWith(topology + '$')
                 || reference.equals(SEMANTIC_PORT_INTERNAL)

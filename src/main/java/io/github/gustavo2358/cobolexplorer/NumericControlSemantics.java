@@ -37,7 +37,7 @@ public final class NumericControlSemantics {
             for(var f:frontend.coverageByProgramUnit().get(unit.id()).findings())coverage.put(f.astNodeId(),f);
             var eligible=new HashMap<Integer,IntegerItem>();
             for(var section:sections) {
-                for(var child:section.children())if(child instanceof Ast.DataEntry d && d.children().isEmpty()&&!d.filler()
+                for(var child:section.children())if(child instanceof Ast.DataEntry d && d.children().stream().allMatch(c->c.levelKind()==Ast.DataLevelKind.CONDITION_88)&&!d.filler()
                         &&components.unit(unit.id()).standaloneIndependent(d.meta().id())
                         &&d.visibility()==Ast.DeclarationVisibility.LOCAL&&(d.level().equals("01")||d.levelKind()==Ast.DataLevelKind.STANDALONE_77)) {
                     int pictures=0,usages=0;Optional<Integer> digits=Optional.empty();boolean valid=modeled(d,coverage);

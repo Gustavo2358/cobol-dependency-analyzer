@@ -1041,7 +1041,7 @@ public final class CobolSemanticProduct {
             require(ordinal >= 0, "arm ordinal is non-negative"); Objects.requireNonNull(selection);
             conditionReads=List.copyOf(conditionReads); Objects.requireNonNull(conditionOrigin);
             statements=List.copyOf(statements); Objects.requireNonNull(control);
-            require(selection.isPresent() || conditionOrigin.exact(), "unmodeled WHEN retains exact source origin");
+            require(selection.isPresent() || conditionOrigin.exact() || control.contentAvailability()!=Availability.KNOWN&&!control.gapCodes().isEmpty(), "inexact WHEN retains explicit incomplete control proof");
             require(selection.isEmpty() || conditionReads.isEmpty(), "literal WHEN has no extra condition reads");
             require(conditionReads.stream().allMatch(r -> r.role()==OperandRole.READ), "WHEN condition operands are reads");
         }
@@ -1796,7 +1796,14 @@ public final class CobolSemanticProduct {
     public record State(UnitId unit, Policy policy,
                         List<DataDeclaration> dataDeclarations,
                         List<StatementFact> statements,
-                        List<Gap> gaps, CoverageSummary coverage, EntryInventory entryInventory, IndependentStorageSet storageIndependence, StorageInventory storage, FileInventory fileInventory, SourceDependencyInventory sourceDependencies, List<OrdinaryContinuation> ordinaryContinuations, Optional<ControlTopology> controlTopology, Optional<FactDependencies> factDependencies, Optional<NominalValues> nominalValues) {
+                        List<Gap> gaps, CoverageSummary coverage, EntryInventory entryInventory, IndependentStorageSet storageIndependence, StorageInventory storage, FileInventory fileInventory, SourceDependencyInventory sourceDependencies, List<OrdinaryContinuation> ordinaryContinuations, Optional<ControlTopology> controlTopology, Optional<FactDependencies> factDependencies, Optional<NominalValues> nominalValues,Optional<ConditionNames> conditionNames) {
+        public State(UnitId unit,Policy policy,List<DataDeclaration> dataDeclarations,List<StatementFact> statements,
+                List<Gap> gaps,CoverageSummary coverage,EntryInventory entryInventory,IndependentStorageSet storageIndependence,
+                StorageInventory storage,FileInventory fileInventory,SourceDependencyInventory sourceDependencies,
+                List<OrdinaryContinuation> ordinaryContinuations,Optional<ControlTopology> controlTopology,
+                Optional<FactDependencies> factDependencies,Optional<NominalValues> nominalValues) {
+            this(unit,policy,dataDeclarations,statements,gaps,coverage,entryInventory,storageIndependence,storage,fileInventory,sourceDependencies,ordinaryContinuations,controlTopology,factDependencies,nominalValues,Optional.empty());
+        }
         public State(UnitId unit,Policy policy,List<DataDeclaration> dataDeclarations,List<StatementFact> statements,
                 List<Gap> gaps,CoverageSummary coverage,EntryInventory entryInventory,IndependentStorageSet storageIndependence,
                 StorageInventory storage,FileInventory fileInventory,SourceDependencyInventory sourceDependencies,
@@ -1825,6 +1832,8 @@ public final class CobolSemanticProduct {
             this(unit,policy,dataDeclarations,statements,gaps,coverage,entryInventory,storageIndependence,storage,fileInventory,SourceDependencyInventory.unavailable());
         }
         public State {
+            Objects.requireNonNull(conditionNames);
+            if(conditionNames.isPresent())ConditionNameContract.validate(conditionNames.get(),dataDeclarations,storage,statements);
             Objects.requireNonNull(nominalValues);
             if(nominalValues.isPresent())nominalValues.get().validate(storage.nodes().stream().map(n->"storage-node:"+n.id().localId()).collect(java.util.stream.Collectors.toSet()),statements.stream().map(x->"statement:"+x.header().id().localId()).collect(java.util.stream.Collectors.toSet()));
             Objects.requireNonNull(factDependencies);
@@ -1876,7 +1885,7 @@ public final class CobolSemanticProduct {
             gaps = List.copyOf(gaps);
             coverage = Objects.requireNonNull(coverage, "coverage");
             entryInventory = Objects.requireNonNull(entryInventory, "entryInventory");
-            validateState(unit, dataDeclarations, statements, gaps, coverage, controlTopology);
+            validateState(unit, dataDeclarations, statements, gaps, coverage, controlTopology,conditionNames);
             validateEntries(unit, statements, entryInventory);
             validateEntryTopology(entryInventory, controlTopology);
             validateStorage(unit, dataDeclarations, statements, Objects.requireNonNull(storage));
@@ -2125,7 +2134,7 @@ public final class CobolSemanticProduct {
 
     private static void validateState(UnitId unit, List<DataDeclaration> declarations,
                                       List<StatementFact> statements, List<Gap> gaps,
-                                      CoverageSummary coverage, Optional<ControlTopology> topology) {
+                                      CoverageSummary coverage, Optional<ControlTopology> topology,Optional<ConditionNames> conditions) {
         Map<DataItemId, DataDeclaration> dataById = new LinkedHashMap<>();
         for (DataDeclaration declaration : declarations) {
             require(declaration.id().unit().equals(unit),
@@ -2161,7 +2170,7 @@ public final class CobolSemanticProduct {
             gapsByStatement.computeIfAbsent(gap.statement(), ignored -> new java.util.ArrayList<>())
                     .add(gap);
         }
-        validateLocalizedIncompleteness(statements, gapsByStatement, new DiagnosticEvidence(topology));
+        validateLocalizedIncompleteness(statements, gapsByStatement, new DiagnosticEvidence(topology),conditions.map(c->ConditionNameContract.completeSets(c,statements)).orElse(Set.of()),conditions.stream().flatMap(c->c.predicates().stream()).filter(p->p.role().equals("IF")&&p.tree().complete()).map(ConditionNames.Predicate::statement).collect(java.util.stream.Collectors.toSet()));
         validateCoverage(statements, coverage);
     }
 
@@ -2492,7 +2501,7 @@ public final class CobolSemanticProduct {
     }
 
     private static void validateLocalizedIncompleteness(
-            List<StatementFact> statements, Map<StatementId, List<Gap>> gaps, DiagnosticEvidence evidence) {
+            List<StatementFact> statements, Map<StatementId, List<Gap>> gaps, DiagnosticEvidence evidence,Set<String> sets,Set<String> conditions) {
         for (StatementFact statement : statements) {
             StatementId id = statement.header().id();
             List<Gap> localized = gaps.getOrDefault(id, List.of());
@@ -2500,7 +2509,8 @@ public final class CobolSemanticProduct {
             boolean noOp = statement instanceof ObservedStatement o
                     && o.effects().filter(e -> e.proof() == EffectProof.NO_OP).isPresent()
                     && evidence.localControl(handle);
-            boolean currentCapability = noOp || statement instanceof ProcedurePerformFact && evidence.invocation(handle)
+            boolean modeledSet=sets.contains(handle)&&evidence.localControl(handle);
+            boolean currentCapability = noOp || modeledSet || conditions.contains(handle)&&evidence.localControl(handle) || statement instanceof ProcedurePerformFact && evidence.invocation(handle)
                     || !(statement instanceof ObservedStatement) && statement.header().coverage() == CoverageStatus.PARTIAL
                     && statement.header().readiness().lowering().status() == ReadinessStatus.SUFFICIENT
                     && evidence.membership(handle);
@@ -2519,7 +2529,7 @@ public final class CobolSemanticProduct {
                                 == GapScope.LITERAL_KIND),
                         "unknown literal kind must retain a literal-kind gap");
             }
-            if (statement instanceof ObservedStatement observed && !noOp)
+            if (statement instanceof ObservedStatement observed && !noOp&&!modeledSet)
                 require(hasGap(localized, GapScope.CAPABILITY, observed.gapCode()),
                         "observed unmodeled statement must retain its capability gap");
             if (statement.header().containment().branch() == Branch.UNKNOWN) {

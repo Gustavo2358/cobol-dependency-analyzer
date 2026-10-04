@@ -49,7 +49,7 @@ public final class ProcedurePerformSemantics {
             ReferenceResolution resolution,ResolutionAnalysisReport report,
             Map<ResolutionContracts.SemanticEntityId,ScalarMoveSemantics.ScalarText> scalars,
             Map<ScalarMoveSemantics.NodeKey,ScalarMoveSemantics.Move> moves,IfSemantics ifs,
-            EvaluateSemantics evaluates,GoToSemantics goTos,PerformSemantics basic,NumericControlSemantics numbers,CicsProgramControlAnalyzer.Contribution cics) {
+            EvaluateSemantics evaluates,GoToSemantics goTos,PerformSemantics basic,NumericControlSemantics numbers,CicsProgramControlAnalyzer.Contribution cics,ConditionNameSemantics conditionNames) {
         var result=new HashMap<ScalarMoveSemantics.NodeKey,Facts>();
         var legacyRanges=new HashSet<ScalarMoveSemantics.NodeKey>();
         var refs=new HashMap<ScalarMoveSemantics.NodeKey,ReferenceResolution.Entry>();
@@ -107,7 +107,7 @@ public final class ProcedurePerformSemantics {
                     var predicate=condition.map(c->PerformPredicateSemantics.analyze(c,unit.id(),complete&&p.meta().provenance().exact(),p.repetition()==Ast.PerformRepetition.VARYING,refs,scalars,numbers,coverage))
                         .orElse(PerformPredicateSemantics.unavailable(p.meta().provenance()));
                     loop=Optional.of(new Loop(p.testMode(),condition,predicate));
-                    if(predicate.availability()!=IfSemantics.Availability.KNOWN)gaps.add(p.repetition()==Ast.PerformRepetition.VARYING?"PERFORM_VARYING_PREDICATE_NOT_PROVEN":"PERFORM_UNTIL_PREDICATE_NOT_PROVEN");
+                    if(predicate.availability()!=IfSemantics.Availability.KNOWN&&!conditionNames.complete(unit.id(),p.meta().id(),"PERFORM_UNTIL/"+(p.repetition()==Ast.PerformRepetition.VARYING?1:0)))gaps.add(p.repetition()==Ast.PerformRepetition.VARYING?"PERFORM_VARYING_PREDICATE_NOT_PROVEN":"PERFORM_UNTIL_PREDICATE_NOT_PROVEN");
                 }
                 Optional<Count> times=Optional.empty();
                 if(p.repetition()==Ast.PerformRepetition.TIMES) {

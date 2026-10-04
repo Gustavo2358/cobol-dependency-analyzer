@@ -128,3 +128,8 @@ IN_PROGRESS: implemented and qualified locally, awaiting review; no merge.
 
 - [WORK-GAP-RECONCILIATION-001](gap-reconciliation.json): avaliação por ocorrência e painel de diagnósticos.
 - [Contrato e regras](../domain/gap-assessment.md).
+
+## Condições 88 e SET — checkpoint 1
+
+- [WORK-CONDITION-NAMES-001](condition-names.json): IN_PROGRESS, revisão no PR #86.
+- [Semântica](../domain/condition-names.md) e [qualificação](condition-names-qualification.md).
