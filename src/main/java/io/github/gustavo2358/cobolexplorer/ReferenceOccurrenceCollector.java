@@ -156,6 +156,8 @@ final class ReferenceOccurrenceCollector {
                                 ResolutionContracts.ReferenceKind.INDEX,
                                 EnumSet.of(ResolutionContracts.ReferenceKind.DATA,
                                         ResolutionContracts.ReferenceKind.INDEX));
+                    } else if(isConditionSurfaceExpression(selector.expression())) {
+                        visitConditionSurface(selector.expression(),preservation);
                     } else {
                         visit(selector.expression(), ResolutionContracts.ReferenceRole.VALUE_READ, preservation);
                     }

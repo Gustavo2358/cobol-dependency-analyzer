@@ -261,7 +261,7 @@ public final class CobolSemanticProductProjector {
     private static Optional<io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames> conditionNames(
             FrontendProducts products,ResolutionContracts.ProgramUnitId unit,Map<Ast.Statement,StatementId> statements,Map<Integer,OperandId> operands,Map<ResolutionContracts.SemanticEntityId,DataItemId> dataIds) {
         var facts=products.scalarMoves().conditionNames();var uses=facts.uses(unit);
-        if(uses.isEmpty())return Optional.empty();
+        if(uses.isEmpty()&&facts.predicates(unit).isEmpty())return Optional.empty();
         var ids=new HashMap<Integer,String>();statements.forEach((ast,id)->ids.put(ast.meta().id(),"statement:"+id.localId()));
         var definitions=new java.util.TreeMap<Integer,io.github.gustavo2358.cobolexplorer.ConditionNameSemantics.Declaration>();
         uses.values().forEach(u->definitions.put(u.declaration().entry().meta().id(),u.declaration()));
@@ -272,8 +272,17 @@ public final class CobolSemanticProductProjector {
             "condition-use:"+u.reference().meta().id(),Objects.requireNonNull(ids.get(u.statement())),"condition:"+u.declaration().entry().meta().id(),(u.declaration().parent()==null?"":operandHandle(Objects.requireNonNull(operands.get(u.reference().meta().id()),"condition use must have a published operand"))),u.role()==ResolutionContracts.ReferenceRole.VALUE_WRITE?io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Access.WRITE:io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Access.READ,u.indices(),provenance(u.reference().meta().provenance()))).toList();
         var assignments=new ArrayList<io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Assignment>();
         new java.util.TreeMap<>(facts.sets(unit)).forEach((statement,values)->{for(int i=0;i<values.size();i++){var a=values.get(i);assignments.add(new io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Assignment(ids.get(statement),i,"condition-use:"+a.use().reference().meta().id(),a.truth(),conditionValue(a.value())));}});
-        var predicates=facts.predicates(unit).stream().map(p->new io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Predicate(ids.get(p.statement()),p.role(),p.tree())).toList();
+        var predicates=facts.predicates(unit).stream().map(p->new io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Predicate(ids.get(p.statement()),p.role(),predicateHandles(p.tree(),operands))).toList();
         return Optional.of(new io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames(declarations,references,assignments,predicates));
+    }
+    private static io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Tree predicateHandles(
+            io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Tree root,Map<Integer,OperandId> operands) {
+        record Pending(io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Tree tree,boolean finish) { }
+        var todo=new java.util.ArrayDeque<Pending>();var built=new IdentityHashMap<io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Tree,io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Tree>();todo.push(new Pending(root,false));
+        while(!todo.isEmpty()){var next=todo.pop();var tree=next.tree();if(!next.finish()&&!tree.children().isEmpty()){todo.push(new Pending(tree,true));tree.children().forEach(t->todo.push(new Pending(t,false)));continue;}
+            String use=tree.use();if(tree.kind().equals("READ")){var operand=operands.get(Integer.parseInt(use.substring("reference:".length())));if(operand==null){built.put(tree,new io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Tree("UNKNOWN","",List.of()));continue;}use=operandHandle(operand);}
+            built.put(tree,new io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Tree(tree.kind(),use,tree.children().stream().map(built::get).toList()));}
+        return built.get(root);
     }
     private static String operandHandle(OperandId id){return "operand:"+id.statement().localId()+":"+id.localId();}
     private static io.github.gustavo2358.cobolexplorer.semanticproduct.ConditionNames.Value conditionValue(Ast.ConditionValue v) {
@@ -975,6 +984,14 @@ public final class CobolSemanticProductProjector {
     private static io.github.gustavo2358.cobolexplorer.ConditionNameSemantics.Use conditionUse(ReferenceResolution.Entry entry,ProjectionInputs inputs) {
         return inputs.products().scalarMoves().conditionNames().uses(inputs.unitId()).get(entry.occurrence().referenceAstNodeId());
     }
+    private static boolean wholePredicateRead(ReferenceResolution.Entry entry,ProjectionInputs inputs) {
+        var node=inputs.selectedSource().nodes().get(entry.occurrence().referenceAstNodeId());
+        if(!(node instanceof Ast.DataReference r)||!r.subscriptGroups().isEmpty()||r.referenceModification()!=null)return false;
+        var selected=entry.selectedCandidate();
+        if(conditionUse(entry,inputs)!=null)return false;
+        return selected.filter(c->inputs.products().scalarMoves().declaration(c.entityId()).isPresent()
+            ||inputs.products().scalarMoves().numbers().declaration(c.entityId()).isPresent()).isPresent();
+    }
     private static boolean projectableDataBinding(
             ReferenceResolution.Entry entry, ProjectionInputs inputs) {
         if(conditionUse(entry,inputs)!=null)return conditionUse(entry,inputs).declaration().parent()!=null;
@@ -1329,7 +1346,7 @@ public final class CobolSemanticProductProjector {
                     if(!projectableDataBinding(entry,inputs)) {if(conditionUse(entry,inputs)==null)codes.add(CONDITION_REFERENCE_GAP);continue;}
                     observedOperandIds.put(entry.occurrence().referenceAstNodeId(),new OperandId(statementId,operandOrdinal[0]));
                     references.add(new DataReference(new OperandId(statementId,operandOrdinal[0]++),OperandRole.READ,nominalBinding(entry, dataIds, inputs),origin,
-                        Optional.ofNullable(predicate.wholeItems().get(entry.occurrence().referenceAstNodeId()))
+                        (wholePredicateRead(entry,inputs)?entry.selectedCandidate().map(c->c.entityId()):Optional.<ResolutionContracts.SemanticEntityId>empty())
                             .map(entity->new WholeItemAccess(Objects.requireNonNull(dataIds.get(entity)))), regionalAccess(inputs, entry.occurrence().referenceAstNodeId())));
                 }
                 var guarantee=new PredicateGuarantee(Availability.valueOf(predicate.availability().name()),
@@ -1678,8 +1695,7 @@ public final class CobolSemanticProductProjector {
             references.add(new CobolSemanticProduct.DataReference(
                     new CobolSemanticProduct.OperandId(statementId, references.size()),
                     CobolSemanticProduct.OperandRole.READ, binding, referenceProvenance,
-                    (textReads.contains(entry.occurrence().referenceAstNodeId())?entry.selectedCandidate().map(c->c.entityId()):predicate.readNode().filter(node -> node == entry.occurrence().referenceAstNodeId())
-                            .flatMap(ignored -> predicate.wholeItem())).map(entity ->
+                    (wholePredicateRead(entry,inputs)?entry.selectedCandidate().map(c->c.entityId()):Optional.<ResolutionContracts.SemanticEntityId>empty()).map(entity ->
                                     new WholeItemAccess(Objects.requireNonNull(dataIds.get(entity), "predicate DATA must be published"))), regionalAccess(inputs,entry.occurrence().referenceAstNodeId())));
         }
         if (!continuation.exact())
@@ -1793,7 +1809,7 @@ public final class CobolSemanticProductProjector {
         if(proof.supportedShape()) require(plan.entries().size() <= 1, "single canonical EVALUATE subject reference");
         Optional<DataReference> subject = plan.entries().isEmpty() ? Optional.empty()
             : Optional.of(plan.entries().get(0)).filter(r -> projectableDataBinding(r, inputs)).map(r -> new DataReference(new OperandId(id, 0), OperandRole.READ, nominalBinding(r, dataIds, inputs),
-                provenance(r.occurrence().meta().provenance()), r.selectedCandidate().map(c -> dataIds.get(c.entityId())).filter(scalarDataIds::contains).map(WholeItemAccess::new), regionalAccess(inputs, r.occurrence().referenceAstNodeId())));
+                provenance(r.occurrence().meta().provenance()), (wholePredicateRead(r,inputs)?r.selectedCandidate().map(c -> dataIds.get(c.entityId())):Optional.<DataItemId>empty()).map(WholeItemAccess::new), regionalAccess(inputs, r.occurrence().referenceAstNodeId())));
         if(subject.isPresent())observedOperandIds.put(plan.entries().get(0).occurrence().referenceAstNodeId(),subject.get().id());
         if (proof.supportedShape() && (subject.isEmpty() || proof.wholeItem().isEmpty())) codes.add("EVALUATE_SUBJECT_NOT_PROVEN");
         boolean conditionsModeled=true;int conditionArm=0;
@@ -1826,7 +1842,7 @@ public final class CobolSemanticProductProjector {
                     observedOperandIds.put(subjectEntry.occurrence().referenceAstNodeId(),new OperandId(id,operandOrdinal));
                     reads.add(new DataReference(new OperandId(id,operandOrdinal++),OperandRole.READ,
                         nominalBinding(subjectEntry, dataIds, inputs),provenance(subjectEntry.occurrence().meta().provenance()),
-                        selected.filter(scalarDataIds::contains).map(WholeItemAccess::new),regionalAccess(inputs,subjectEntry.occurrence().referenceAstNodeId())));
+                        (wholePredicateRead(subjectEntry,inputs)?selected:Optional.<DataItemId>empty()).map(WholeItemAccess::new),regionalAccess(inputs,subjectEntry.occurrence().referenceAstNodeId())));
                 }
                 for(var selector:a.selectors()) for(var conditionEntry:conditionEntries(selector.expression(),inputs)) {
                     if(!projectableDataBinding(conditionEntry,inputs)) continue;
@@ -1834,7 +1850,7 @@ public final class CobolSemanticProductProjector {
                     observedOperandIds.put(conditionEntry.occurrence().referenceAstNodeId(),new OperandId(id,operandOrdinal));
                     reads.add(new DataReference(new OperandId(id,operandOrdinal++),OperandRole.READ,
                         nominalBinding(conditionEntry, dataIds, inputs),provenance(conditionEntry.occurrence().meta().provenance()),
-                        selected.filter(scalarDataIds::contains).map(WholeItemAccess::new),regionalAccess(inputs,conditionEntry.occurrence().referenceAstNodeId())));
+                        (wholePredicateRead(conditionEntry,inputs)?selected:Optional.<DataItemId>empty()).map(WholeItemAccess::new),regionalAccess(inputs,conditionEntry.occurrence().referenceAstNodeId())));
                 }
                 arms.add(new EvaluateArm(arms.size(),Optional.empty(),reads,provenance(a.meta().provenance()),members,control));
             }

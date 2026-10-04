@@ -15,8 +15,8 @@ public final class ConditionNameSemantics {
         public Use {indices=List.copyOf(indices);}
     }
     public record Predicate(int statement,String role,ConditionNames.Tree tree) { }
-    private record Root(int statement,String role,List<Ast.Expression> alternatives,List<Boolean> negations) {
-        Root(int statement,String role,Ast.Expression expression){this(statement,role,List.of(expression),List.of(false));}
+    private record Root(int statement,String role,List<Ast.Expression> alternatives,List<Boolean> negations,Ast.Expression subject) {
+        Root(int statement,String role,Ast.Expression expression){this(statement,role,List.of(expression),List.of(false),null);}
     }
     public record Assignment(Use use,boolean truth,Ast.ConditionValue value) { }
     public record Metrics(long nodeVisits,long symbolVisits,long referenceVisits,long rangeVisits,long targetVisits) { }
@@ -76,10 +76,10 @@ public final class ConditionNameSemantics {
                 if(n instanceof Ast.IfStatement branch)localRoots.add(new Root(statement,"IF",branch.condition()));
                 if(n instanceof Ast.EvaluateStatement evaluate){
                     for(int i=0;i<evaluate.subjects().size();i++)localRoots.add(new Root(statement,"EVALUATE_SUBJECT/"+i,evaluate.subjects().get(i)));
-                    var booleanSubject=evaluate.subjects().size()==1&&evaluate.subjects().get(0) instanceof Ast.LiteralExpression l?l.booleanValue():Optional.<Boolean>empty();
                     for(int i=0;i<evaluate.branches().size();i++){
                         var selectors=evaluate.branches().get(i).selectors();
-                        if(booleanSubject.isPresent()&&!selectors.isEmpty())localRoots.add(new Root(statement,"EVALUATE_WHEN/"+i,selectors.stream().map(Ast.EvaluateSelector::expression).toList(),selectors.stream().map(s->s.negated()^!booleanSubject.get()).toList()));
+                        if(evaluate.subjects().size()==1&&!selectors.isEmpty()&&selectors.stream().allMatch(v->v.subjectIndex()==0))
+                            localRoots.add(new Root(statement,"EVALUATE_WHEN/"+i,selectors.stream().map(Ast.EvaluateSelector::expression).toList(),selectors.stream().map(Ast.EvaluateSelector::negated).toList(),evaluate.subjects().get(0)));
                         else for(int j=0;j<selectors.size();j++)localRoots.add(new Root(statement,"EVALUATE_SELECTOR/"+i+"/"+j,selectors.get(j).expression()));
                     }
                 }
@@ -127,14 +127,19 @@ public final class ConditionNameSemantics {
             if(failure==null)sets.computeIfAbsent(unit,k->new HashMap<>()).put(statement,List.copyOf(assignments));
             else failures.computeIfAbsent(unit,k->new HashMap<>()).put(statement,failure);
         }));
+        var scalarRefs=new HashMap<ProgramUnitId,Set<Integer>>();
+        for(var binding:resolution.entries())if(binding.status()==ResolutionStatus.RESOLVED&&binding.candidates().size()==1&&binding.selectedCandidate().filter(c->c.kind()==ReferenceKind.DATA).isPresent())
+            scalarRefs.computeIfAbsent(binding.occurrence().programUnitId(),k->new HashSet<>()).add(binding.occurrence().referenceAstNodeId());
         var predicates=new HashMap<ProgramUnitId,List<Predicate>>();
         roots.forEach((unit,list)->{
             var published=new ArrayList<Predicate>();
+            var normalizer=new ScalarPredicateSemantics(uses.getOrDefault(unit,Map.of()),scalarRefs.getOrDefault(unit,Set.of()));
             for(var root:list){
+                if(root.role().startsWith("EVALUATE_SUBJECT/")&&!hasConditionUse(root.alternatives().get(0),uses.getOrDefault(unit,Map.of())))continue;
                 var alternatives=new ArrayList<ConditionNames.Tree>();
-                for(int i=0;i<root.alternatives().size();i++) {var t=tree(root.alternatives().get(i),uses.getOrDefault(unit,Map.of()));alternatives.add(root.negations().get(i)?new ConditionNames.Tree("NOT","",List.of(t)):t);}
+                for(int i=0;i<root.alternatives().size();i++) {var t=root.subject()==null?normalizer.condition(root.alternatives().get(i)):normalizer.selection(root.subject(),root.alternatives().get(i),root.negations().get(i));alternatives.add(t);}
                 var tree=alternatives.size()==1?alternatives.get(0):new ConditionNames.Tree("OR","",alternatives);
-                if(hasTest(tree))published.add(new Predicate(root.statement(),root.role(),tree));
+                if(hasTest(tree)||hasRead(tree)||tree.complete())published.add(new Predicate(root.statement(),root.role(),tree));
             }
             predicates.put(unit,List.copyOf(published));
         });
@@ -151,24 +156,11 @@ public final class ConditionNameSemantics {
         return new ConditionNames.Index("UNKNOWN","",List.of());
     }
     private static boolean hasTest(ConditionNames.Tree tree){var todo=new ArrayDeque<ConditionNames.Tree>();todo.add(tree);while(!todo.isEmpty()){var t=todo.removeFirst();if(t.kind().equals("TEST"))return true;todo.addAll(t.children());}return false;}
-    private static ConditionNames.Tree tree(Ast.Expression root,Map<Integer,Use> uses) {
-        // Explicit postorder stack: nesting consumes heap proportional to syntax, not Java stack.
-        record Pending(Ast.Expression expression,boolean finish) { }
-        var todo=new ArrayDeque<Pending>();var trees=new IdentityHashMap<Ast.Expression,ConditionNames.Tree>();todo.push(new Pending(root,false));
-        while(!todo.isEmpty()) {
-            var pending=todo.pop();var e=pending.expression();List<Ast.Expression> children=e instanceof Ast.LogicalCondition l?l.operands():e instanceof Ast.NegatedCondition n?List.of(n.operand()):e instanceof Ast.GroupedCondition g?List.of(g.inner()):List.of();
-            if(!pending.finish()&&!children.isEmpty()){todo.push(new Pending(e,true));for(int i=children.size()-1;i>=0;i--)todo.push(new Pending(children.get(i),false));continue;}
-            ConditionNames.Tree value;
-            if(e instanceof Ast.DataReference r&&uses.containsKey(r.meta().id()))value=new ConditionNames.Tree("TEST","condition-use:"+r.meta().id(),List.of());
-            else if(e instanceof Ast.ContextualConditionTail t&&uses.containsKey(t.nominalReference().meta().id()))
-                value=new ConditionNames.Tree("TEST","condition-use:"+t.nominalReference().meta().id(),List.of());
-            else if(e instanceof Ast.GroupedCondition g)value=trees.get(g.inner());
-            else if(e instanceof Ast.LogicalCondition l&&children.size()>=2)value=new ConditionNames.Tree(l.connector().name(),"",children.stream().map(trees::get).toList());
-            else if(e instanceof Ast.NegatedCondition n)value=new ConditionNames.Tree("NOT","",List.of(trees.get(n.operand())));
-            else value=new ConditionNames.Tree("UNKNOWN","",List.of());
-            trees.put(e,value);
-        }
-        return trees.get(root);
+    private static boolean hasRead(ConditionNames.Tree tree){var todo=new ArrayDeque<ConditionNames.Tree>();todo.add(tree);while(!todo.isEmpty()){var t=todo.removeFirst();if(t.kind().equals("READ"))return true;todo.addAll(t.children());}return false;}
+    private static boolean hasConditionUse(Ast.Expression expression,Map<Integer,Use> uses) {
+        var todo=new ArrayDeque<Ast.Node>();todo.add(expression);
+        while(!todo.isEmpty()){var n=todo.removeFirst();if(n instanceof Ast.DataReference r&&uses.containsKey(r.meta().id()))return true;Ast.children(n).forEach(todo::add);}
+        return false;
     }
     private static ConditionNames.VariableDomain domain(Ast.DataEntry variable) {
         var pictures=variable.clauses().stream().filter(Ast.PictureClause.class::isInstance).map(Ast.PictureClause.class::cast).toList();

@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 public final class SemanticProductJsonWriter {
     public static final String SCHEMA = "cobol-semantic-product";
-    public static final String CONTRACT_VERSION = "2.66.0";
+    public static final String CONTRACT_VERSION = "2.67.0";
 
     private record NominalDocument(String authority,List<NominalSymbolDocument> symbols,
             List<NominalAssignmentDocument> assignments,List<NominalConditionDocument> conditions,

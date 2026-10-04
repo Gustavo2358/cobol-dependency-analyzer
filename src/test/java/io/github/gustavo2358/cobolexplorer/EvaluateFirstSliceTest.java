@@ -63,7 +63,9 @@ class EvaluateFirstSliceTest {
             var arm=p.evaluates().get(0).arms().get(0);
             assertTrue(arm.selection().isEmpty(),selection);
             assertTrue(arm.conditionOrigin().exact(),selection);
-            assertEquals(CoverageStatus.PARTIAL,p.evaluates().get(0).header().coverage(),selection);
+            boolean modeled=List.of("NOT 'A'","1","FLAG").contains(selection);
+            assertEquals(modeled?CoverageStatus.MODELED:CoverageStatus.PARTIAL,p.evaluates().get(0).header().coverage(),selection);
+            if(modeled)assertTrue(p.conditionNames().orElseThrow().predicates().stream().anyMatch(v->v.tree().complete()),selection);
         }
     }
     @Test void generalNestedEvaluateRemainsObserved() {

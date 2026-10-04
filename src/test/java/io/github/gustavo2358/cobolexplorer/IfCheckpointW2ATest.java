@@ -98,7 +98,7 @@ class IfCheckpointW2ATest {
             assertEquals(2, result.independent().size());
             var bytes = SemanticProductJsonWriter.serialize(port);
             assertArrayEquals(bytes, SemanticProductJsonWriter.serialize(ScalarMoveCheckpoint4ATest.publish(fixture(name))));
-            assertEquals("2.66.0", new ObjectMapper().readTree(bytes).path("contractVersion").asText());
+            assertEquals("2.67.0", new ObjectMapper().readTree(bytes).path("contractVersion").asText());
         }
     }
     @Test void multipleStatementsInEachArmFollowDirectRelations() throws Exception {
@@ -138,7 +138,10 @@ class IfCheckpointW2ATest {
             noPredicate(d);
             boolean typed=condition.equals("FLAG = 'Y' OR FLAG = 'N'")||condition.equals("NOT FLAG = 'Y'");
             assertEquals(typed,one(d,"IF").path("condition").path("textPredicate").isObject());
-            for (var reference : one(d, "IF").path("condition").path("references")) assertEquals(typed,reference.path("wholeItemAccess").isObject());
+            for (var reference : one(d, "IF").path("condition").path("references")) {
+                boolean accessible=reference.path("binding").path("status").asText().equals("RESOLVED")&&!condition.startsWith("FLAG(");
+                assertEquals(accessible,reference.path("wholeItemAccess").isObject(),condition);
+            }
         }
     }
     @Test void ambiguityAndUnresolvedKeepBindingsWithoutWholeAccess() throws Exception {

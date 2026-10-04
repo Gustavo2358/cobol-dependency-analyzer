@@ -932,7 +932,7 @@ obrigações independentes de input, controle, binding e runtime permanecem.
 
 ## Tipos e transferências MOVE — SP 2.66
 
-A versão corrente é **2.66.0**. `scalarNumber` substitui `scalarInteger` com
+A versão 2.66.0 introduziu esta capacidade. `scalarNumber` substitui `scalarInteger` com
 precisão, escala, sinal, representação e TRUNC explícitos. `numericTransfers`
 substitui `integerTransfers`: `{target, value}` conserva a ordem de receptores;
 value ausente representa leitura DATA ou resultado binário indeterminado.
@@ -949,3 +949,15 @@ Fatos e gaps seguem sendo a lista canônica de obrigações atuais. Provas de va
 não substituem as de armazenamento ou controle; missing input e fronteiras de
 modelagem permanecem explícitos. Regras, formatos, limites, complexidade e
 oracles: [MOVE numérico](numeric-move.md) e [escopo qualificado](../work/numeric-move-full.md).
+
+## Predicados escalares — SP 2.67
+
+A versão corrente é **2.67.0**. O facet `conditionNames` conserva seu nome e
+seus fatos 88/SET; sua árvore agora inclui READ (operando do mesmo statement),
+NUMBER/TEXT/BOOL/figurativas e EQ/NE/LT/LE/GT/GE. READ e TEST conservam seus
+reads de endereço como filhos READ. UNKNOWN conserva reads conhecidos; use=PURE
+certifica somente pureza e fechamento dos reads, sem afirmar verdade ou acesso.
+IF, EVALUATE_WHEN e PERFORM_UNTIL compartilham a normalização após binding.
+O lower valida cada prova de acesso e domínio separadamente.
+
+[Regra, escopo e limites do checkpoint 3](checkpoint3-predicates.md).

@@ -691,7 +691,7 @@ public final class Ast {
      * created for omitted parts. A relational NOT is part of {@code relationalOperator}
      * canonical text; a logical NOT is a separate {@link NegatedCondition}.
      */
-    public enum RelationOperator { EQUAL, OTHER, UNAVAILABLE }
+    public enum RelationOperator { EQUAL, NOT_EQUAL, LESS, LESS_EQUAL, GREATER, GREATER_EQUAL, OTHER, UNAVAILABLE }
 
     public record RelationCondition(Meta meta, Expression subject, String relationalOperator,
                                     Expression object, String writtenText, RelationOperator operatorKind) implements Expression {

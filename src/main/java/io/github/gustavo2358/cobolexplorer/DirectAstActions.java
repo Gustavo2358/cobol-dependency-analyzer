@@ -1422,7 +1422,9 @@ final class DirectAstActions  {
     private Ast.EvaluateSelector evaluateSelector(DirectSyntax.EvaluateConditionFrame condition,
                                                    int subjectIndex,
                                                    List<DirectSyntax.EvaluateSelectFrame> subjects) {
-        Ast.Expression expression = expression(condition, "evaluate selector");
+        Ast.Expression expression = condition.evaluateThrough()!=null || condition.ANY()!=null
+                ? preservedExpression(condition,"evaluate selector")
+                : condition.condition()!=null?conditionExpression(condition.condition()):expression(condition, "evaluate selector");
         boolean correspondingBooleanSubject = subjectIndex < subjects.size()
                 && subjects.get(subjectIndex).literal() != null
                 && subjects.get(subjectIndex).literal().booleanLiteral() != null;
@@ -2126,10 +2128,24 @@ final class DirectAstActions  {
     }
 
     private static Ast.RelationOperator equalityOperator(DirectSyntax.RelationalOperatorFrame operator) {
-        // Typed token alternatives, no reparsing of relationalOperator text.
-        return operator.NOT() == null && operator.GREATER() == null && operator.LESS() == null
-                && (operator.EQUALCHAR() != null || operator.EQUAL() != null)
-                ? Ast.RelationOperator.EQUAL : Ast.RelationOperator.OTHER;
+        // Grammar alternatives determine semantics; display text is never reparsed.
+        Ast.RelationOperator result;
+        if(operator.NOTEQUALCHAR()!=null)result=Ast.RelationOperator.NOT_EQUAL;
+        else if(operator.MORETHANOREQUAL()!=null||operator.GREATER()!=null&&operator.EQUAL()!=null)result=Ast.RelationOperator.GREATER_EQUAL;
+        else if(operator.LESSTHANOREQUAL()!=null||operator.LESS()!=null&&operator.EQUAL()!=null)result=Ast.RelationOperator.LESS_EQUAL;
+        else if(operator.GREATER()!=null||operator.MORETHANCHAR()!=null)result=Ast.RelationOperator.GREATER;
+        else if(operator.LESS()!=null||operator.LESSTHANCHAR()!=null)result=Ast.RelationOperator.LESS;
+        else result=Ast.RelationOperator.EQUAL;
+        if(operator.NOT()==null)return result;
+        return switch(result){case EQUAL->Ast.RelationOperator.NOT_EQUAL;case NOT_EQUAL->Ast.RelationOperator.EQUAL;
+            case GREATER->Ast.RelationOperator.LESS_EQUAL;case LESS->Ast.RelationOperator.GREATER_EQUAL;
+            case GREATER_EQUAL->Ast.RelationOperator.LESS;case LESS_EQUAL->Ast.RelationOperator.GREATER;default->Ast.RelationOperator.UNAVAILABLE;};
+    }
+
+    private static Ast.RelationOperator negateRelation(Ast.RelationOperator op) {
+        return switch(op){case EQUAL->Ast.RelationOperator.NOT_EQUAL;case NOT_EQUAL->Ast.RelationOperator.EQUAL;
+            case GREATER->Ast.RelationOperator.LESS_EQUAL;case LESS->Ast.RelationOperator.GREATER_EQUAL;
+            case GREATER_EQUAL->Ast.RelationOperator.LESS;case LESS_EQUAL->Ast.RelationOperator.GREATER;default->Ast.RelationOperator.UNAVAILABLE;};
     }
 
     private ConditionBuild buildCombinedComparison(DirectSyntax.RelationCombinedComparisonFrame combined) {
@@ -2151,7 +2167,7 @@ final class DirectAstActions  {
                 operands, connectors, sourceText(group).strip());
         String operator = compact(sourceText(combined.relationalOperator())).toUpperCase(Locale.ROOT);
         return new ConditionBuild(new Ast.RelationCondition(meta, subject, operator, distributed,
-                sourceText(combined).strip()),
+                sourceText(combined).strip(), equalityOperator(combined.relationalOperator())),
                 new ConditionState(true, subject.meta().span().startToken()));
     }
 
@@ -2216,7 +2232,8 @@ final class DirectAstActions  {
                     ? sourceBetween(relationalOperator, objectContext)
                     : sourceText(abbreviation).strip();
             Ast.RelationCondition relation = new Ast.RelationCondition(relationMeta, null,
-                    relationalNot ? "NOT " + canonical : canonical, object, relationText);
+                    relationalNot ? "NOT " + canonical : canonical, object, relationText,
+                    relationalNot ? negateRelation(equalityOperator(relationalOperator)) : equalityOperator(relationalOperator));
             if (logicalNot) {
                 return new ConditionBuild(new Ast.NegatedCondition(notMeta, relation,
                         sourceText(abbreviation).strip()), stateIn.inherited());

@@ -50,7 +50,8 @@ class ActiveSemanticGapsTest {
     @Test void currentTextPredicateAndNestedMembershipHaveNoObsoleteGaps() {
         var p = publish("01 NAME-A PIC X(8).", "IF NAME-A = LOW-VALUES OR SPACES\nCONTINUE\nEND-IF.\nGOBACK.");
         assertTrue(gaps(p,"CONDITION_SEMANTICS_NOT_AVAILABLE").isEmpty());
-        assertFalse(gaps(p,"IF_OUTSIDE_SIMPLE_PROFILE").isEmpty());
+        assertTrue(gaps(p,"IF_OUTSIDE_SIMPLE_PROFILE").isEmpty());
+        assertTrue(p.conditionNames().orElseThrow().predicates().get(0).tree().complete());
         var nested = publish("01 N PIC 9.", "PERFORM UNTIL N > 2\nCONTINUE\nADD 1 TO N\nEND-PERFORM.\nGOBACK.");
         assertTrue(gaps(nested,"CONTAINMENT_NOT_PROJECTED").isEmpty());
         assertFalse(nested.gaps().isEmpty());
