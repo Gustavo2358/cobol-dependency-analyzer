@@ -1,6 +1,7 @@
 {
   "id": "WORK-CONDITION-NAMES-001",
   "title": "Checkpoint 1: condições 88 e SET canônicos",
-  "status": "IN_PROGRESS",
-  "scope": "Modelagem e consumo de todos os usos 88 do CardDemo, fechamento de contrato SP 2.64 e regressão de dependências; PR #86, sem merge."
+  "status": "DONE",
+  "scope": "Modelagem e consumo de todos os usos 88 do CardDemo, fechamento de contrato SP 2.64 e regressão de dependências; PR #86.",
+  "notes": "Frontend merged in PR #86, 21065f83e2a3c01c1429068dd3e199666ccbe17e, with required tests passed. See priority2-integration.md."
 }
