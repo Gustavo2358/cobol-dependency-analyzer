@@ -1,46 +1,36 @@
-# Logical numeric values and integer DISPLAY MOVE
+# MOVE, tipos numéricos e transferências locais — SP 2.66
 
-Checkpoint 2, SP 2.65.0. Status: IN_PROGRESS.
+## Contrato e regras correntes
 
-## Rule and invariant
+O frontend publica `scalarNumber` (precisão, escala, sinal, representação e TRUNC)
+e `numericTransfers` por receptor, além das provas textuais e regionais existentes.
+Este caminho substitui o antigo recorte de inteiro DISPLAY. DISPLAY, PACKED,
+BINARY e COMP-5 têm regras próprias; o lower recebe descritores tipados, sem
+reinterpretar PICTURE ou COBOL. O tipo não concede armazenamento independente.
 
-IBM Enterprise COBOL 6.4 [elementary MOVE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statement-elementary-moves) aligns numeric operands at the decimal point; the receiver determines capacity. This cut proves unsigned, unedited integer DISPLAY receivers and integral fixed-point literals that fit, or integer DATA sources whose capacity fits. No byte encoding is inferred. Unsigned DISPLAY pictures have 1–31 digits under the documented IBM 6.4 profile; floating literals and decimal-comma syntax without a dialect proof remain unavailable. Signed fields, scale, overflow/truncation, edited pictures, binary/packed storage, subscripts and reference modification remain explicit.
+MOVE numérico alinha pelo ponto decimal, ajusta sinal/escala e aplica a capacidade
+do receptor. BINARY respeita TRUNC explicitamente fornecido; opção ausente não
+seleciona STD/BIN/OPT. Resultado sem valor comum continua uma transferência
+reconhecida, com resultado Unknown e causa preservada. COMP-5 usa sua largura
+binária; edição numérica é uma receita tipada e comprimida.
 
-A numeric transfer requires exact source syntax, a unique whole-item binding and an independently proved local cell. VALUE clauses and enclosing groups do not by themselves invalidate the cell. COPY/model, alias and allocation obligations remain causal. Numeric literals have a numeric value independently of MOVE readiness.
+MOVE alfanumérico não JUSTIFIED conserva o prefixo e preenche com espaços.
+`textAdjustment` publica regra e extensão, sem expandir a PICTURE. ZERO é distinto
+do literal 0; LOW/HIGH não inventam CCSID ou collation. Acessos compartilhados,
+fatias e grupos só recebem fatos positivos quando suas próprias provas existem.
+Provenance aproximada de COPY não invalida automaticamente um fato tipado.
 
-The frontend publishes per-receiver integer transfers on the existing MOVE fact. The consumer validates each certificate at both JSON and in-memory boundaries, and emits AIR INT assignments through the existing MOVE handler. A complete certificate set discharges only MOVE value/whole-item gaps. Unsupported peers retain conservative effects.
+O índice de declarações e USAGE herdado é memoizado; receptores são visitados na
+ordem fonte. Geometria de intervalos e aliases equivalentes usa O(n log n), sem
+enumerar posições de OCCURS/PICTURE. Valores/texto seguem expressões comprimidas.
+Não há produto cartesiano de receptores, aliases ou opções de compilação.
 
-## Algorithm and oracle
-
-One declaration index, one reference index, then one pass over MOVE receivers; no range enumeration, power-of-ten allocation or Boolean expansion. Capacity is compared by digit count. Expected examples: MOVE 12 TO PIC 9(3) writes INT 12; PIC 9(2) to PIC 9(4) preserves the value; MOVE 123 TO PIC 99 remains partial. Literal transfers to several receivers are independent; DATA transfers are admitted through the prefix that preserves the source value; later reads after an unsupported peer retain uncertainty.
-
-Validate parser parity, literals, local/nested cells, alias/input rejection, multiple receivers, hostile certificates, large PIC counts, AIR validation and all 73 CardDemo sources against checkpoint 1. Preserve program/file/source dependency sites, candidates and remainder.
-
-Primary references: [IBM numeric literals](https://www.ibm.com/docs/en/cobol-zos/6.3.0?topic=literals-numeric), [IBM 6.4 Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf), elementary MOVE and alignment rules.
-
-[IBM 6.4 USAGE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=entry-usage-clause) also applies group usage to elementary descendants. A memoized ancestor pass rejects inherited non-DISPLAY usage and unmodeled ancestor clauses (including GROUP-USAGE), even when the child has PIC 9. An explicit DISPLAY child cannot override an incompatible group usage.
-
-## Priority 2 completion — active
-
-The remaining work covers the complete MOVE/type priority, not only the first
-integer DISPLAY cut. Baseline: frontend ea29a45, lower cd6e792; 4,928 MOVEs carry
-9,182 identity, whole-access and literal-kind diagnostics. The causal inventory
-is under the workspace priority2-evidence directory, with one row per occurrence.
-
-The next rule extends the existing elementary text MOVE proof to fitting DATA
-sources, literal truncation and uniquely resolved qualified names. IBM elementary
-MOVE aligns non-JUSTIFIED alphanumeric receivers on the left, pads with spaces
-and truncates the right. A DATA fit preserves its source expression and receiving
-extent; it must not publish a fabricated constant. The existing AIR FitText
-operation represents this rule. The algorithm indexes declarations/references
-once and visits each transfer once. Oracles: 3→8 padding, 8→3 truncation,
-qualified names, literal ABCDE→ABC, and unproved indexed/aliased access.
-
-Type conversions, typed storage and representation, figuratives, indexed and
-modified accesses, and source-input obligations remain in this active priority.
-No missing definition or physical assumption may be converted into positive proof.
-Qualification must retain every baseline dependency candidate and its uncertainty;
-all 73 sources are required because both shared storage and MOVE semantics change.
+Fontes primárias: [IBM elementary MOVE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=statement-elementary-moves),
+[Language Reference 6.4](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf),
+[USAGE](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=entry-usage-clause) e
+[TRUNC](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topic=options-trunc).
+O [relatório da prioridade 2](../work/numeric-move-full.md) delimita capacidades,
+regressão, inventário por ocorrência e fronteiras restantes.
 
 ## Destinos mistos na mesma instrução
 
@@ -137,10 +127,10 @@ resultado não está certificado: isso só é permitido para BINARY com TRUNC
 UNSPECIFIED/OPT e valor fora da PICTURE. Valores comuns conservam value.
 Emissor DATA preserva a leitura, com a mesma decisão pelo limite do descritor.
 No lower, o resultado incerto é unknown INT/DECIMAL com razão explícita e
-dependências. A possibilidade de comportamento imprevisível de OPT conserva
-um ramo opaco de efeitos/saída, sem destinos locais inventados. Um guard por
-MOVE basta; os receptores permanecem lineares e não enumeram opções combinadas.
+dependências. A incerteza do resultado recebido não cria um ramo de controle. Guards se
+aplicam à validade não provada do emissor textual ou compartilhado. Os receptores
+permanecem lineares e não enumeram opções combinadas.
 Não é solicitado um manifesto nem assumida uma opção.
 Fonte: https://www.ibm.com/docs/en/cobol-zos/6.4?topic=options-trunc .
 Oracles: 123451 para S99 COMP, STD=51, BIN=-7621; OPT/UNSPECIFIED mantêm
-resultado e execução abertos. Valor 12 continua provado sob todas as opções.
+resultado aberto. Valor 12 continua provado sob todas as opções.
