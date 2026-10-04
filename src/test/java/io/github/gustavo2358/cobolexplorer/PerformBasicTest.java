@@ -29,11 +29,11 @@ class PerformBasicTest {
             assertTrue(perform.target().orElseThrow().referenceOrigin().exact()); assertTrue(perform.target().orElseThrow().paragraphOrigin().exact());
             assertEquals(port.calls().get(0).header().provenance(), perform.normalContinuation().provenance());
             assertTrue(bodyFacts.stream().allMatch(m -> m.header().provenance().exact() && m.header().coverage() == CoverageStatus.MODELED));
-            assertEquals("PROGA   ", bodyFacts.get(0).textAdjustment().orElseThrow().result().value());
+            assertEquals("PROGA   ", TextFitOracle.value(bodyFacts.get(0)));
             if (name.equals("copy")) { assertInstanceOf(DataReference.class, bodyFacts.get(1).source()); assertEquals(Availability.KNOWN, port.storageIndependence().availability()); }
             var json = SemanticProductJsonWriter.serialize(port);
             assertArrayEquals(json, SemanticProductJsonWriter.serialize(ScalarMoveCheckpoint4ATest.publish(source)));
-            var tree = new ObjectMapper().readTree(json); assertEquals("2.65.0",tree.path("contractVersion").asText());
+            var tree = new ObjectMapper().readTree(json); assertEquals("2.66.0",tree.path("contractVersion").asText());
             Path out = Path.of("target/perform-basic"); Files.createDirectories(out);
             Files.write(out.resolve(name + ".json"), json); Files.writeString(out.resolve(name + ".cbl"), source);
         }

@@ -6,12 +6,14 @@ import java.util.*;
  * This product has no boundary, AIR, CFG or runtime-value dependencies. */
 public final class ScalarMoveSemantics {
     public record NodeKey(ResolutionContracts.ProgramUnitId unit, int node) { }
-    /** Elementary DISPLAY item with an independently proved whole logical cell. */
-    public record ScalarText(int extent) {
+    /** Elementary DISPLAY value descriptor; storage independence is a separate fact. */
+    public record ScalarText(int extent,Optional<Ast.NumericEdit> edited) {
+        public ScalarText(int extent){this(extent,Optional.empty());}
         public ScalarText { if (extent <= 0) throw new IllegalArgumentException("positive extent required"); }
     }
-    public enum Copy { FULL_IDENTITY, FITTED_TEXT, POSSIBLE_TEXT, UNAVAILABLE }
-    public record TextAdjustment(int receiverExtent, String result) { }
+    public enum Copy { FULL_IDENTITY, FITTED_TEXT, FORMATTED_NUMBER, POSSIBLE_TEXT, UNAVAILABLE }
+    public enum TextRule { RIGHT_FIT_SPACE, ZERO_FILL }
+    public record TextAdjustment(int receiverExtent,TextRule rule) { }
     public record Call(Optional<ResolutionContracts.SemanticEntityId> wholeItem,
                        Optional<Integer> nextStatement, boolean inputComplete) { }
     public enum Gap { SCALAR_WHOLE_ITEM_NOT_PROVEN, MOVE_IDENTITY_NOT_PROVEN, NORMAL_CONTINUATION_NOT_AVAILABLE }
@@ -31,10 +33,10 @@ public final class ScalarMoveSemantics {
                           long scalarLookups, long moveVisits) { }
     private final Map<ResolutionContracts.SemanticEntityId, ScalarText> declarations;
     private final Map<NodeKey, Move> moves;
-    private final IntegerSemantics numbers;
-    private final IntegerMoveSemantics integerMoves;
-    public IntegerMoveSemantics integerMoves(){return integerMoves;}
-    public IntegerSemantics numbers() { return numbers; }
+    private final NumericSemantics numbers;
+    private final NumericMoveSemantics numericMoves;
+    public NumericMoveSemantics numericMoves(){return numericMoves;}
+    public NumericSemantics numbers() { return numbers; }
     private final Map<ResolutionContracts.ProgramUnitId,io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies> factDependencies;
     public Map<ResolutionContracts.ProgramUnitId,io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies> factDependencies(){return factDependencies;}
     private final Map<ResolutionContracts.ProgramUnitId,LogicalInitialSemantics.Result> logicalInitial;
@@ -48,6 +50,8 @@ public final class ScalarMoveSemantics {
     public ConditionNameSemantics conditionNames(){return conditionNames;}
     private final NominalValueSemantics nominalValues;
     public NominalValueSemantics nominalValues(){return nominalValues;}
+    private final LogicalMoveSemantics.Analysis logicalMoves;
+    public LogicalMoveSemantics.Analysis logicalMoves(){return logicalMoves;}
     private final Metrics metrics;
     private final GoToSemantics goTos;
     public GoToSemantics goTos() { return goTos; }
@@ -65,10 +69,10 @@ public final class ScalarMoveSemantics {
     }
 
     private ScalarMoveSemantics(Map<ResolutionContracts.SemanticEntityId, ScalarText> declarations,
-                                Map<NodeKey, Move> moves, Map<NodeKey, Call> calls, Metrics metrics, IfSemantics ifs, PerformSemantics performs, EvaluateSemantics evaluates, GoToSemantics goTos, ProcedurePerformSemantics procedurePerforms, IntegerSemantics numbers,IntegerMoveSemantics integerMoves,Map<ResolutionContracts.ProgramUnitId,io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies> factDependencies,Map<ResolutionContracts.ProgramUnitId,LogicalInitialSemantics.Result> logicalInitial,Map<NodeKey,TextConditionSemantics.Predicate> textPredicates,NominalValueSemantics nominalValues,ConditionNameSemantics conditionNames) {
-        this.conditionNames=conditionNames;this.nominalValues=nominalValues;this.declarations = Map.copyOf(declarations);this.textPredicates=Map.copyOf(textPredicates);
+                                Map<NodeKey, Move> moves, Map<NodeKey, Call> calls, Metrics metrics, IfSemantics ifs, PerformSemantics performs, EvaluateSemantics evaluates, GoToSemantics goTos, ProcedurePerformSemantics procedurePerforms, NumericSemantics numbers,NumericMoveSemantics numericMoves,Map<ResolutionContracts.ProgramUnitId,io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies> factDependencies,Map<ResolutionContracts.ProgramUnitId,LogicalInitialSemantics.Result> logicalInitial,Map<NodeKey,TextConditionSemantics.Predicate> textPredicates,NominalValueSemantics nominalValues,ConditionNameSemantics conditionNames,LogicalMoveSemantics.Analysis logicalMoves) {
+        this.logicalMoves=logicalMoves;this.conditionNames=conditionNames;this.nominalValues=nominalValues;this.declarations = Map.copyOf(declarations);this.textPredicates=Map.copyOf(textPredicates);
         this.factDependencies=Map.copyOf(factDependencies);this.logicalInitial=Map.copyOf(logicalInitial);
-        this.numbers=numbers;this.integerMoves=integerMoves;
+        this.numbers=numbers;this.numericMoves=numericMoves;
         this.moves = Map.copyOf(moves);
         this.metrics = metrics;
         this.ifs = Objects.requireNonNull(ifs);
@@ -116,6 +120,7 @@ public final class ScalarMoveSemantics {
         Map<NodeKey, Ast.MoveStatement> targets = new HashMap<>();
         Map<ResolutionContracts.SemanticEntityId, ScalarText> possibleText = new HashMap<>();
         Map<NodeKey, Move> moves = new HashMap<>();
+        var boundedText = new HashSet<ResolutionContracts.SemanticEntityId>();
         Map<NodeKey, Ast.CallStatement> callTargets = new HashMap<>();
         Map<NodeKey, Call> calls = new HashMap<>();
         long[] counts = new long[5];
@@ -132,18 +137,33 @@ public final class ScalarMoveSemantics {
                 if(!repeat)possibleReceiver(declaration).ifPresent(shape->localText.put(declaration.meta().id(),shape));
             }
             var graph=factDependencies.get(unit.id());
+            var boundedNodes=new HashSet<Integer>();var boundedAllowed=new HashSet<Integer>();
+            var component=components.unit(unit.id());
+            if(component.rootRelationsProven())for(var position:component.positions())
+                if(!component.uncertainRoots().contains(position.root()))boundedAllowed.add(position.data().meta().id());
             if(graph!=null) {
                 var available=graph.proofAvailability();
                 var localCells=new HashSet<String>();
                 for(var fact:graph.facts())if(fact.kind()==io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies.FactKind.LOCAL_CELL
                         &&fact.dependencies().stream().allMatch(p->Boolean.TRUE.equals(available.get(p))))localCells.add(fact.subject());
-                for(var shape:localText.entrySet())if(localCells.contains("storage-node:"+shape.getKey()))eligible.put(shape.getKey(),shape.getValue());
+                var types=new HashSet<String>();var bounds=new HashSet<String>();
+                for(var fact:graph.facts())if(fact.kind()==io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies.FactKind.LOGICAL_TEXT
+                        &&fact.dependencies().stream().allMatch(p->Boolean.TRUE.equals(available.get(p))))types.add(fact.subject());
+                for(var binding:graph.bindings())if((!binding.cells().isEmpty()||!binding.regions().isEmpty())
+                        &&binding.dependencies().stream().allMatch(p->Boolean.TRUE.equals(available.get(p))))bounds.add(binding.node());
+                for(var shape:localText.entrySet()) {
+                    var node="storage-node:"+shape.getKey();
+                    if(localCells.contains(node)||types.contains(node)&&bounds.contains(node)&&boundedAllowed.contains(shape.getKey())) {
+                        eligible.put(shape.getKey(),shape.getValue());
+                        if(!localCells.contains(node))boundedNodes.add(shape.getKey());
+                    }
+                }
             }
             storage.ifPresent(st->{
                 var leaves=new HashMap<Integer,StorageLayoutSemantics.Node>();
                 for(var n:st.layout().layout(unit.id()).nodes())if(n.kind()==StorageLayoutSemantics.Kind.ELEMENTARY&&!n.filler())leaves.put(n.id().node(),n);
                 for(var v:st.layout().logicalViews())if(v.node().unit().equals(unit.id())&&leaves.containsKey(v.node().node()))
-                    eligible.put(v.node().node(),new ScalarText(v.length().intValueExact()));
+                    {eligible.put(v.node().node(),localText.getOrDefault(v.node().node(),new ScalarText(v.length().intValueExact())));boundedNodes.remove(v.node().node());}
             });
             // Reuse the already immutable canonical relation index; do not rebuild it.
             Map<Integer, Integer> next = Map.of();
@@ -160,7 +180,7 @@ public final class ScalarMoveSemantics {
                         .filter(e -> e.inputProof().unaffectedBy(report.frontendState())).isPresent();
             }
             var attributes = unit.program().attributes();
-            boolean ordinary = inputComplete && !attributes.initial() && !attributes.recursive()
+            boolean ordinary = inputComplete && !attributes.recursive()
                     && !attributes.common() && !attributes.library() && !attributes.definition();
             Deque<Ast.Node> pending = new ArrayDeque<>();
             pending.push(unit.program());
@@ -201,12 +221,15 @@ public final class ScalarMoveSemantics {
                 if(localText.containsKey(symbol.declarationAstNodeId())&&symbol.namespace()==SymbolTable.Namespace.DATA
                     &&symbol.kind()==SymbolTable.SymbolKind.DATA_ITEM)
                     possibleText.put(new ResolutionContracts.SemanticEntityId(unit.id(),ResolutionContracts.SemanticEntityDomain.DATA_SYMBOL,symbol.id()),localText.get(symbol.declarationAstNodeId()));
+                if(boundedNodes.contains(symbol.declarationAstNodeId()))boundedText.add(new ResolutionContracts.SemanticEntityId(unit.id(),
+                    ResolutionContracts.SemanticEntityDomain.DATA_SYMBOL,symbol.id()));
                 if (shape != null && symbol.namespace() == SymbolTable.Namespace.DATA
                         && symbol.kind() == SymbolTable.SymbolKind.DATA_ITEM)
                     declarations.put(new ResolutionContracts.SemanticEntityId(unit.id(),
                             ResolutionContracts.SemanticEntityDomain.DATA_SYMBOL, symbol.id()), shape);
             }
         }
+        var numbers=NumericSemantics.analyze(frontend,tables,report::inputComplete,components,factDependencies,resolution.policy().truncMode());
         Map<NodeKey, ReferenceResolution.Entry> byOccurrence = new HashMap<>();
         for (var entry : resolution.entries())
             byOccurrence.put(new NodeKey(entry.occurrence().programUnitId(), entry.occurrence().referenceAstNodeId()), entry);
@@ -245,26 +268,32 @@ public final class ScalarMoveSemantics {
                     && entry.candidates().size() == 1
                     && occurrence.role() == ResolutionContracts.ReferenceRole.VALUE_WRITE
                     && target.understanding() == Ast.ReferenceUnderstanding.STRUCTURED
-                    && target.subscriptGroups().isEmpty() && target.referenceModification() == null
-                    && target.qualifiers().isEmpty()) {
+                    && target.subscriptGroups().isEmpty() && target.referenceModification() == null) {
                 var selected = entry.selectedCandidate().orElseThrow();
                 counts[3]++;
                 ScalarText shape = declarations.get(selected.entityId());
                 if (shape != null) {
                     whole = Optional.of(selected.entityId());
-                    if (move.source() instanceof Ast.LiteralExpression literal) {
+                    if(shape.edited().isPresent()) {
+                        if(move.source() instanceof Ast.LiteralExpression literal&&literal.numericValue().isPresent())copy=Copy.FORMATTED_NUMBER;
+                        else {
+                            sourceWhole=numbers.wholeNumber(move.source(),occurrence.programUnitId(),byOccurrence);
+                            if(sourceWhole.isPresent())copy=Copy.FORMATTED_NUMBER;
+                        }
+                    } else if (move.source() instanceof Ast.LiteralExpression literal) {
+                        var literalText=LogicalMoveSemantics.literal(literal).map(Ast.LogicalText::new);
                         // IBM elementary alphanumeric MOVE with equal logical lengths:
                         // mandatory complete receiving-item write, no conversion or fitting.
-                        if (literal.logicalText().isPresent()
-                                && literal.logicalText().get().extent() == shape.extent()) copy = Copy.FULL_IDENTITY;
-                        else if (literal.logicalText().isPresent()
-                                && literal.logicalText().get().extent() < shape.extent()) {
+                        if (literalText.isPresent()
+                                && literalText.get().extent() == shape.extent()) copy = Copy.FULL_IDENTITY;
+                        else if (literalText.isPresent()
+                                && literalText.get().extent() != shape.extent()) {
                             // IBM 6.4 elementary alphanumeric MOVE, non-JUSTIFIED DISPLAY receiver:
                             // left alignment fills the remaining logical positions with spaces.
-                            var text = literal.logicalText().get();
+                            var text = literalText.get();
                             copy = Copy.FITTED_TEXT;
                             adjustment = Optional.of(new TextAdjustment(shape.extent(),
-                                    text.value() + " ".repeat(shape.extent() - text.extent())));
+                                    LogicalMoveSemantics.zero(literal)?TextRule.ZERO_FILL:TextRule.RIGHT_FIT_SPACE));
                         }
                     } else if (move.source() instanceof Ast.DataReference source) {
                         var sourceEntry = byOccurrence.get(new NodeKey(occurrence.programUnitId(), source.meta().id()));
@@ -273,18 +302,31 @@ public final class ScalarMoveSemantics {
                                 && sourceEntry.candidates().size() == 1
                                 && sourceEntry.occurrence().role() == ResolutionContracts.ReferenceRole.VALUE_READ
                                 && source.understanding() == Ast.ReferenceUnderstanding.STRUCTURED
-                                && source.qualifiers().isEmpty() && source.subscriptGroups().isEmpty()
+                                && source.subscriptGroups().isEmpty()
                                 && source.referenceModification() == null) {
                             var sourceId = sourceEntry.selectedCandidate().orElseThrow().entityId();
                             counts[3]++;
                             var sourceShape = declarations.get(sourceId);
                             if (sourceShape != null) {
                                 sourceWhole = Optional.of(sourceId);
-                                if (sourceShape.extent() == shape.extent()) copy = Copy.FULL_IDENTITY;
+                                copy = sourceShape.extent() == shape.extent() ? Copy.FULL_IDENTITY : Copy.FITTED_TEXT;
+                            } else if(numbers.declaration(sourceId).filter(n->n.scale()<=0
+                                    &&n.representation()!=Ast.NumericUsage.UNAVAILABLE).isPresent()) {
+                                sourceWhole=Optional.of(sourceId);copy=Copy.FORMATTED_NUMBER;
                             }
                         }
                     }
                 }
+            }
+            if((copy==Copy.FULL_IDENTITY||copy==Copy.FITTED_TEXT)&&sourceWhole.isPresent()
+                    &&(boundedText.contains(sourceWhole.orElseThrow())||boundedText.contains(whole.orElseThrow()))
+                    &&!numbers.disjoint(sourceWhole.orElseThrow(),whole.orElseThrow())) {
+                copy=Copy.UNAVAILABLE;sourceWhole=Optional.empty();
+            }
+            if(copy==Copy.FORMATTED_NUMBER&&sourceWhole.isPresent()
+                    &&!numbers.exactCell(sourceWhole.orElseThrow())
+                    &&!numbers.disjoint(sourceWhole.orElseThrow(),whole.orElseThrow())) {
+                copy=Copy.UNAVAILABLE;sourceWhole=Optional.empty();
             }
             // Occurrence-local value evidence does not prove physical allocation or kill authority.
             if(copy==Copy.UNAVAILABLE&&storage.map(st->st.move(new StorageLayoutSemantics.Key(occurrence.programUnitId(),move.meta().id())).kind()==StorageAccessSemantics.MoveKind.UNAVAILABLE).orElse(true)
@@ -297,14 +339,13 @@ public final class ScalarMoveSemantics {
                 var text=literal.logicalText().orElseThrow();
                 if(shape!=null&&text.extent()<=shape.extent()) {
                     copy=Copy.POSSIBLE_TEXT;whole=Optional.of(selected);
-                    adjustment=Optional.of(new TextAdjustment(shape.extent(),text.value()+" ".repeat(shape.extent()-text.extent())));
+                    adjustment=Optional.of(new TextAdjustment(shape.extent(),TextRule.RIGHT_FIT_SPACE));
                 }
             }
             NodeKey key = new NodeKey(occurrence.programUnitId(), move.meta().id());
             var basic = fact(whole, copy, moves.get(key).nextStatement());
             moves.put(key, new Move(whole, copy, basic.nextStatement(), basic.gaps(), adjustment, sourceWhole));
         }
-        var numbers=IntegerSemantics.analyze(frontend,tables,report::inputComplete,components,factDependencies);
         var ifs = IfSemantics.analyze(frontend, tables, resolution, report, declarations, moves,numbers,components);
         var goTos = GoToSemantics.analyze(frontend, tables, resolution, report,numbers);
         var completingMoves=new HashSet<NodeKey>();
@@ -324,7 +365,7 @@ public final class ScalarMoveSemantics {
         return new ScalarMoveSemantics(declarations, moves, calls,
                 new Metrics(counts[0], counts[1], counts[2], counts[3], counts[4]),
                 ifs, performs, evaluates,
-                goTos, procedurePerforms,numbers,IntegerMoveSemantics.analyze(frontend,numbers,byOccurrence),factDependencies,storage.map(st->LogicalInitialSemantics.analyze(frontend,resolution,report,st,factDependencies,cics)).orElse(Map.of()),TextConditionSemantics.analyze(frontend,resolution,declarations),NominalValueSemantics.analyze(frontend,resolution,possibleText,storage,components,conditionNames),conditionNames);
+                goTos, procedurePerforms,numbers,NumericMoveSemantics.analyze(frontend,numbers,byOccurrence,declarations),factDependencies,storage.map(st->LogicalInitialSemantics.analyze(frontend,resolution,report,st,factDependencies,cics)).orElse(Map.of()),TextConditionSemantics.analyze(frontend,resolution,declarations),NominalValueSemantics.analyze(frontend,resolution,possibleText,storage,components,conditionNames),conditionNames,LogicalMoveSemantics.analyze(frontend,resolution,storage,declarations,factDependencies,boundedText,numbers::disjoint));
     }
 
     private static Move fact(Optional<ResolutionContracts.SemanticEntityId> whole,
@@ -340,31 +381,20 @@ public final class ScalarMoveSemantics {
         // A condition name does not allocate subordinate storage. Model PICs are
         // nominal assumptions even when the terminating period crosses a COPY boundary.
         if(entry.children().stream().anyMatch(c->c.levelKind()!=Ast.DataLevelKind.CONDITION_88)
-                ||entry.filler()||entry.visibility()!=Ast.DeclarationVisibility.LOCAL
-                ||!entry.meta().provenance().exact()&&!entry.meta().syntheticModel())return Optional.empty();
-        Optional<Integer> extent=Optional.empty();int pictures=0,usages=0;
+                ||entry.filler()||entry.visibility()!=Ast.DeclarationVisibility.LOCAL)return Optional.empty();
+        Optional<Integer> extent=Optional.empty();Optional<Ast.NumericEdit> edited=Optional.empty();int pictures=0,usages=0;
         for(var clause:entry.clauses()) {
             if(clause instanceof Ast.PictureClause picture){
                 if(!picture.meta().provenance().exact())return Optional.empty();
-                pictures++;extent=picture.textExtent();}
+                pictures++;edited=picture.edited();extent=picture.textExtent().or(()->picture.edited().map(Ast.NumericEdit::extent));}
             else if(clause instanceof Ast.UsageClause usage&&usage.display())usages++;
             else if(!(clause instanceof Ast.ValueClause)&&!(clause instanceof Ast.RedefinesClause)&&!(clause instanceof Ast.PreservedDataClause))return Optional.empty();
         }
-        return pictures==1&&usages<=1?extent.map(ScalarText::new):Optional.empty();
+        var format=edited;return pictures==1&&usages<=1?extent.map(n->new ScalarText(n,format)):Optional.empty();
     }
     private static Optional<ScalarText> scalar(Ast.DataEntry entry, long[] counts) {
-        if (entry.children().stream().anyMatch(c->c.levelKind()!=Ast.DataLevelKind.CONDITION_88) || entry.filler()
-                || entry.visibility() != Ast.DeclarationVisibility.LOCAL
-                || !(entry.level().equals("01") || entry.levelKind() == Ast.DataLevelKind.STANDALONE_77))
-            return Optional.empty();
-        Optional<Integer> extent = Optional.empty();
-        int pictures = 0, usages = 0;
-        for (Ast.DataClause clause : entry.clauses()) {
-            counts[0]++;
-            if (clause instanceof Ast.PictureClause picture) { pictures++; extent = picture.textExtent(); }
-            else if (clause instanceof Ast.UsageClause usage && usage.display()) usages++;
-            else if(!(clause instanceof Ast.PreservedDataClause))return Optional.empty();
-        }
-        return pictures == 1 && usages <= 1 ? extent.map(ScalarText::new) : Optional.empty();
+        counts[0]+=entry.clauses().size();
+        if(!(entry.level().equals("01")||entry.levelKind()==Ast.DataLevelKind.STANDALONE_77))return Optional.empty();
+        return possibleReceiver(entry);
     }
 }

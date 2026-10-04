@@ -121,6 +121,16 @@ public final class ResolutionContracts {
         }
     }
 
+    public enum TruncMode {
+        UNSPECIFIED, STD, BIN, OPT;
+        public static TruncMode fromCompilerValue(String value) {
+            return switch(value == null ? "" : value.trim().toUpperCase(java.util.Locale.ROOT)) {
+                case "STD" -> STD; case "BIN" -> BIN; case "OPT" -> OPT;
+                default -> UNSPECIFIED;
+            };
+        }
+    }
+
     public enum CallLinkage {
         STATIC,
         DYNAMIC,
@@ -161,7 +171,7 @@ public final class ResolutionContracts {
     /** Versioned dialect/options contract; absence of an option remains explicit. */
     public record CobolResolutionPolicy(String policyId, String version, QualifyMode qualifyMode,
                                         PgmnameMode pgmnameMode, DynamMode dynamMode,
-                                        DllMode dllMode) {
+                                        DllMode dllMode, TruncMode truncMode) {
         public CobolResolutionPolicy {
             policyId = requireText(policyId, "policyId");
             version = requireText(version, "version");
@@ -169,6 +179,12 @@ public final class ResolutionContracts {
             pgmnameMode = Objects.requireNonNull(pgmnameMode, "pgmnameMode");
             dynamMode = Objects.requireNonNull(dynamMode, "dynamMode");
             dllMode = Objects.requireNonNull(dllMode, "dllMode");
+            truncMode = Objects.requireNonNull(truncMode, "truncMode");
+        }
+
+        public CobolResolutionPolicy(String policyId, String version, QualifyMode qualifyMode,
+                                     PgmnameMode pgmnameMode, DynamMode dynamMode, DllMode dllMode) {
+            this(policyId, version, qualifyMode, pgmnameMode, dynamMode, dllMode, TruncMode.UNSPECIFIED);
         }
 
         public CobolResolutionPolicy(String policyId, String version, QualifyMode qualifyMode,
@@ -192,15 +208,19 @@ public final class ResolutionContracts {
         }
 
         public CobolResolutionPolicy withPgmnameMode(PgmnameMode mode) {
-            return new CobolResolutionPolicy(policyId, version, qualifyMode, mode, dynamMode, dllMode);
+            return new CobolResolutionPolicy(policyId, version, qualifyMode, mode, dynamMode, dllMode, truncMode);
         }
 
         public CobolResolutionPolicy withDynamMode(DynamMode mode) {
-            return new CobolResolutionPolicy(policyId, version, qualifyMode, pgmnameMode, mode, dllMode);
+            return new CobolResolutionPolicy(policyId, version, qualifyMode, pgmnameMode, mode, dllMode, truncMode);
+        }
+
+        public CobolResolutionPolicy withTruncMode(TruncMode mode) {
+            return new CobolResolutionPolicy(policyId, version, qualifyMode, pgmnameMode, dynamMode, dllMode, mode);
         }
 
         public CobolResolutionPolicy withDllMode(DllMode mode) {
-            return new CobolResolutionPolicy(policyId, version, qualifyMode, pgmnameMode, dynamMode, mode);
+            return new CobolResolutionPolicy(policyId, version, qualifyMode, pgmnameMode, dynamMode, mode, truncMode);
         }
     }
 

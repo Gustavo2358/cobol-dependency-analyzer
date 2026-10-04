@@ -14,7 +14,7 @@ class MoveDataSourceTest {
                 "MOVE 'PROGA' TO WS-A.\nMOVE WS-A TO WS-PGM.\nCALL WS-PGM.\nGOBACK."));
         var literal = p.moves().get(0);
         assertInstanceOf(LiteralSource.class, literal.source());
-        assertEquals("PROGA   ", literal.textAdjustment().orElseThrow().result().value());
+        assertEquals("PROGA   ", TextFitOracle.value(literal));
         var copy = p.moves().get(1);
         var read = assertInstanceOf(DataReference.class, copy.source());
         assertEquals(OperandRole.READ, read.role());
@@ -27,7 +27,7 @@ class MoveDataSourceTest {
         assertEquals(Availability.KNOWN, p.storageIndependence().availability());
         assertEquals(2, p.storageIndependence().members().size());
         var json = new ObjectMapper().readTree(SemanticProductJsonWriter.serialize(p));
-        assertEquals("2.65.0", json.path("contractVersion").asText());
+        assertEquals("2.66.0", json.path("contractVersion").asText());
         assertEquals("LITERAL", json.path("statements").get(0).path("source").path("variant").asText());
         var source = json.path("statements").get(1).path("source");
         assertEquals("DATA", source.path("variant").asText());
@@ -39,7 +39,7 @@ class MoveDataSourceTest {
                     "MOVE " + source + " TO WS-PGM.\nGOBACK."));
             assertTrue(p.moves().isEmpty() || p.moves().get(0).copySemantics() == CopySemantics.UNAVAILABLE, source);
         }
-        for (String data : List.of("01 WS-A PIC X(4).", "01 WS-A PIC 9(8).",
+        for (String data : List.of("01 WS-A PIC 9(7)V9.",
                 "01 WS-A PIC X(8).\n01 WS-A PIC X(8).")) {
             var p = publish(program(data + "\n01 WS-PGM PIC X(8).", "MOVE WS-A TO WS-PGM.\nGOBACK."));
             assertTrue(p.moves().isEmpty() || p.moves().get(0).copySemantics() == CopySemantics.UNAVAILABLE, data);

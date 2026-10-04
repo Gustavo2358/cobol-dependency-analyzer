@@ -7,6 +7,12 @@ import static io.github.gustavo2358.cobolexplorer.StorageAccessTest.fixture;
 import static io.github.gustavo2358.cobolexplorer.StorageAccessSemantics.*;
 
 class StorageMoveAdjustmentTest {
+    @Test void figurativeZeroRepeatsTheEncodedZeroAcrossTheReceiver() {
+        var m=fixture("01 DST PIC X(4).","MOVE ZERO TO DST.").effects().moves().iterator().next();
+        assertEquals(List.of(240,240,240,240),m.bytes());
+        var quoted=fixture("01 DST PIC X(4).","MOVE '0' TO DST.").effects().moves().iterator().next();
+        assertEquals(List.of(240,64,64,64),quoted.bytes());
+    }
     @Test void literalsPadAndTruncateWithIbm1047Space() {
         var shortMove=fixture("01 DST.\n05 TEXT-PART PIC X(4).","MOVE 'AB' TO DST.").effects().moves().iterator().next();
         assertEquals(MoveKind.FITTED_LITERAL_BYTES,shortMove.kind());assertEquals(List.of(193,194,64,64),shortMove.bytes());

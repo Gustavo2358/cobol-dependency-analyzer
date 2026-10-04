@@ -23,6 +23,7 @@ final class DirectAstActions  {
             "enableStatement", "entryStatement", "exhibitStatement", "generateStatement",
             "initiateStatement", "jsonGenerateStatement", "mergeStatement", "purgeStatement", "receiveStatement",
             "searchStatement", "sendStatement", "sortStatement", "terminateStatement");
+    private boolean decimalComma,defaultCurrency;
     private final DirectLedger ledger;
     private final UnicodeText indexedSource;
     private final SourceMap sourceMap;
@@ -124,6 +125,16 @@ final class DirectAstActions  {
     
     public Ast.Node visitProgramUnit(DirectSyntax.ProgramUnitFrame context) {
         Ast.Meta meta = meta(context);
+        decimalComma=false;defaultCurrency=true;
+        if(context.environmentDivision()!=null) {
+            var environment=new ArrayDeque<DirectSpan>();environment.push(context.environmentDivision());
+            while(!environment.isEmpty()) {
+                var current=environment.pop();
+                if(current instanceof DirectSyntax.DecimalPointClauseFrame)decimalComma=true;
+                if(current instanceof DirectSyntax.CurrencySignClauseFrame)defaultCurrency=false;
+                for(int i=0;i<current.getChildCount();i++)environment.push(current.getChild(i));
+            }
+        }
         DirectSyntax.ProgramIdParagraphFrame programId = context.identificationDivision().programIdParagraph();
         List<Ast.Division> divisions = new ArrayList<>();
         divisions.add((Ast.Division) visit(context.identificationDivision()));
@@ -417,12 +428,12 @@ final class DirectAstActions  {
             DirectFrame picture = ((DirectSyntax.DataPictureClauseFrame) context).pictureString();
             String spelling = picture == null ? "" : picture.getText();
             return new Ast.PictureClause(meta, picture == null ? "" : sourceText(picture).strip(),
-                    writtenText, elementaryTextExtent(spelling), elementaryIntegerDigits(spelling));
+                    writtenText, elementaryTextExtent(spelling), elementaryIntegerDigits(spelling), NumericPictureSyntax.parse(spelling), NumericEditSyntax.parse(spelling,decimalComma,defaultCurrency));
         }
         if (context instanceof DirectSyntax.DataUsageClauseFrame) {
             String usage = writtenText.replaceFirst("(?i)^USAGE\\s+(IS\\s+)?", "");
             return new Ast.UsageClause(meta, usage, writtenText,
-                    ((DirectSyntax.DataUsageClauseFrame) context).DISPLAY() != null);
+                    ((DirectSyntax.DataUsageClauseFrame) context).DISPLAY() != null, numericUsage((DirectSyntax.DataUsageClauseFrame)context));
         }
         if (context instanceof DirectSyntax.DataValueClauseFrame) {
             List<String> values = ((DirectSyntax.DataValueClauseFrame) context).dataValueInterval().stream()
@@ -672,6 +683,15 @@ final class DirectAstActions  {
     /** Interpret only the PIC X repetition language, in the canonical frontend.
      * This grammar uses generic pictureChars tokens, so repetition is decoded here
      * without expansion; every other category/edited symbol fails closed. */
+    private static Ast.NumericUsage numericUsage(DirectSyntax.DataUsageClauseFrame c) {
+        if(c.TRUNCATED()!=null||c.EXTENDED()!=null)return Ast.NumericUsage.UNAVAILABLE;
+        if(c.DISPLAY()!=null)return Ast.NumericUsage.DISPLAY;
+        if(c.COMP_3()!=null||c.COMPUTATIONAL_3()!=null||c.PACKED_DECIMAL()!=null)return Ast.NumericUsage.PACKED_DECIMAL;
+        if(c.COMP_5()!=null||c.COMPUTATIONAL_5()!=null)return Ast.NumericUsage.NATIVE_BINARY;
+        if(c.COMP()!=null||c.COMPUTATIONAL()!=null||c.COMP_4()!=null||c.COMPUTATIONAL_4()!=null||c.BINARY()!=null)return Ast.NumericUsage.BINARY;
+        return Ast.NumericUsage.UNAVAILABLE;
+    }
+
     static Optional<Integer> elementaryTextExtent(String picture) { return elementaryExtent(picture,'X'); }
     static Optional<Integer> elementaryIntegerDigits(String picture) {
         return elementaryExtent(picture.startsWith("S")||picture.startsWith("s")?picture.substring(1):picture,'9');
@@ -1820,8 +1840,15 @@ final class DirectAstActions  {
             else if(figurative.LOW_VALUE()!=null||figurative.LOW_VALUES()!=null)textKind=Optional.of(Ast.FigurativeText.LOW_VALUES);
             else if(figurative.HIGH_VALUE()!=null||figurative.HIGH_VALUES()!=null)textKind=Optional.of(Ast.FigurativeText.HIGH_VALUES);
         }
+        if(numeric!=null&&numeric.ZERO()!=null||figurative!=null&&figurative.ALL()==null&&(figurative.ZERO()!=null||figurative.ZEROS()!=null||figurative.ZEROES()!=null))textKind=Optional.of(Ast.FigurativeText.ZERO);
+        Optional<Ast.LogicalText> integerDigits=Optional.empty();
+        if(integer!=null) {
+            String digits=integer.getText();
+            if(digits.startsWith("+")||digits.startsWith("-"))digits=digits.substring(1);
+            integerDigits=Optional.of(new Ast.LogicalText(digits));
+        }
         return new Ast.LiteralExpression(meta(context), logical.map(Ast.LogicalText::value)
-                .orElseGet(() -> unquote(raw)), raw, logical, value,textKind,context instanceof DirectSyntax.LiteralFrame l&&l.booleanLiteral()!=null?Optional.of(l.booleanLiteral().TRUE()!=null):Optional.empty(),number);
+                .orElseGet(() -> unquote(raw)), raw, logical, value,textKind,context instanceof DirectSyntax.LiteralFrame l&&l.booleanLiteral()!=null?Optional.of(l.booleanLiteral().TRUE()!=null):Optional.empty(),number,integerDigits);
     }
 
     private static Optional<Ast.LogicalText> basicLogicalText(DirectSyntax.LiteralFrame literal) {

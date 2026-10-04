@@ -930,21 +930,22 @@ obrigações independentes de input, controle, binding e runtime permanecem.
 
 [Contrato, regras, limites e complexidade](condition-names.md).
 
-## Valores numéricos e MOVE inteiro — SP 2.65
+## Tipos e transferências MOVE — SP 2.66
 
-A versão corrente do produtor é **2.65.0**. Literais de ponto fixo publicam
-`kind=NUMERIC` e `value` decimal canônico, independentemente da capacidade do
-receptor. ZERO/ZEROS/ZEROES têm valor numérico zero. A classificação não autoriza
-conversão para texto, ponto flutuante ou codificação física.
+A versão corrente é **2.66.0**. `scalarNumber` substitui `scalarInteger` com
+precisão, escala, sinal, representação e TRUNC explícitos. `numericTransfers`
+substitui `integerTransfers`: `{target, value}` conserva a ordem de receptores;
+value ausente representa leitura DATA ou resultado binário indeterminado.
+O consumidor usa um único caminho numérico. Tipo conhecido não concede célula,
+endereço exato, validade de representação ou valor inicial.
 
-`MoveFact.integerTransfers` contém `{target, value}` por receptor provado.
-`value` é o inteiro literal ou null para leitura do DATA original. Cada destino
-tem binding único e `wholeItemAccess` com `scalarInteger`; o DAG causal publica
-`LOGICAL_INTEGER` e `LOCAL_CELL` disponíveis. DATA de origem deve ter capacidade
-menor ou igual à dos receptores de um prefixo provado; literal não negativo deve caber.
-A lista mantém a ordem escrita e admite múltiplos destinos. Somente a lista
-completa remove os gaps de identidade/whole item do MOVE.
+As provas tipadas cobrem números DISPLAY/PACKED/BINARY/COMP-5, fitting e edição
+textual, literais/figurativos e acessos lógicos admitidos. Ajustes textuais são
+simbólicos (`rule`, `extent`); não expandem a PICTURE. Leituras compartilhadas
+exigem seus bounds e precondições próprios. Ausência de TRUNC conserva resultado
+aberto quando não há valor comum; não seleciona uma opção implicitamente.
 
-O domínio compartilhado também serve aos controles numéricos existentes.
-Não há segunda interpretação de gaps, memória numérica paralela nem layout
-físico deduzido do PIC. Regras, limites e oracles: [MOVE numérico](numeric-move.md).
+Fatos e gaps seguem sendo a lista canônica de obrigações atuais. Provas de valor
+não substituem as de armazenamento ou controle; missing input e fronteiras de
+modelagem permanecem explícitos. Regras, formatos, limites, complexidade e
+oracles: [MOVE numérico](numeric-move.md) e [escopo qualificado](../work/numeric-move-full.md).

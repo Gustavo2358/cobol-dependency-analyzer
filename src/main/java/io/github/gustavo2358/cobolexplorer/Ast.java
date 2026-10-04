@@ -218,14 +218,28 @@ public final class Ast {
     public sealed interface DataClause extends Node permits PictureClause, UsageClause, ValueClause,
             RedefinesClause, RenamesClause, OccursClause, PreservedDataClause {}
     public record PictureClause(Meta meta, String picture, String writtenText,
-                                Optional<Integer> textExtent, Optional<Integer> integerDigits) implements DataClause {
-        public PictureClause { textExtent = Objects.requireNonNull(textExtent); integerDigits=Objects.requireNonNull(integerDigits); }
+                                Optional<Integer> textExtent, Optional<Integer> integerDigits, Optional<NumericPicture> numeric, Optional<NumericEdit> edited) implements DataClause {
+        public PictureClause { textExtent = Objects.requireNonNull(textExtent); integerDigits=Objects.requireNonNull(integerDigits); numeric=Objects.requireNonNull(numeric);edited=Objects.requireNonNull(edited); }
+        public PictureClause(Meta meta,String picture,String writtenText,Optional<Integer> textExtent,Optional<Integer> integerDigits,Optional<NumericPicture> numeric) { this(meta,picture,writtenText,textExtent,integerDigits,numeric,Optional.empty()); }
+        public PictureClause(Meta meta,String picture,String writtenText,Optional<Integer> textExtent,Optional<Integer> integerDigits) { this(meta,picture,writtenText,textExtent,integerDigits,Optional.empty()); }
         public PictureClause(Meta meta,String picture,String writtenText,Optional<Integer> textExtent) { this(meta,picture,writtenText,textExtent,Optional.empty()); }
         public PictureClause(Meta meta, String picture, String writtenText) {
             this(meta, picture, writtenText, Optional.empty());
         }
     }
-    public record UsageClause(Meta meta, String usage, String writtenText, boolean display) implements DataClause {
+    public enum EditKind { DIGITS, SUPPRESS_SPACE, SUPPRESS_STAR, INSERT, RADIX, SIGN, FLOAT_SIGN }
+    public record EditPart(EditKind kind,int count,String text,String negative) {
+        public EditPart { Objects.requireNonNull(kind);Objects.requireNonNull(text);Objects.requireNonNull(negative);if(count<=0)throw new IllegalArgumentException("positive count"); }
+    }
+    public record NumericEdit(List<EditPart> parts,int digits,int scale,int extent) {
+        public NumericEdit {parts=List.copyOf(parts);if(digits<=0||digits>31||scale<0||scale>digits||extent<=0)throw new IllegalArgumentException("numeric edit descriptor");}
+    }
+    public enum NumericUsage { DISPLAY, BINARY, PACKED_DECIMAL, NATIVE_BINARY, UNAVAILABLE }
+    public record NumericPicture(int digits, int scale, boolean signed) {
+        public NumericPicture { if(digits<=0)throw new IllegalArgumentException("positive precision"); }
+    }
+    public record UsageClause(Meta meta, String usage, String writtenText, boolean display, NumericUsage numeric) implements DataClause {
+        public UsageClause(Meta meta,String usage,String writtenText,boolean display) { this(meta,usage,writtenText,display,display?NumericUsage.DISPLAY:NumericUsage.UNAVAILABLE); }
         public UsageClause(Meta meta, String usage, String writtenText) { this(meta, usage, writtenText, false); }
     }
     public enum ConditionValueKind { TEXT, NUMBER, HEX, SPACES, LOW_VALUES, HIGH_VALUES, ZERO, QUOTE, ALL_TEXT, UNAVAILABLE }
@@ -559,12 +573,13 @@ public final class Ast {
         public LogicalText { value = Objects.requireNonNull(value); }
         public int extent() { return value.codePointCount(0, value.length()); }
     }
-    public enum FigurativeText { SPACES, LOW_VALUES, HIGH_VALUES }
+    public enum FigurativeText { SPACES, LOW_VALUES, HIGH_VALUES, ZERO }
     public record LiteralExpression(Meta meta, String value, String rawLexeme,
-                                    Optional<LogicalText> logicalText, Optional<java.math.BigInteger> integerValue, Optional<FigurativeText> figurativeText,Optional<Boolean> booleanValue,Optional<java.math.BigDecimal> numericValue) implements Expression {
+                                    Optional<LogicalText> logicalText, Optional<java.math.BigInteger> integerValue, Optional<FigurativeText> figurativeText,Optional<Boolean> booleanValue,Optional<java.math.BigDecimal> numericValue,Optional<LogicalText> integerDigits) implements Expression {
+        public LiteralExpression(Meta meta,String value,String rawLexeme,Optional<LogicalText> logicalText,Optional<java.math.BigInteger> integerValue,Optional<FigurativeText> figurativeText,Optional<Boolean> booleanValue,Optional<java.math.BigDecimal> numericValue) {this(meta,value,rawLexeme,logicalText,integerValue,figurativeText,booleanValue,numericValue,Optional.empty());}
         public LiteralExpression(Meta meta,String value,String rawLexeme,Optional<LogicalText> logicalText,Optional<java.math.BigInteger> integerValue,Optional<FigurativeText> figurativeText,Optional<Boolean> booleanValue) {this(meta,value,rawLexeme,logicalText,integerValue,figurativeText,booleanValue,integerValue.map(java.math.BigDecimal::new));}
         public LiteralExpression(Meta meta,String value,String rawLexeme,Optional<LogicalText> logicalText,Optional<java.math.BigInteger> integerValue,Optional<FigurativeText> figurativeText) {this(meta,value,rawLexeme,logicalText,integerValue,figurativeText,Optional.empty());}
-        public LiteralExpression { logicalText = Objects.requireNonNull(logicalText); integerValue=Objects.requireNonNull(integerValue);figurativeText=Objects.requireNonNull(figurativeText);Objects.requireNonNull(booleanValue);Objects.requireNonNull(numericValue); }
+        public LiteralExpression { logicalText = Objects.requireNonNull(logicalText); integerValue=Objects.requireNonNull(integerValue);figurativeText=Objects.requireNonNull(figurativeText);Objects.requireNonNull(booleanValue);Objects.requireNonNull(numericValue);Objects.requireNonNull(integerDigits); }
         public LiteralExpression(Meta meta,String value,String rawLexeme,Optional<LogicalText> logicalText,Optional<java.math.BigInteger> integerValue) { this(meta,value,rawLexeme,logicalText,integerValue,Optional.empty()); }
         public LiteralExpression(Meta meta,String value,String rawLexeme,Optional<LogicalText> logicalText) { this(meta,value,rawLexeme,logicalText,Optional.empty()); }
         public LiteralExpression(Meta meta, String value, String rawLexeme) {

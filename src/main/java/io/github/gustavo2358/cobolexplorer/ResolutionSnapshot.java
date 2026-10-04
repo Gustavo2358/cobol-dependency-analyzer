@@ -40,6 +40,7 @@ final class ResolutionSnapshot {
             field(out, "pgmnameMode", resolution.policy().pgmnameMode().name()); out.write(',');
             field(out, "dynamMode", resolution.policy().dynamMode().name()); out.write(',');
             field(out, "dllMode", resolution.policy().dllMode().name()); out.write(',');
+            field(out, "truncMode", resolution.policy().truncMode().name()); out.write(',');
             field(out, "copyInputCompleteness", report.frontendState()
                     .copyInputCompleteness().name()); out.write(',');
             out.write("\"referenceBindingComplete\":" + report.completeness().referenceBindingComplete() + ',');

@@ -75,7 +75,7 @@ public final class TextConditionSemantics {
         if(!(relation.object() instanceof Ast.LiteralExpression literal)||!literal.meta().provenance().exact())return null;
         Kind kind;Optional<String> text=Optional.empty();
         if(literal.logicalText().isPresent()){kind=Kind.EQUAL_TEXT;text=Optional.of(literal.logicalText().get().value());}
-        else if(literal.figurativeText().isPresent())kind=Kind.valueOf("EQUAL_"+literal.figurativeText().get().name());
+        else if(literal.figurativeText().filter(f->f!=Ast.FigurativeText.ZERO).isPresent())kind=Kind.valueOf("EQUAL_"+literal.figurativeText().get().name());
         else return null;
         return new Result(new Predicate(kind,Optional.of(subject.meta().id()),text,List.of()),subject,operator);
     }

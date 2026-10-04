@@ -26,6 +26,7 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
             "enableStatement", "entryStatement", "exhibitStatement", "generateStatement",
             "initiateStatement", "jsonGenerateStatement", "mergeStatement", "purgeStatement", "receiveStatement",
             "searchStatement", "sendStatement", "sortStatement", "terminateStatement");
+    private boolean decimalComma,defaultCurrency;
     private final CobolParser parser;
     private final UnicodeText indexedSource;
     private final SourceMap sourceMap;
@@ -144,6 +145,16 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     @Override
     public Ast.Node visitProgramUnit(CobolParser.ProgramUnitContext context) {
         Ast.Meta meta = meta(context);
+        decimalComma=false;defaultCurrency=true;
+        if(context.environmentDivision()!=null) {
+            var environment=new ArrayDeque<ParseTree>();environment.push(context.environmentDivision());
+            while(!environment.isEmpty()) {
+                var current=environment.pop();
+                if(current instanceof CobolParser.DecimalPointClauseContext)decimalComma=true;
+                if(current instanceof CobolParser.CurrencySignClauseContext)defaultCurrency=false;
+                for(int i=0;i<current.getChildCount();i++)environment.push(current.getChild(i));
+            }
+        }
         CobolParser.ProgramIdParagraphContext programId = context.identificationDivision().programIdParagraph();
         List<Ast.Division> divisions = new ArrayList<>();
         divisions.add((Ast.Division) visit(context.identificationDivision()));
@@ -277,7 +288,7 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
         if (parser.directDataSession != null) {
             var direct = parser.directDataSession.result(context);
             if (direct != null) {
-                var result = direct.build(nextId, parseIds.get(context) + 4, sourceMap);
+                var result = direct.build(nextId, parseIds.get(context) + 4, sourceMap, decimalComma, defaultCurrency);
                 nextId = result.nextId();
                 result.coverage().forEach(draft -> recordCoverage(draft.node(), draft.writtenText()));
                 semanticDiagnostics.addAll(result.diagnostics());
@@ -447,12 +458,12 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
             ParserRuleContext picture = ((CobolParser.DataPictureClauseContext) context).pictureString();
             String spelling = picture == null ? "" : picture.getText();
             return new Ast.PictureClause(meta, picture == null ? "" : sourceText(picture).strip(),
-                    writtenText, elementaryTextExtent(spelling), elementaryIntegerDigits(spelling));
+                    writtenText, elementaryTextExtent(spelling), elementaryIntegerDigits(spelling), NumericPictureSyntax.parse(spelling), NumericEditSyntax.parse(spelling,decimalComma,defaultCurrency));
         }
         if (context instanceof CobolParser.DataUsageClauseContext) {
             String usage = writtenText.replaceFirst("(?i)^USAGE\\s+(IS\\s+)?", "");
             return new Ast.UsageClause(meta, usage, writtenText,
-                    ((CobolParser.DataUsageClauseContext) context).DISPLAY() != null);
+                    ((CobolParser.DataUsageClauseContext) context).DISPLAY() != null, numericUsage((CobolParser.DataUsageClauseContext)context));
         }
         if (context instanceof CobolParser.DataValueClauseContext) {
             List<String> values = ((CobolParser.DataValueClauseContext) context).dataValueInterval().stream()
@@ -702,6 +713,15 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
     /** Interpret only the PIC X repetition language, in the canonical frontend.
      * This grammar uses generic pictureChars tokens, so repetition is decoded here
      * without expansion; every other category/edited symbol fails closed. */
+    private static Ast.NumericUsage numericUsage(CobolParser.DataUsageClauseContext c) {
+        if(c.TRUNCATED()!=null||c.EXTENDED()!=null)return Ast.NumericUsage.UNAVAILABLE;
+        if(c.DISPLAY()!=null)return Ast.NumericUsage.DISPLAY;
+        if(c.COMP_3()!=null||c.COMPUTATIONAL_3()!=null||c.PACKED_DECIMAL()!=null)return Ast.NumericUsage.PACKED_DECIMAL;
+        if(c.COMP_5()!=null||c.COMPUTATIONAL_5()!=null)return Ast.NumericUsage.NATIVE_BINARY;
+        if(c.COMP()!=null||c.COMPUTATIONAL()!=null||c.COMP_4()!=null||c.COMPUTATIONAL_4()!=null||c.BINARY()!=null)return Ast.NumericUsage.BINARY;
+        return Ast.NumericUsage.UNAVAILABLE;
+    }
+
     static Optional<Integer> elementaryTextExtent(String picture) { return elementaryExtent(picture,'X'); }
     static Optional<Integer> elementaryIntegerDigits(String picture) {
         return elementaryExtent(picture.startsWith("S")||picture.startsWith("s")?picture.substring(1):picture,'9');
@@ -1850,8 +1870,15 @@ final class AstBuilder extends CobolBaseVisitor<Ast.Node> {
             else if(figurative.LOW_VALUE()!=null||figurative.LOW_VALUES()!=null)textKind=Optional.of(Ast.FigurativeText.LOW_VALUES);
             else if(figurative.HIGH_VALUE()!=null||figurative.HIGH_VALUES()!=null)textKind=Optional.of(Ast.FigurativeText.HIGH_VALUES);
         }
+        if(numeric!=null&&numeric.ZERO()!=null||figurative!=null&&figurative.ALL()==null&&(figurative.ZERO()!=null||figurative.ZEROS()!=null||figurative.ZEROES()!=null))textKind=Optional.of(Ast.FigurativeText.ZERO);
+        Optional<Ast.LogicalText> integerDigits=Optional.empty();
+        if(integer!=null) {
+            String digits=integer.getText();
+            if(digits.startsWith("+")||digits.startsWith("-"))digits=digits.substring(1);
+            integerDigits=Optional.of(new Ast.LogicalText(digits));
+        }
         return new Ast.LiteralExpression(meta(context), logical.map(Ast.LogicalText::value)
-                .orElseGet(() -> unquote(raw)), raw, logical, value,textKind,context instanceof CobolParser.LiteralContext l&&l.booleanLiteral()!=null?Optional.of(l.booleanLiteral().TRUE()!=null):Optional.empty(),number);
+                .orElseGet(() -> unquote(raw)), raw, logical, value,textKind,context instanceof CobolParser.LiteralContext l&&l.booleanLiteral()!=null?Optional.of(l.booleanLiteral().TRUE()!=null):Optional.empty(),number,integerDigits);
     }
 
     private static Optional<Ast.LogicalText> basicLogicalText(CobolParser.LiteralContext literal) {

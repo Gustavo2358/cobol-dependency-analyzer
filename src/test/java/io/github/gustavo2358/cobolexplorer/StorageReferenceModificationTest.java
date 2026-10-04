@@ -27,12 +27,19 @@ class StorageReferenceModificationTest {
         var f=StorageAccessTest.fixture(DATA,"CALL RECORD-AREA(3:6).");
         assertEquals(1,f.effects().accesses().stream().filter(a->a.role()==StorageAccessSemantics.Role.CALL_TARGET).count());
     }
-    @Test void zeroNegativeOutOfBoundsDynamicAndOmittedLengthNeverDefault() {
-        for(var mod:List.of("0:1","1:0","7:1","6:2","-1:1","1:-1","POSITION-VAR:1","1:POSITION-VAR","2:")) {
+    @Test void zeroNegativeOutOfBoundsAndDynamicLengthsNeverDefault() {
+        for(var mod:List.of("0:1","1:0","7:1","6:2","-1:1","1:-1","POSITION-VAR:1","1:POSITION-VAR")) {
             var f=StorageAccessTest.fixture(DATA+"\n01 POSITION-VAR PIC 9.","MOVE 'A' TO TEXT-PART("+mod+").");
             assertEquals(StorageAccessSemantics.MoveKind.UNAVAILABLE,f.effects().moves().iterator().next().kind(),mod);
             assertTrue(f.effects().accesses().stream().noneMatch(a->a.role()==StorageAccessSemantics.Role.WRITE),mod);
         }
+    }
+    @Test void omittedLengthSelectsTheRemainingCharacters() {
+        var f=StorageAccessTest.fixture(DATA,"MOVE 'ABCDE' TO TEXT-PART(2:).");
+        var move=f.effects().moves().iterator().next();
+        assertEquals(StorageAccessSemantics.MoveKind.LITERAL_BYTES,move.kind());
+        known(3,move.destination().orElseThrow().view().offset());
+        known(5,move.destination().orElseThrow().view().extent());
     }
     @Test void unknownCodecNeverTurnsCharacterPositionIntoByteOffset() {
         var f=StorageAccessTest.fixture(DATA,"CALL TEXT-PART(1:1).",StorageLayoutSemantics.Profile.UNSPECIFIED);

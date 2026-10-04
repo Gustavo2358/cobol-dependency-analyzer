@@ -39,7 +39,7 @@ class IbmCopybookCatalogueTest {
                 assertEquals(1,d.meta().provenance().includeChain().size());
             }
             var product=ScopedInputTest.product(a,0);
-            assertTrue(product.dataDeclarations().stream().filter(d->byName.containsKey(d.canonicalName())).allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()));
+            assertTrue(product.dataDeclarations().stream().filter(d->byName.containsKey(d.canonicalName())).allMatch(d->d.scalarText().isEmpty()&&d.scalarNumber().isEmpty()));
             assertTrue(product.storage().logicalTextViews().isEmpty());
             assertTrue(product.nominalValues().isPresent(),member+" nominal missing");
             assertTrue(product.nominalValues().orElseThrow().symbols().stream().allMatch(s->s.modelAssumed()));

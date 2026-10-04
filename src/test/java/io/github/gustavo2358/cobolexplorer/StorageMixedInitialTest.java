@@ -12,19 +12,19 @@ class StorageMixedInitialTest {
         var p=ExplorerMain.publishSemanticProduct(a.model().programUnits().get(0).id(),a.build(),a.tables(),a.occurrences(),a.resolution(),a.report(),StorageLayoutSemantics.Profile.IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047,StorageInitialSemantics.EntryMode.INITIAL);
         assertEquals(4,p.storage().bases().size());assertEquals(7,p.storage().nodes().size());assertEquals(7,p.storage().views().size());
         var condition=p.storage().entryState().conditions().get(0);assertEquals(InitialStorageKind.LITERAL_BYTES,condition.kind());
-        assertEquals(1,p.dataDeclarations().stream().filter(d->d.scalarInteger().isPresent()).count());
+        assertEquals(1,p.dataDeclarations().stream().filter(d->d.scalarNumber().isPresent()).count());
         assertTrue(p.storage().bases().stream().anyMatch(b->b.extent().value().isEmpty()));
         assertTrue(p.storage().views().stream().anyMatch(v->v.codec().isEmpty()));
         assertTrue(p.storage().bases().stream().allMatch(b->b.allocation()==AllocationProof.INDEPENDENT_LOCAL_STORAGE));
         assertTrue(p.calls().get(2).target() instanceof LiteralCallTarget);
         if(System.getProperty("storage.fixture.output")!=null)java.nio.file.Files.write(java.nio.file.Path.of(System.getProperty("storage.fixture.output")),SemanticProductJsonWriter.serialize(p));
     }
-    @Test void unprovedPhysicalAllocationRetainsOnlyCausallyIsolatedIntegerCell() {
+    @Test void unprovedPhysicalAllocationRetainsClosedNumericAndAliasCells() {
         var s=StorageProductTest.state(DATA+"\n01 EXTERNAL-DATA PIC X EXTERNAL.","MOVE 'PGM00001' TO WS-PGM.\nCALL 'LITERAL1'.");
         assertTrue(s.storage().bases().stream().allMatch(b->b.allocation()==AllocationProof.UNPROVEN));
-        assertEquals(List.of("WS-LEGACY"),s.dataDeclarations().stream().filter(d->d.scalarInteger().isPresent()).map(DataDeclaration::canonicalName).toList());
-        assertTrue(s.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()));
-        assertTrue(s.dataDeclarations().stream().filter(d->d.canonicalName().equals("EXTERNAL-DATA")).allMatch(d->d.scalarInteger().isEmpty()));
+        assertEquals(List.of("WS-LEGACY"),s.dataDeclarations().stream().filter(d->d.scalarNumber().isPresent()).map(DataDeclaration::canonicalName).toList());
+        assertEquals(Set.of("WS-PGM","WS-ALIAS"),s.dataDeclarations().stream().filter(d->d.scalarText().isPresent()).map(DataDeclaration::canonicalName).collect(java.util.stream.Collectors.toSet()));
+        assertTrue(s.dataDeclarations().stream().filter(d->d.canonicalName().equals("EXTERNAL-DATA")).allMatch(d->d.scalarNumber().isEmpty()));
         assertTrue(((CallFact)s.statements().get(1)).target() instanceof LiteralCallTarget);
     }
 }

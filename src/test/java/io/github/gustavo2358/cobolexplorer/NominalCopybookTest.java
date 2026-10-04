@@ -88,7 +88,7 @@ class NominalCopybookTest {
     @Test void nominalDeclarationsNeverSupplyScalarOrCellProofs() throws Exception {
         var pre=preprocess("COPY DFHAID.\nCOPY DFHBMSCA.","MOVE 'CANDIDAT' TO DFHPF3.\nMOVE DFHRED TO DFHPF3.\nCALL DFHPF3.");
         var p=ScopedInputTest.product(AstBoundaryTestSupport.analyze(pre,"nominal.cbl"),0);
-        assertTrue(p.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()));
+        assertTrue(p.dataDeclarations().stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarNumber().isEmpty()));
         for(var name:List.of("DFHPF3","DFHRED")) {
             assertTrue(FactDependencyLocalityTest.known(p,name,io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies.FactKind.SOURCE_IDENTITY));
             for(var kind:List.of(io.github.gustavo2358.cobolexplorer.semanticproduct.FactDependencies.FactKind.LOCAL_CELL,

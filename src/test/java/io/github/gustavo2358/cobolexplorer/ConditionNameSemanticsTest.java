@@ -40,7 +40,7 @@ class ConditionNameSemanticsTest {
         assertEquals(Set.of("IF","EVALUATE_WHEN/0","PERFORM_UNTIL/0"),facts.predicates().stream().map(x->x.role()).collect(java.util.stream.Collectors.toSet()));
         assertTrue(facts.predicates().stream().allMatch(x->x.tree().complete()));
         var json=new com.fasterxml.jackson.databind.ObjectMapper().readTree(io.github.gustavo2358.cobolexplorer.semanticproduct.transport.SemanticProductJsonWriter.serialize(p));
-        assertEquals("2.65.0",json.path("contractVersion").asText());
+        assertEquals("2.66.0",json.path("contractVersion").asText());
         assertEquals(4,json.path("conditionNames").path("uses").size());
     }
     @Test void publishesLinkageAndQualifiedTableParentsWithoutAllocatingBooleanCells() {

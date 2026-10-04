@@ -1,8 +1,9 @@
 {
   "id": "WORK-NUMERIC-MOVE-CP2",
-  "title": "Logical numeric values and integer DISPLAY MOVE",
+  "title": "Preserve MOVE transfers, values and local influence under SP 2.66",
   "status": "IN_PROGRESS",
   "scope": [
-    "Checkpoint 2 in PR86; canonical integer cells and per-receiver MOVE facts, SP2.65, CardDemo regression"
+    "Canonical numeric/text types and local transfers, source reads, receiver effects, aliases/bounds and provenance; unknown results retain causality; no AP implementation or checkpoint 3",
+    "Finite CardDemo73 inventory and dependencies/effects qualification; final PR review without merge"
   ]
 }

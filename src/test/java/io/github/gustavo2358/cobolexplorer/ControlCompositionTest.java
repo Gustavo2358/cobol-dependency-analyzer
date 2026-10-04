@@ -20,7 +20,7 @@ class ControlCompositionTest {
         var base=publish(body);var peer=publish(body+"UNUSED.\nGO TO P-A P-B DEPENDING ON N.\nP-A.\nCONTINUE.\nP-B.\nGOBACK.\n");
         var a=facts(base,"MOVE").get(0);var b=facts(peer,"MOVE").get(0);
         assertEquals(a,b,"unrelated peer cannot mutate MOVE facts");
-        assertEquals("2.65.0",base.path("contractVersion").asText());
+        assertEquals("2.66.0",base.path("contractVersion").asText());
         assertEquals(base.path("ordinaryContinuations"),peer.path("ordinaryContinuations"));
         assertEquals(a.path("header").path("id"),base.path("ordinaryContinuations").get(0).path("statement"));
         assertEquals(facts(base,"CALL").get(0).path("header").path("id"),base.path("ordinaryContinuations").get(0).path("destination"));
@@ -45,7 +45,7 @@ class ControlCompositionTest {
         var e=facts(sp,"EVALUATE").get(0);assertEquals(1,e.path("arms").size());
         assertEquals("KNOWN",e.path("arms").get(0).path("control").path("entry").path("availability").asText());
         assertTrue(e.path("subject").path("wholeItemAccess").isObject());
-        assertTrue(java.util.stream.StreamSupport.stream(sp.path("dataDeclarations").spliterator(),false).anyMatch(d->d.path("id").equals(e.path("subject").path("wholeItemAccess").path("data"))&&d.path("scalarInteger").isObject()));
+        assertTrue(java.util.stream.StreamSupport.stream(sp.path("dataDeclarations").spliterator(),false).anyMatch(d->d.path("id").equals(e.path("subject").path("wholeItemAccess").path("data"))&&d.path("scalarNumber").isObject()));
         assertFalse(e.path("subject").path("binding").isNull());
     }
     @Test void transferAndSpecialExitNeverAcquireOrdinaryContinuation() throws Exception {

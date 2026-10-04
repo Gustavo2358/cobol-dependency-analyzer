@@ -90,15 +90,15 @@ class IfCheckpointW2ATest {
             assertEquals(port.calls().get(0).header().id(), result.completion());
             assertEquals(port.moves().get(0).header().id(), result.thenEntry());
             assertEquals(name.equals("closed"), result.elseEntry().isPresent());
-            assertEquals("PROGA   ", port.moves().get(0).textAdjustment().orElseThrow().result().value());
+            assertEquals("PROGA   ", TextFitOracle.value(port.moves().get(0)));
             if (name.equals("closed")) {
-                assertEquals("PROGB   ", port.moves().get(1).textAdjustment().orElseThrow().result().value());
+                assertEquals("PROGB   ", TextFitOracle.value(port.moves().get(1)));
                 assertEquals(port.moves().get(1).header().id(), result.elseEntry().orElseThrow());
             }
             assertEquals(2, result.independent().size());
             var bytes = SemanticProductJsonWriter.serialize(port);
             assertArrayEquals(bytes, SemanticProductJsonWriter.serialize(ScalarMoveCheckpoint4ATest.publish(fixture(name))));
-            assertEquals("2.65.0", new ObjectMapper().readTree(bytes).path("contractVersion").asText());
+            assertEquals("2.66.0", new ObjectMapper().readTree(bytes).path("contractVersion").asText());
         }
     }
     @Test void multipleStatementsInEachArmFollowDirectRelations() throws Exception {
@@ -157,7 +157,7 @@ class IfCheckpointW2ATest {
     @Test void unsupportedStorageCannotGainIndependenceFromDistinctIds() throws Exception {
         for (String declaration : List.of("01 FLAG PIC X.\n01 OVERLAY REDEFINES FLAG PIC X.",
                 "01 FLAG PIC X EXTERNAL.", "01 FLAG PIC X OCCURS 2.",
-                "01 GROUP-ITEM.\n 05 FLAG PIC X.", "01 FLAG PIC X VALUE 'N'.",
+                "01 GROUP-ITEM.\n 05 FLAG PIC X.",
                 "01 FLAG PIC X.\n66 ALIAS-FLAG RENAMES FLAG.")) {
             var d = publish(fixture("closed").replace("01 FLAG PIC X.", declaration), "storage-negative-" + Integer.toUnsignedString(declaration.hashCode()));
             assertTrue(d.path("dataDeclarations").size() >= 2);
@@ -167,6 +167,12 @@ class IfCheckpointW2ATest {
         }
         var linkage = publish(fixture("closed").replace("WORKING-STORAGE", "LINKAGE"), "linkage");
         assertEquals("UNAVAILABLE", linkage.path("storageIndependence").path("availability").asText());
+    }
+    @Test void initialValueDoesNotRemoveProvedStandaloneIndependence() throws Exception {
+        var d=publish(fixture("closed").replace("01 FLAG PIC X.","01 FLAG PIC X VALUE 'N'."),"initialized-storage");
+        assertEquals("KNOWN",d.path("storageIndependence").path("availability").asText());
+        assertTrue(d.path("storageIndependence").path("members").size()>=2);
+        assertTrue(d.path("storageIndependence").path("gapCodes").isEmpty());
     }
     @Test void independentIntegerDeclarationJoinsTheProvedRoots() throws Exception {
         var d=publish(fixture("closed").replace("01 FLAG PIC X.","01 FLAG PIC X.\n01 WS-OTHER PIC 9."),"partial-storage");

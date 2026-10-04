@@ -49,7 +49,7 @@ public final class CobolSemanticProduct {
     public enum OperandRole { READ, WRITE, CALL_TARGET }
 
     /** Literal category is semantic input; consumers must not recover it from value text. */
-    public enum LiteralKind { ALPHANUMERIC, NUMERIC, UNKNOWN }
+    public enum LiteralKind { ALPHANUMERIC, NUMERIC, FIGURATIVE_ZERO, FIGURATIVE_LOW, FIGURATIVE_HIGH, UNKNOWN }
 
     public enum CallSyntax { IDENTIFIER_OR_EXPRESSION, LITERAL_PROGRAM_NAME }
 
@@ -320,14 +320,13 @@ public final class CobolSemanticProduct {
     }
     /** FULL_IDENTITY guarantees mandatory whole receiving-item overwrite without
      * conversion, padding or truncation. UNAVAILABLE makes no copy claim. */
-    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, POSSIBLE_TEXT, UNAVAILABLE }
-    public enum TextAdjustmentRule { RIGHT_PAD_SPACE }
+    public enum CopySemantics { FULL_IDENTITY, FITTED_TEXT, FORMATTED_NUMBER, POSSIBLE_TEXT, UNAVAILABLE }
+    public enum TextAdjustmentRule { RIGHT_PAD_SPACE, RIGHT_FIT_SPACE, ZERO_FILL }
     public record TextAdjustment(TextAdjustmentRule rule, int receiverExtent,
-                                 TextValue result, Provenance provenance) {
+                                 Provenance provenance) {
         public TextAdjustment {
-            Objects.requireNonNull(rule); Objects.requireNonNull(result); Objects.requireNonNull(provenance);
-            require(receiverExtent > 0 && result.logicalExtent() == receiverExtent,
-                    "adjusted text must fill receiver extent");
+            Objects.requireNonNull(rule); Objects.requireNonNull(provenance);
+            require(receiverExtent > 0, "fitting requires positive receiver extent");
         }
     }
     public enum ContinuationAvailability { KNOWN, UNAVAILABLE, NONE }
@@ -346,13 +345,53 @@ public final class CobolSemanticProduct {
     }
 
     /** Local elementary unedited DISPLAY integer. Value/representation remain unknown. */
-    public record ScalarInteger(int digits) { public ScalarInteger { require(digits>0,"positive integer digits"); } }
+    public record ScalarNumber(int digits,int scale,boolean signed,String representation,String trunc) {
+        public ScalarNumber { require(Set.of("UNSPECIFIED","STD","BIN","OPT").contains(trunc)
+                &&(representation.equals("BINARY")||trunc.equals("UNSPECIFIED")),"TRUNC belongs to BINARY");
+            require(digits>0&&digits<=31&&scale>= -31&&scale<=31,"bounded numeric descriptor");
+            require(Set.of("DISPLAY","PACKED_DECIMAL","BINARY","NATIVE_BINARY").contains(representation),"numeric representation");
+            require(!Set.of("BINARY","NATIVE_BINARY").contains(representation)||digits<=18,"binary precision bound"); }
+    }
+    public record EditPart(String kind,int count,String text,String negative) {
+        public EditPart {
+            require(Set.of("DIGITS","SUPPRESS_SPACE","SUPPRESS_STAR","INSERT","RADIX","SIGN","FLOAT_SIGN").contains(kind)&&count>0,"edit segment");Objects.requireNonNull(text);Objects.requireNonNull(negative);
+            int n=text.codePointCount(0,text.length()),m=negative.codePointCount(0,negative.length());
+            require(switch(kind) {
+                case "DIGITS","SUPPRESS_SPACE","SUPPRESS_STAR" -> n==0&&m==0;
+                case "INSERT" -> n>0&&m==0;
+                case "RADIX" -> count==1&&n==1&&m==0;
+                case "SIGN" -> count==1&&n>0&&m==n;
+                case "FLOAT_SIGN" -> count==1&&n==1&&m==1;
+                default -> false;
+            },"incoherent editing segment");
+        }
+    }
+    public record ScalarEdit(List<EditPart> parts,int digits,int scale,int extent) {
+        public ScalarEdit {
+            parts=List.copyOf(parts);require(digits>0&&digits<=31&&scale>=0&&scale<=digits&&extent>0&&!parts.isEmpty(),"numeric editing descriptor");
+            long d=0,s=0,e=0;boolean point=false,floating=false,star=false,space=false;
+            for(var p:parts) {
+                boolean digit=Set.of("DIGITS","SUPPRESS_SPACE","SUPPRESS_STAR").contains(p.kind());
+                if(digit){d+=p.count();if(point)s+=p.count();}
+                if(p.kind().equals("RADIX")){require(!point,"unique decimal radix");point=true;}
+                if(p.kind().equals("FLOAT_SIGN")){require(!floating,"unique floating sign");floating=true;}
+                star|=p.kind().equals("SUPPRESS_STAR");space|=p.kind().equals("SUPPRESS_SPACE");
+                e+=(long)p.count()*(digit?1:p.text().codePointCount(0,p.text().length()));
+                require(e<=Integer.MAX_VALUE&&d<=31,"bounded editing descriptor");
+            }
+            require(d==digits&&s==scale&&e==extent&&(!star||!space&&!floating),"editing dimensions must match segments");
+        }
+    }
     public record DataDeclaration(DataItemId id, String canonicalName,
                                   Optional<String> picture, Provenance provenance,
-                                  CoverageStatus coverage, Readiness readiness, Optional<ScalarText> scalarText, Optional<ScalarInteger> scalarInteger) {
+                                  CoverageStatus coverage, Readiness readiness, Optional<ScalarText> scalarText, Optional<ScalarNumber> scalarNumber, Optional<ScalarEdit> scalarEdit) {
+        public DataDeclaration(DataItemId id,String canonicalName,Optional<String> picture,Provenance provenance,CoverageStatus coverage,Readiness readiness,Optional<ScalarText> scalarText,Optional<ScalarNumber> scalarNumber) {
+            this(id,canonicalName,picture,provenance,coverage,readiness,scalarText,scalarNumber,Optional.empty());
+        }
         public DataDeclaration {
+            Objects.requireNonNull(scalarEdit);require(scalarEdit.isEmpty()||scalarText.isPresent()&&scalarText.orElseThrow().logicalExtent()==scalarEdit.orElseThrow().extent(),"editing requires matching text domain");
             scalarText = Objects.requireNonNull(scalarText);
-            Objects.requireNonNull(scalarInteger); require(scalarText.isEmpty()||scalarInteger.isEmpty(),"distinct scalar domains");
+            Objects.requireNonNull(scalarNumber); require(scalarText.isEmpty()||scalarNumber.isEmpty(),"distinct scalar domains");
             id = Objects.requireNonNull(id, "id");
             canonicalName = requireText(canonicalName, "canonicalName");
             picture = Objects.requireNonNull(picture, "picture");
@@ -488,8 +527,9 @@ public final class CobolSemanticProduct {
     public record LiteralSource(OperandId id, LiteralKind kind, String value,
                                 Provenance provenance, Optional<TextValue> logicalValue) implements MoveSource {
         public LiteralSource {
+            require(kind!=LiteralKind.FIGURATIVE_ZERO||value.equals("0")&&logicalValue.filter(v->v.value().equals("0")).isPresent(),"figurative zero has canonical numeric and text seed");
             logicalValue = Objects.requireNonNull(logicalValue);
-            if (logicalValue.isPresent()) require(kind == LiteralKind.ALPHANUMERIC && logicalValue.get().value().equals(value),
+            if (logicalValue.isPresent()) require(kind==LiteralKind.NUMERIC?NumericMoveRule.integerText(value,logicalValue.orElseThrow().value()):(kind == LiteralKind.ALPHANUMERIC||kind==LiteralKind.FIGURATIVE_ZERO&&value.equals("0")) && logicalValue.get().value().equals(value),
                     "logical text requires alphanumeric kind and normalized value");
             id = Objects.requireNonNull(id, "id");
             kind = Objects.requireNonNull(kind, "kind");
@@ -501,9 +541,18 @@ public final class CobolSemanticProduct {
         }
     }
 
+    public record LogicalSlice(DataItemId data,java.math.BigInteger start,java.math.BigInteger length) {
+        public LogicalSlice { Objects.requireNonNull(data);Objects.requireNonNull(start);Objects.requireNonNull(length);
+            require(start.signum()>=0&&length.signum()>0,"logical slice positive bounds"); }
+    }
     public record DataReference(OperandId id, OperandRole role,
-                                NominalBinding binding, Provenance provenance, Optional<WholeItemAccess> wholeItemAccess, Optional<RegionalAccess> regionalAccess, List<RegionalAccess> regionalAlternatives, Optional<DataItemId> logicalWholeItem) implements CallTarget, MoveSource {
+                                NominalBinding binding, Provenance provenance, Optional<WholeItemAccess> wholeItemAccess, Optional<RegionalAccess> regionalAccess, List<RegionalAccess> regionalAlternatives, Optional<DataItemId> logicalWholeItem,Optional<LogicalSlice> logicalSlice) implements CallTarget, MoveSource {
+        public DataReference(OperandId id, OperandRole role,NominalBinding binding,Provenance provenance,Optional<WholeItemAccess> wholeItemAccess,Optional<RegionalAccess> regionalAccess,List<RegionalAccess> regionalAlternatives,Optional<DataItemId> logicalWholeItem) {
+            this(id,role,binding,provenance,wholeItemAccess,regionalAccess,regionalAlternatives,logicalWholeItem,Optional.empty());
+        }
         public DataReference {
+            Objects.requireNonNull(logicalSlice);
+            if(logicalSlice.isPresent())require(binding.selected().equals(Optional.of(logicalSlice.orElseThrow().data()))&&wholeItemAccess.isEmpty()&&logicalWholeItem.isEmpty(),"logical slice is a partial selected access");
             Objects.requireNonNull(logicalWholeItem);
             if(logicalWholeItem.isPresent())require(binding.selected().equals(logicalWholeItem), "logical whole item must agree with nominal selection");
             regionalAlternatives=List.copyOf(regionalAlternatives);
@@ -1226,17 +1275,17 @@ public final class CobolSemanticProduct {
     public record LogicalTransfer(OperandId target,TextValue value) {
         public LogicalTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
     }
-    public record IntegerTransfer(OperandId target,Optional<java.math.BigInteger> value) {
-        public IntegerTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
+    public record NumericTransfer(OperandId target,Optional<java.math.BigDecimal> value) {
+        public NumericTransfer { Objects.requireNonNull(target);Objects.requireNonNull(value); }
     }
     public record MoveFact(StatementHeader header, MoveSource source,
                            DataReference target, CopySemantics copySemantics,
-                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<RegionalMove> regionalMove, List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers,List<IntegerTransfer> integerTransfers) implements StatementFact {
+                           NormalContinuation normalContinuation, Optional<TextAdjustment> textAdjustment, Optional<RegionalMove> regionalMove, List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers,List<NumericTransfer> numericTransfers) implements StatementFact {
         public MoveFact(StatementHeader header,MoveSource source,DataReference target,CopySemantics copySemantics,NormalContinuation normalContinuation,Optional<TextAdjustment> textAdjustment,Optional<RegionalMove> regionalMove,List<MoveTransfer> additionalTransfers,List<LogicalTransfer> logicalTransfers) {
             this(header,source,target,copySemantics,normalContinuation,textAdjustment,regionalMove,additionalTransfers,logicalTransfers,List.of());
         }
         public MoveFact {
-            additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);integerTransfers=List.copyOf(integerTransfers);
+            additionalTransfers=List.copyOf(additionalTransfers);logicalTransfers=List.copyOf(logicalTransfers);numericTransfers=List.copyOf(numericTransfers);
             require(logicalTransfers.isEmpty()||source instanceof LiteralSource literal&&literal.logicalValue().isPresent(),"logical transfer requires a proved literal");
             var logicalTargets=new HashSet<OperandId>();
             for(var transfer:logicalTransfers) {
@@ -1249,17 +1298,18 @@ public final class CobolSemanticProduct {
             Objects.requireNonNull(regionalMove);
             copySemantics = Objects.requireNonNull(copySemantics);
             textAdjustment = Objects.requireNonNull(textAdjustment);
-            require((copySemantics == CopySemantics.FITTED_TEXT || copySemantics == CopySemantics.POSSIBLE_TEXT) == textAdjustment.isPresent(),
+            require((copySemantics == CopySemantics.FITTED_TEXT && source instanceof LiteralSource || copySemantics == CopySemantics.POSSIBLE_TEXT) == textAdjustment.isPresent(),
                     "fitted copy requires adjustment; identity/unavailable omit it");
             if (copySemantics == CopySemantics.FITTED_TEXT)
-                require(source instanceof LiteralSource literal && literal.logicalValue().isPresent() && target.wholeItemAccess().isPresent(),
+                require((source instanceof LiteralSource literal && literal.logicalValue().isPresent()
+                        ||source instanceof DataReference data&&data.wholeItemAccess().isPresent())&&target.wholeItemAccess().isPresent(),
                         "fitting requires logical source and whole scalar target");
             if(copySemantics==CopySemantics.POSSIBLE_TEXT) {
                 require(source instanceof LiteralSource literal&&literal.logicalValue().isPresent()&&target.logicalWholeItem().isPresent(),"possible text requires a whole logical receiver and literal");
                 var text=((LiteralSource)source).logicalValue().orElseThrow();
                 var adjustment=textAdjustment.orElseThrow();
                 require(text.logicalExtent()<=adjustment.receiverExtent(),"possible text cannot truncate");
-                require(adjustment.result().value().equals(text.value()+" ".repeat(adjustment.receiverExtent()-text.logicalExtent())),"possible text requires exact right padding");
+                require(adjustment.rule()!=TextAdjustmentRule.ZERO_FILL,"possible text requires space fitting");
             }
             normalContinuation = Objects.requireNonNull(normalContinuation);
             if (copySemantics == CopySemantics.FULL_IDENTITY)
@@ -1901,8 +1951,8 @@ public final class CobolSemanticProduct {
             for (var declaration : dataDeclarations) storageDeclarations.put(declaration.id(), declaration);
             for (var member : storageIndependence.members()) {
                 var declaration = storageDeclarations.get(member);
-                require(declaration != null && member.unit().equals(unit) && (declaration.scalarText().isPresent()||declaration.scalarInteger().isPresent())
-                        && declaration.provenance().exact() && declaration.coverage() == CoverageStatus.MODELED,
+                require(declaration != null && member.unit().equals(unit) && (declaration.scalarText().isPresent()||declaration.scalarNumber().isPresent())
+                        && declaration.coverage() == CoverageStatus.MODELED,
                         "independent member requires published, complete scalar declaration and origin");
             }
         }
@@ -1997,7 +2047,7 @@ public final class CobolSemanticProduct {
         if(unboundedRelation) {
             require(inventory.bases().stream().noneMatch(b->b.allocation().proved()),
                 "unproved root relation contradicts allocation independence");
-            require(declarations.stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
+            require(declarations.stream().allMatch(d->d.scalarText().isEmpty()&&d.scalarNumber().isEmpty()),
                 "unproved root relation contradicts standalone scalar proof");
         }
         // The physical parent chain bounds a subordinate overlay to its record.
@@ -2011,7 +2061,7 @@ public final class CobolSemanticProduct {
             nodes.get(view.node()).data().ifPresent(uncertainData::add);
         }
         require(declarations.stream().filter(d->uncertainData.contains(d.id()))
-            .allMatch(d->d.scalarText().isEmpty()&&d.scalarInteger().isEmpty()),
+            .allMatch(d->d.scalarText().isEmpty()&&d.scalarNumber().isEmpty()),
             "uncertain component contradicts scalar proof");
         for (var n : inventory.nodes()) n.parent().ifPresent(parent -> {
             var p = nodes.get(parent); var pv = views.get(parent); var v = views.get(n.id());
@@ -2044,8 +2094,21 @@ public final class CobolSemanticProduct {
                     "declarative invariant needs local independent storage");
             }
         }
+        var logicalByData=new HashMap<DataItemId,LogicalTextView>();
+        var scalarLengths=new HashMap<DataItemId,BigInteger>();declarations.forEach(d->d.scalarText().ifPresent(t->scalarLengths.put(d.id(),BigInteger.valueOf(t.logicalExtent()))));
+        for(var view:inventory.logicalTextViews()) {
+            var node=nodes.get(view.node());require(node!=null,"logical view needs a declared storage node");
+            node.data().ifPresent(id->logicalByData.put(id,view));
+        }
         for (var statement : statements) {
             for(var ref:references(statement)) {
+                ref.logicalSlice().ifPresent(slice->{
+                    var whole=logicalByData.get(slice.data());
+                    var length=whole==null?scalarLengths.get(slice.data()):whole.length();
+                    require(length!=null&&slice.start().add(slice.length()).compareTo(length)<=0,
+                        "logical slice requires a complete character view and in-bounds interval");
+                });
+
                 var seenAlternatives=new HashSet<StorageNodeId>();
                 for(var alternative:ref.regionalAlternatives()) {
                     var view=views.get(alternative.view());var node=nodes.get(alternative.view());
@@ -2182,34 +2245,55 @@ public final class CobolSemanticProduct {
 
     private static void validateReferences(StatementFact statement,
                                            Map<DataItemId, DataDeclaration> declarations) {
-        if(statement instanceof MoveFact move&&!move.integerTransfers().isEmpty()) {
+        if(statement instanceof MoveFact move&&!move.numericTransfers().isEmpty()) {
             var receivers=new HashMap<OperandId,DataReference>();receivers.put(move.target().id(),move.target());
             move.additionalTransfers().forEach(t->receivers.put(t.target().id(),t.target()));
             var ordered=new ArrayList<DataReference>();ordered.add(move.target());move.additionalTransfers().forEach(t->ordered.add(t.target()));
             int ordinal=0;var seen=new HashSet<OperandId>();
             require(move.header().provenance().exact()&&move.copySemantics()==CopySemantics.UNAVAILABLE,"integer MOVE requires exact source and its own transfer proof");
-            for(var proof:move.integerTransfers()) {
+            for(var proof:move.numericTransfers()) {
                 var receiver=receivers.get(proof.target());
                 require(seen.add(proof.target())&&receiver!=null&&receiver.wholeItemAccess().isPresent(),"distinct whole integer receiver required");
                 var d=declarations.get(receiver.wholeItemAccess().orElseThrow().data());
-                require(d!=null&&d.scalarInteger().isPresent()&&receiver.provenance().exact(),"integer receiver requires local type proof");
-                int digits=d.scalarInteger().orElseThrow().digits();
+                require(d!=null&&(d.scalarNumber().isPresent()||d.scalarText().isPresent())&&receiver.provenance().exact(),"numeric transfer receiver requires local type proof");
+                var number=d.scalarNumber().orElse(null);
                 if(move.source() instanceof LiteralSource l) {
-                    require(l.kind()==LiteralKind.NUMERIC&&l.provenance().exact()&&proof.value().isPresent(),"integer literal proof required");
-                    var v=proof.value().orElseThrow();
-                    require(v.signum()>=0&&v.toString().length()<=digits&&new java.math.BigDecimal(l.value()).compareTo(new java.math.BigDecimal(v))==0,"integer value must equal source and fit receiver");
+                    var sending=l.kind()==LiteralKind.ALPHANUMERIC?NumericMoveRule.textNumber(l.value()):
+                        l.kind()==LiteralKind.NUMERIC||l.kind()==LiteralKind.FIGURATIVE_ZERO?Optional.of(new java.math.BigDecimal(l.value())):Optional.<java.math.BigDecimal>empty();
+                    require(sending.isPresent()&&l.provenance().exact(),"numeric literal proof required");
+                    if(number!=null) {
+                        boolean common=!NumericMoveRule.requiresFit(number.representation(),number.trunc())
+                            ||NumericMoveRule.fits(sending.orElseThrow(),number.digits(),number.scale());
+                        require(common==proof.value().isPresent(),"literal result is certified exactly when the receiving rule is common");
+                        if(common)require(NumericMoveRule.fit(sending.orElseThrow(),number.digits(),number.scale(),number.signed(),number.representation(),number.trunc()).compareTo(proof.value().orElseThrow())==0,"numeric value must satisfy receiving descriptor");
+                    } else require(d.scalarEdit().isPresent()&&(l.kind()==LiteralKind.NUMERIC||l.kind()==LiteralKind.FIGURATIVE_ZERO)
+                        &&proof.value().filter(v->sending.orElseThrow().compareTo(v)==0).isPresent(),"editing transfer preserves numeric literal before formatting");
                 } else {
                     var r=(DataReference)move.source();
                     require(proof.value().isEmpty()&&r.wholeItemAccess().isPresent()&&r.provenance().exact(),"integer DATA proof required");
                     var source=declarations.get(r.wholeItemAccess().orElseThrow().data());
-                    require(source!=null&&source.scalarInteger().isPresent()&&source.scalarInteger().orElseThrow().digits()<=digits,"integer DATA may not narrow");
+                    require(source!=null&&(source.scalarNumber().isPresent()||source.scalarText().isPresent()&&source.scalarEdit().isEmpty()),"numeric DATA requires a local number or guarded digit text");
+                    var sending=source.scalarNumber().orElse(null);
+                    if(sending!=null&&number==null)require(d.scalarEdit().isPresent()||sending.scale()<=0,"plain text formatting requires integer DATA");
+                    if(sending==null)require(number!=null,"text numeric input requires a numeric receiver");
                     require(proof.target().equals(ordered.get(ordinal++).id()),"DATA transfer requires a proved prefix preserving the sending value");
                 }
             }
         }
+        if(statement instanceof MoveFact move&&move.copySemantics()==CopySemantics.FORMATTED_NUMBER) {
+            require(move.target().wholeItemAccess().isPresent()&&move.additionalTransfers().isEmpty()
+                &&move.numericTransfers().isEmpty()&&move.textAdjustment().isEmpty(),"formatting requires one typed text receiver");
+            var to=declarations.get(move.target().wholeItemAccess().orElseThrow().data());
+            require(to!=null&&to.scalarText().isPresent(),"formatting requires text storage");
+            if(move.source() instanceof DataReference read) {
+                require(read.wholeItemAccess().isPresent(),"formatting reads a whole number");
+                var from=declarations.get(read.wholeItemAccess().orElseThrow().data());
+                require(from!=null&&from.scalarNumber().filter(n->to.scalarEdit().isPresent()||n.scale()<=0).isPresent(),"formatting requires numeric source");
+            } else require(to.scalarEdit().isPresent()&&move.source() instanceof LiteralSource l&&(l.kind()==LiteralKind.NUMERIC||l.kind()==LiteralKind.FIGURATIVE_ZERO),"editing requires numeric literal");
+        }
         if(statement instanceof ConditionalGoToFact g && g.selectorInteger()) {
             var d=declarations.get(g.selector().orElseThrow().wholeItemAccess().orElseThrow().data());
-            require(d!=null&&d.scalarInteger().isPresent(),"integer selector references integer declaration");
+            require(d!=null&&d.scalarNumber().filter(n->n.scale()==0).isPresent(),"integer selector references integer declaration");
         }
         if (statement instanceof MoveFact move && move.copySemantics() == CopySemantics.FULL_IDENTITY) {
             var declaration = declarations.get(move.target().wholeItemAccess().orElseThrow().data());
@@ -2224,20 +2308,23 @@ public final class CobolSemanticProduct {
             require(declaration.scalarText().orElseThrow().logicalExtent() == extent, "identity copy requires equal extents");
         }
         if (statement instanceof MoveFact move && move.copySemantics()==CopySemantics.FITTED_TEXT) {
-            var adjustment = move.textAdjustment().orElseThrow();
             var declaration = declarations.get(move.target().wholeItemAccess().orElseThrow().data());
             require(declaration != null && declaration.scalarText().isPresent(), "fitting requires scalar declaration");
-            var source = ((LiteralSource) move.source()).logicalValue().orElseThrow();
-            require(adjustment.receiverExtent() == declaration.scalarText().orElseThrow().logicalExtent()
-                    && source.logicalExtent() < adjustment.receiverExtent(), "padding requires larger scalar receiver");
-            require(adjustment.result().value().equals(source.value()
-                    + " ".repeat(adjustment.receiverExtent() - source.logicalExtent())), "padding must preserve source and append spaces");
+            int extent=declaration.scalarText().orElseThrow().logicalExtent();
+            if(move.source() instanceof LiteralSource literal) {
+                var adjustment=move.textAdjustment().orElseThrow();var source=literal.logicalValue().orElseThrow();
+                require(adjustment.receiverExtent()==extent,"fitting must use receiver extent");
+                require(literal.kind()==LiteralKind.FIGURATIVE_ZERO?adjustment.rule()==TextAdjustmentRule.ZERO_FILL:adjustment.rule()==TextAdjustmentRule.RIGHT_FIT_SPACE||adjustment.rule()==TextAdjustmentRule.RIGHT_PAD_SPACE&&source.logicalExtent()<extent,"fitting rule must agree with literal category");
+            } else {
+                var source=declarations.get(((DataReference)move.source()).wholeItemAccess().orElseThrow().data());
+                require(source!=null&&source.scalarText().isPresent(),"DATA fitting requires scalar source declaration");
+            }
         }
         for (DataReference reference : references(statement)) {
             reference.logicalWholeItem().ifPresent(data -> require(declarations.containsKey(data), "logical whole item needs a published declaration"));
             reference.wholeItemAccess().ifPresent(access -> {
                 var declaration = declarations.get(access.data());
-                require(declaration != null && (declaration.scalarText().isPresent()||declaration.scalarInteger().isPresent()), "whole item requires scalar declaration");
+                require(declaration != null && (declaration.scalarText().isPresent()||declaration.scalarNumber().isPresent()), "whole item requires scalar declaration");
             });
             for (DataCandidate candidate : reference.binding().candidates()) {
                 require(candidate.id().unit().equals(statement.header().id().unit()),
@@ -2541,7 +2628,7 @@ public final class CobolSemanticProduct {
                     && o.effects().filter(e -> e.proof() == EffectProof.NO_OP).isPresent()
                     && evidence.localControl(handle);
             boolean modeledSet=sets.contains(handle)&&evidence.localControl(handle);
-            boolean currentCapability = statement instanceof MoveFact m&&m.integerTransfers().size()==1+m.additionalTransfers().size()&&evidence.localControl(handle) || noOp || modeledSet || conditions.contains(handle)&&evidence.localControl(handle) || statement instanceof ProcedurePerformFact && evidence.invocation(handle)
+            boolean currentCapability = statement instanceof MoveFact m&&m.numericTransfers().size()==1+m.additionalTransfers().size()&&evidence.localControl(handle) || noOp || modeledSet || conditions.contains(handle)&&evidence.localControl(handle) || statement instanceof ProcedurePerformFact && evidence.invocation(handle)
                     || !(statement instanceof ObservedStatement) && statement.header().coverage() == CoverageStatus.PARTIAL
                     && statement.header().readiness().lowering().status() == ReadinessStatus.SUFFICIENT
                     && evidence.membership(handle);

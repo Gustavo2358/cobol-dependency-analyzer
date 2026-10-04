@@ -35,7 +35,7 @@ class FactDependencyLocalityTest {
         assertFalse(known(absent,"SENTINEL",FactKind.PHYSICAL_VIEW));assertTrue(known(present,"SENTINEL",FactKind.PHYSICAL_VIEW));
         for(var kind:List.of(FactKind.SOURCE_IDENTITY,FactKind.LOGICAL_TEXT,FactKind.LOCAL_CELL))assertEquals(known(absent,"TARGET",kind),known(present,"TARGET",kind));
         var out=Path.of("target/fact-dependency-r2");Files.createDirectories(out);Files.write(out.resolve("mixed-profile-absent.json"),SemanticProductJsonWriter.serialize(absent));
-        assertEquals("2.65.0",new ObjectMapper().readTree(SemanticProductJsonWriter.serialize(absent)).path("contractVersion").asText());
+        assertEquals("2.66.0",new ObjectMapper().readTree(SemanticProductJsonWriter.serialize(absent)).path("contractVersion").asText());
     }
     @Test void missingInputNeedsClosedRegionNotLexicalDistance() throws Exception {
         var closed=publish("01 RECORD-A.\n 05 TARGET PIC X(8).\n 05 COUNTER PIC 9.\n01 SENTINEL PIC X.\nCOPY UNKNOWN-DATA.");
@@ -56,9 +56,10 @@ class FactDependencyLocalityTest {
             assertTrue(p.dataDeclarations().stream().filter(d->d.canonicalName().equals("TARGET")).findFirst().orElseThrow().scalarText().isPresent(),"proved local cell must reach scalar MOVE capability");
         }
         for(var data:List.of("01 RECORD-A.\n05 ITEMS OCCURS 3 TIMES.\n10 TARGET PIC X(8).",
-                "01 RECORD-A.\n05 AREA-A PIC X(8).\n05 AREA-B REDEFINES AREA-A.\n10 TARGET PIC X(8).",
                 "01 RECORD-A.\n05 ITEMS OCCURS 1 TO 3 DEPENDING ON N.\n10 ELEMENT-A PIC X.\n05 TARGET PIC X(8).\n01 N PIC 9."))
-            assertFalse(known(publish(data+"\n01 SENTINEL PIC X."),"TARGET",FactKind.LOCAL_CELL),"ancestor participates in repeated/overlaid storage");
+            assertFalse(known(publish(data+"\n01 SENTINEL PIC X."),"TARGET",FactKind.LOCAL_CELL),"ancestor participates in repeated storage");
+        var exact=publish("01 RECORD-A.\n05 AREA-A PIC X(8).\n05 AREA-B REDEFINES AREA-A.\n10 TARGET PIC X(8).\n01 SENTINEL PIC X.");
+        assertTrue(known(exact,"TARGET",FactKind.LOCAL_CELL),"a complete same-type alias has one canonical cell");
     }
 
     @Test void localDataCopyUsesBothClosedCellProofs() throws Exception {

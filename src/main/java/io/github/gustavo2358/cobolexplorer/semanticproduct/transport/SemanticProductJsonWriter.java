@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 public final class SemanticProductJsonWriter {
     public static final String SCHEMA = "cobol-semantic-product";
-    public static final String CONTRACT_VERSION = "2.65.0";
+    public static final String CONTRACT_VERSION = "2.66.0";
 
     private record NominalDocument(String authority,List<NominalSymbolDocument> symbols,
             List<NominalAssignmentDocument> assignments,List<NominalConditionDocument> conditions,
@@ -291,7 +291,7 @@ public final class SemanticProductJsonWriter {
                 declaration.canonicalName(), declaration.picture().orElse(null),
                 provenance(declaration.provenance()), declaration.coverage(),
                 readiness(declaration.readiness()), declaration.scalarText().map(shape -> new ScalarTextDocument(
-                        shape.logicalDomain(), shape.logicalExtent(), shape.storageClass(), shape.declarationScope())).orElse(null),declaration.scalarInteger().orElse(null));
+                        shape.logicalDomain(), shape.logicalExtent(), shape.storageClass(), shape.declarationScope())).orElse(null),declaration.scalarNumber().orElse(null),declaration.scalarEdit().orElse(null));
     }
 
     private static CallTargetDocument callTarget(CobolSemanticProduct.CallTarget target) {
@@ -349,10 +349,9 @@ public final class SemanticProductJsonWriter {
                             .map(SemanticProductJsonWriter::statementHandle).orElse(null),
                             provenance(move.normalContinuation().provenance())), move.textAdjustment().map(a ->
                             new TextAdjustmentDocument(a.rule(), a.receiverExtent(),
-                                    new TextValueDocument(a.result().logicalDomain(), a.result().value(), a.result().logicalExtent()),
                                     provenance(a.provenance()))).orElse(null), move.regionalMove().map(m->new RegionalMoveDocument(m.kind(),m.bytes(),m.gapCodes())).orElse(null),move.additionalTransfers().stream().map(t->new MoveTransferDocument(moveSource(t.source()),dataReference(t.target()),new RegionalMoveDocument(t.effect().kind(),t.effect().bytes(),t.effect().gapCodes()))).toList(),
                         move.logicalTransfers().stream().map(t->new LogicalTransferDocument(operandHandle(t.target()),
-                            new TextValueDocument(t.value().logicalDomain(),t.value().value(),t.value().logicalExtent()))).toList(),move.integerTransfers().stream().map(t->new IntegerTransferDocument(operandHandle(t.target()),t.value().map(Object::toString).orElse(null))).toList());
+                            new TextValueDocument(t.value().logicalDomain(),t.value().value(),t.value().logicalExtent()))).toList(),move.numericTransfers().stream().map(t->new NumericTransferDocument(operandHandle(t.target()),t.value().map(Object::toString).orElse(null))).toList());
         }
         if(fact instanceof CobolSemanticProduct.CicsCommandFact c)return new CicsCommandDocument(header(c.header()),c.commandKind(),c.syntaxStatus(),c.rawText(),
             c.options().stream().map(o->new CicsOptionDocument(o.name(),o.operand().orElse(null),o.start(),o.end(),o.reference().map(SemanticProductJsonWriter::dataReference).orElse(null))).toList(),c.gapCodes(),c.length().map(e->new OperandExpressionDocument(e.kind(),e.integer().map(Object::toString).orElse(null),e.reference().map(SemanticProductJsonWriter::dataReference).orElse(null),provenance(e.provenance()))).orElse(null),c.hostEffects().orElse(null),c.implicitArea().map(SemanticProductJsonWriter::dataReference).orElse(null));
@@ -421,7 +420,7 @@ public final class SemanticProductJsonWriter {
                 binding(reference.binding()), provenance(reference.provenance()), reference.wholeItemAccess()
                         .map(access -> new WholeItemDocument(dataHandle(access.data()))).orElse(null),
                 reference.regionalAccess().map(a->new RegionalAccessDocument(storageNodeHandle(a.view()),a.slice().map(s->new RegionalSliceDocument(s.offset().toString(),s.extent().toString())).orElse(null))).orElse(null),
-                reference.regionalAlternatives().stream().map(a->new RegionalAccessDocument(storageNodeHandle(a.view()),null)).toList(), reference.logicalWholeItem().map(SemanticProductJsonWriter::dataHandle).orElse(null));
+                reference.regionalAlternatives().stream().map(a->new RegionalAccessDocument(storageNodeHandle(a.view()),null)).toList(), reference.logicalWholeItem().map(SemanticProductJsonWriter::dataHandle).orElse(null),reference.logicalSlice().map(a->new LogicalSliceDocument(dataHandle(a.data()),a.start().toString(),a.length().toString())).orElse(null));
     }
 
     private static BindingDocument binding(CobolSemanticProduct.NominalBinding binding) {
@@ -575,7 +574,7 @@ public final class SemanticProductJsonWriter {
             String picture,
             ProvenanceDocument provenance,
             CobolSemanticProduct.CoverageStatus coverage,
-            ReadinessDocument readiness, ScalarTextDocument scalarText, CobolSemanticProduct.ScalarInteger scalarInteger) { }
+            ReadinessDocument readiness, ScalarTextDocument scalarText, CobolSemanticProduct.ScalarNumber scalarNumber,CobolSemanticProduct.ScalarEdit scalarEdit) { }
 
     private record StructureDocument(List<String> roots,
                                      List<BranchChildrenDocument> branches) { }
@@ -662,11 +661,11 @@ public final class SemanticProductJsonWriter {
                                 DataReferenceDocument target, CobolSemanticProduct.CopySemantics copySemantics,
                                 ContinuationDocument normalContinuation, TextAdjustmentDocument textAdjustment, RegionalMoveDocument regionalMove,List<MoveTransferDocument> additionalTransfers,
                                 @JsonInclude(JsonInclude.Include.NON_EMPTY) List<LogicalTransferDocument> logicalTransfers,
-                                @JsonInclude(JsonInclude.Include.NON_EMPTY) List<IntegerTransferDocument> integerTransfers) implements StatementDocument { }
+                                @JsonInclude(JsonInclude.Include.NON_EMPTY) List<NumericTransferDocument> numericTransfers) implements StatementDocument { }
 
-    private record IntegerTransferDocument(String target,String value) { }
+    private record NumericTransferDocument(String target,String value) { }
     private record TextAdjustmentDocument(CobolSemanticProduct.TextAdjustmentRule rule, int receiverExtent,
-                                            TextValueDocument result, ProvenanceDocument provenance) { }
+                                            ProvenanceDocument provenance) { }
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
     @JsonSubTypes({@JsonSubTypes.Type(value = DataCallTargetDocument.class, name = "DATA"),
             @JsonSubTypes.Type(value = LiteralCallTargetDocument.class, name = "LITERAL")})
@@ -726,7 +725,8 @@ public final class SemanticProductJsonWriter {
 
     private record DataReferenceDocument(String id, CobolSemanticProduct.OperandRole role,
                                          BindingDocument binding,
-                                         ProvenanceDocument provenance, WholeItemDocument wholeItemAccess, RegionalAccessDocument regionalAccess, List<RegionalAccessDocument> regionalAlternatives, String logicalWholeItem) { }
+                                         ProvenanceDocument provenance, WholeItemDocument wholeItemAccess, RegionalAccessDocument regionalAccess, List<RegionalAccessDocument> regionalAlternatives, String logicalWholeItem,@JsonInclude(JsonInclude.Include.NON_NULL) LogicalSliceDocument logicalSlice) { }
+    private record LogicalSliceDocument(String data,String start,String length) { }
 
     private record BindingDocument(
             CobolSemanticProduct.ResolutionStatus status,

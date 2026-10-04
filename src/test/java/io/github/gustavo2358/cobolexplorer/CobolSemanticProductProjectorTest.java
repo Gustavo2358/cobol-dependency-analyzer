@@ -110,10 +110,11 @@ class CobolSemanticProductProjectorTest {
         assertEquals(CobolSemanticProduct.InventoryStatus.COMPLETE,
                 state.coverage().inventoryStatus());
         assertEquals(7, state.coverage().observedStatements());
-        assertEquals(6, state.coverage().modeledStatements());
-        assertEquals(1, state.coverage().partialStatements());
+        assertEquals(7, state.coverage().modeledStatements());
+        assertEquals(1,port.moves().get(2).numericTransfers().size(),"the numeric MOVE has a complete current proof");
+        assertEquals(0, state.coverage().partialStatements());
         assertEquals(0, state.coverage().unsupportedStatements());
-        assertEquals(CobolSemanticProduct.ReadinessStatus.PARTIAL,
+        assertEquals(CobolSemanticProduct.ReadinessStatus.SUFFICIENT,
                 state.coverage().readiness().lowering().status());
         assertEquals(CobolSemanticProduct.ReadinessStatus.SUFFICIENT,
                 state.coverage().readiness().cfg().status());

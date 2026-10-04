@@ -125,7 +125,7 @@ public final class NominalValueSemantics {
             }
             if(e instanceof Ast.LiteralExpression literal) {
                 if(literal.logicalText().isPresent())return new NominalValues.Term("LITERAL",literal.logicalText().get().value());
-                if(literal.figurativeText().isPresent())return new NominalValues.Term(literal.figurativeText().get().name(),"");
+                if(literal.figurativeText().filter(f->f!=Ast.FigurativeText.ZERO).isPresent())return new NominalValues.Term(literal.figurativeText().get().name(),"");
             }
         }
         return new NominalValues.Term("UNKNOWN","");

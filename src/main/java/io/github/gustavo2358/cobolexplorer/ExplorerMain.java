@@ -194,7 +194,7 @@ public final class ExplorerMain {
         ResolutionContracts.CobolResolutionPolicy policy = ResolutionContracts.CobolResolutionPolicy.initial()
                 .withPgmnameMode(preprocessed.pgmnameMode())
                 .withDynamMode(preprocessed.dynamMode())
-                .withDllMode(preprocessed.dllMode());
+                .withDllMode(preprocessed.dllMode()).withTruncMode(preprocessed.truncMode());
         ReferenceResolution resolution = new CobolReferenceResolver(policy)
                 .resolve(compilationUnit, symbolTables, occurrences);
 
