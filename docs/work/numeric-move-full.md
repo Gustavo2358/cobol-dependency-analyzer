@@ -1,5 +1,7 @@
 # Prioridade 2 — MOVE, tipos e transferências locais
 
+> Fechamento do frontend: DONE / MERGED no PR #86. [Integração e limites](priority2-integration.md). Os estados de revisão abaixo são históricos.
+
 Implementação qualificada e pronta para revisão. O work item permanece
 IN_PROGRESS até merge, conforme o lifecycle do repositório. O relatório CP2.1
 é histórico; esta é a qualificação do escopo completo redefinido pela auditoria

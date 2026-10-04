@@ -124,14 +124,16 @@ como registros/handoffs cross-repo para `air-java`, `cobol-lower` e
 SP2.51 per-use control for OPEN/CLOSE and SORT/MERGE without procedure callbacks.
 IN_PROGRESS: implemented and qualified locally, awaiting review; no merge.
 
-## Reconciliação de gaps — em review
+## Reconciliação de gaps — DONE / MERGED #86
 
-- [WORK-GAP-RECONCILIATION-001](gap-reconciliation.json): avaliação por ocorrência e painel de diagnósticos.
+- [WORK-GAP-RECONCILIATION-001](gap-reconciliation.json): lista canônica de gaps ativos, sem painel paralelo.
 - [Contrato e regras](../domain/gap-assessment.md).
 
 ## Condições 88 e SET — checkpoint 1
 
-- [WORK-CONDITION-NAMES-001](condition-names.json): IN_PROGRESS, revisão no PR #86.
+- [WORK-CONDITION-NAMES-001](condition-names.json): DONE / MERGED no PR #86.
 - [Semântica](../domain/condition-names.md) e [qualificação](condition-names-qualification.md).
 
-- [Checkpoint 2: valores numéricos e MOVE DISPLAY](numeric-move-qualification.md) — IN_PROGRESS, PR de revisão.
+- [Checkpoint 2: valores numéricos e MOVE DISPLAY](numeric-move-qualification.md) — DONE / MERGED no PR #86; snapshot CP2.1 histórico.
+
+[Prioridades 1 e 2 — fechamento](priority2-integration.md): DONE / MERGED #86; qualificação e limites preservados.

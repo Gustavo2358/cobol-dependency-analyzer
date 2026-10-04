@@ -1,9 +1,10 @@
 {
   "id": "WORK-NUMERIC-MOVE-CP2",
   "title": "Preserve MOVE transfers, values and local influence under SP 2.66",
-  "status": "IN_PROGRESS",
+  "status": "DONE",
   "scope": [
     "Canonical numeric/text types and local transfers, source reads, receiver effects, aliases/bounds and provenance; unknown results retain causality; no AP implementation or checkpoint 3",
-    "Finite CardDemo73 inventory and dependencies/effects qualification; final PR review without merge"
-  ]
+    "Finite CardDemo73 inventory and dependencies/effects qualification; approved integration"
+  ],
+  "notes": "Frontend merged in PR #86, 21065f83e2a3c01c1429068dd3e199666ccbe17e, with required tests passed. See priority2-integration.md."
 }
