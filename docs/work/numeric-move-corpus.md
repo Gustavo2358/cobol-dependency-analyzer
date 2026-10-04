@@ -76,3 +76,6 @@ Fonte: qualificação final de 2026-10-04. 7.015 ocorrências. Ordenação por M
 | `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CSUTLDTC.cbl` | 21 | 14 | 2 | 5 | 2 |
 | `app/app-authorization-ims-db2-mq/cbl/CBPAUP0C.cbl` | 9 | 8 | 0 | 1 | 0 |
 | `app/cbl/COBSWAIT.cbl` | 1 | 0 | 1 | 0 | 0 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/SDSF.cbl` | 0 | 0 | 0 | 0 | 0 |
+
+SDSF é a variante sem MOVE; ela passou pelas quatro etapas e permanece no inventário.
