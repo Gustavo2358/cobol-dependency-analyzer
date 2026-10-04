@@ -59,6 +59,12 @@ final class PreprocessorEngine {
             dllMode = Objects.requireNonNull(dllMode, "dllMode");
         }
 
+        ResolutionContracts.TruncMode truncMode() {
+            return compilerOptions.stream().filter(o->o.name().equals("TRUNC"))
+                .map(o->ResolutionContracts.TruncMode.fromCompilerValue(o.value()))
+                .reduce((first,second)->second).orElse(ResolutionContracts.TruncMode.UNSPECIFIED);
+        }
+
         int unresolved() {
             return Math.toIntExact(diagnostics.stream()
                     .filter(diagnostic -> diagnostic.code() == Diagnostic.Code.UNRESOLVED_COPY)

@@ -29,6 +29,8 @@ public final class StorageLayoutSemantics {
     public record LogicalView(Key node,Key root,BigInteger start,BigInteger length) { }
     /** A complete local TEXT view; unlike LogicalView, it does not close a whole layout family. */
     public record LogicalExactView(Key node,Key representative,BigInteger length) { }
+    private final Map<ResolutionContracts.ProgramUnitId,SourceStorageGeometry> sourceGeometry;
+    SourceStorageGeometry sourceGeometry(ResolutionContracts.ProgramUnitId unit){return Objects.requireNonNull(sourceGeometry.get(unit));}
     private final List<LogicalView> logicalViews;
     public List<LogicalView> logicalViews(){return logicalViews;}
     private final List<LogicalExactView> logicalExactViews;
@@ -39,7 +41,8 @@ public final class StorageLayoutSemantics {
     private final ReferenceResolution bindings;
     private final CompilationUnitSymbolTables symbolTables;
     private StorageLayoutSemantics(Map<ResolutionContracts.ProgramUnitId,Layout> layouts,Map<String,Long> metrics,
-            CompilationUnitBuildResult owner,ReferenceResolution bindings,CompilationUnitSymbolTables symbolTables,List<LogicalView> logicalViews,List<LogicalExactView> logicalExactViews) {
+            CompilationUnitBuildResult owner,ReferenceResolution bindings,CompilationUnitSymbolTables symbolTables,List<LogicalView> logicalViews,List<LogicalExactView> logicalExactViews,Map<ResolutionContracts.ProgramUnitId,SourceStorageGeometry> sourceGeometry) {
+        this.sourceGeometry=Map.copyOf(sourceGeometry);
         this.logicalViews=List.copyOf(logicalViews);
         this.logicalExactViews=List.copyOf(logicalExactViews);
         this.layouts=Map.copyOf(layouts);this.metrics=Map.copyOf(metrics);this.owner=owner;this.bindings=bindings;this.symbolTables=symbolTables;
@@ -61,6 +64,7 @@ public final class StorageLayoutSemantics {
         Objects.requireNonNull(profile);Objects.requireNonNull(resolution);
         if(logicalText&&profile!=Profile.UNSPECIFIED)throw new IllegalArgumentException("logical text W1 requires unspecified physical profile");
         if(!components.belongsTo(frontend))throw new IllegalArgumentException("storage components belong to another snapshot");
+        var sourceGeometry=new HashMap<ResolutionContracts.ProgramUnitId,SourceStorageGeometry>();
         var layouts=new LinkedHashMap<ResolutionContracts.ProgramUnitId,Layout>();var logicalViews=new ArrayList<LogicalView>();var logicalExactViews=new ArrayList<LogicalExactView>();long declarations=0,visits=0;
         for(var unit:frontend.compilationUnit().programUnits()) {
             boolean input=report.inputComplete(unit.id());
@@ -106,6 +110,7 @@ public final class StorageLayoutSemantics {
                 for(var component:physical.children().get(data.meta().id()))
                     footprints.putIfAbsent(component.representative(),footprint(component,extents));
             }
+            sourceGeometry.put(unit.id(),SourceStorageGeometry.analyze(physical,shapes));
             for(var component:physical.rootComponents())footprints.put(component.representative(),footprint(component,extents));
             var offsets=new HashMap<Integer,Measure>();var permitted=new HashMap<Integer,Boolean>();
             for(var root:roots){offsets.put(root.meta().id(),Measure.known(BigInteger.ZERO));permitted.put(root.meta().id(),environment&&!physical.uncertainRoots().contains(root.meta().id()));}
@@ -125,13 +130,13 @@ public final class StorageLayoutSemantics {
                     cursor=plus(cursor,footprints.get(component.representative()),Reason.UNKNOWN_OFFSET);
                 }
             }
-            if(logicalText&&input&&!attributes.initial()&&!attributes.recursive()&&!attributes.common()&&!attributes.library()&&!attributes.definition())
+            if(logicalText&&input&&!attributes.recursive()&&!attributes.common()&&!attributes.library()&&!attributes.definition())
                 {
                 var textViews=logical(unit.id(),physical,shapes);
                 logicalViews.addAll(textViews);
                 logicalViews.addAll(StorageRenames.logical(unit.id(),physical,resolution,entities,coverage,nodes,textViews));
             }
-            if(!attributes.initial()&&!attributes.recursive()&&!attributes.common()&&!attributes.library()&&!attributes.definition())
+            if(!attributes.recursive()&&!attributes.common()&&!attributes.library()&&!attributes.definition())
                 logicalExactViews.addAll(exactLocalText(unit,physical,shapes));
             var renames=StorageRenames.prove(unit.id(),physical,resolution,entities,coverage,nodes,views);
             if(renames.stream().anyMatch(r->!r.proved())) {
@@ -142,7 +147,7 @@ public final class StorageLayoutSemantics {
             }
             layouts.put(unit.id(),new Layout(profile,nodes,bases,views,List.copyOf(reasons),physical.relations(),renames));
         }
-        return new StorageLayoutSemantics(layouts,Map.of("declarations",declarations,"layoutVisits",visits,"objectPairs",0L),frontend,resolution,tables,logicalViews,logicalExactViews);
+        return new StorageLayoutSemantics(layouts,Map.of("declarations",declarations,"layoutVisits",visits,"objectPairs",0L),frontend,resolution,tables,logicalViews,logicalExactViews,sourceGeometry);
     }
     private static List<LogicalExactView> exactLocalText(CompilationUnitModel.ProgramUnit unit,StorageComponents.Unit structure,Map<Integer,Shape> shapes) {
         var working=new HashSet<Integer>();
@@ -250,13 +255,13 @@ public final class StorageLayoutSemantics {
             // layout. Their canonical coverage finding survives independently.
             if(clause instanceof Ast.PreservedDataClause)continue;
             known&=modeled(clause,coverage);
-            if(clause instanceof Ast.PictureClause picture){pictures++;extent=picture.textExtent().map(BigInteger::valueOf);}
+            if(clause instanceof Ast.PictureClause picture){pictures++;extent=picture.textExtent().or(()->picture.edited().map(Ast.NumericEdit::extent)).map(BigInteger::valueOf);}
             else if(clause instanceof Ast.UsageClause usage&&usage.display())usages++;
             else if(clause instanceof Ast.ValueClause) { /* Initial content does not change physical extent. */ }
             else if(clause instanceof Ast.RedefinesClause) { /* Physical relation is proved by StorageComponents. */ }
             else known=false;
         }
-        var kind=data.children().stream().allMatch(c->c.levelKind()==Ast.DataLevelKind.RENAMES_66)?Kind.ELEMENTARY:Kind.GROUP;
+        var kind=data.children().stream().allMatch(c->c.levelKind()==Ast.DataLevelKind.RENAMES_66||c.levelKind()==Ast.DataLevelKind.CONDITION_88)?Kind.ELEMENTARY:Kind.GROUP;
         known&=usages<=1&&(kind==Kind.GROUP?pictures==0:pictures==1&&extent.isPresent());
         return new Shape(known?kind:Kind.OPAQUE,known,extent);
     }

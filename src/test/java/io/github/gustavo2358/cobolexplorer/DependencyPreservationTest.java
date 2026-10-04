@@ -8,7 +8,7 @@ class DependencyPreservationTest {
             "MOVE 'PROGA' TO TARGET-PGM.\nEXEC CICS XCTL PROGRAM(TARGET-PGM) END-EXEC.");
         var move=(MoveFact)state.statements().get(0);
         assertEquals("POSSIBLE_TEXT",move.copySemantics().name());
-        assertEquals("PROGA   ",move.textAdjustment().orElseThrow().result().value());
+        assertEquals("PROGA   ",TextFitOracle.value(move));
         assertEquals(move.target().binding().selected(),move.target().logicalWholeItem());
         assertTrue(move.target().wholeItemAccess().isEmpty());
         var target=(DataReference)((CicsFact)state.statements().get(1)).target().orElseThrow();

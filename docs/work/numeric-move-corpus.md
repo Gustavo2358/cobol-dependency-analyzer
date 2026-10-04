@@ -1,0 +1,81 @@
+# Prioridade 2 — inventário dos 73 programas
+
+Fonte: qualificação final de 2026-10-04. 7.015 ocorrências. Ordenação por MOVE_IDENTITY_NOT_PROVEN restante; diagnósticos e ocorrências são contagens distintas. As classes são obtidas conferindo operações AIR e suas origens, além do SP.
+
+| Fonte/variante | MOVEs | Precisos | Abstratos causais | Fronteira | Gaps MOVE |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `app/cbl/COCRDLIC.cbl` | 221 | 115 | 6 | 100 | 89 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COCRDLIC.cl2` | 221 | 115 | 6 | 100 | 89 |
+| `app/cbl/COACTUPC.cbl` | 577 | 435 | 52 | 90 | 81 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COACTUPC.cl2` | 577 | 436 | 52 | 89 | 81 |
+| `app/app-transaction-type-db2/cbl/COTRTLIC.cbl` | 187 | 111 | 6 | 70 | 65 |
+| `app/app-authorization-ims-db2-mq/cbl/COPAUS0C.cbl` | 229 | 182 | 6 | 41 | 39 |
+| `app/app-authorization-ims-db2-mq/cbl/COPAUS2C.cbl` | 40 | 0 | 0 | 40 | 39 |
+| `app/app-transaction-type-db2/cbl/COTRTUPC.cbl` | 98 | 58 | 4 | 36 | 30 |
+| `app/cbl/COCRDUPC.cbl` | 171 | 117 | 15 | 39 | 30 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COCRDUPC.cl2` | 171 | 117 | 15 | 39 | 30 |
+| `app/app-authorization-ims-db2-mq/cbl/COPAUA0C.cbl` | 155 | 123 | 1 | 31 | 29 |
+| `app/app-authorization-ims-db2-mq/cbl/COPAUS1C.cbl` | 95 | 47 | 0 | 48 | 23 |
+| `app/cbl/COCRDSLC.cbl` | 95 | 62 | 5 | 28 | 22 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COCRDSLC.cl2` | 95 | 62 | 5 | 28 | 22 |
+| `app/app-vsam-mq/cbl/COACCT01.cbl` | 119 | 91 | 8 | 20 | 20 |
+| `app/app-vsam-mq/cbl/CODATE01.cbl` | 102 | 75 | 8 | 19 | 19 |
+| `app/cbl/COACTVWC.cbl` | 113 | 90 | 4 | 19 | 17 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COACTVWC.cl2` | 113 | 90 | 4 | 19 | 17 |
+| `app/cbl/CBSTM03A.CBL` | 79 | 12 | 0 | 67 | 13 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBSTM03A.cbl` | 79 | 12 | 0 | 67 | 13 |
+| `app/cbl/CBACT01C.cbl` | 64 | 53 | 0 | 11 | 11 |
+| `app/cbl/CORPT00C.cbl` | 125 | 105 | 0 | 20 | 11 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CORPT00C.cl2` | 125 | 105 | 0 | 20 | 11 |
+| `app/cbl/COADM01C.cbl` | 45 | 35 | 1 | 9 | 8 |
+| `app/cbl/COBIL00C.cbl` | 98 | 85 | 3 | 10 | 8 |
+| `app/cbl/COMEN01C.cbl` | 53 | 43 | 1 | 9 | 8 |
+| `app/cbl/COTRN00C.cbl` | 178 | 166 | 3 | 9 | 8 |
+| `app/cbl/COTRN02C.cbl` | 173 | 159 | 5 | 9 | 8 |
+| `app/cbl/COUSR02C.cbl` | 80 | 71 | 0 | 9 | 8 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COBIL00C.cl2` | 98 | 85 | 3 | 10 | 8 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN00C.cl2` | 178 | 166 | 3 | 9 | 8 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN02C.cl2` | 173 | 159 | 5 | 9 | 8 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR02C.cl2` | 80 | 71 | 0 | 9 | 8 |
+| `app/cbl/COUSR03C.cbl` | 61 | 53 | 0 | 8 | 7 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COADM01C.cl2` | 43 | 34 | 1 | 8 | 7 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COMEN01C.cl2` | 47 | 38 | 1 | 8 | 7 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR03C.cl2` | 61 | 53 | 0 | 8 | 7 |
+| `app/cbl/CBSTM03B.CBL` | 6 | 0 | 0 | 6 | 6 |
+| `app/cbl/COUSR01C.cbl` | 58 | 51 | 0 | 7 | 6 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBSTM03B.cbl` | 6 | 0 | 0 | 6 | 6 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR01C.cl2` | 58 | 51 | 0 | 7 | 6 |
+| `app/cbl/CBEXPORT.cbl` | 77 | 72 | 0 | 5 | 5 |
+| `app/cbl/CBIMPORT.cbl` | 66 | 54 | 0 | 12 | 5 |
+| `app/cbl/CBTRN02C.cbl` | 127 | 119 | 1 | 7 | 5 |
+| `app/cbl/COTRN01C.cbl` | 57 | 51 | 0 | 6 | 5 |
+| `app/cbl/COUSR00C.cbl` | 173 | 164 | 3 | 6 | 5 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBTRN02C.cbl` | 127 | 119 | 1 | 7 | 5 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN01C.cl2` | 57 | 51 | 0 | 6 | 5 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR00C.cl2` | 173 | 164 | 3 | 6 | 5 |
+| `app/cbl/CBTRN03C.cbl` | 97 | 93 | 0 | 4 | 4 |
+| `app/cbl/COSGN00C.cbl` | 41 | 34 | 0 | 7 | 4 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBTRN03C.cbl` | 97 | 93 | 0 | 4 | 4 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COSGN00C.cl2` | 41 | 34 | 0 | 7 | 4 |
+| `app/app-transaction-type-db2/cbl/COBTUPDT.cbl` | 5 | 1 | 0 | 4 | 3 |
+| `app/cbl/CBACT02C.cbl` | 18 | 15 | 0 | 3 | 3 |
+| `app/cbl/CBACT03C.cbl` | 18 | 15 | 0 | 3 | 3 |
+| `app/cbl/CBACT04C.cbl` | 104 | 99 | 1 | 4 | 3 |
+| `app/cbl/CBCUS01C.cbl` | 18 | 15 | 0 | 3 | 3 |
+| `app/cbl/CBTRN01C.cbl` | 63 | 60 | 0 | 3 | 3 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBACT01C.cbl` | 18 | 15 | 0 | 3 | 3 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBACT02C.cbl` | 18 | 15 | 0 | 3 | 3 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBACT03C.cbl` | 18 | 15 | 0 | 3 | 3 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBACT04C.cbl` | 104 | 99 | 1 | 4 | 3 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBCUS01C.cbl` | 18 | 15 | 0 | 3 | 3 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CBTRN01C.cbl` | 63 | 60 | 0 | 3 | 3 |
+| `app/app-authorization-ims-db2-mq/cbl/DBUNLDGS.CBL` | 6 | 3 | 0 | 3 | 2 |
+| `app/app-authorization-ims-db2-mq/cbl/PAUDBLOD.CBL` | 6 | 3 | 0 | 3 | 2 |
+| `app/app-authorization-ims-db2-mq/cbl/PAUDBUNL.CBL` | 6 | 3 | 0 | 3 | 2 |
+| `app/cbl/CSUTLDTC.cbl` | 21 | 14 | 0 | 7 | 2 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/CSUTLDTC.cbl` | 21 | 14 | 2 | 5 | 2 |
+| `app/app-authorization-ims-db2-mq/cbl/CBPAUP0C.cbl` | 9 | 8 | 0 | 1 | 0 |
+| `app/cbl/COBSWAIT.cbl` | 1 | 0 | 1 | 0 | 0 |
+| `samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/SDSF.cbl` | 0 | 0 | 0 | 0 | 0 |
+
+SDSF é a variante sem MOVE; ela passou pelas quatro etapas e permanece no inventário.

@@ -71,9 +71,9 @@ class CallCheckpointW1ATest {
             () -> assertEquals(dataId, call.path("target").path("reference").path("wholeItemAccess").path("data")),
             () -> assertEquals("UNKNOWN", call.path("runtimeTarget").asText()),
             () -> assertEquals("PROGA", move.path("source").path("value").asText()),
-            () -> assertEquals("RIGHT_PAD_SPACE", move.path("textAdjustment").path("rule").asText()),
+            () -> assertEquals("RIGHT_FIT_SPACE", move.path("textAdjustment").path("rule").asText()),
             () -> assertEquals(8, move.path("textAdjustment").path("receiverExtent").asInt()),
-            () -> assertEquals("PROGA   ", move.path("textAdjustment").path("result").path("value").asText()),
+            () -> assertFalse(move.path("textAdjustment").has("result")),
             () -> assertTrue(move.path("textAdjustment").path("provenance").isObject()),
             () -> assertTrue(call.path("target").path("reference").path("provenance").isObject()));
     }
@@ -158,9 +158,9 @@ class CallCheckpointW1ATest {
         assertEquals("PROGA", x5.path("source").path("logicalValue").path("value").asText());
         var x8 = statement(publish(DYNAMIC, "dynamic-x8"), "MOVE");
         assertEquals("FITTED_TEXT", x8.path("copySemantics").asText());
-        var shorter = statement(publish(DYNAMIC.replace("X(8)", "X(3)"), "truncation-excluded"), "MOVE");
-        assertEquals("UNAVAILABLE", shorter.path("copySemantics").asText());
-        assertTrue(shorter.path("textAdjustment").isNull());
+        var shorter = statement(publish(DYNAMIC.replace("X(8)", "X(3)"), "truncation"), "MOVE");
+        assertEquals("FITTED_TEXT", shorter.path("copySemantics").asText());
+        assertEquals(3,shorter.path("textAdjustment").path("receiverExtent").asInt());
     }
     @Test void continuationCrossesKnownParagraphAndRemainsUnavailableAtUnitEnd() throws Exception {
         var cross=publish(DYNAMIC.replace("    GOBACK.", "NEXT-PARA.\n    GOBACK."),"continuation-paragraph");

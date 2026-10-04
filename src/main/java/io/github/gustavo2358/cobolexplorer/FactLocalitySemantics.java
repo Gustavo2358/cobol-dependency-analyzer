@@ -22,6 +22,7 @@ public final class FactLocalitySemantics {
             StorageLayoutSemantics storage) {
         var unit=frontend.compilationUnit().find(id).orElseThrow();var program=unit.program();
         var structure=StorageComponents.analyze(frontend,symbols,resolution).unit(id);var layout=storage.layout(id);
+        var integerShapes=NumericSemantics.shapes(structure);
         var positions=new HashMap<Integer,StorageComponents.Position>();structure.positions().forEach(p->positions.put(p.data().meta().id(),p));
         var allDeclarations=new HashMap<Integer,Ast.DataEntry>();var pending=new ArrayDeque<Ast.Node>();pending.add(program);
         while(!pending.isEmpty()){var n=pending.remove();if(n instanceof Ast.DataEntry d)allDeclarations.put(d.meta().id(),d);pending.addAll(Ast.children(n));}
@@ -29,6 +30,7 @@ public final class FactLocalitySemantics {
         for(var n:layout.nodes())if(!positions.containsKey(n.id().node()))positions.put(n.id().node(),new StorageComponents.Position(allDeclarations.get(n.id().node()),n.parent().map(StorageLayoutSemantics.Key::node),n.order(),rootForNode.get(n.id().node())));
         var coverage=new HashMap<Integer,SemanticCoverage.Finding>();frontend.coverageByProgramUnit().get(id).findings().forEach(f->coverage.put(f.astNodeId(),f));
         var shapes=new HashMap<Integer,StorageLayoutSemantics.Shape>();for(var p:positions.values())shapes.put(p.data().meta().id(),StorageLayoutSemantics.shape(p.data(),coverage,Set.of()));
+        var valueCells=StorageValueCells.analyze(structure,storage.sourceGeometry(id));
         var sections=new HashMap<Integer,Ast.Section>();
         var sectionEnds=new HashMap<Integer,Long>();var boundaryOrigins=new HashMap<Integer,Ast.SourceProvenance>();
         long procedureStart=program.divisions().stream().filter(d->d.divisionKind()==Ast.DivisionKind.PROCEDURE).mapToLong(d->start(d.meta().provenance())).min().orElse(end(program.meta().provenance().expanded()));
@@ -167,10 +169,11 @@ public final class FactLocalitySemantics {
                 var s=proof(proofs,ProofKind.SOURCE_SYNTAX,subject,region,StorageComponents.level(ast)>0,List.of(),List.of(),n.origin());
                 boolean text=wholeExact||shape.supported()&&shape.kind()==StorageLayoutSemantics.Kind.ELEMENTARY&&shape.leafExtent().filter(v->v.signum()>0).isPresent();
                 var header=proof(proofs,ProofKind.DECLARATION_CONTEXT,subject,region,true,List.of(s),declarationInputs.getOrDefault(subject,List.of()),n.origin());
-                var logical=proof(proofs,ProofKind.LOGICAL_TYPE,subject,region,text,List.of(s,header),List.of(),n.origin());
+                boolean integer=integerShapes.containsKey(nid);
+                var logical=proof(proofs,ProofKind.LOGICAL_TYPE,subject,region,text||integer,List.of(s,header),List.of(),n.origin());
                 var v=views.get(nid);
                 var physical=proof(proofs,ProofKind.PHYSICAL_VIEW,subject,region,v.offset().value().isPresent()&&v.extent().value().isPresent(),List.of(s,profile,ctx,closed),List.of(),n.origin());
-                fact(facts,FactKind.SOURCE_IDENTITY,subject,region,List.of(s));fact(facts,FactKind.LOGICAL_TEXT,subject,region,List.of(logical));
+                fact(facts,FactKind.SOURCE_IDENTITY,subject,region,List.of(s));fact(facts,integer?FactKind.LOGICAL_NUMBER:FactKind.LOGICAL_TEXT,subject,region,List.of(logical));
                 fact(facts,FactKind.PHYSICAL_VIEW,subject,region,List.of(physical));
                 String itemAlias=alias;
                 boolean itemIsolated=isolated;
@@ -187,13 +190,13 @@ public final class FactLocalitySemantics {
                             &&positions.get(at).data().clauses().stream().noneMatch(c->c instanceof Ast.OccursClause||c instanceof Ast.RedefinesClause);
                         independentPath.put(at,separate);
                     }
-                    boolean itemInventory=localAliases&&independentPath.get(nid);
+                    boolean itemInventory=localAliases&&(independentPath.get(nid)||valueCells.representative(nid).isPresent());
                     var inventory=proof(proofs,ProofKind.ALIAS_INVENTORY,subject,region,itemInventory,List.of(s),List.of(),n.origin());
                     itemAlias=proof(proofs,ProofKind.ALIAS_CLOSURE,subject,region,true,List.of(closed,inventory),List.of(),n.origin());
                     itemIsolated=allocated&&closure.getOrDefault(region,List.of()).isEmpty()&&itemInventory&&section!=null;
                 }
                 fact(facts,FactKind.LOCAL_CELL,subject,region,List.of(logical,itemAlias,allocation));
-                if(itemIsolated&&text&&declarationInputs.getOrDefault(subject,List.of()).isEmpty()&&!n.filler()&&n.entity().isPresent())cells.put(nid,node(wholeExact?exacts.get(nid):nid));
+                if(itemIsolated&&(text||integer)&&declarationInputs.getOrDefault(subject,List.of()).isEmpty()&&!n.filler()&&n.entity().isPresent())cells.put(nid,node(wholeExact?exacts.get(nid):valueCells.representative(nid).orElse(nid)));
             }
             var descendants=new HashMap<Integer,Set<String>>();
             if(!wholeExact)for(var cell:cells.entrySet()) {int current=cell.getKey();var visited=new HashSet<Integer>();
@@ -201,8 +204,9 @@ public final class FactLocalitySemantics {
                     var parent=positions.get(current).parent();if(parent.isEmpty())break;current=parent.orElseThrow();}}
             for(var n:ns) {
                 int nid=n.id().node();var exact=cells.getOrDefault(nid,"");
-                var targets=!exact.isEmpty()?List.of(exact):List.copyOf(descendants.getOrDefault(nid,Set.of()));
-                bindings.add(new Binding(node(nid),region,exact,targets,allocated&&exact.isEmpty()?List.of(region):List.of(),List.of(allocation)));
+                var targets=!exact.isEmpty()?List.of(exact):new TreeSet<>(descendants.getOrDefault(nid,Set.of()));
+                if(exact.isEmpty())for(int cell:valueCells.overlapping(nid,rootId))if(cells.containsKey(cell))targets.add(cells.get(cell));
+                bindings.add(new Binding(node(nid),region,exact,List.copyOf(targets),allocated&&exact.isEmpty()?List.of(region):List.of(),List.of(allocation)));
             }
         }
         return new FactDependencies("FRONTEND_FACT_DEPENDENCY_LOCALITY_R2",inputs,proofs,regions,facts,bindings);

@@ -24,7 +24,7 @@ class W1CompatibilityW2ATest {
             byte[] currentBytes = SemanticProductJsonWriter.serialize(port);
             var current = (ObjectNode) json.readTree(currentBytes);
             assertEquals("1.3.0", old.path("contractVersion").asText());
-            assertEquals("2.39.0", current.path("contractVersion").asText());
+            assertEquals("2.66.0", current.path("contractVersion").asText());
             assertEquals("UNAVAILABLE", current.path("storageIndependence").path("availability").asText());
             assertTrue(current.path("storageIndependence").path("members").isEmpty());
             for (var statement : current.path("statements")) if (statement.path("variant").asText().equals("MOVE")) {
@@ -34,8 +34,10 @@ class W1CompatibilityW2ATest {
                 ((ObjectNode) statement.path("source")).remove("variant");
             }
             for(var data:current.path("dataDeclarations")) {
-                assertTrue(data.path("scalarInteger").isNull(),"unrelated historical text declaration gains no integer proof");
-                ((ObjectNode)data).remove("scalarInteger");
+                assertTrue(data.path("scalarNumber").isNull(),"unrelated historical text declaration gains no integer proof");
+                ((ObjectNode)data).remove("scalarNumber");
+                assertTrue(data.path("scalarEdit").isNull(),"unrelated historical text declaration gains no editing descriptor");
+                ((ObjectNode)data).remove("scalarEdit");
             }
             assertEquals("UNSPECIFIED", current.path("storage").path("profile").asText());
             assertTrue(current.path("storage").path("nodes").isEmpty());
@@ -48,6 +50,15 @@ class W1CompatibilityW2ATest {
         assertEquals("FRONTEND_CONTROL_TOPOLOGY_R1", current.path("controlTopology").path("authority").asText());
         assertEquals(current.path("statements").size(), current.path("controlTopology").path("occurrences").size());
         ((com.fasterxml.jackson.databind.node.ObjectNode) current).remove("controlTopology");
+            // The current fitting rule also handles truncation. On these historical
+            // padding examples its source, extent and provenance remain identical.
+            // SP2.66 replaces the expanded result with the recipe tested by MoveTextFitTest.
+            for (var statement : old.path("statements")) {
+                var adjustment = statement.path("textAdjustment");
+                if(adjustment.isObject())((ObjectNode)adjustment).remove("result");
+                if (adjustment.path("rule").asText().equals("RIGHT_PAD_SPACE"))
+                    ((ObjectNode) adjustment).put("rule", "RIGHT_FIT_SPACE");
+            }
             current.remove("storage");
             current.remove("storageIndependence"); current.remove("contractVersion"); old.remove("contractVersion");
             assertEquals(old, current, name + ": all W1 facts, IDs, bindings, origins, provenance, fitting, gaps and readiness must match");

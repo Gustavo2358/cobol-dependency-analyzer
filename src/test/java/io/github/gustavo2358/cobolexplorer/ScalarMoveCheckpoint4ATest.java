@@ -53,7 +53,7 @@ class ScalarMoveCheckpoint4ATest {
     }
     // JSON-only assertions have no frontend joins and deliberately erase textual readiness.
     static void assertJson(JsonNode doc) {
-        assertEquals("2.39.0", doc.path("contractVersion").asText());
+        assertEquals("2.66.0", doc.path("contractVersion").asText());
         var data = doc.path("dataDeclarations").get(0);
         var statements = doc.path("statements");
         JsonNode move = null, goback = null;
@@ -87,21 +87,27 @@ class ScalarMoveCheckpoint4ATest {
             assertNotEquals(CopySemantics.FULL_IDENTITY, move.copySemantics());
             if (pair.get(0).equals("5")) {
                 assertEquals(CopySemantics.FITTED_TEXT, move.copySemantics());
-                assertEquals("ABC  ", move.textAdjustment().orElseThrow().result().value());
+                assertEquals("ABC  ", TextFitOracle.value(move));
                 assertEquals(CoverageStatus.MODELED, move.header().coverage());
             } else {
-                assertEquals(CopySemantics.UNAVAILABLE, move.copySemantics());
-                assertEquals(CoverageStatus.PARTIAL, move.header().coverage());
-                assertTrue(port.gaps().stream().anyMatch(g -> g.code().equals("MOVE_IDENTITY_NOT_PROVEN")));
+                assertEquals(CopySemantics.FITTED_TEXT, move.copySemantics());
+                assertEquals("ABC",TextFitOracle.value(move));
+                assertEquals(CoverageStatus.MODELED, move.header().coverage());
+                assertFalse(port.gaps().stream().anyMatch(g -> g.code().equals("MOVE_IDENTITY_NOT_PROVEN")));
             }
         }
     }
     @Test void categoriesDoNotFollowJavaStringOrQuotedPrefixes() {
-        for (String literal : List.of("12345", "SPACE", "ZERO", "N'PROGA'", "X'4142434445'", "Z'PROGA'")) {
+        for (String literal : List.of("12345", "N'PROGA'", "X'4142434445'", "Z'PROGA'")) {
             var move = publish(program("01 WS-X PIC X(5).", "MOVE " + literal + " TO WS-X.\nGOBACK.")).moves().get(0);
-            assertEquals(LiteralKind.UNKNOWN, ((LiteralSource) move.source()).kind(), literal);
-            assertTrue(((LiteralSource) move.source()).logicalValue().isEmpty(), literal);
-            assertEquals(CopySemantics.UNAVAILABLE, move.copySemantics(), literal);
+            assertEquals(literal.equals("12345")?LiteralKind.NUMERIC:LiteralKind.UNKNOWN, ((LiteralSource) move.source()).kind(), literal);
+            if(literal.equals("12345")) {
+                assertEquals("12345",((LiteralSource)move.source()).logicalValue().orElseThrow().value());
+                assertEquals(CopySemantics.FULL_IDENTITY,move.copySemantics());
+            } else {
+                assertTrue(((LiteralSource) move.source()).logicalValue().isEmpty(), literal);
+                assertEquals(CopySemantics.UNAVAILABLE, move.copySemantics(), literal);
+            }
         }
         var port = publish(program("01 WS-X PIC 9(5).", "MOVE 'PROGA' TO WS-X.\nGOBACK."));
         assertTrue(port.dataDeclarations().get(0).scalarText().isEmpty());
@@ -125,7 +131,7 @@ class ScalarMoveCheckpoint4ATest {
             assertTrue(port.moves().get(0).target().wholeItemAccess().isEmpty(), Arrays.toString(c));
             var possible=Set.of(2,3,4).contains(cases.indexOf(c));
             assertEquals(possible?CopySemantics.POSSIBLE_TEXT:CopySemantics.UNAVAILABLE, port.moves().get(0).copySemantics(), Arrays.toString(c));
-            if(possible){assertTrue(port.moves().get(0).target().logicalWholeItem().isPresent());assertEquals("PROGA",port.moves().get(0).textAdjustment().orElseThrow().result().value());}
+            if(possible){assertTrue(port.moves().get(0).target().logicalWholeItem().isPresent());assertEquals("PROGA",TextFitOracle.value(port.moves().get(0)));}
         }
         for (var storage : List.of("LINKAGE", "LOCAL-STORAGE")) {
             var port = publish(program("01 WS-X PIC X(5).", "MOVE 'PROGA' TO WS-X.\nGOBACK.").replace("WORKING-STORAGE", storage));
@@ -264,7 +270,7 @@ class ScalarMoveCheckpoint4ATest {
         var a = AstBoundaryTestSupport.analyze(Files.readString(fixture), fixture.getFileName().toString());
         var port = CobolSemanticProductProjector.open(products(a), a.model().programUnits().get(0).id());
         var current = mapper.readTree(SemanticProductJsonWriter.serialize(port));
-        assertEquals("2.39.0", current.path("contractVersion").asText());
+        assertEquals("2.66.0", current.path("contractVersion").asText());
         assertEquals("GOBACK", previous.path("statements").get(0).path("variant").asText());
         assertEquals("NONE", previous.path("statements").get(0).path("localContinuation").asText());
         ((com.fasterxml.jackson.databind.node.ObjectNode) previous).remove("contractVersion");

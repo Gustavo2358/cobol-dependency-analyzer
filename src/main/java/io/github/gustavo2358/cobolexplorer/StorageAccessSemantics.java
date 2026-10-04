@@ -1,6 +1,7 @@
 package io.github.gustavo2358.cobolexplorer;
 
 import java.util.*;
+import java.math.BigInteger;
 import static io.github.gustavo2358.cobolexplorer.StorageLayoutSemantics.*;
 
 /** Source-language access and exact MOVE facts over the prepared physical layout. */
@@ -14,10 +15,6 @@ public final class StorageAccessSemantics {
                        List<Integer> bytes,List<Reason> reasons,Ast.SourceProvenance origin) {
         public Move { bytes=List.copyOf(bytes);reasons=List.copyOf(reasons); }
     }
-    private final Map<Key,ResolutionContracts.SemanticEntityId> logicalWholeItems;
-    public Optional<ResolutionContracts.SemanticEntityId> logicalWholeItem(Key reference){return Optional.ofNullable(logicalWholeItems.get(reference));}
-    private final Map<Key,LogicalMoveSemantics.Fact> logicalMoves;
-    public Optional<LogicalMoveSemantics.Fact> logicalMove(Key statement){return Optional.ofNullable(logicalMoves.get(statement));}
     private final StorageLayoutSemantics layout;
     private final StorageInitialSemantics initial;
     private final FileIoMemory files;
@@ -41,7 +38,7 @@ public final class StorageAccessSemantics {
     private final Map<Key,StatementEffectSummary> effects;
     public Optional<StatementEffectSummary> effects(Key statement){return Optional.ofNullable(effects.get(statement));}
     public List<Move> sequence(Key statement) { return sequences.getOrDefault(statement,List.of()); }
-    private StorageAccessSemantics(StorageLayoutSemantics layout,Map<Key,List<Access>> alternatives,Map<Key,Access> accesses,Map<Key,Move> moves,Map<Key,List<Move>> sequences,Map<Key,StatementEffectSummary> effects,StorageInitialSemantics initial,FileIoMemory files,FileIoControl fileControl,FileSortControl fileSort,FileAuxiliarySemantics fileAuxiliary,Map<Key,ResolutionContracts.SemanticEntityId> logicalWholeItems,Map<Key,LogicalMoveSemantics.Fact> logicalMoves){this.logicalMoves=Map.copyOf(logicalMoves);this.logicalWholeItems=Map.copyOf(logicalWholeItems);this.fileAuxiliary=fileAuxiliary;this.fileSort=fileSort;this.fileControl=fileControl;this.files=files;this.fileEffects=FileIoEffects.analyze(files,layout);this.alternatives=Map.copyOf(alternatives);this.initial=initial;this.layout=layout;this.accesses=Map.copyOf(accesses);this.moves=Map.copyOf(moves);this.sequences=Map.copyOf(sequences);this.effects=Map.copyOf(effects);}
+    private StorageAccessSemantics(StorageLayoutSemantics layout,Map<Key,List<Access>> alternatives,Map<Key,Access> accesses,Map<Key,Move> moves,Map<Key,List<Move>> sequences,Map<Key,StatementEffectSummary> effects,StorageInitialSemantics initial,FileIoMemory files,FileIoControl fileControl,FileSortControl fileSort,FileAuxiliarySemantics fileAuxiliary){this.fileAuxiliary=fileAuxiliary;this.fileSort=fileSort;this.fileControl=fileControl;this.files=files;this.fileEffects=FileIoEffects.analyze(files,layout);this.alternatives=Map.copyOf(alternatives);this.initial=initial;this.layout=layout;this.accesses=Map.copyOf(accesses);this.moves=Map.copyOf(moves);this.sequences=Map.copyOf(sequences);this.effects=Map.copyOf(effects);}
     public Optional<Access> access(Key reference){return Optional.ofNullable(accesses.get(reference));}
     public Collection<Access> accesses(){return accesses.values();}
     public Collection<Move> moves(){return moves.values();}
@@ -58,10 +55,7 @@ public final class StorageAccessSemantics {
         if(!layout.belongsTo(frontend,resolution))throw new IllegalArgumentException("layout and binding proof belong to another snapshot");
         var bindings=new HashMap<Key,ReferenceResolution.Entry>();
         for(var entry:resolution.entries())bindings.put(new Key(entry.occurrence().programUnitId(),entry.occurrence().referenceAstNodeId()),entry);
-        var logicalReads=new HashMap<Key,Access>();var logicalWholeItems=new HashMap<Key,ResolutionContracts.SemanticEntityId>();
-        var logicalMoves=new HashMap<Key,LogicalMoveSemantics.Fact>();
-        var logicalViews=new HashMap<Key,LogicalView>();layout.logicalViews().forEach(v->logicalViews.put(v.node(),v));
-        var logicalNodes=new HashSet<Key>();layout.logicalViews().forEach(v->logicalNodes.add(v.node()));
+        var logicalReads=new HashMap<Key,Access>();
         var accesses=new LinkedHashMap<Key,Access>();var moves=new LinkedHashMap<Key,Move>();var sequences=new LinkedHashMap<Key,List<Move>>();
         var summaries=new LinkedHashMap<Key,StatementEffectSummary>();
         var alternatives=new LinkedHashMap<Key,List<Access>>();
@@ -102,7 +96,6 @@ public final class StorageAccessSemantics {
                         var entity=binding.selectedCandidate().orElseThrow().entityId();var view=byEntity.get(entity);
                         var role=role(binding.occurrence().role());
                         boolean sliced=reference.referenceModification()!=null;
-                        if(!sliced&&view!=null&&logicalNodes.contains(view.node()))logicalWholeItems.put(key,entity);
                         if(sliced)view=slice(view,reference.referenceModification(),physical.profile());
                         if(!sliced&&role==Role.READ&&view!=null&&view.textual()&&view.extent().value().filter(n->n.signum()>0).isPresent()
                                 &&nodes.get(view.node()).kind()==Kind.ELEMENTARY&&reference.meta().provenance().exact())
@@ -132,11 +125,11 @@ public final class StorageAccessSemantics {
             });
             for(var finding:frontend.coverageByProgramUnit().get(unit.id()).findings())coverage.put(finding.astNodeId(),finding);
             var correspondence=new StorageCorrespondence(declarations,nodes,physical,bases);
-            var logicalByEntity=new HashMap<ResolutionContracts.SemanticEntityId,LogicalView>();
-            for(var n:physical.nodes())if(logicalViews.containsKey(n.id()))n.entity().ifPresent(e->logicalByEntity.put(e,logicalViews.get(n.id())));
+            var editedReceivers=new HashSet<ResolutionContracts.SemanticEntityId>();
+            for(var n:physical.nodes())if(declarations.get(n.id())!=null&&declarations.get(n.id()).clauses().stream()
+                    .anyMatch(c->c instanceof Ast.PictureClause p&&p.edited().isPresent()))n.entity().ifPresent(editedReceivers::add);
             for(var node:moveNodes) {
                 var statement=new Key(unit.id(),node.meta().id());var finding=coverage.get(node.meta().id());
-                logicalMoves.put(statement,LogicalMoveSemantics.analyze(node,unit.id(),logicalWholeItems,logicalByEntity));
                 if(node.targets().isEmpty()||node.targets().stream().anyMatch(t->!(t instanceof Ast.DataReference))
                         ||finding==null||finding.coverage()!=SemanticCoverage.ConstructionCoverage.MODELED) {
                     moves.put(statement,new Move(statement,Optional.empty(),Optional.empty(),MoveKind.UNAVAILABLE,List.of(),List.of(Reason.MOVE_FORM_NOT_SUPPORTED),node.meta().provenance()));continue;
@@ -157,6 +150,10 @@ public final class StorageAccessSemantics {
                             &&!logical.view().base().equals(destination.get().view().base())&&bases.get(logical.view().base()).independent()
                             &&bases.get(destination.get().view().base()).independent())
                         effect=new Move(statement,destination,Optional.of(logical),MoveKind.LOGICAL_FIT_TEXT,List.of(),List.of(),node.meta().provenance());
+                    var targetBinding=bindings.get(new Key(unit.id(),target.meta().id()));
+                    if(target instanceof Ast.DataReference r&&r.referenceModification()==null&&targetBinding!=null
+                        &&targetBinding.selectedCandidate().map(c->editedReceivers.contains(c.entityId())).orElse(false))
+                        effect=new Move(statement,destination,source,MoveKind.UNAVAILABLE,List.of(),List.of(Reason.MOVE_FORM_NOT_SUPPORTED),node.meta().provenance());
                     effects.add(effect);
                 }
                 // A receiver may invalidate all later source reads. Never publish concrete
@@ -167,7 +164,7 @@ public final class StorageAccessSemantics {
             }
         }
         var files=FileIoMemory.analyze(frontend,resolution,layout,accesses);
-        return new StorageAccessSemantics(layout,alternatives,accesses,moves,sequences,summaries,StorageInitialSemantics.analyze(frontend,resolution,layout,mode,accesses,sequences,summaries,cics,files),files,FileIoControl.analyze(frontend,resolution,files),FileSortControl.analyze(frontend,resolution,layout,files),FileAuxiliarySemantics.analyze(frontend,resolution,layout.symbolTables()),logicalWholeItems,logicalMoves);
+        return new StorageAccessSemantics(layout,alternatives,accesses,moves,sequences,summaries,StorageInitialSemantics.analyze(frontend,resolution,layout,mode,accesses,sequences,summaries,cics,files),files,FileIoControl.analyze(frontend,resolution,files),FileSortControl.analyze(frontend,resolution,layout,files),FileAuxiliarySemantics.analyze(frontend,resolution,layout.symbolTables()));
     }
     private static Move effect(Key statement,Optional<Access> destination,Optional<Access> source,Ast.Expression expression,
             Profile profile,Map<Key,Base> bases,Ast.SourceProvenance origin) {
@@ -181,7 +178,7 @@ public final class StorageAccessSemantics {
                 // The emitted byte vector has the same intrinsic JVM collection-size
                 // representability as the source inventory, with no configurable cap.
                 var fitted=new ArrayList<Integer>();int length=size.intValueExact();
-                for(int i=0;i<length;i++)fitted.add(i<encoded.get().size()?encoded.get().get(i):0x40);
+                for(int i=0;i<length;i++)fitted.add(LogicalMoveSemantics.zero(expression)?encoded.get().get(0):i<encoded.get().size()?encoded.get().get(i):0x40);
                 kind=length==encoded.get().size()?MoveKind.LITERAL_BYTES:MoveKind.FITTED_LITERAL_BYTES;bytes=List.copyOf(fitted);
             }
         } else if(source.isPresent()) {
@@ -197,11 +194,14 @@ public final class StorageAccessSemantics {
         if(profile!=Profile.IBM_ENTERPRISE_6_4_FIXED_DISPLAY_1047||view==null||!view.textual()
                 ||view.offset().value().isEmpty()||view.extent().value().isEmpty()
                 ||!(modification.offset() instanceof Ast.LiteralExpression position)
-                ||!(modification.length() instanceof Ast.LiteralExpression length)
-                ||position.integerValue().isEmpty()||length.integerValue().isEmpty())return null;
-        var p=position.integerValue().get();var n=length.integerValue().get();
-        if(p.signum()<=0||n.signum()<=0||p.subtract(java.math.BigInteger.ONE).add(n).compareTo(view.extent().value().get())>0)return null;
-        return new View(view.node(),view.base(),Measure.known(view.offset().value().get().add(p).subtract(java.math.BigInteger.ONE)),Measure.known(n),true,view.origin());
+                ||position.integerValue().isEmpty())return null;
+        var p=position.integerValue().orElseThrow();
+        BigInteger n;
+        if(modification.length()==null)n=view.extent().value().orElseThrow().add(BigInteger.ONE).subtract(p);
+        else if(modification.length() instanceof Ast.LiteralExpression length&&length.integerValue().isPresent())n=length.integerValue().orElseThrow();
+        else return null;
+        if(p.signum()<=0||n.signum()<=0||p.subtract(BigInteger.ONE).add(n).compareTo(view.extent().value().orElseThrow())>0)return null;
+        return new View(view.node(),view.base(),Measure.known(view.offset().value().orElseThrow().add(p).subtract(BigInteger.ONE)),Measure.known(n),true,view.origin());
     }
     private record Visit(Ast.Node node,Ast.Statement owner) { }
     private static Role role(ResolutionContracts.ReferenceRole role) {

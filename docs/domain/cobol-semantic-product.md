@@ -904,3 +904,48 @@ gaps do not substitute for nominal gaps. Literal targets, ambiguous candidates,
 read/write roles and existing physical/control proof remain unchanged.
 `CicsNominalGapTest` covers unresolved/ambiguous names, missing input and isolation
 between statements.
+
+
+## Gaps atuais — SP 2.63
+
+SP 2.63 introduziu a regra para publicações com `controlTopology`. A obrigação de um gap localizado
+pode ser satisfeita pela prova positiva atual correspondente: membership,
+invocação de PERFORM ou NO_OP com controle local fechado. O predicado textual
+validado dispensa o gap de predicado indisponível. Perfis especializados continuam
+limitados; suas restrições de isolamento não são gaps da análise composicional.
+
+Esta regra substitui as exigências históricas acima de gap incondicional para
+OBSERVED ou containment UNKNOWN. Gaps de input, literal desconhecido, binding e
+runtime mantêm suas obrigações próprias. [Contrato atual e limites](active-gaps.md).
+
+
+## Condições 88 e SET — SP 2.64
+
+A versão 2.64.0 introduziu esta capacidade. `conditionNames` publica definições e usos
+nominais de 88, valores/intervalos, árvores de predicados e atribuições SET
+ordenadas. A semântica fica nos fatos canônicos do frontend; projector e consumidor
+somente traduzem esses fatos. Os 88 não alocam armazenamento nem tornam seu pai
+um grupo. Gaps redundantes de capability são satisfeitos por essas provas;
+obrigações independentes de input, controle, binding e runtime permanecem.
+
+[Contrato, regras, limites e complexidade](condition-names.md).
+
+## Tipos e transferências MOVE — SP 2.66
+
+A versão corrente é **2.66.0**. `scalarNumber` substitui `scalarInteger` com
+precisão, escala, sinal, representação e TRUNC explícitos. `numericTransfers`
+substitui `integerTransfers`: `{target, value}` conserva a ordem de receptores;
+value ausente representa leitura DATA ou resultado binário indeterminado.
+O consumidor usa um único caminho numérico. Tipo conhecido não concede célula,
+endereço exato, validade de representação ou valor inicial.
+
+As provas tipadas cobrem números DISPLAY/PACKED/BINARY/COMP-5, fitting e edição
+textual, literais/figurativos e acessos lógicos admitidos. Ajustes textuais são
+simbólicos (`rule`, `extent`); não expandem a PICTURE. Leituras compartilhadas
+exigem seus bounds e precondições próprios. Ausência de TRUNC conserva resultado
+aberto quando não há valor comum; não seleciona uma opção implicitamente.
+
+Fatos e gaps seguem sendo a lista canônica de obrigações atuais. Provas de valor
+não substituem as de armazenamento ou controle; missing input e fronteiras de
+modelagem permanecem explícitos. Regras, formatos, limites, complexidade e
+oracles: [MOVE numérico](numeric-move.md) e [escopo qualificado](../work/numeric-move-full.md).

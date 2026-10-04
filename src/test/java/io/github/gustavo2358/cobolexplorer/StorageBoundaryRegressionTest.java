@@ -29,7 +29,7 @@ class StorageBoundaryRegressionTest {
         for(var profile:StorageLayoutSemantics.Profile.values())for(var missing:List.of("UNDECLARED","FOREIGN-FIELD")) {
             var p=publish("01 OTHER-RECORD.\n05 FOREIGN-FIELD PIC X(8).\n01 AFFECTED-RECORD.\n05 BAD-VIEW REDEFINES "+missing+" PIC X(8).\n01 INDEPENDENT PIC X(8).",profile);
             var bad=p.dataDeclarations().stream().filter(d->d.canonicalName().equals("BAD-VIEW")).findFirst().orElseThrow();
-            assertTrue(bad.scalarText().isEmpty());assertTrue(bad.scalarInteger().isEmpty());
+            assertTrue(bad.scalarText().isEmpty());assertTrue(bad.scalarNumber().isEmpty());
             var node=p.storage().nodes().stream().filter(n->n.data().equals(Optional.of(bad.id()))).findFirst().orElseThrow();
             assertTrue(p.storage().logicalExactViews().stream().noneMatch(v->v.node().equals(node.id())));
             assertTrue(p.storage().relations().stream().anyMatch(r->r.status()==StorageRelationStatus.UNPROVEN));

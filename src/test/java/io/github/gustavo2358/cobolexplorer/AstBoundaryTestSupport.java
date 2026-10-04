@@ -80,7 +80,7 @@ final class AstBoundaryTestSupport {
                     .collect(unit.id(), unit.program(), scopeIndex));
         }
         ReferenceResolution resolution = new CobolReferenceResolver(
-                ResolutionContracts.CobolResolutionPolicy.initial())
+                ResolutionContracts.CobolResolutionPolicy.initial().withTruncMode(preprocessing.truncMode()))
                 .resolve(model, tables, occurrences);
         SemanticProductIntegrityValidator.validate(model, tables, scopes, occurrences, resolution);
         ResolutionAnalysisReport report = ResolutionAnalysisReport.compose(build,
