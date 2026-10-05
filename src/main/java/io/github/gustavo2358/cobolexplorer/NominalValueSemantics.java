@@ -104,6 +104,7 @@ public final class NominalValueSemantics {
             }
             return Optional.of(alternatives.size()==1?alternatives.get(0):new NominalValues.Predicate("OR",List.of(),alternatives));
         }
+        if(!Set.of("NOT","AND","OR").contains(tree.kind()))return Optional.empty();
         var children=new ArrayList<NominalValues.Predicate>();
         for(var child:tree.children()){var p=conditionPredicate(child,uses,nodes);if(p.isEmpty())return Optional.empty();children.add(p.get());}
         return Optional.of(new NominalValues.Predicate(tree.kind(),List.of(),children));

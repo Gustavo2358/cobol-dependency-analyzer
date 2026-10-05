@@ -28,7 +28,7 @@ class MultiCallProgramTest {
                 assertEquals(Optional.empty(), last.normalContinuation().statement());
             }
             var bytes = SemanticProductJsonWriter.serialize(port);
-            assertEquals("2.66.0", new ObjectMapper().readTree(bytes).path("contractVersion").asText());
+            assertEquals("2.67.0", new ObjectMapper().readTree(bytes).path("contractVersion").asText());
             assertArrayEquals(bytes, SemanticProductJsonWriter.serialize(ScalarMoveCheckpoint4ATest.publish(source(n))));
             var out = Path.of("target/multi-call"); Files.createDirectories(out); Files.write(out.resolve("fixture-" + n + ".json"), bytes);
         }

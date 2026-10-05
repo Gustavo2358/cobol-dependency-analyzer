@@ -40,7 +40,7 @@ class ConditionNameSemanticsTest {
         assertEquals(Set.of("IF","EVALUATE_WHEN/0","PERFORM_UNTIL/0"),facts.predicates().stream().map(x->x.role()).collect(java.util.stream.Collectors.toSet()));
         assertTrue(facts.predicates().stream().allMatch(x->x.tree().complete()));
         var json=new com.fasterxml.jackson.databind.ObjectMapper().readTree(io.github.gustavo2358.cobolexplorer.semanticproduct.transport.SemanticProductJsonWriter.serialize(p));
-        assertEquals("2.66.0",json.path("contractVersion").asText());
+        assertEquals("2.67.0",json.path("contractVersion").asText());
         assertEquals(4,json.path("conditionNames").path("uses").size());
     }
     @Test void publishesLinkageAndQualifiedTableParentsWithoutAllocatingBooleanCells() {
@@ -52,16 +52,16 @@ class ConditionNameSemanticsTest {
         assertEquals(1,facts.assignments().size());
         assertTrue(facts.definitions().stream().allMatch(d->d.parent().startsWith("data:")));
     }
-    @Test void unknownSiblingDoesNotEraseModeledConditionAndOrderedSetsDischargeOnlyTheirGap() {
+    @Test void modeledScalarSiblingAndOrderedSetsPreserveTheirSemantics() {
         var a=AstBoundaryTestSupport.analyze(ScalarMoveCheckpoint4ATest.program(
             "01 FLAG-A PIC X.\n88 ACTIVE-A VALUE 'Y'.\n01 COUNT-A PIC 9.",
             "SET ACTIVE-A TO TRUE.\nIF ACTIVE-A AND COUNT-A > 3 CONTINUE END-IF.\nGOBACK."),"mixed.cbl");
         var p=EofUnitBoundaryTest.publish(a,0,StorageLayoutSemantics.Profile.UNSPECIFIED);var facts=p.conditionNames().orElseThrow();
-        assertFalse(facts.predicates().get(0).tree().complete());
+        assertTrue(facts.predicates().get(0).tree().complete());
         assertEquals(2,facts.uses().size());
         assertFalse(p.gaps().stream().anyMatch(g->g.code().equals("CONDITION_REFERENCE_KIND_NOT_PROJECTED")));
         assertFalse(p.gaps().stream().anyMatch(g->g.code().equals("OBSERVED_STATEMENT_UNSUPPORTED")));
-        assertTrue(p.gaps().stream().anyMatch(g->g.code().equals("CONDITION_SEMANTICS_NOT_AVAILABLE")));
+        assertFalse(p.gaps().stream().anyMatch(g->g.code().equals("CONDITION_SEMANTICS_NOT_AVAILABLE")));
     }
     @Test void incompleteInputRetainsEvaluateConditionsAndExplicitArmMembership() {
         var a=AstBoundaryTestSupport.analyze(ScalarMoveCheckpoint4ATest.program(
@@ -109,7 +109,7 @@ class ConditionNameSemanticsTest {
         assertEquals(2,names.predicates().size());
         for(var predicate:names.predicates()) {
             var tree=predicate.tree();assertEquals("OR",tree.kind());
-            assertEquals("UNKNOWN",tree.children().get(0).kind());
+            assertEquals("GT",tree.children().get(0).kind());
             var tail=tree.children().get(1);
             if(predicate.role().equals("IF")){assertEquals("NOT",tail.kind());tail=tail.children().get(0);}
             assertEquals("TEST",tail.kind());

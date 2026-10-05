@@ -9,7 +9,7 @@ class NumericMoveSemanticsTest {
     }
     @Test void logicalIntegersUseLocalProofsInsideGroupsAndWithValue() throws Exception {
         var p=publish("01 REC-A.\n05 COUNT-A PIC 99 VALUE 12.\n05 COUNT-B PIC 9(4).", "MOVE 12 TO COUNT-A.\nMOVE COUNT-A OF REC-A TO COUNT-B.\nGOBACK.");
-        assertEquals("2.66.0",p.path("contractVersion").asText());
+        assertEquals("2.67.0",p.path("contractVersion").asText());
         int transfers=0;for(var s:p.path("statements"))transfers+=s.path("numericTransfers").size();
         assertEquals(2,transfers);
         assertFalse(p.path("gaps").toString().contains("LITERAL_KIND_NOT_PUBLISHED"));

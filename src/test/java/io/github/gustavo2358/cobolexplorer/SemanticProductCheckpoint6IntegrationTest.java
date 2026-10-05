@@ -220,7 +220,7 @@ class SemanticProductCheckpoint6IntegrationTest {
 
         assertEquals(3, audit.gaps().stream().filter(gap ->
                 gap.scope() == CobolSemanticProduct.GapScope.RUNTIME_CALL_TARGET).count());
-        assertEquals(3, audit.gaps().stream().filter(gap ->
+        assertEquals(0, audit.gaps().stream().filter(gap ->
                 gap.scope() == CobolSemanticProduct.GapScope.CONDITION_SEMANTICS
                         && gap.code().equals("CONDITION_SEMANTICS_NOT_AVAILABLE")).count());
         assertEquals(1, audit.gaps().stream().filter(gap ->

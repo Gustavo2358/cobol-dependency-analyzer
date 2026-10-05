@@ -307,10 +307,10 @@ class SemanticProductStatementInventoryTest {
                         "BRANCH_CONTENT_NOT_PROJECTED")),
                 () -> assertFalse(hasGap(elseProjection.port(), elseIf.header().id(),
                         "BRANCH_CONTENT_NOT_PROJECTED")),
-                () -> assertTrue(thenProjection.port().gaps().stream().anyMatch(gap ->
+                () -> assertFalse(thenProjection.port().gaps().stream().anyMatch(gap ->
                         gap.statement().equals(thenIf.header().id())
                                 && gap.code().equals("CONDITION_SEMANTICS_NOT_AVAILABLE"))),
-                () -> assertTrue(elseProjection.port().gaps().stream().anyMatch(gap ->
+                () -> assertFalse(elseProjection.port().gaps().stream().anyMatch(gap ->
                         gap.statement().equals(elseIf.header().id())
                                 && gap.code().equals("CONDITION_SEMANTICS_NOT_AVAILABLE"))),
                 () -> assertEquals(CobolSemanticProduct.ReadinessStatus.SUFFICIENT,
@@ -555,7 +555,9 @@ class SemanticProductStatementInventoryTest {
                 continue;
             boolean noOp = statement instanceof CobolSemanticProduct.ObservedStatement o
                 && o.effects().filter(e -> e.proof() == CobolSemanticProduct.EffectProof.NO_OP).isPresent();
-            assertTrue(noOp || state.gaps().stream().anyMatch(gap ->
+            boolean scalar=state.conditionNames().stream().flatMap(c->c.predicates().stream()).anyMatch(p->p.role().equals("IF")&&p.statement().equals("statement:"+statement.header().id().localId())&&p.tree().complete())
+                &&new io.github.gustavo2358.cobolexplorer.semanticproduct.DiagnosticEvidence(state.controlTopology()).localControl("statement:"+statement.header().id().localId());
+            assertTrue(noOp || scalar || state.gaps().stream().anyMatch(gap ->
                             gap.statement().equals(statement.header().id())),
                     () -> "missing localized reason for " + statement.header().id());
         }

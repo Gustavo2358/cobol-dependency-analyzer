@@ -24,6 +24,17 @@ class DirectCobolParserTest {
         assertEquals(a.result().ast().diagnosticsByProgramUnit(),b.result().ast().diagnosticsByProgramUnit(),label+": semantic diagnostics");
     }
     private static String program(String body){return "IDENTIFICATION DIVISION. PROGRAM-ID. LAB. DATA DIVISION. WORKING-STORAGE SECTION. 01 X PIC 9. 01 T. 02 ITEM PIC X OCCURS 3. PROCEDURE DIVISION. "+body+" END PROGRAM LAB.";}
+
+    @Test void scalarPredicateActionsAgreeAcrossParserRoutes() {
+        for(var body:List.of("IF X NOT > 3 OR NOT 5 CONTINUE END-IF.",
+            "IF X > (1 OR 3 AND 5) CONTINUE END-IF.",
+            "EVALUATE TRUE WHEN X > 3 AND X < 8 CONTINUE END-EVALUATE.",
+            "EVALUATE X WHEN 1 THRU 3 CONTINUE END-EVALUATE.",
+            "EVALUATE X WHEN ANY CONTINUE END-EVALUATE.")) {
+            var source=SourceMap.identity(program(body),"test.cbl");var nativeResult=parse(source,"direct-ast-lab");
+            assertEquals("native",nativeResult.result().route());equivalent(parse(source,"antlr"),nativeResult,body);
+        }
+    }
     @Test void nativePathPreservesAmbiguousGrammarDecisions(){
         for(String body:List.of("COMPUTE X = FUNCTION DATE-OF-INTEGER(FUNCTION INTEGER-OF-DATE(X) - 1).",
             "MOVE FUNCTION TRIM(ITEM(X)) TO ITEM(1).",

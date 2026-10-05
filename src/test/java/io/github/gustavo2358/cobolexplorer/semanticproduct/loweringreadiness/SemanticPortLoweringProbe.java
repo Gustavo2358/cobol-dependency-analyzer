@@ -167,8 +167,15 @@ public final class SemanticPortLoweringProbe {
             CobolSemanticProduct.StatementHeader header = fact.header();
             CobolSemanticProduct.StatementId id = header.id();
             List<CobolSemanticProduct.Gap> localized = gaps.getOrDefault(id, List.of());
+            // The shared source predicate closes the capability gap independently of
+            // the frozen legacy IF profile. It does not grant executable readiness.
+            boolean sourcePredicate = fact instanceof CobolSemanticProduct.IfFact
+                    && port.conditionNames().stream().flatMap(c -> c.predicates().stream())
+                        .anyMatch(p -> p.role().equals("IF")
+                                && p.statement().equals("statement:" + id.localId())
+                                && p.tree().complete());
             if (header.coverage() != CobolSemanticProduct.CoverageStatus.MODELED
-                    && localized.isEmpty())
+                    && localized.isEmpty() && !sourcePredicate)
                 at(violations, "INCOMPLETE_FACT_WITHOUT_GAP", id,
                         "non-modeled fact lost its localized uncertainty");
             if (header.containment().branch() == CobolSemanticProduct.Branch.UNKNOWN) {

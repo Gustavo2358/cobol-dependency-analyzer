@@ -384,6 +384,8 @@ class ArchitectureBoundaryTest {
 
     private static boolean isLoweringProbeBoundaryType(String reference) {
         return reference.equals(SEMANTIC_PORT_INTERNAL)
+                || reference.equals("io/github/gustavo2358/cobolexplorer/semanticproduct/ConditionNames")
+                || reference.startsWith("io/github/gustavo2358/cobolexplorer/semanticproduct/ConditionNames$")
                 || reference.equals(SEMANTIC_PRODUCT_INTERNAL)
                 || reference.startsWith(SEMANTIC_PRODUCT_INTERNAL + '$')
                 || reference.equals(LOWERING_PROBE_INTERNAL)
