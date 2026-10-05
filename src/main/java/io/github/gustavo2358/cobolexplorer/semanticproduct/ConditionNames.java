@@ -38,7 +38,7 @@ public record ConditionNames(List<Definition> definitions,List<Use> uses,List<As
                 case "BOOL"->Set.of("true","false").contains(use)&&children.isEmpty();
                 case "SPACES","ZERO","LOW_VALUES","HIGH_VALUES"->use.isEmpty()&&children.isEmpty();
                 case "EQ","NE","LT","LE","GT","GE"->use.isEmpty()&&children.size()==2&&children.stream().allMatch(Tree::valueTerm);
-                case "UNKNOWN"->Set.of("","PURE").contains(use)&&children.stream().allMatch(c->c.kind().equals("READ"));case "NOT"->use.isEmpty()&&children.size()==1&&children.get(0).booleanTerm();case "AND","OR"->use.isEmpty()&&children.size()>=2&&children.stream().allMatch(Tree::booleanTerm);default->false;},"condition tree shape");if(kind.equals("NUMBER"))new java.math.BigDecimal(use);}
+                case "UNKNOWN"->Set.of("","PURE","READS_OPEN").contains(use)&&children.stream().allMatch(c->c.kind().equals("READ"));case "NOT"->use.isEmpty()&&children.size()==1&&children.get(0).booleanTerm();case "AND","OR"->use.isEmpty()&&children.size()>=2&&children.stream().allMatch(Tree::booleanTerm);default->false;},"condition tree shape");if(kind.equals("NUMBER"))new java.math.BigDecimal(use);}
         public boolean booleanTerm(){return Set.of("TEST","UNKNOWN","BOOL","NOT","AND","OR","EQ","NE","LT","LE","GT","GE").contains(kind);}
         public boolean valueTerm(){return Set.of("READ","NUMBER","TEXT","SPACES","ZERO","LOW_VALUES","HIGH_VALUES","BOOL").contains(kind);}
         public boolean complete(){var todo=new ArrayDeque<Tree>();todo.add(this);while(!todo.isEmpty()){var t=todo.removeFirst();if(t.kind().equals("UNKNOWN"))return false;todo.addAll(t.children());}return true;}

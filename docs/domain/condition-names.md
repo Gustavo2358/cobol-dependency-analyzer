@@ -66,7 +66,7 @@ A validação fecha identidades, papéis, statement proprietário, binding ao pa
 provenance da variável e valor de SET. A árvore não aceita um uso WRITE como teste.
 Um SET só satisfaz a obrigação de capability quando todos os seus destinos e sua
 ordem correspondem às referências publicadas; input e controle têm provas próprias.
-O produtor escreve uma única versão atual, 2.64.0, sem selecionar versões antigas
+O produtor escreve uma única versão atual, 2.67.0, sem selecionar versões antigas
 por combinação de capabilities.
 
 EVALUATE publica sua estrutura tipada também com input parcial. Seus seletores
@@ -82,7 +82,9 @@ sintática impede que FALSE seja consumido como mais um valor verdadeiro.
 
 Os 88 deixam de ser uma categoria sem modelagem de origem. Isso não fornece
 valores de entrada, codecs físicos, collation, índices concretos nem localização
-para LINKAGE. Um predicado misto mantém UNKNOWN para seus outros termos. O lower
+para LINKAGE. Predicados mistos compartilham relações escalares e leituras desde SP 2.67;
+os termos fora da capacidade preservam UNKNOWN e suas leituras disponíveis.
+Ver [predicados do checkpoint 3](checkpoint3-predicates.md). O lower
 emite comparações/atribuições quando suas provas de acesso permitem; nas demais
 situações publica incerteza localizada, mantendo os fatos de origem e dependências.
 

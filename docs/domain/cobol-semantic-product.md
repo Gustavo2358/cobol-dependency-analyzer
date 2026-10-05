@@ -955,7 +955,9 @@ oracles: [MOVE numérico](numeric-move.md) e [escopo qualificado](../work/numeri
 A versão corrente é **2.67.0**. O facet `conditionNames` conserva seu nome e
 seus fatos 88/SET; sua árvore agora inclui READ (operando do mesmo statement),
 NUMBER/TEXT/BOOL/figurativas e EQ/NE/LT/LE/GT/GE. READ e TEST conservam seus
-reads de endereço como filhos READ. UNKNOWN conserva reads conhecidos; use=PURE
+reads de endereço como filhos READ. UNKNOWN conserva reads conhecidos; use=READS_OPEN
+distingue uma expressão de leitura sem fechamento de referências/endereços de uma
+superfície sem prova de efeitos; não concede pureza/totalidade executável. use=PURE
 certifica somente pureza e fechamento dos reads, sem afirmar verdade ou acesso.
 IF, EVALUATE_WHEN e PERFORM_UNTIL compartilham a normalização após binding.
 O lower valida cada prova de acesso e domínio separadamente.

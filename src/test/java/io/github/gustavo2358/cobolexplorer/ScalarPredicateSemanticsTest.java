@@ -54,4 +54,10 @@ class ScalarPredicateSemanticsTest {
         assertEquals("UNKNOWN",other.kind());assertEquals("READ",other.children().get(0).kind());
     }
 
+    @Test void missingBindingKeepsReadOnlyEffectsSeparateFromOpenReads() {
+        var p=predicates("01 FLAG-A PIC X.","IF FLAG-A = 'Y' AND MISSING-A = 1 CONTINUE END-IF.");
+        var tree=p.get(0).tree();assertEquals("AND",tree.kind());
+        assertEquals("READS_OPEN",tree.children().get(1).use());
+        assertEquals("READ",tree.children().get(0).children().get(0).kind());
+    }
 }

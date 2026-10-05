@@ -24,7 +24,7 @@ final class ScalarPredicateSemantics {
             return new Result(new Tree(l.connector().name(),"",children),state);
         }
         Ast.DataReference nominal=e instanceof Ast.DataReference r?r:e instanceof Ast.ContextualConditionTail t?t.nominalReference():null;
-        if(nominal!=null&&names.containsKey(nominal.meta().id()))return new Result(new Tree("TEST","condition-use:"+nominal.meta().id(),addresses(nominal)),State.CLOSED);
+        if(nominal!=null&&names.containsKey(nominal.meta().id()))return new Result(pureEffects(nominal)?new Tree("TEST","condition-use:"+nominal.meta().id(),addresses(nominal)):unavailable(nominal),State.CLOSED);
         if(e instanceof Ast.RelationCondition relation){
             var subject=relation.subject()==null?state.subject():relation.subject();
             var operator=relation.relationalOperator()==null?state.operator():relation.operatorKind();
@@ -47,6 +47,7 @@ final class ScalarPredicateSemantics {
     private Tree compare(Ast.Expression subject,Ast.RelationOperator operator,Ast.Expression object) {
         String kind=switch(operator){case EQUAL->"EQ";case NOT_EQUAL->"NE";case LESS->"LT";case LESS_EQUAL->"LE";case GREATER->"GT";case GREATER_EQUAL->"GE";default->null;};
         if(subject==null||kind==null)return unavailable(object);
+        if(!pureEffects(subject)||!pureEffects(object))return unavailable(subject,object);
         if(object instanceof Ast.DistributedOperandGroup group){
             if(group.operands().size()!=group.connectors().size()+1)return unknown();
             var disjunction=new ArrayList<Tree>();var conjunction=new ArrayList<Tree>();
@@ -63,16 +64,18 @@ final class ScalarPredicateSemantics {
         var reads=new ArrayList<Tree>();var seen=new HashSet<Integer>();var todo=new ArrayDeque<Ast.Node>();
         for(var expression:expressions)if(expression!=null)todo.add(expression);
         while(!todo.isEmpty()){var n=todo.removeFirst();if(n instanceof Ast.DataReference r&&seen.add(r.meta().id())&&data.contains(r.meta().id())){var read=value(r);if(read!=null)reads.add(read);}else Ast.children(n).forEach(todo::add);}
-        return new Tree("UNKNOWN",Arrays.stream(expressions).allMatch(this::pure)?"PURE":"",reads);
+        return new Tree("UNKNOWN",Arrays.stream(expressions).allMatch(this::pure)?"PURE":Arrays.stream(expressions).allMatch(this::pureEffects)?"READS_OPEN":"",reads);
     }
-    private boolean pure(Ast.Expression expression) {
+    private boolean pure(Ast.Expression expression) {return pure(expression,true);}
+    private boolean pureEffects(Ast.Expression expression) {return pure(expression,false);}
+    private boolean pure(Ast.Expression expression,boolean requireBinding) {
         if(expression==null)return false;
         var todo=new ArrayDeque<Ast.Node>();todo.add(expression);
         while(!todo.isEmpty()) {
             var n=todo.removeFirst();
             if(n instanceof Ast.FunctionExpression||n instanceof Ast.RawExpression||n instanceof Ast.PreservedExpression)return false;
             if(n instanceof Ast.OperationExpression op&&!Set.of("+","-","*","GROUP").contains(op.operator()))return false;
-            if(n instanceof Ast.DataReference r&&(r.understanding()!=Ast.ReferenceUnderstanding.STRUCTURED||!data.contains(r.meta().id())))return false;
+            if(n instanceof Ast.DataReference r&&(r.understanding()!=Ast.ReferenceUnderstanding.STRUCTURED||requireBinding&&!data.contains(r.meta().id())))return false;
             Ast.children(n).forEach(todo::add);
         }
         return true;

@@ -227,7 +227,7 @@ class CobolSemanticProductProjectorTest {
         assertFalse(port.gaps().stream().anyMatch(gap ->
                 gap.code().equals("BRANCH_CONTENT_NOT_PROJECTED")),
                 "the fixture has no unprojected direct IF child; its empty ELSE is genuine");
-        assertEquals(3, port.gaps().stream().filter(gap ->
+        assertEquals(0, port.gaps().stream().filter(gap ->
                 gap.scope() == CobolSemanticProduct.GapScope.CONDITION_SEMANTICS
                         && gap.code().equals("CONDITION_SEMANTICS_NOT_AVAILABLE")).count());
 
