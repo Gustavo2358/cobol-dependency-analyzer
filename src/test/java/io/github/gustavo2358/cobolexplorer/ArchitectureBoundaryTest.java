@@ -46,6 +46,8 @@ class ArchitectureBoundaryTest {
             CobolLoweringReadinessConsumer.class.getName().replace('.', '/');
     private static final String JSON_WRITER_INTERNAL =
             SemanticProductJsonWriter.class.getName().replace('.', '/');
+    private static final String PARAGRAPH_MEMO_INTERNAL =
+            "io/github/gustavo2358/cobolexplorer/semanticproduct/transport/ParagraphMemo";
     private static final String LOWERING_PROBE_INTERNAL =
             SemanticPortLoweringProbe.class.getName().replace('.', '/');
     private static final Pattern DESCRIPTOR_CLASS =
@@ -67,6 +69,7 @@ class ArchitectureBoundaryTest {
         List<Class<?>> components = semanticProductTypes();
         addNestedTypes(CobolSemanticProductProjector.class, components);
         addNestedTypes(SemanticProductJsonWriter.class, components);
+        addNestedTypes(Class.forName(PARAGRAPH_MEMO_INTERNAL.replace('/', '.')), components);
         for (Class<?> component : components) {
             assertTrue(directDependencies(component).stream().allMatch(reference ->
                             reference.startsWith("java/") || reference.startsWith("javax/")
@@ -210,6 +213,7 @@ class ArchitectureBoundaryTest {
             throws Exception {
         List<Class<?>> adapterTypes = new ArrayList<>();
         addNestedTypes(SemanticProductJsonWriter.class, adapterTypes);
+        addNestedTypes(Class.forName(PARAGRAPH_MEMO_INTERNAL.replace('/', '.')), adapterTypes);
         for (Class<?> component : adapterTypes) {
             Set<String> violations = new LinkedHashSet<>();
             for (String reference : directDependencies(component)) {
@@ -378,6 +382,8 @@ class ArchitectureBoundaryTest {
                 || reference.equals(SEMANTIC_PRODUCT_INTERNAL)
                 || reference.startsWith(SEMANTIC_PRODUCT_INTERNAL + '$')
                 || reference.equals("io/github/gustavo2358/cobolexplorer/transport/JsonFiles")
+                || reference.equals(PARAGRAPH_MEMO_INTERNAL)
+                || reference.startsWith(PARAGRAPH_MEMO_INTERNAL + '$')
                 || reference.equals(JSON_WRITER_INTERNAL)
                 || reference.startsWith(JSON_WRITER_INTERNAL + '$');
     }

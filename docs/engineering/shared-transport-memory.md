@@ -22,3 +22,20 @@ A retention oracle walks the actual owned document after serialization, without
 expanding computed views, and bounds retained paragraph DTOs by distinct published
 facts. Frozen existing wire tests and write/serialize parity preserve behavior.
 The same generated overlap/control sources are used for elapsed time and RSS.
+
+## Identity buckets before complete equality (pre-code law)
+
+Full-payload HashMap keys rehash statement/completion membership and provenance
+for every lookup, including unique paragraphs. Retained no-increase performance
+REDs final-01/final-02 justify replacing only this work. Published identity selects
+an owner-local bucket; complete immutable payload equality still decides reuse.
+Same-ID variants, colliding identities and all physical/typed failures remain
+independent. No payload hash is needed. Cost is cheap-key lookup plus unavoidable
+full equality within a bucket; distinct variants can still make buckets large.
+Finite iteration terminates; no cap, source heuristic or semantic omission is used.
+The independent oracle makes full payload hashing throw and checks hand-authored
+equal payloads, same-ID unequal proofs and Aa/BB key collisions.
+
+The architecture oracle admits the exact private ParagraphMemo owner and its
+nested entry and scans their dependencies under the same closed adapter rule.
+No broad transport-package exemption or frontend/projection dependency is added.
