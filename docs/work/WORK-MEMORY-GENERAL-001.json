@@ -1,0 +1,7 @@
+{
+  "id": "WORK-MEMORY-GENERAL-001",
+  "title": "Publication-owned transport sharing for general memory correction",
+  "status": "IN_PROGRESS",
+  "scope": ["Semantic Product writer", "physical retention and unchanged wire qualification"],
+  "notes": "User-authorized cross-repo memory correction. Complete tuple equality; no dropped fact, wire version change or global intern pool. Human review pending."
+}

@@ -96,7 +96,7 @@ public final class SemanticProductJsonWriter {
 
     /** Writes the same deterministic UTF-8 bytes as {@link #serialize(CobolSemanticPort)}
      * directly to the destination, without materializing the complete JSON byte array.
-     * The transport DTO graph is still materialized. */
+     * Statement DTOs are mapped on demand; equal paragraph payloads share a publication-owned DTO. */
     public static void write(CobolSemanticPort port, Path destination) throws IOException {
         Objects.requireNonNull(destination, "destination");
         var publication = document(Objects.requireNonNull(port, "port"));
@@ -111,8 +111,8 @@ public final class SemanticProductJsonWriter {
     private static SemanticProductDocument document(CobolSemanticPort port) {
         List<DataDeclarationDocument> declarations = port.dataDeclarations().stream()
                 .map(SemanticProductJsonWriter::dataDeclaration).toList();
-        List<StatementDocument> statements = port.statements().stream()
-                .map(SemanticProductJsonWriter::statement).toList();
+        var paragraphs=new java.util.HashMap<CobolSemanticProduct.PerformParagraph,PerformParagraphDocument>();
+        List<StatementDocument> statements = mapped(port.statements(),fact->statement(fact,paragraphs));
         List<GapDocument> gaps = port.gaps().stream()
                 .map(SemanticProductJsonWriter::gap).toList();
 
@@ -303,7 +303,19 @@ public final class SemanticProductJsonWriter {
                 provenance(literal.provenance()));
     }
 
-    private static StatementDocument statement(CobolSemanticProduct.StatementFact fact) {
+    private static <T,R> List<R> mapped(List<T> source,java.util.function.Function<T,R> mapping) {
+        return new java.util.AbstractList<>() {
+            @Override public R get(int index){return mapping.apply(source.get(index));}
+            @Override public int size(){return source.size();}
+        };
+    }
+    private static PerformParagraphDocument paragraph(CobolSemanticProduct.PerformParagraph r) {
+        return new PerformParagraphDocument("procedure:"+r.id().localId(),statementHandle(r.entry()),
+            r.statements().stream().map(SemanticProductJsonWriter::statementHandle).toList(),
+            r.completions().stream().map(SemanticProductJsonWriter::statementHandle).toList(),provenance(r.provenance()));
+    }
+    private static StatementDocument statement(CobolSemanticProduct.StatementFact fact,
+            java.util.Map<CobolSemanticProduct.PerformParagraph,PerformParagraphDocument> paragraphs) {
         if (fact instanceof CobolSemanticProduct.ConditionalGoToFact g)
             return new ConditionalGoToDocument(header(g.header()),g.selector().map(SemanticProductJsonWriter::dataReference).orElse(null),g.selectorInteger(),
                 provenance(g.selectorOrigin()),g.destinations().stream().map(d->new GoToDestinationDocument(d.ordinal(),
@@ -326,9 +338,7 @@ public final class SemanticProductJsonWriter {
             java.util.function.Function<CobolSemanticProduct.PerformTarget,PerformTargetDocument> endpoint=t->
                 new PerformTargetDocument("procedure:"+t.id().localId(),provenance(t.referenceOrigin()),provenance(t.paragraphOrigin()));
             return new ProcedurePerformDocument(header(p.header()),p.start().map(endpoint).orElse(null),p.end().map(endpoint).orElse(null),
-                p.procedures().stream().map(r->new PerformParagraphDocument("procedure:"+r.id().localId(),statementHandle(r.entry()),
-                    r.statements().stream().map(SemanticProductJsonWriter::statementHandle).toList(),
-                    r.completions().stream().map(SemanticProductJsonWriter::statementHandle).toList(),provenance(r.provenance()))).toList(),
+                mapped(p.procedures(),r->paragraphs.computeIfAbsent(r,SemanticProductJsonWriter::paragraph)),
                 continuation(p.normalContinuation()),p.loop().map(l->new PerformLoopDocument(l.testMode(),condition(l.condition()))).orElse(null),p.times().map(t->new PerformCountDocument(t.profile(),t.integer().orElse(null),t.reference().map(SemanticProductJsonWriter::dataReference).orElse(null),provenance(t.provenance()))).orElse(null),p.varying().map(v->new PerformVaryingDocument(v.levels(),v.controls().stream().map(o->new VaryingOperandDocument(o.level(),o.role(),o.integer().orElse(null),o.references().stream().map(SemanticProductJsonWriter::dataReference).toList(),provenance(o.provenance()))).toList(),v.afterLoops().stream().map(l->new PerformLoopDocument(l.testMode(),condition(l.condition()))).toList())).orElse(null),p.gapCodes(),p.publicationKind()==CobolSemanticProduct.PerformPublicationKind.STRUCTURAL_FACTS?p.publicationKind():null,
                 p.publicationKind()==CobolSemanticProduct.PerformPublicationKind.STRUCTURAL_FACTS?p.targetEntry().map(SemanticProductJsonWriter::statementHandle).orElse(null):null);
         }
