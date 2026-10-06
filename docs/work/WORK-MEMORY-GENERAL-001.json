@@ -1,0 +1,11 @@
+{
+  "id": "WORK-MEMORY-GENERAL-001",
+  "title": "General memory and runtime correction in frontend proofs and transport",
+  "status": "IN_PROGRESS",
+  "scope": [
+    "Semantic Product writer",
+    "physical retention and unchanged wire qualification",
+    "typed ordinary-entry reverse transfers and exact member-set overlap indexes"
+  ],
+  "notes": "User-authorized cross-repo memory correction. Complete tuple equality; no dropped fact, wire version change or global intern pool. Human review pending."
+}
