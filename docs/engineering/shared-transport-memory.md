@@ -39,3 +39,18 @@ equal payloads, same-ID unequal proofs and Aa/BB key collisions.
 The architecture oracle admits the exact private ParagraphMemo owner and its
 nested entry and scans their dependencies under the same closed adapter rule.
 No broad transport-package exemption or frontend/projection dependency is added.
+
+## Typed ordinary-entry and overlap proof indexes (pre-code)
+
+Ordinary incoming exclusion is exactly: every unclosed GOTO statement belongs
+to the queried member set, and every normal/closed-GOTO predecessor of a member
+also belongs to that set. Unreachable edges are included, matching the existing
+rule. Build reverse transfers once per unit from the same typed statement,
+continuation and GOTO evidence; query only incoming edges to members. Distinct
+member sets overlap iff any statement belongs to both; equal sets remain exempt.
+An incidence index computes those flags in expected O(total memberships) without pairwise
+range intersection. No parser text, naming or distance participates. All proof
+facts/gaps and procedure inventories remain unchanged. Independent scalar edge
+scans and pairwise intersections, permutations, disconnected sets and duplicate
+equal sets are the oracles; existing perform-family/goto product fixtures govern
+final integration and unchanged complete wire.

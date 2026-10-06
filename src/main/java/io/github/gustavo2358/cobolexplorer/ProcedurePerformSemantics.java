@@ -174,6 +174,17 @@ public final class ProcedurePerformSemantics {
             for(var other:provisional.values()) {
                 var otherMembers=new HashSet<Integer>();other.procedures().forEach(r->otherMembers.addAll(r.statements()));uniqueRanges.add(Set.copyOf(otherMembers));
             }
+            var transfers=new ArrayList<ProcedureTransferIndex.Transfer>();var unclosedTransfers=new HashSet<Integer>();
+            for(var node:nodes.values())if(node instanceof Ast.Statement statement) {
+                int id=statement.meta().id();var continuation=next.get(id);
+                if(continuation!=null)transfers.add(new ProcedureTransferIndex.Transfer(id,continuation));
+                if(statement instanceof Ast.GoToStatement goTo) {
+                    if(!goTos.closed(unit.id(),goTo))unclosedTransfers.add(id);
+                    else for(int target:goTos.entries(unit.id(),goTo))transfers.add(new ProcedureTransferIndex.Transfer(id,target));
+                }
+            }
+            var ordinaryIncoming=new ProcedureTransferIndex(transfers,unclosedTransfers);
+            var overlappingRanges=ProcedureTransferIndex.overlapping(uniqueRanges);
             var primaryEntry=structure?division.procedureEntry().orElseThrow().startStatementId():Optional.<Integer>empty();
             var primaryMembers=new HashSet<Integer>();
             boolean primaryClosed=primaryEntry.isPresent()&&closed(primaryEntry.get(),primaryMembers,Map.of(),next,nodes,unit.id(),moves,ifs,evaluates,goTos,basic,provisional,true,cics);
@@ -190,29 +201,17 @@ public final class ProcedurePerformSemantics {
                         ||members.stream().anyMatch(primaryMembers::contains)){qualified=false;}
                 var incomingExcluded=incomingCache.get(members);
                 if(incomingExcluded==null) {
-                    incomingExcluded=ordinaryIncomingExcluded(members,nodes,next,unit.id(),goTos);
+                    incomingExcluded=ordinaryIncoming.query(members).excluded();
                     incomingCache.put(Set.copyOf(members),incomingExcluded);
                 }
                 if(!incomingExcluded){qualified=false;}
-                for(var otherMembers:uniqueRanges) {
-                    if(!members.equals(otherMembers)&&otherMembers.stream().anyMatch(members::contains)){qualified=false;gaps.add("PERFORM_OVERLAPPING_RANGES");}
-                }
+                if(overlappingRanges.contains(members)){qualified=false;gaps.add("PERFORM_OVERLAPPING_RANGES");}
                 result.put(new ScalarMoveSemantics.NodeKey(unit.id(),p.meta().id()),new Facts(f.start(),f.end(),f.procedures(),f.resume(),f.resumeOrigin(),f.loop(),f.times(),f.varying(),qualified,List.copyOf(gaps)));
             }
 
         }
         return new ProcedurePerformSemantics(result,legacyRanges);
     }
-    private static boolean ordinaryIncomingExcluded(Set<Integer> members,Map<Integer,Ast.Node> nodes,
-            Map<Integer,Integer> next,ResolutionContracts.ProgramUnitId unit,GoToSemantics goTos) {
-        for(var n:nodes.values())if(n instanceof Ast.Statement s&&!members.contains(s.meta().id())) {
-            if(s instanceof Ast.GoToStatement g&&(!goTos.closed(unit,g)
-                    ||goTos.entries(unit,g).stream().anyMatch(members::contains)))return false;
-            if(Optional.ofNullable(next.get(s.meta().id())).filter(members::contains).isPresent())return false;
-        }
-        return true;
-    }
-
     private static boolean closed(int entry,Set<Integer> members,Map<Integer,Integer> boundary,Map<Integer,Integer> next,
             Map<Integer,Ast.Node> nodes,ResolutionContracts.ProgramUnitId unit,Map<ScalarMoveSemantics.NodeKey,ScalarMoveSemantics.Move> moves,
             IfSemantics ifs,EvaluateSemantics evaluates,GoToSemantics goTos,PerformSemantics basic,Map<Integer,Facts> ranges,boolean primary,CicsProgramControlAnalyzer.Contribution cics) {
