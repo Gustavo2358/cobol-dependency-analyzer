@@ -1,17 +1,48 @@
 package com.imd.cobolexplorer;
 
 import java.util.*;
+import java.lang.ref.WeakReference;
 
 /** Immutable declaration map. Updates share unchanged subtrees between flow
  * states instead of copying every tracked declaration at every assignment.
  * Integer keys identify AST declarations or logical table elements. */
 final class DependencyEnvironment extends AbstractMap<Integer,DependencyValues> {
-    private record Node(int key,DependencyValues value,Node left,Node right,int size,int hash) {
+    // Identity equality lets projection caches recognize shared subtrees without
+    // recursively hashing them. Map equality still compares keys and values.
+    private static final class Node {
+        final int key,size,hash;
+        final DependencyValues value;
+        final Node left,right;
         Node(int key,DependencyValues value,Node left,Node right) {
-            this(key,value,left,right,1+size(left)+size(right),(key^value.hashCode())+hash(left)+hash(right));
+            this.key=key;this.value=value;this.left=left;this.right=right;
+            size=1+size(left)+size(right);hash=(key^value.hashCode())+hash(left)+hash(right);
         }
         static int size(Node n){return n==null?0:n.size;}
         static int hash(Node n){return n==null?0:n.hash;}
+    }
+    /** A reusable selection preserves shared branches across input states.
+     * Both cache sides are weak: even an unchanged result pointing to its input
+     * must not keep that input alive. Cache eviction only repeats projection. */
+    static final class Projection {
+        private static final Node EMPTY=new Node(0,DependencyValues.UNKNOWN,null,null);
+        private final Set<Integer> declarations;
+        private final Map<Node,WeakReference<Node>> projected=new WeakHashMap<>();
+        Projection(Set<Integer> declarations){this.declarations=Set.copyOf(declarations);}
+        DependencyEnvironment apply(Map<Integer,DependencyValues> values) {
+            var source=copyOf(values);var root=retain(source.root);
+            return root==source.root?source:new DependencyEnvironment(root);
+        }
+        private Node retain(Node node) {
+            if(node==null)return null;
+            var cached=projected.get(node);var result=cached==null?null:cached.get();
+            if(result!=null)return result==EMPTY?null:result;
+            var left=retain(node.left);var right=retain(node.right);
+            result=declarations.contains(node.key)
+                    ?left==node.left&&right==node.right?node:new Node(node.key,node.value,left,right)
+                    :merge(left,right);
+            projected.put(node,new WeakReference<>(result==null?EMPTY:result));
+            return result;
+        }
     }
     private final Node root;
     private DependencyEnvironment(Node root){this.root=root;}

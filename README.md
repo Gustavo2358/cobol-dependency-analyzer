@@ -191,8 +191,11 @@ A [correção de relevância e índices](benchmark/relevance-fix-20261008.md) re
 os resultados sobre os 40 fixtures do discovery e as regressões do produto.
 O FAST inclui as suítes do solver canônico, além dos contratos do frontend.
 O [profiling da FIXTURE02](benchmark/fixture02-profiling-20261008.md) registra
-um OOM posterior: resumos por estados distintos e reconstrução dos ambientes
-ainda provocam explosão. Os casos anteriores não garantem robustez universal.
+um OOM na versão anterior. A [etapa 1 de compartilhamento](benchmark/shared-projection-20261008.md)
+preserva os ramos das projeções e reduz a memória viva em 48% no experimento
+limitado a 2.048 contextos, mantendo as mesmas entradas e o mesmo trabalho.
+A multiplicação de resumos por estados distintos permanece; a execução completa
+da FIXTURE02 ainda não está qualificada.
 
 ```sh
 python3 -B scripts/harness/lean.py fast

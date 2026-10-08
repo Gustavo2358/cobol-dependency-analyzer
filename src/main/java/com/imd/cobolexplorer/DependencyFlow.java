@@ -78,6 +78,7 @@ final class DependencyFlow {
     final Set<String> paragraphEntries=new HashSet<>();
     final Set<String> prerequisites=new HashSet<>();
     final DependencyRelevance relevance;
+    final Map<Point,DependencyEnvironment.Projection> projections=new HashMap<>();
     final Map<Exit,Effect> accessEffects=new HashMap<>();
     final Map<Location,State> before=new HashMap<>();
     final ArrayDeque<Location> work=new ArrayDeque<>();
@@ -638,11 +639,15 @@ final class DependencyFlow {
     private void subscribe(Continuation caller,Exit entry) {
         String endpoint=caller.endpoint();State state=caller.input();
         entry=normalize(entry);
-        var needed=relevance.needed(new Point(entry,endpoint));
-        var projected=new HashMap<Integer,DependencyValues>();var handlers=new HashMap<String,Set<String>>();var facts=new HashSet<String>();
+        var point=new Point(entry,endpoint);var needed=relevance.needed(point);
+        var projection=projections.computeIfAbsent(point,key->{
+            var declarations=new HashSet<Integer>();
+            for(var input:needed)if(input instanceof Value value)declarations.add(value.declaration());
+            return new DependencyEnvironment.Projection(declarations);
+        });
+        var projected=projection.apply(state.values());var handlers=new HashMap<String,Set<String>>();var facts=new HashSet<String>();
         for(var input:needed) {
-            if(input instanceof Value value&&state.values().containsKey(value.declaration()))projected.put(value.declaration(),state.get(value.declaration()));
-            else if(input instanceof Handler handler&&state.handlers().containsKey(handler.name()))handlers.put(handler.name(),state.handlers().get(handler.name()));
+            if(input instanceof Handler handler&&state.handlers().containsKey(handler.name()))handlers.put(handler.name(),state.handlers().get(handler.name()));
             else if(input instanceof Fact fact&&state.reached().contains(fact.statement()))facts.add(fact.statement());
         }
         var key=new SummaryKey(entry,endpoint,new State(projected,handlers,facts));
