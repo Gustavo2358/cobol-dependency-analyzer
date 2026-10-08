@@ -1,5 +1,14 @@
 # Medições locais
 
+[Otimização de caudas de PERFORM](suffix-optimization-20261008.md): overlap1800
+caiu de 42,09 s para 4,37 s e de 3.078,9 MiB para 514,8 MiB de RSS na comparação
+nova com os mesmos recursos. Trabalho de 9,80 milhões para 33.926 itens;
+30/30 casos ampliados aprovados, com JSONs byte-idênticos aos anteriores.
+A família OR com GO TO mantém o solver e o custo anteriores.
+CardDemo reexecutado: 73/73, 815 relações iguais, nenhum destino ausente ou
+adicional; JSONs e códigos de saída preservados. 290 testes do analisador,
+856 FAST, smoke isolado e 20/20 resultados esperados nos insumos originais.
+
 [Auditoria ampliada de explosão](explosion-review-20261008.md): matriz ampliada
 30/30 PASS com heap de 4 GiB e orçamento de 100 milhões, incluindo 117 mil
 atribuições e overlap1800 dinâmico. Falhas da rodada com heap/orçamento menores

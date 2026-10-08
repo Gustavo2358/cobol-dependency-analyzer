@@ -28,7 +28,13 @@ Uma sobrescrita completa elimina o valor anterior; se branches viáveis
 atribuírem nomes diferentes, ambos permanecem candidatos.
 
 PERFORM compartilha corpos e reutiliza resultados por entrada relevante e
-retorno. Grupos conservam alternativas textuais correlacionadas, e
+retorno. Em programas com controle estruturado, intervalos sobrepostos também
+compartilham as caudas dos parágrafos, por estado de entrada e destino de
+retorno. O cálculo das variáveis relevantes é reutilizado por destino, evitando
+percorrer a mesma cauda para cada intervalo. Consultas internas continuam usando
+o estado anterior à instrução. Transferências explícitas, escapes contextuais
+e handlers usam o solver anterior. Grupos conservam alternativas textuais
+correlacionadas, e
 REDEFINES/RENAMES relacionam declarações e textos logicamente. O analisador
 não simula memória física. UPPER-CASE, LOWER-CASE e TRIM usam expressões
 tipadas do frontend.
@@ -118,20 +124,26 @@ variantes de 45 nomes de programa. As duas execuções produziram JSONs idêntic
 Houve 26 fontes com código 0 e 47 com código 1 (PARTIAL): igualdade com os
 oráculos não significa que todos os valores desconhecidos estejam fechados.
 
-Na medição local, o monolito levou **123,2 s**, contra **482,2 s** da referência,
+Na medição anterior à otimização de caudas, o monolito levou **123,2 s**,
+contra **482,2 s** da referência,
 com pico de RSS de **464,4 MiB**, contra **792,4 MiB**. A referência usa os
 produtores congelados do corpus e o consumidor de 8/10/2026; SHAs, método e
 repetição estão no [relatório das medições](benchmark/README.md).
 
-Foram aprovados 280 testes específicos e 20 casos de estresse, incluindo
+Na versão anterior, foram aprovados 280 testes específicos e 20 casos de estresse, incluindo
 18 fontes válidas e dois negativos de sintaxe. A suíte completa teve 1.720
 aprovações, nenhuma falha e um teste herdado futuro opcional desabilitado.
 Nenhum caso obrigatório de estresse apresentou crash ou OOM.
 
+A [otimização de caudas de PERFORM](benchmark/suffix-optimization-20261008.md)
+passou em 290 testes do analisador, 856 FAST e no corpus completo novamente,
+com JSONs e códigos de saída preservados. Overlap1800 caiu de 42,09 s para
+4,37 s e de 3.078,9 MiB para 514,8 MiB de RSS, com os mesmos recursos.
+As famílias com transferências explícitas e handlers mantêm o solver anterior.
+
 ```sh
-mvn -Dtest=DependencyAnalyzerTest,DependencyRegressionTest,DependencySourceTest,DependencyEnvironmentTest,DependencyResourceTest test
 python3 -B scripts/harness/lean.py fast
-mvn test
+mvn -Dtest=DependencySuffixTest,DependencyAnalyzerTest,DependencyRegressionTest,DependencySourceTest,DependencyEnvironmentTest,DependencyResourceTest package
 python3 -B benchmark/run-carddemo.py /caminho/results.json benchmark/results/carddemo
 python3 -B benchmark/run-reference.py /caminho/results.json benchmark/results/reference
 python3 -B benchmark/smoke-standalone.py target/cobol-dependency-analyzer.jar
