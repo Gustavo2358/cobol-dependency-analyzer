@@ -1,0 +1,1861 @@
+{
+  "testedCommit": "69c2aa858aac8b801b7ad27ebea8df385a345322",
+  "productionCommit": "f70a94bdb4441fc8bf4fa2b6cb8ecec4f3059c33",
+  "jarSha256": "7eddd887626b3dce0bca205a51fa88424ed07d7aae4ad8e3bd8e0061a6e4f10a",
+  "jdk": "Temurin 21.0.12+1",
+  "defaultHeapMiB": 512,
+  "defaultMaxWork": 1000000,
+  "timeoutSeconds": 45,
+  "original20": {
+    "cases": 20,
+    "passed": 20,
+    "failed": 0,
+    "seconds": 16.910424834029982,
+    "peakRssKiB": 259080,
+    "heapMiB": 512
+  },
+  "originalExecutions": 27,
+  "uniqueOriginalHashes": 24,
+  "expandedSummary": {
+    "OOM": 1,
+    "PASS": 25,
+    "RESOURCE_LIMIT": 1
+  },
+  "expanded": [
+    {
+      "id": "plain-original-oom09",
+      "sourceKind": "original",
+      "sourceSha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+      "lines": 51,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.7151668379956391,
+      "peakRssKiB": 109524,
+      "expected": [],
+      "actual": [],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 408228484,
+        "bindingNanos": 42405407,
+        "cfgNanos": 0,
+        "dataflowNanos": 0,
+        "resolutionNanos": 3622896,
+        "totalNanos": 457648113,
+        "workItems": 0,
+        "contexts": 0,
+        "trackedDeclarations": 0
+      },
+      "basis": null,
+      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/plain-stress-512m/plain-09/CTXBOOM.cbl"
+    },
+    {
+      "id": "escape-original-oom08",
+      "sourceKind": "original",
+      "sourceSha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+      "lines": 52,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.6649870889959857,
+      "peakRssKiB": 109348,
+      "expected": [],
+      "actual": [],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 402825516,
+        "bindingNanos": 43572125,
+        "cfgNanos": 0,
+        "dataflowNanos": 0,
+        "resolutionNanos": 3466252,
+        "totalNanos": 453657630,
+        "workItems": 0,
+        "contexts": 0,
+        "trackedDeclarations": 0
+      },
+      "basis": null,
+      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/escape-growth/escape-08/CTXBOOM.cbl"
+    },
+    {
+      "id": "cics-original-oom09",
+      "sourceKind": "original",
+      "sourceSha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799",
+      "lines": 55,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.7651640670082998,
+      "peakRssKiB": 137220,
+      "expected": [
+        "DUMMY"
+      ],
+      "actual": [
+        "DUMMY"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 416166173,
+        "bindingNanos": 43942147,
+        "cfgNanos": 37616624,
+        "dataflowNanos": 22330536,
+        "resolutionNanos": 912497,
+        "totalNanos": 524237771,
+        "workItems": 29,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "basis": null,
+      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/cics-effects-growth/cics-09/CTXBOOM.cbl"
+    },
+    {
+      "id": "empty-paragraphs10000",
+      "sourceKind": "original",
+      "sourceSha256": "2dcb236b112a5e749231642f8a45467ad93f0dbc20e26a31b37d2c959698cc98",
+      "lines": 10009,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 1.7168595069961157,
+      "peakRssKiB": 228768,
+      "expected": [
+        "AFTER",
+        "BODY"
+      ],
+      "actual": [
+        "AFTER",
+        "BODY"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 791539364,
+        "bindingNanos": 136637994,
+        "cfgNanos": 488991629,
+        "dataflowNanos": 50734096,
+        "resolutionNanos": 1618698,
+        "totalNanos": 1474610360,
+        "workItems": 4,
+        "contexts": 2,
+        "trackedDeclarations": 0
+      },
+      "basis": null,
+      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-fix-20261005/review-f1-f2-20261006/long-empty.cbl"
+    },
+    {
+      "id": "inline-original20",
+      "sourceKind": "original",
+      "sourceSha256": "451518a55dc65d29f9b1ca55a0abaee269804f392cb058c5e11572dcd5fe80f8",
+      "lines": 157,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.7653747089934768,
+      "peakRssKiB": 114180,
+      "expected": [],
+      "actual": [],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 440819124,
+        "bindingNanos": 47385868,
+        "cfgNanos": 0,
+        "dataflowNanos": 0,
+        "resolutionNanos": 4430202,
+        "totalNanos": 496178977,
+        "workItems": 0,
+        "contexts": 0,
+        "trackedDeclarations": 0
+      },
+      "basis": null,
+      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-unification-20261003/inline-stress-11-20/20/INLINEBOOM.cbl"
+    },
+    {
+      "id": "and-control76",
+      "sourceKind": "original",
+      "sourceSha256": "167c35f4d6930c4186b17f2a974baad3a22d419a6a66e1fb1e90527f5691857a",
+      "lines": 444,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.8653742150054313,
+      "peakRssKiB": 137680,
+      "expected": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "actual": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 463251164,
+        "bindingNanos": 59945687,
+        "cfgNanos": 64472174,
+        "dataflowNanos": 33919192,
+        "resolutionNanos": 1048934,
+        "totalNanos": 626226839,
+        "workItems": 259,
+        "contexts": 79,
+        "trackedDeclarations": 1
+      },
+      "basis": null,
+      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/activation-and-control-512m/and-0076/input.cbl"
+    },
+    {
+      "id": "overlap-compact900",
+      "sourceKind": "original",
+      "sourceSha256": "70fdc458aeb463aa7c4320731184369a11da758f257833e7f07084a7fd593850",
+      "lines": 7253,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 1.6166976560052717,
+      "peakRssKiB": 282244,
+      "expected": [],
+      "actual": [],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 1060844855,
+        "bindingNanos": 260476183,
+        "cfgNanos": 0,
+        "dataflowNanos": 0,
+        "resolutionNanos": 20340664,
+        "totalNanos": 1348943611,
+        "workItems": 0,
+        "contexts": 0,
+        "trackedDeclarations": 0
+      },
+      "basis": null,
+      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/overlap900-compact-8g/overlap-0900/input.cbl"
+    },
+    {
+      "id": "plain-dynamic09",
+      "sourceKind": "derived",
+      "sourceSha256": "6f8877dbc3b81c7861085328704029d87410ddde04693453a769538234f224a4",
+      "lines": 52,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.7651492900040466,
+      "peakRssKiB": 119728,
+      "expected": [
+        "A"
+      ],
+      "actual": [
+        "A"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 395391741,
+        "bindingNanos": 43294922,
+        "cfgNanos": 32934165,
+        "dataflowNanos": 19365774,
+        "resolutionNanos": 904692,
+        "totalNanos": 495099968,
+        "workItems": 27,
+        "contexts": 2,
+        "trackedDeclarations": 3
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-09/CTXBOOM.cbl",
+        "sha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+        "change": "CALL WS-OBS after its existing MOVE"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/plain-dynamic09/input.cbl"
+    },
+    {
+      "id": "escape-dynamic08",
+      "sourceKind": "derived",
+      "sourceSha256": "cbae6ee0913d954a6cc02e15f69cadb187e875610ec49dcee245469485318fe6",
+      "lines": 53,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.7652548819896765,
+      "peakRssKiB": 134012,
+      "expected": [
+        "A"
+      ],
+      "actual": [
+        "A"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 400170796,
+        "bindingNanos": 42364583,
+        "cfgNanos": 33238977,
+        "dataflowNanos": 21071330,
+        "resolutionNanos": 925730,
+        "totalNanos": 500881122,
+        "workItems": 29,
+        "contexts": 3,
+        "trackedDeclarations": 3
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-08/CTXBOOM.cbl",
+        "sha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+        "change": "CALL WS-OBS after its existing MOVE"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/escape-dynamic08/input.cbl"
+    },
+    {
+      "id": "escape-dynamic20",
+      "sourceKind": "derived",
+      "sourceSha256": "f42d89acddc4761e14557495586e4dd757fd8653453f3aca9920bf500d8d1771",
+      "lines": 92,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.7651627339946572,
+      "peakRssKiB": 138596,
+      "expected": [
+        "A"
+      ],
+      "actual": [
+        "A"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 421980767,
+        "bindingNanos": 47683889,
+        "cfgNanos": 38666349,
+        "dataflowNanos": 25751896,
+        "resolutionNanos": 931761,
+        "totalNanos": 538302192,
+        "workItems": 53,
+        "contexts": 3,
+        "trackedDeclarations": 3
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-20/CTXBOOM.cbl",
+        "sha256": "f96462bf6407560e830efbb2b21df846ef5c38a45663ac5ca9d13aa5fc8abf10",
+        "change": "CALL WS-OBS after its existing MOVE"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/escape-dynamic20/input.cbl"
+    },
+    {
+      "id": "inline-observed20",
+      "sourceKind": "derived",
+      "sourceSha256": "513cf06766c8a451fed5ec675a0d832657ea37d7773e5df4e2f79a2a308dae13",
+      "lines": 158,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.8152642320055747,
+      "peakRssKiB": 144492,
+      "expected": [
+        "INLINEOK"
+      ],
+      "actual": [
+        "INLINEOK"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 424036149,
+        "bindingNanos": 52234560,
+        "cfgNanos": 47306604,
+        "dataflowNanos": 43008693,
+        "resolutionNanos": 925940,
+        "totalNanos": 570919932,
+        "workItems": 1344,
+        "contexts": 21,
+        "trackedDeclarations": 2
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-unification-20261003/inline-stress-11-20/20/INLINEBOOM.cbl",
+        "sha256": "451518a55dc65d29f9b1ca55a0abaee269804f392cb058c5e11572dcd5fe80f8",
+        "change": "reachable literal query"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/inline-observed20/input.cbl"
+    },
+    {
+      "id": "and76",
+      "sourceKind": "derived",
+      "sourceSha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4",
+      "lines": 444,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 1.0155862989922753,
+      "peakRssKiB": 148340,
+      "expected": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "actual": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 458126542,
+        "bindingNanos": 70575994,
+        "cfgNanos": 86649693,
+        "dataflowNanos": 137633261,
+        "resolutionNanos": 1446246,
+        "totalNanos": 758218879,
+        "workItems": 8234,
+        "contexts": 79,
+        "trackedDeclarations": 1
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and76/input.cbl"
+    },
+    {
+      "id": "and152",
+      "sourceKind": "derived",
+      "sourceSha256": "dfd957ede4669d4037e104b69dc0571de5d73498157a57e8844e4152e370339f",
+      "lines": 976,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 1.5191783530026441,
+      "peakRssKiB": 165308,
+      "expected": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "actual": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 600049289,
+        "bindingNanos": 94944209,
+        "cfgNanos": 153297316,
+        "dataflowNanos": 391071499,
+        "resolutionNanos": 1505393,
+        "totalNanos": 1245286857,
+        "workItems": 34492,
+        "contexts": 155,
+        "trackedDeclarations": 1
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and152/input.cbl"
+    },
+    {
+      "id": "and304",
+      "sourceKind": "derived",
+      "sourceSha256": "ffa42d82a47fdca5688c9a1c8562c6fea71ffde5eaa0dcf649dc35d0da220e57",
+      "lines": 2040,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 2.51852771799895,
+      "peakRssKiB": 230704,
+      "expected": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "actual": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 725223013,
+        "bindingNanos": 123099518,
+        "cfgNanos": 195876207,
+        "dataflowNanos": 1213982091,
+        "resolutionNanos": 1567686,
+        "totalNanos": 2264358173,
+        "workItems": 138992,
+        "contexts": 307,
+        "trackedDeclarations": 1
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and304/input.cbl"
+    },
+    {
+      "id": "and608",
+      "sourceKind": "derived",
+      "sourceSha256": "41d5999adfb7a7c98ff8283bb642ff1f42e09c81ffb767da24fb6f4a83c8b67c",
+      "lines": 4168,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 5.573497973004123,
+      "peakRssKiB": 343364,
+      "expected": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "actual": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 810083286,
+        "bindingNanos": 142157794,
+        "cfgNanos": 491464739,
+        "dataflowNanos": 3871613529,
+        "resolutionNanos": 2544349,
+        "totalNanos": 5322098936,
+        "workItems": 555928,
+        "contexts": 611,
+        "trackedDeclarations": 1
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and608/input.cbl"
+    },
+    {
+      "id": "or76",
+      "sourceKind": "derived",
+      "sourceSha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8",
+      "lines": 546,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 0.965472319003311,
+      "peakRssKiB": 141260,
+      "expected": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "actual": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 476876107,
+        "bindingNanos": 63933777,
+        "cfgNanos": 78396341,
+        "dataflowNanos": 109315537,
+        "resolutionNanos": 1034608,
+        "totalNanos": 733335219,
+        "workItems": 5810,
+        "contexts": 129,
+        "trackedDeclarations": 1
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or76/input.cbl"
+    },
+    {
+      "id": "or152",
+      "sourceKind": "derived",
+      "sourceSha256": "1f2bf3672a1c6b831958cf5439a563a47f1a239c51bcbadaf4f2ea8db23ae2f8",
+      "lines": 1230,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 1.2660966730036307,
+      "peakRssKiB": 177284,
+      "expected": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "actual": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 551300488,
+        "bindingNanos": 86939388,
+        "cfgNanos": 129004458,
+        "dataflowNanos": 229906242,
+        "resolutionNanos": 1540266,
+        "totalNanos": 1002611507,
+        "workItems": 23594,
+        "contexts": 281,
+        "trackedDeclarations": 1
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or152/input.cbl"
+    },
+    {
+      "id": "or304",
+      "sourceKind": "derived",
+      "sourceSha256": "63536fb6957fc5f1642a1fb869ff4a85a54e1fc93ceb38d265577de99e11384e",
+      "lines": 2598,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 1.9171585940057412,
+      "peakRssKiB": 229444,
+      "expected": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "actual": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 648390161,
+        "bindingNanos": 107554440,
+        "cfgNanos": 272857268,
+        "dataflowNanos": 643346365,
+        "resolutionNanos": 1565492,
+        "totalNanos": 1678499183,
+        "workItems": 93818,
+        "contexts": 585,
+        "trackedDeclarations": 1
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or304/input.cbl"
+    },
+    {
+      "id": "or608",
+      "sourceKind": "derived",
+      "sourceSha256": "71a8de317ff49e17a28c09f4214b60916ef2bee116c0acc0c2570ae1509e90dc",
+      "lines": 5334,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 3.820586200992693,
+      "peakRssKiB": 323812,
+      "expected": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "actual": [
+        "SYNROOT",
+        "SYNTGTA",
+        "SYNTGTB"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 876471419,
+        "bindingNanos": 166006255,
+        "cfgNanos": 500107919,
+        "dataflowNanos": 2002629686,
+        "resolutionNanos": 2405266,
+        "totalNanos": 3552677856,
+        "workItems": 372890,
+        "contexts": 1193,
+        "trackedDeclarations": 1
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or608/input.cbl"
+    },
+    {
+      "id": "overlap-dynamic400",
+      "sourceKind": "derived",
+      "sourceSha256": "f3f9eff1be048c77d731cdfb043f2569b53d08020ba7159240ca9ebec6d43a02",
+      "lines": 3655,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 3.2196242549980525,
+      "peakRssKiB": 358988,
+      "expected": [
+        "H"
+      ],
+      "actual": [
+        "H"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 771707895,
+        "bindingNanos": 174630691,
+        "cfgNanos": 283073594,
+        "dataflowNanos": 1708472873,
+        "resolutionNanos": 1933390,
+        "totalNanos": 2945599968,
+        "workItems": 497224,
+        "contexts": 402,
+        "trackedDeclarations": 2
+      },
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/overlap-dynamic400/input.cbl"
+    },
+    {
+      "id": "overlap-dynamic900",
+      "sourceKind": "derived",
+      "sourceSha256": "b77567bb9a670445834824fb7796bfe164d5603bbd72847001ebaf1d6c2bba9d",
+      "lines": 8155,
+      "status": "RESOURCE_LIMIT",
+      "exit": 2,
+      "seconds": 5.3231051830080105,
+      "peakRssKiB": 527412,
+      "expected": [
+        "H"
+      ],
+      "actual": [],
+      "outputPublished": false,
+      "metrics": {},
+      "basis": {
+        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+      },
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/overlap-dynamic900/input.cbl"
+    },
+    {
+      "id": "dead-callers800",
+      "sourceKind": "derived",
+      "sourceSha256": "91ef27103dfa86b376c8deab75c05214d39924ccf6c1c05b8bf7f4210212c005",
+      "lines": 1610,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 1.0657615910022287,
+      "peakRssKiB": 152228,
+      "expected": [
+        "SYNPROG"
+      ],
+      "actual": [
+        "SYNPROG"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 569532713,
+        "bindingNanos": 81263364,
+        "cfgNanos": 162810865,
+        "dataflowNanos": 20763702,
+        "resolutionNanos": 1748283,
+        "totalNanos": 840034706,
+        "workItems": 2,
+        "contexts": 1,
+        "trackedDeclarations": 0
+      },
+      "basis": "COBOL counterpart of the AIR-only dead-frames mechanism; not the same original input",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/dead-callers800/input.cbl"
+    },
+    {
+      "id": "dead-callers6400",
+      "sourceKind": "derived",
+      "sourceSha256": "24d7ead117984d2ceb44b7a0d8002c8084949ac753e0607877a8e7b414ae6bae",
+      "lines": 12810,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 3.119195651001064,
+      "peakRssKiB": 282612,
+      "expected": [
+        "SYNPROG"
+      ],
+      "actual": [
+        "SYNPROG"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 1209126245,
+        "bindingNanos": 267958817,
+        "cfgNanos": 1320904574,
+        "dataflowNanos": 60014782,
+        "resolutionNanos": 2617191,
+        "totalNanos": 2867704707,
+        "workItems": 2,
+        "contexts": 1,
+        "trackedDeclarations": 0
+      },
+      "basis": "COBOL counterpart of the AIR-only dead-frames mechanism; not the same original input",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/dead-callers6400/input.cbl"
+    },
+    {
+      "id": "linear-statements16000",
+      "sourceKind": "derived",
+      "sourceSha256": "d626d694a2e2731e248d6292b04168efe764a6d3a01c7e4cefc736c4c2affef3",
+      "lines": 16008,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 3.520083228999283,
+      "peakRssKiB": 328532,
+      "expected": [
+        "PROGA"
+      ],
+      "actual": [
+        "PROGA"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 1811390345,
+        "bindingNanos": 437379430,
+        "cfgNanos": 777616581,
+        "dataflowNanos": 213173988,
+        "resolutionNanos": 7104416,
+        "totalNanos": 3258936387,
+        "workItems": 16002,
+        "contexts": 1,
+        "trackedDeclarations": 1
+      },
+      "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements16000/input.cbl"
+    },
+    {
+      "id": "linear-statements32000",
+      "sourceKind": "derived",
+      "sourceSha256": "3a5818f9e2dd8e493a76915ce46ebad6703eb5e9c28052e65806875ba06aed6e",
+      "lines": 32008,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 6.575181384992902,
+      "peakRssKiB": 502520,
+      "expected": [
+        "PROGA"
+      ],
+      "actual": [
+        "PROGA"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 2974680768,
+        "bindingNanos": 752960714,
+        "cfgNanos": 2219835172,
+        "dataflowNanos": 345686834,
+        "resolutionNanos": 6888835,
+        "totalNanos": 6320025630,
+        "workItems": 32002,
+        "contexts": 1,
+        "trackedDeclarations": 1
+      },
+      "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements32000/input.cbl"
+    },
+    {
+      "id": "linear-statements64000",
+      "sourceKind": "derived",
+      "sourceSha256": "aa00b1ca57b8ccee2ff57655f4eb0c26e9e5315516fbd7def1840e43e3ccc0fc",
+      "lines": 64008,
+      "status": "PASS",
+      "exit": 0,
+      "seconds": 14.438767526997253,
+      "peakRssKiB": 660704,
+      "expected": [
+        "PROGA"
+      ],
+      "actual": [
+        "PROGA"
+      ],
+      "outputPublished": true,
+      "metrics": {
+        "parseNanos": 5168152293,
+        "bindingNanos": 1277898206,
+        "cfgNanos": 7002799806,
+        "dataflowNanos": 654643623,
+        "resolutionNanos": 25873568,
+        "totalNanos": 14158221612,
+        "workItems": 64002,
+        "contexts": 1,
+        "trackedDeclarations": 1
+      },
+      "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements64000/input.cbl"
+    },
+    {
+      "id": "linear-statements117000",
+      "sourceKind": "derived",
+      "sourceSha256": "79fa75b81e30bcacef5de348e55e271b177e6c3183e8cedade3f8a0e77c09f8b",
+      "lines": 117008,
+      "status": "OOM",
+      "exit": 2,
+      "seconds": 9.190140933002112,
+      "peakRssKiB": 651484,
+      "expected": [
+        "PROGA"
+      ],
+      "actual": [],
+      "outputPublished": false,
+      "metrics": {},
+      "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements117000/input.cbl"
+    }
+  ],
+  "followups": [
+    {
+      "id": "linear117000-diagnostic",
+      "heapMiB": 512,
+      "probe": true,
+      "sourceSha256": "79fa75b81e30bcacef5de348e55e271b177e6c3183e8cedade3f8a0e77c09f8b",
+      "exit": 2,
+      "seconds": 9.788767118996475,
+      "peakRssKiB": 672276,
+      "actual": [],
+      "previousOutputPreserved": false
+    },
+    {
+      "id": "linear117000-768m",
+      "heapMiB": 768,
+      "probe": false,
+      "sourceSha256": "79fa75b81e30bcacef5de348e55e271b177e6c3183e8cedade3f8a0e77c09f8b",
+      "exit": 0,
+      "seconds": 38.1776443389972,
+      "peakRssKiB": 957184,
+      "actual": [
+        "PROGA"
+      ],
+      "previousOutputPreserved": false
+    },
+    {
+      "id": "overlap900-atomic-failure",
+      "heapMiB": 512,
+      "probe": false,
+      "sourceSha256": "b77567bb9a670445834824fb7796bfe164d5603bbd72847001ebaf1d6c2bba9d",
+      "exit": 2,
+      "seconds": 5.022455804995843,
+      "peakRssKiB": 543612,
+      "actual": [],
+      "previousOutputPreserved": true
+    }
+  ],
+  "rawReports": [
+    {
+      "path": "benchmark/results/explosion-review-20261008-original20/results.json",
+      "sha256": "5fcb0384b8900170f5d018fc69be8a6c6b44255a63b7a087924c4d57b45fd97f"
+    },
+    {
+      "path": "benchmark/results/explosion-review-20261008-expanded/inputs.json",
+      "sha256": "fc169af6728785b3d448f3f55cecb8407b46ac4861683d3dcbcf43c1c4cd03b5"
+    },
+    {
+      "path": "benchmark/results/explosion-review-20261008-expanded/results.json",
+      "sha256": "9b590d7f8a34a5c7132b68152c4ad6dea41b66561b737cf1daf3a7a3ec619060"
+    },
+    {
+      "path": "benchmark/results/explosion-review-20261008-expanded/followup-results.json",
+      "sha256": "34d4b90b45f25edd53589411d3909d0d169f46560a5dc72cf107f8eccca6feec"
+    },
+    {
+      "path": "benchmark/results/explosion-review-20261008-largeheap/inputs.json",
+      "sha256": "b5f635c781bb3d9ac39ac910698ac7e0fc4a1be94a3bf10908062c422307ed86"
+    },
+    {
+      "path": "benchmark/results/explosion-review-20261008-largeheap/results.json",
+      "sha256": "06633d3f04bfd5e5ac823d6ffbc309fd24bf201cd4f94bb2dfab7bd840a9fc89"
+    },
+    {
+      "path": "benchmark/results/explosion-review-20261008-original20-largeheap/results.json",
+      "sha256": "2987c0313fa1777ef0e09e46234dea21e1508c718a9202e5037dcf3ac0794225"
+    }
+  ],
+  "oomDiagnostic": {
+    "path": "benchmark/results/explosion-review-20261008-expanded/linear117000-diagnostic/stderr.log",
+    "sha256": "716507b990a23f5c97cdcd818b2b1045c62df600f9d2307c397b8611d16ece57",
+    "allocationStack": [
+      "DirectLedger.nodes",
+      "DirectCobolParser.parse",
+      "CobolFrontend.parse",
+      "DependencyAnalyzer.analyze"
+    ]
+  },
+  "limits": [
+    "Several original fixtures do not contain dependency queries: workItems=0 is a valid source-only path, not solver stress.",
+    "Synthetic AIR-only fixtures cannot be fed directly into the COBOL analyzer. dead-callers cases are explicit COBOL counterparts.",
+    "The original confidential 117k-line program is unavailable; the size curve is synthetic and does not establish its completion.",
+    "Overlap900 with a demanded dynamic target fails at the default budget and completes with increased resources; initial failure preserved.",
+    "Linear117k OOMs with 512 MiB in frontend construction and passes with 768 MiB and 4 GiB; no universal memory bound is demonstrated.",
+    "Production code did not change. Existing CardDemo and full-suite evidence is reused, not rerun for this resource-only audit."
+  ],
+  "largeHeap": {
+    "heapMiB": 4096,
+    "maxWork": 100000000,
+    "timeoutSeconds": 300,
+    "expandedSummary": {
+      "cases": 30,
+      "passed": 30,
+      "failed": 0,
+      "seconds": 190.8709420219966,
+      "peakRssKiB": 3117028
+    },
+    "original20": {
+      "cases": 20,
+      "passed": 20,
+      "failed": 0,
+      "seconds": 16.205571279031574,
+      "peakRssKiB": 326280,
+      "heapMiB": 4096,
+      "maxWork": 100000000,
+      "timeoutSeconds": 300
+    },
+    "expanded": [
+      {
+        "id": "plain-original-oom09",
+        "sourceKind": "original",
+        "sourceSha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+        "lines": 51,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.8655813209916232,
+        "peakRssKiB": 129056,
+        "expected": [],
+        "actual": [],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 488791813,
+          "bindingNanos": 50468173,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 4407762,
+          "totalNanos": 552333299,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "escape-original-oom08",
+        "sourceKind": "original",
+        "sourceSha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+        "lines": 52,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.8655125060031423,
+        "peakRssKiB": 126964,
+        "expected": [],
+        "actual": [],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 509441508,
+          "bindingNanos": 58663771,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 4175119,
+          "totalNanos": 581824964,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "cics-original-oom09",
+        "sourceKind": "original",
+        "sourceSha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799",
+        "lines": 55,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9658265239995671,
+        "peakRssKiB": 147324,
+        "expected": [
+          "DUMMY"
+        ],
+        "actual": [
+          "DUMMY"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 554113500,
+          "bindingNanos": 58619681,
+          "cfgNanos": 39083647,
+          "dataflowNanos": 19787149,
+          "resolutionNanos": 1030180,
+          "totalNanos": 676594767,
+          "workItems": 29,
+          "contexts": 3,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "empty-paragraphs10000",
+        "sourceKind": "original",
+        "sourceSha256": "2dcb236b112a5e749231642f8a45467ad93f0dbc20e26a31b37d2c959698cc98",
+        "lines": 10009,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 2.017526180992718,
+        "peakRssKiB": 269216,
+        "expected": [
+          "AFTER",
+          "BODY"
+        ],
+        "actual": [
+          "AFTER",
+          "BODY"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 879331261,
+          "bindingNanos": 156385873,
+          "cfgNanos": 612015037,
+          "dataflowNanos": 57916275,
+          "resolutionNanos": 1627083,
+          "totalNanos": 1712531572,
+          "workItems": 4,
+          "contexts": 2,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "inline-original20",
+        "sourceKind": "original",
+        "sourceSha256": "451518a55dc65d29f9b1ca55a0abaee269804f392cb058c5e11572dcd5fe80f8",
+        "lines": 157,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.8153386270132614,
+        "peakRssKiB": 124824,
+        "expected": [],
+        "actual": [],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 472241299,
+          "bindingNanos": 61540022,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 4205184,
+          "totalNanos": 541640848,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "and-control76",
+        "sourceKind": "original",
+        "sourceSha256": "167c35f4d6930c4186b17f2a974baad3a22d419a6a66e1fb1e90527f5691857a",
+        "lines": 444,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9655091680033365,
+        "peakRssKiB": 163276,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 489992443,
+          "bindingNanos": 64332392,
+          "cfgNanos": 92092664,
+          "dataflowNanos": 30016819,
+          "resolutionNanos": 1108953,
+          "totalNanos": 681800558,
+          "workItems": 259,
+          "contexts": 79,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "overlap-compact900",
+        "sourceKind": "original",
+        "sourceSha256": "70fdc458aeb463aa7c4320731184369a11da758f257833e7f07084a7fd593850",
+        "lines": 7253,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.8169927269918844,
+        "peakRssKiB": 325004,
+        "expected": [],
+        "actual": [],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1179783335,
+          "bindingNanos": 342792684,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 38741146,
+          "totalNanos": 1573576960,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "plain-dynamic09",
+        "sourceKind": "derived",
+        "sourceSha256": "6f8877dbc3b81c7861085328704029d87410ddde04693453a769538234f224a4",
+        "lines": 52,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9155695639929036,
+        "peakRssKiB": 137120,
+        "expected": [
+          "A"
+        ],
+        "actual": [
+          "A"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 498751132,
+          "bindingNanos": 54402827,
+          "cfgNanos": 46856547,
+          "dataflowNanos": 28719434,
+          "resolutionNanos": 1355290,
+          "totalNanos": 635233716,
+          "workItems": 27,
+          "contexts": 2,
+          "trackedDeclarations": 3
+        }
+      },
+      {
+        "id": "escape-dynamic08",
+        "sourceKind": "derived",
+        "sourceSha256": "cbae6ee0913d954a6cc02e15f69cadb187e875610ec49dcee245469485318fe6",
+        "lines": 53,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9156284909986425,
+        "peakRssKiB": 137824,
+        "expected": [
+          "A"
+        ],
+        "actual": [
+          "A"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 518937045,
+          "bindingNanos": 60341506,
+          "cfgNanos": 41782386,
+          "dataflowNanos": 26640220,
+          "resolutionNanos": 1140701,
+          "totalNanos": 658374633,
+          "workItems": 29,
+          "contexts": 3,
+          "trackedDeclarations": 3
+        }
+      },
+      {
+        "id": "escape-dynamic20",
+        "sourceKind": "derived",
+        "sourceSha256": "f42d89acddc4761e14557495586e4dd757fd8653453f3aca9920bf500d8d1771",
+        "lines": 92,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9156956819933839,
+        "peakRssKiB": 133148,
+        "expected": [
+          "A"
+        ],
+        "actual": [
+          "A"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 486096481,
+          "bindingNanos": 70154680,
+          "cfgNanos": 45934624,
+          "dataflowNanos": 24529568,
+          "resolutionNanos": 1079860,
+          "totalNanos": 631676329,
+          "workItems": 53,
+          "contexts": 3,
+          "trackedDeclarations": 3
+        }
+      },
+      {
+        "id": "inline-observed20",
+        "sourceKind": "derived",
+        "sourceSha256": "513cf06766c8a451fed5ec675a0d832657ea37d7773e5df4e2f79a2a308dae13",
+        "lines": 158,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.06622595700901,
+        "peakRssKiB": 144756,
+        "expected": [
+          "INLINEOK"
+        ],
+        "actual": [
+          "INLINEOK"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 567501833,
+          "bindingNanos": 66011008,
+          "cfgNanos": 56688916,
+          "dataflowNanos": 64847557,
+          "resolutionNanos": 1195039,
+          "totalNanos": 760146738,
+          "workItems": 1344,
+          "contexts": 21,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "and76",
+        "sourceKind": "derived",
+        "sourceSha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4",
+        "lines": 444,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.31657807600277,
+        "peakRssKiB": 159084,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 618706083,
+          "bindingNanos": 91178264,
+          "cfgNanos": 120663418,
+          "dataflowNanos": 198628406,
+          "resolutionNanos": 1502408,
+          "totalNanos": 1037065953,
+          "workItems": 8234,
+          "contexts": 79,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "and152",
+        "sourceKind": "derived",
+        "sourceSha256": "dfd957ede4669d4037e104b69dc0571de5d73498157a57e8844e4152e370339f",
+        "lines": 976,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.7179765150067396,
+        "peakRssKiB": 178560,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 657891947,
+          "bindingNanos": 113526522,
+          "cfgNanos": 156643020,
+          "dataflowNanos": 492142255,
+          "resolutionNanos": 1873090,
+          "totalNanos": 1426709655,
+          "workItems": 34492,
+          "contexts": 155,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "and304",
+        "sourceKind": "derived",
+        "sourceSha256": "ffa42d82a47fdca5688c9a1c8562c6fea71ffde5eaa0dcf649dc35d0da220e57",
+        "lines": 2040,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 2.5692723840038525,
+        "peakRssKiB": 262100,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 756252098,
+          "bindingNanos": 149973233,
+          "cfgNanos": 264466760,
+          "dataflowNanos": 1102383483,
+          "resolutionNanos": 1958204,
+          "totalNanos": 2281201465,
+          "workItems": 138992,
+          "contexts": 307,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "and608",
+        "sourceKind": "derived",
+        "sourceSha256": "41d5999adfb7a7c98ff8283bb642ff1f42e09c81ffb767da24fb6f4a83c8b67c",
+        "lines": 4168,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 5.627326201996766,
+        "peakRssKiB": 470104,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 858913617,
+          "bindingNanos": 185595488,
+          "cfgNanos": 503172037,
+          "dataflowNanos": 3792426369,
+          "resolutionNanos": 1965879,
+          "totalNanos": 5347893755,
+          "workItems": 555928,
+          "contexts": 611,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "and1216",
+        "sourceKind": "derived",
+        "sourceSha256": "0d2ba89ca1729f17fca4917966245a57d566be08cb78713d52656e1c410c93c4",
+        "lines": 8424,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 24.307171278996975,
+        "peakRssKiB": 931932,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 979114845,
+          "bindingNanos": 236551356,
+          "cfgNanos": 1071882134,
+          "dataflowNanos": 21723686165,
+          "resolutionNanos": 3099747,
+          "totalNanos": 24022603659,
+          "workItems": 2221544,
+          "contexts": 1219,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or76",
+        "sourceKind": "derived",
+        "sourceSha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8",
+        "lines": 546,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.0156385659938678,
+        "peakRssKiB": 162096,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 492950983,
+          "bindingNanos": 72552413,
+          "cfgNanos": 75341235,
+          "dataflowNanos": 109919595,
+          "resolutionNanos": 1133978,
+          "totalNanos": 755938589,
+          "workItems": 5810,
+          "contexts": 129,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or152",
+        "sourceKind": "derived",
+        "sourceSha256": "1f2bf3672a1c6b831958cf5439a563a47f1a239c51bcbadaf4f2ea8db23ae2f8",
+        "lines": 1230,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.316343530008453,
+        "peakRssKiB": 192120,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 570415904,
+          "bindingNanos": 85367826,
+          "cfgNanos": 132494885,
+          "dataflowNanos": 252909691,
+          "resolutionNanos": 1821626,
+          "totalNanos": 1046871403,
+          "workItems": 23594,
+          "contexts": 281,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or304",
+        "sourceKind": "derived",
+        "sourceSha256": "63536fb6957fc5f1642a1fb869ff4a85a54e1fc93ceb38d265577de99e11384e",
+        "lines": 2598,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.9172111410007346,
+        "peakRssKiB": 274412,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 651275456,
+          "bindingNanos": 114655952,
+          "cfgNanos": 264363925,
+          "dataflowNanos": 581549935,
+          "resolutionNanos": 1672476,
+          "totalNanos": 1617998037,
+          "workItems": 93818,
+          "contexts": 585,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or608",
+        "sourceKind": "derived",
+        "sourceSha256": "71a8de317ff49e17a28c09f4214b60916ef2bee116c0acc0c2570ae1509e90dc",
+        "lines": 5334,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 3.6201904930057935,
+        "peakRssKiB": 515344,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 790435130,
+          "bindingNanos": 179130612,
+          "cfgNanos": 684675617,
+          "dataflowNanos": 1696970393,
+          "resolutionNanos": 2045433,
+          "totalNanos": 3358242665,
+          "workItems": 372890,
+          "contexts": 1193,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or1216",
+        "sourceKind": "derived",
+        "sourceSha256": "1fba314d25d5f266322b120fd7b3076bc9a653c199e55b51804748f736ea63c3",
+        "lines": 10806,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 11.18359954400512,
+        "peakRssKiB": 823836,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1079834700,
+          "bindingNanos": 249636300,
+          "cfgNanos": 2217433148,
+          "dataflowNanos": 7333694465,
+          "resolutionNanos": 3855509,
+          "totalNanos": 10891322179,
+          "workItems": 1485530,
+          "contexts": 2409,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "overlap-dynamic400",
+        "sourceKind": "derived",
+        "sourceSha256": "f3f9eff1be048c77d731cdfb043f2569b53d08020ba7159240ca9ebec6d43a02",
+        "lines": 3655,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 3.169359669991536,
+        "peakRssKiB": 520204,
+        "expected": [
+          "H"
+        ],
+        "actual": [
+          "H"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 798022593,
+          "bindingNanos": 168356113,
+          "cfgNanos": 291715855,
+          "dataflowNanos": 1642386298,
+          "resolutionNanos": 2124016,
+          "totalNanos": 2909760675,
+          "workItems": 497224,
+          "contexts": 402,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "overlap-dynamic900",
+        "sourceKind": "derived",
+        "sourceSha256": "b77567bb9a670445834824fb7796bfe164d5603bbd72847001ebaf1d6c2bba9d",
+        "lines": 8155,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 9.63127639600134,
+        "peakRssKiB": 1142884,
+        "expected": [
+          "H"
+        ],
+        "actual": [
+          "H"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1082154281,
+          "bindingNanos": 290039182,
+          "cfgNanos": 774000777,
+          "dataflowNanos": 7171572829,
+          "resolutionNanos": 3342878,
+          "totalNanos": 9330058883,
+          "workItems": 2469724,
+          "contexts": 902,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "overlap-dynamic1800",
+        "sourceKind": "derived",
+        "sourceSha256": "818ead3bf482dd732fc200a874581e538c5d0d00c494246b65021b71a3857c0f",
+        "lines": 16255,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 44.91001900899573,
+        "peakRssKiB": 3117028,
+        "expected": [
+          "H"
+        ],
+        "actual": [
+          "H"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1543844928,
+          "bindingNanos": 427383400,
+          "cfgNanos": 2444332123,
+          "dataflowNanos": 39983694058,
+          "resolutionNanos": 6127103,
+          "totalNanos": 44418747996,
+          "workItems": 9800224,
+          "contexts": 1802,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "dead-callers800",
+        "sourceKind": "derived",
+        "sourceSha256": "91ef27103dfa86b376c8deab75c05214d39924ccf6c1c05b8bf7f4210212c005",
+        "lines": 1610,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.165813486004481,
+        "peakRssKiB": 159408,
+        "expected": [
+          "SYNPROG"
+        ],
+        "actual": [
+          "SYNPROG"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 577472533,
+          "bindingNanos": 84711255,
+          "cfgNanos": 148095234,
+          "dataflowNanos": 20915127,
+          "resolutionNanos": 1294961,
+          "totalNanos": 838068728,
+          "workItems": 2,
+          "contexts": 1,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "dead-callers6400",
+        "sourceKind": "derived",
+        "sourceSha256": "24d7ead117984d2ceb44b7a0d8002c8084949ac753e0607877a8e7b414ae6bae",
+        "lines": 12810,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 2.868803235993255,
+        "peakRssKiB": 382896,
+        "expected": [
+          "SYNPROG"
+        ],
+        "actual": [
+          "SYNPROG"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1087775054,
+          "bindingNanos": 270124751,
+          "cfgNanos": 1070462407,
+          "dataflowNanos": 63004691,
+          "resolutionNanos": 2815691,
+          "totalNanos": 2502848697,
+          "workItems": 2,
+          "contexts": 1,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "linear-statements16000",
+        "sourceKind": "derived",
+        "sourceSha256": "d626d694a2e2731e248d6292b04168efe764a6d3a01c7e4cefc736c4c2affef3",
+        "lines": 16008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 3.520255442999769,
+        "peakRssKiB": 541852,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1869910658,
+          "bindingNanos": 407676376,
+          "cfgNanos": 720462440,
+          "dataflowNanos": 196649554,
+          "resolutionNanos": 10755754,
+          "totalNanos": 3218354008,
+          "workItems": 16002,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "linear-statements32000",
+        "sourceKind": "derived",
+        "sourceSha256": "3a5818f9e2dd8e493a76915ce46ebad6703eb5e9c28052e65806875ba06aed6e",
+        "lines": 32008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 6.424850580995553,
+        "peakRssKiB": 939040,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 2902852084,
+          "bindingNanos": 664021494,
+          "cfgNanos": 2215592226,
+          "dataflowNanos": 294302241,
+          "resolutionNanos": 5800459,
+          "totalNanos": 6101796909,
+          "workItems": 32002,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "linear-statements64000",
+        "sourceKind": "derived",
+        "sourceSha256": "aa00b1ca57b8ccee2ff57655f4eb0c26e9e5315516fbd7def1840e43e3ccc0fc",
+        "lines": 64008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 15.089320074010175,
+        "peakRssKiB": 1647640,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 5145303808,
+          "bindingNanos": 1191104666,
+          "cfgNanos": 7631563360,
+          "dataflowNanos": 727157803,
+          "resolutionNanos": 11000258,
+          "totalNanos": 14745464240,
+          "workItems": 64002,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "linear-statements117000",
+        "sourceKind": "derived",
+        "sourceSha256": "79fa75b81e30bcacef5de348e55e271b177e6c3183e8cedade3f8a0e77c09f8b",
+        "lines": 117008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 37.37452964899421,
+        "peakRssKiB": 2004772,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 8380207208,
+          "bindingNanos": 1678496568,
+          "cfgNanos": 26002336365,
+          "dataflowNanos": 846933320,
+          "resolutionNanos": 22827148,
+          "totalNanos": 36977375123,
+          "workItems": 117002,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        }
+      }
+    ],
+    "previousSuccessfulOutputsByteIdentical": 25,
+    "linear117000OutputByteIdenticalTo768MiB": true
+  }
+}

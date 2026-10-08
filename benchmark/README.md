@@ -1,5 +1,11 @@
 # Medições locais
 
+[Auditoria ampliada de explosão](explosion-review-20261008.md): matriz ampliada
+30/30 PASS com heap de 4 GiB e orçamento de 100 milhões, incluindo 117 mil
+atribuições e overlap1800 dinâmico. Falhas da rodada com heap/orçamento menores
+continuam registradas; essa qualificação adicional usa recursos diferentes
+dos benchmarks abaixo.
+
 Artefato medido: commit `f70a94b`, SHA completo e hash do JAR em
 [pins.json](pins.json). Os JSONs, comandos, logs, tempos e RSS por fonte
 permanecem em `results/` (ignorado pelo Git); os resultados normalizados e

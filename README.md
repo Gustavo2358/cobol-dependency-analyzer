@@ -96,6 +96,20 @@ Ultrapassar o orçamento falha explicitamente; não corta candidatos para obter
 sucesso. `--metrics arquivo.jsonl` grava tempos e contadores fora do JSON de
 produto. Heap é configurado pelo Java, por exemplo `-Xmx768m`.
 
+Para programas grandes, os testes de escala usaram heap de 4 GiB e orçamento
+de 100 milhões de visitas:
+
+```sh
+java -Xmx4g -jar target/cobol-dependency-analyzer.jar \
+  --source programa.cbl --copy-dir copybooks --max-work 100000000 \
+  --output dependencies.json
+```
+
+A [auditoria de escala](benchmark/explosion-review-20261008.md) inclui
+117 mil atribuições e 1.800 faixas sobrepostas com consulta dinâmica, com
+destinos esperados conferidos. Consumo e tempo dependem também da estrutura
+do programa, além da quantidade de linhas.
+
 ## Validação
 
 O corpus CardDemo foi processado integralmente: **73/73 fontes, 815 relações
