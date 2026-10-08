@@ -10,7 +10,7 @@
 * COBOL Grammar for ANTLR4
 *
 * This is a COBOL grammar, which is part of the COBOL parser at
-* https://github.com/uwol/proleap-cobol-parser.
+* proleap-cobol-parser project.
 *
 * The grammar passes the NIST test suite and has successfully been applied to
 * numerous COBOL files from banking and insurance. To be used in conjunction
@@ -20,9 +20,9 @@
 grammar Cobol;
 
 @parser::members {
-    { io.github.gustavo2358.cobolexplorer.DirectParseScope.requireLegacyAllowed(); }
+    { com.imd.cobolexplorer.DirectParseScope.requireLegacyAllowed(); }
     // Opt-in laboratory session; absent in the production/default parser.
-    public io.github.gustavo2358.cobolexplorer.DirectDataParser.Session directDataSession;
+    public com.imd.cobolexplorer.DirectDataParser.Session directDataSession;
 }
 
 startRule : compilationUnit EOF;
@@ -3338,8 +3338,8 @@ EXECCICSLINE : EXECCICSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
 // Exactly one multiline token per DLI, ending at its validated real delimiter.
 EXECDLIBLOCK
    : '*>EXECDLI{' E X E C [ \t\r\n]+ D L I
-     {!io.github.gustavo2358.cobolexplorer.DliRegion.wordPart(_input.LA(1))}?
-     {io.github.gustavo2358.cobolexplorer.DliRegion.consumeBody(this, true);}
+     {!com.imd.cobolexplorer.DliRegion.wordPart(_input.LA(1))}?
+     {com.imd.cobolexplorer.DliRegion.consumeBody(this, true);}
    ;
 EXECSQLIMSLINE : EXECSQLIMSTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');
 EXECSQLLINE : EXECSQLTAG WS ~('\n' | '\r' | '}')* ('\n' | '\r' | '}');

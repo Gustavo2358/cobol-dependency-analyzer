@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>io.github.gustavo2358.cobolexplorer</groupId>
+  <groupId>com.imd.cobolexplorer</groupId>
   <artifactId>cobol-dependency-analyzer</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
@@ -58,7 +58,7 @@
         <executions><execution><phase>package</phase><goals><goal>shade</goal></goals><configuration>
           <createDependencyReducedPom>false</createDependencyReducedPom>
           <filters><filter><artifact>*:*</artifact><excludes><exclude>META-INF/*.SF</exclude><exclude>META-INF/*.DSA</exclude><exclude>META-INF/*.RSA</exclude></excludes></filter></filters>
-          <transformers><transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"><mainClass>io.github.gustavo2358.cobolexplorer.DependencyMain</mainClass></transformer></transformers>
+          <transformers><transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"><mainClass>com.imd.cobolexplorer.DependencyMain</mainClass></transformer></transformers>
         </configuration></execution></executions>
       </plugin>
       <plugin>
@@ -69,7 +69,7 @@
           <visitor>true</visitor>
           <arguments>
             <argument>-package</argument>
-            <argument>io.github.gustavo2358.cobolexplorer.antlr</argument>
+            <argument>com.imd.cobolexplorer.antlr</argument>
           </arguments>
         </configuration>
         <executions>
@@ -86,7 +86,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.5.0</version>
         <configuration>
-          <mainClass>io.github.gustavo2358.cobolexplorer.DependencyMain</mainClass>
+          <mainClass>com.imd.cobolexplorer.DependencyMain</mainClass>
         </configuration>
       </plugin>
       <plugin>
@@ -115,13 +115,13 @@
             </dependencies>
             <configuration>
               <targetClasses>
-                <param>io.github.gustavo2358.cobolexplorer.AstBuilder*</param>
-                <param>io.github.gustavo2358.cobolexplorer.ReferenceOccurrenceCollector*</param>
+                <param>com.imd.cobolexplorer.AstBuilder*</param>
+                <param>com.imd.cobolexplorer.ReferenceOccurrenceCollector*</param>
               </targetClasses>
               <targetTests>
-                <param>io.github.gustavo2358.cobolexplorer.AstBuilderTypedTraversalTest</param>
-                <param>io.github.gustavo2358.cobolexplorer.DataAndIndexReferenceResolverTest</param>
-                <param>io.github.gustavo2358.cobolexplorer.StructuredExpressionAstTest</param>
+                <param>com.imd.cobolexplorer.AstBuilderTypedTraversalTest</param>
+                <param>com.imd.cobolexplorer.DataAndIndexReferenceResolverTest</param>
+                <param>com.imd.cobolexplorer.StructuredExpressionAstTest</param>
               </targetTests>
               <threads>2</threads>
               <timestampedReports>false</timestampedReports>

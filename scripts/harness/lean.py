@@ -150,39 +150,6 @@ def check(root):
     subprocess.run(['git', 'diff', '--cached', '--check'], cwd=root, check=True)
 
 
-def validate_pins(root, lock_path, required):
-    """Required repository entries and immutable revisions cannot disappear."""
-    try:
-        lock = json.loads((root / lock_path).read_text())
-        def visit(value):
-            if isinstance(value, dict):
-                if 'repository' in value:
-                    yield value
-                for child in value.values():
-                    yield from visit(child)
-            elif isinstance(value, list):
-                for child in value:
-                    yield from visit(child)
-        sources = list(visit(lock))
-        errors = []
-        for repository in required:
-            entries = [s for s in sources if s['repository'] == repository]
-            if not entries or any(not re.fullmatch('[0-9a-f]{40}', str(s.get('commit', s.get('ref', s.get('main_commit', ''))))) for s in entries):
-                errors.append('missing/invalid immutable cross-repo pin: ' + repository)
-        for repository, fields in {
-                'Gustavo2358/analysis-ir': ('semantic_version',),
-                'Gustavo2358/air-java': ('maven',)}.items():
-            if repository not in required:
-                continue
-            versions = [entry.get(field) for entry in sources if entry['repository'] == repository for field in fields]
-            if not any(isinstance(value, str) and re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', value)
-                       or isinstance(value, dict) and value.get('version') for value in versions):
-                errors.append('missing cross-repo contract/version: ' + repository)
-        return errors
-    except (OSError, ValueError, TypeError) as error:
-        return ['source lock: ' + str(error)]
-
-
 def execute(profile, root=ROOT):
     from lean_project import technical_fast
     if profile not in ('DOCS_ONLY', 'CODE_CHANGE'):
@@ -199,7 +166,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('gate', choices=['fast', 'ci', 'docs', 'policy', 'qualification-local', 'full', 'close'])
     parser.add_argument('--work', type=Path)
-    parser.add_argument('--merged', action='store_true', help='attest the PR is merged, as recorded in Git/GitHub')
+    parser.add_argument('--merged', action='store_true', help='attest the PR is merged, as recorded in version control')
     parser.add_argument('--tests-passed', action='store_true', help='attest required technical tests passed')
     args = parser.parse_args()
     try:

@@ -40,7 +40,7 @@ ou entre os adapters de CFG e de análise. Os núcleos continuam sem compressão
 ```sh
 # O frontend publica cobol-semantic-product.json.zst por padrão.
 # Use os classpaths runtime produzidos pelo Maven, que incluem zstd-jni.
-java -cp "$FRONTEND_CP" io.github.gustavo2358.cobolexplorer.ExplorerMain \
+java -cp "$FRONTEND_CP" com.imd.cobolexplorer.ExplorerMain \
   --source input.cbl --copybooks copybooks --output out/frontend
 java -cp "$LOWER_CP" io.github.gustavo2358.lower.adapters.cli.CobolDependencyInput \
   out/frontend/cobol-semantic-product.json.zst out/dependency-input.json.zst

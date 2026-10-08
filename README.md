@@ -77,6 +77,11 @@ como `.cl2`, são aceitas por entrada de arquivo explícita.
 O formato de fonte é FIXED; o charset padrão é UTF-8. O parser direto é padrão,
 com fallback ANTLR; `--parser antlr` seleciona a outra rota explicitamente.
 
+Os pacotes Java e o `groupId` Maven usam `com.imd.cobolexplorer`.
+O ponto de entrada é `com.imd.cobolexplorer.DependencyMain`; o nome do JAR e
+os argumentos do CLI permanecem os mesmos. Código que importava os pacotes
+anteriores precisa atualizar seus imports e suas coordenadas Maven.
+
 ## Dependências e saída
 
 CALL, CICS LINK e CICS XCTL produzem dependências de programa. Declarações de

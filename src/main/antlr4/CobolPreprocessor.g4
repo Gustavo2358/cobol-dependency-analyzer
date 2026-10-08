@@ -10,7 +10,7 @@
 * COBOL Preprocessor Grammar for ANTLR4
 *
 * This is a preprocessor grammar for COBOL, which is part of the COBOL 
-* parser at https://github.com/uwol/proleap-cobol-parser.
+* parser at proleap-cobol-parser project.
 */
 
 grammar CobolPreprocessor;
@@ -625,8 +625,8 @@ DOUBLEEQUALCHAR : '==';
 // DLI alone has an opaque lexical boundary. Its action never uses parser recovery.
 EXECDLIBLOCK
    : E X E C [ \t\r\n]+ D L I
-     {!io.github.gustavo2358.cobolexplorer.DliRegion.wordPart(_input.LA(1))}?
-     {io.github.gustavo2358.cobolexplorer.DliRegion.consumeBody(this, false);}
+     {!com.imd.cobolexplorer.DliRegion.wordPart(_input.LA(1))}?
+     {com.imd.cobolexplorer.DliRegion.consumeBody(this, false);}
    ;
 
 // literals

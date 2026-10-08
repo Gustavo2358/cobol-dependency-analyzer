@@ -21,7 +21,7 @@ class NamingGuard(unittest.TestCase):
                 env['PATH']=str(tools)
             return subprocess.run(['bash','scripts/verify-naming.sh'],cwd=root,env=env,capture_output=True,text=True).returncode
     def test_canonical_repository_in_docs(self):
-        self.assertEqual(0,self.run_guard('docs/evidence.md','https://github.com/example/'+VENDOR+'-poc/pull/1'))
+        self.assertEqual(0,self.run_guard('docs/evidence.md','https://example.org/repositories/'+VENDOR+'-poc/pull/1'))
     def test_canonical_repository_in_json_evidence(self):
         self.assertEqual(0,self.run_guard('docs/work/evidence.json',
                 '{"sources":{"'+VENDOR+'-poc":"abc123"}}'))
@@ -57,7 +57,7 @@ class NamingGuard(unittest.TestCase):
         for suffix in ('yaml','yml'):
             with self.subTest(suffix=suffix):
                 self.assertEqual(0,self.run_guard('docs/work/evidence.'+suffix,
-                    'pr: https://github.com/example/'+VENDOR+'-poc/pull/80'))
+                    'pr: https://example.org/repositories/'+VENDOR+'-poc/pull/80'))
     def test_yaml_repository_exception_is_exact_and_documentary(self):
         for name,text in (('docs/work/evidence.yaml','repository: '+VENDOR+'-pocket'),
                           ('docs/work/evidence.yml','repository: '+VENDOR+'-poc\nname: '+VENDOR+' engine'),
