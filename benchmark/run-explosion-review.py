@@ -15,12 +15,13 @@ parser.add_argument('--case', action='append', default=[])
 parser.add_argument('--max-work', type=int, default=1000000)
 parser.add_argument('--timeout', type=int, default=45)
 parser.add_argument('--extended', action='store_true', help='Include larger AND/OR and dynamic overlap cases')
+parser.add_argument('--jar', type=Path, default=ROOT / 'target/cobol-dependency-analyzer.jar', help='Pinned artifact for before/after comparisons')
 args = parser.parse_args()
 assert args.heap > 0 and args.max_work > 0 and args.timeout > 0
 OUT = Path(args.output).resolve()
 OUT.mkdir(parents=True, exist_ok=False)
 JAVA = '/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java'
-JAR = ROOT / 'target/cobol-dependency-analyzer.jar'
+JAR = args.jar.resolve()
 GENERATOR = WORKSPACE / 'artefatos-e2e/memory-general-discovery-20261005/generate.py'
 generator = runpy.run_path(str(GENERATOR))
 
