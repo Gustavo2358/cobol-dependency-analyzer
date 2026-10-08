@@ -10,6 +10,25 @@ import static org.junit.jupiter.api.Assertions.*;
 class DependencySummaryTest {
     @TempDir Path temp;
 
+    @Test void localTransformationsShareWorkWithoutMergingCallerInputs() throws Exception {
+        var procedure=new StringBuilder("MAIN.\n");var names=new ArrayList<String>();
+        for(int i=0;i<40;i++) {
+            String name=String.format("P%06d",i);names.add(name);
+            procedure.append("MOVE '").append(name).append("' TO KEEP.\nPERFORM BODY.\nCALL KEEP.\nCALL TARGET.\n");
+        }
+        procedure.append("GOBACK.\nBODY.\nMOVE 'SAME' TO TARGET.\nIF KEEP = 'NEVER'\nCALL 'BAD'\nEND-IF.\nEXIT.");
+        names.add("SAME");
+        var result=check("01 KEEP PIC X(8).\n01 TARGET PIC X(8).",procedure.toString(),names.toArray(String[]::new));
+        assertEquals(41,result.metrics().contexts(),"Each caller input remains distinct");
+        assertTrue(result.metrics().reusedEvaluations()>=39,result.metrics().toString());
+    }
+    @Test void sharedPatchesKeepPartialWritesAndCallerCorrelation() throws Exception {
+        check("01 TARGET PIC X(8).\n01 KEEP PIC X(8).\n01 FLAG PIC X.",
+            "MAIN.\nMOVE 'FIRST' TO TARGET.\nMOVE '0' TO FLAG.\nPERFORM BODY.\nCALL TARGET.\n"
+            +"MOVE 'OTHER' TO TARGET.\nMOVE '1' TO FLAG.\nPERFORM BODY.\nGOBACK.\n"
+            +"BODY.\nIF FLAG = '0'\nMOVE 'X' TO TARGET(5:1)\nELSE\nMOVE 'BAD' TO TARGET\nEND-IF.\nEXIT.","FIRSX");
+    }
+
     private Path source(String data,String procedure)throws Exception {
         String text="IDENTIFICATION DIVISION.\nPROGRAM-ID. SUFFIX-TEST.\nDATA DIVISION.\n"
             +"WORKING-STORAGE SECTION.\n"+data+"\nPROCEDURE DIVISION.\n"+procedure+"\n";

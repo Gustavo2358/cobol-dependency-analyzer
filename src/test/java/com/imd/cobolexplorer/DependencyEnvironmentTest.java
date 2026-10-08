@@ -5,6 +5,22 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DependencyEnvironmentTest {
+    @Test void joinsMatchIndependentPointwiseUnionAndReuseSharedBranches() throws Exception {
+        var random=new Random(29);var first=new HashMap<Integer,DependencyValues>();var second=new HashMap<Integer,DependencyValues>();
+        for(int i=-300;i<300;i++) {
+            if(random.nextBoolean())first.put(i,random.nextBoolean()?DependencyValues.UNKNOWN:DependencyValues.known("A"));
+            if(random.nextBoolean())second.put(i,random.nextBoolean()?DependencyValues.UNKNOWN:DependencyValues.known("B"));
+        }
+        var a=DependencyEnvironment.copyOf(first);var b=DependencyEnvironment.copyOf(second);
+        var expected=new HashMap<>(first);second.forEach((k,v)->expected.merge(k,v,DependencyValues::join));
+        assertEquals(expected,a.join(b));assertEquals(a.join(b),b.join(a));assertEquals(expected.hashCode(),a.join(b).hashCode());
+        assertSame(a,a.join(a));assertEquals(first,a);assertEquals(second,b);
+        var expanded=a.with(1001,DependencyValues.known("C"));var joined=a.join(expanded);
+        var shared=nodes(a);shared.retainAll(nodes(joined));
+        assertTrue(shared.size()>a.size()-20,"Join must skip unchanged branches");
+        assertEquals(expanded,joined);
+        var c=a.with(-1001,DependencyValues.known("D"));assertEquals(a.join(b).join(c),a.join(b.join(c)));
+    }
     @Test void projectionRetainsExactEntriesIncludingExplicitUnknown() {
         var values=Map.of(1,DependencyValues.UNKNOWN,2,DependencyValues.known("X"),3,DependencyValues.known("Y"));
         var source=DependencyEnvironment.copyOf(values);
@@ -35,6 +51,15 @@ class DependencyEnvironmentTest {
         var cache=DependencyEnvironment.Projection.class.getDeclaredField("projected");cache.setAccessible(true);
         ((Map<?,?>)cache.get(projection)).clear();
         assertEquals(first,projection.apply(source));
+    }
+    @Test void sparseProjectionDoesNotMemoizeUnrelatedBranches() throws Exception {
+        var values=new HashMap<Integer,DependencyValues>();for(int i=0;i<10000;i++)values.put(i,DependencyValues.UNKNOWN);
+        var source=DependencyEnvironment.copyOf(values);var projection=new DependencyEnvironment.Projection(Set.of(5001));
+        assertEquals(Map.of(5001,DependencyValues.UNKNOWN),projection.apply(source));
+        var cache=DependencyEnvironment.Projection.class.getDeclaredField("projected");cache.setAccessible(true);
+        assertTrue(((Map<?,?>)cache.get(projection)).size()<40,"Sparse operands must not retain a cache entry per unrelated field");
+        var extremes=DependencyEnvironment.copyOf(Map.of(Integer.MIN_VALUE,DependencyValues.UNKNOWN,Integer.MAX_VALUE,DependencyValues.known("X")));
+        assertEquals(Map.of(Integer.MAX_VALUE,DependencyValues.known("X")),new DependencyEnvironment.Projection(Set.of(Integer.MAX_VALUE)).apply(extremes));
     }
     @Test void projectedUpdatesAndRemovalsMatchIndependentMapFiltering() {
         var random=new Random(17);var expected=new HashMap<Integer,DependencyValues>();var keep=new HashSet<Integer>();

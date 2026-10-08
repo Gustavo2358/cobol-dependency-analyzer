@@ -144,7 +144,9 @@ aos insumos e oráculos documentados.
 `--max-work N` limita visitas, estados, resumos, trabalho de relevância e produtos de candidatos (padrão 1000000).
 Ultrapassar o orçamento falha explicitamente; não corta candidatos para obter
 sucesso. `--metrics arquivo.jsonl` grava tempos e contadores fora do JSON de
-produto. Heap é configurado pelo Java, por exemplo `-Xmx768m`.
+produto. `evaluations` conta transformações locais calculadas e `reusedEvaluations`
+conta visitas que reaproveitam esses resultados; `workItems` continua contando
+o trabalho do solver, inclusive essas visitas. Heap é configurado pelo Java, por exemplo `-Xmx768m`.
 
 Para programas grandes, os testes de escala usaram heap de 4 GiB e orçamento
 de 100 milhões de visitas:
@@ -194,8 +196,15 @@ O [profiling da FIXTURE02](benchmark/fixture02-profiling-20261008.md) registra
 um OOM na versão anterior. A [etapa 1 de compartilhamento](benchmark/shared-projection-20261008.md)
 preserva os ramos das projeções e reduz a memória viva em 48% no experimento
 limitado a 2.048 contextos, mantendo as mesmas entradas e o mesmo trabalho.
-A multiplicação de resumos por estados distintos permanece; a execução completa
-da FIXTURE02 ainda não está qualificada.
+A [etapa 2 de compartilhamento](benchmark/shared-work-20261008.md) reutiliza
+transformações por instrução e seus operandos, aplicando somente as mudanças
+ao estado específico de cada chamador. Na comparação com a etapa 1, calculou
+120 transformações para 15.282 visitas, reduziu o tempo do solver em 32,8%
+e os bytes alocados em 17,2%; a memória viva aumentou 5,7% pelos caches.
+O experimento usa heap de 512 MiB e parada em 2.048 contextos. A multiplicação
+de resumos por estados distintos permanece; a execução completa da FIXTURE02
+ainda não está qualificada. Os 40 fixtures do discovery e os 73 programas
+CardDemo preservaram JSONs e diagnósticos byte a byte nesta etapa.
 
 ```sh
 python3 -B scripts/harness/lean.py fast

@@ -12,7 +12,7 @@ public final class DependencyAnalyzer {
     public record At(String file,int line) { }
     public record Dependency(String type,String name,At at) { }
     public record Program(String program,List<Dependency> dependencies) { }
-    public record Metrics(long parseNanos,long bindingNanos,long cfgNanos,long dataflowNanos,long resolutionNanos,long totalNanos,long workItems,int contexts,int trackedDeclarations) { }
+    public record Metrics(long parseNanos,long bindingNanos,long cfgNanos,long dataflowNanos,long resolutionNanos,long totalNanos,long workItems,int contexts,int trackedDeclarations,long evaluations,long reusedEvaluations) { }
     public record Result(List<Program> programs,List<String> diagnostics,Metrics metrics) { }
     public record Options(List<Path> copyDirectories,SourceNormalizer.SourceFormat format,Charset charset,Path sourceInventory,String parser,long maxWork) {
         public Options {copyDirectories=List.copyOf(copyDirectories);if(maxWork<1)throw new IllegalArgumentException("positive --max-work required");}
@@ -46,7 +46,7 @@ public final class DependencyAnalyzer {
             var report=ResolutionAnalysisReport.compose(build,new ResolutionAnalysisReport.FrontendState(prep.errors(),lexerErrors,parserErrors,diagnostics),occurrences,resolution,ExternalClassification.empty());
             var cics=new CicsProgramControlAnalyzer().analyze(build,report).withHandlers(CicsHandlerSemantics.analyze(build,tables,resolution)).withAbendEvents(CicsAbendSemantics.analyze(build)).withCommands(CicsCommandSemantics.analyze(build));
             var conditions=ConditionNameSemantics.analyze(build,tables,resolution);
-            long bind=System.nanoTime()-mark,cfg=0,flow=0,resolve=0,work=0;int contexts=0,tracked=0;
+            long bind=System.nanoTime()-mark,cfg=0,flow=0,resolve=0,work=0,evaluations=0,reusedEvaluations=0;int contexts=0,tracked=0;
             var sourceFacts=SourceDependencySemantics.associate(build,prep.sourceDependencies(),prep.sourceDependencyGaps());
             var notices=new TreeSet<String>();normalization.diagnostics().forEach(d->notices.add("NORMALIZATION: "+d));for(var d:diagnostics)notices.add(d.code()+": "+d.message());notices.addAll(prep.sourceDependencyGaps());
             if(frontend.route().equals("fallback"))notices.add("PARSER_FALLBACK: "+frontend.fallbackReason());
@@ -76,7 +76,7 @@ public final class DependencyAnalyzer {
                     var topology=ControlTopologySemantics.analyze(unit,table,resolution,report,handles,CobolSemanticProduct.FileInventory.unavailable(),cics);
                     cfg+=System.nanoTime()-mark;mark=System.nanoTime();
                     var values=new DependencyFlow(unit,declarations,topology,queries,options.maxWork(),cics,conditions.uses(unit.id()));
-                    flow+=System.nanoTime()-mark;work+=values.visits;contexts+=values.contexts.size();tracked+=values.demand.size();mark=System.nanoTime();notices.addAll(values.diagnostics);
+                    flow+=System.nanoTime()-mark;work+=values.visits;evaluations+=values.evaluations;reusedEvaluations+=values.reusedEvaluations;contexts+=values.contexts.size();tracked+=values.demand.size();mark=System.nanoTime();notices.addAll(values.diagnostics);
                     values.answers.forEach((q,v)->v.values().forEach(name->{
                         if(q.type().equals("file")&&(q.literal().isEmpty()&&name.length()!=8||name.stripTrailing().length()>8||!name.stripTrailing().matches("[A-Z0-9$@#]+")))
                             notices.add("CICS_FILE_NAME_UNSUPPORTED at "+q.statement().meta().provenance().original().startLine());
@@ -99,7 +99,7 @@ public final class DependencyAnalyzer {
                 programs.add(new Program(unit.id().canonicalProgramName(),List.copyOf(deps.values())));resolve+=System.nanoTime()-mark;
             }
             programs.sort(Comparator.comparing(Program::program));
-            return new Result(List.copyOf(programs),List.copyOf(notices),new Metrics(parse,bind,cfg,flow,resolve,System.nanoTime()-started,work,contexts,tracked));
+            return new Result(List.copyOf(programs),List.copyOf(notices),new Metrics(parse,bind,cfg,flow,resolve,System.nanoTime()-started,work,contexts,tracked,evaluations,reusedEvaluations));
         }
     }
     private static Ast.Expression operand(Ast.EmbeddedLanguageStatement statement,String option) {

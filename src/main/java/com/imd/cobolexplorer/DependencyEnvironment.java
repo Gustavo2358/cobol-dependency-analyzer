@@ -26,17 +26,21 @@ final class DependencyEnvironment extends AbstractMap<Integer,DependencyValues> 
     static final class Projection {
         private static final Node EMPTY=new Node(0,DependencyValues.UNKNOWN,null,null);
         private final Set<Integer> declarations;
+        private final NavigableSet<Integer> ordered;
         private final Map<Node,WeakReference<Node>> projected=new WeakHashMap<>();
-        Projection(Set<Integer> declarations){this.declarations=Set.copyOf(declarations);}
+        Projection(Set<Integer> declarations){this.declarations=Set.copyOf(declarations);ordered=new TreeSet<>(declarations);}
         DependencyEnvironment apply(Map<Integer,DependencyValues> values) {
-            var source=copyOf(values);var root=retain(source.root);
+            var source=copyOf(values);var root=retain(source.root,Integer.MIN_VALUE,(long)Integer.MAX_VALUE+1);
             return root==source.root?source:new DependencyEnvironment(root);
         }
-        private Node retain(Node node) {
+        private Node retain(Node node,int lower,long upper) {
             if(node==null)return null;
+            // A sparse operand selection must neither visit nor cache branches
+            // outside its key ranges. This also applies to summary projections.
+            var selected=ordered.ceiling(lower);if(selected==null||selected>=upper)return null;
             var cached=projected.get(node);var result=cached==null?null:cached.get();
             if(result!=null)return result==EMPTY?null:result;
-            var left=retain(node.left);var right=retain(node.right);
+            var left=retain(node.left,lower,node.key);var right=retain(node.right,node.key+1,upper);
             result=declarations.contains(node.key)
                     ?left==node.left&&right==node.right?node:new Node(node.key,node.value,left,right)
                     :merge(left,right);
@@ -75,6 +79,37 @@ final class DependencyEnvironment extends AbstractMap<Integer,DependencyValues> 
     }
     DependencyEnvironment with(int key,DependencyValues value){return new DependencyEnvironment(insert(root,key,Objects.requireNonNull(value)));}
     DependencyEnvironment without(int key){return new DependencyEnvironment(remove(root,key));}
+    DependencyEnvironment join(Map<Integer,DependencyValues> other) {
+        var joined=join(root,copyOf(other).root);
+        return joined==root?this:new DependencyEnvironment(joined);
+    }
+    private record Split(Node left,DependencyValues value,Node right) { }
+    private static Split split(Node node,int key) {
+        if(node==null)return new Split(null,null,null);
+        if(node.key==key)return new Split(node.left,node.value,node.right);
+        if(key<node.key) {
+            var part=split(node.left,key);
+            return new Split(part.left,part.value,rebuild(node,part.right,node.right,node.value));
+        }
+        var part=split(node.right,key);
+        return new Split(rebuild(node,node.left,part.left,node.value),part.value,part.right);
+    }
+    private static Node rebuild(Node node,Node left,Node right,DependencyValues value) {
+        return left==node.left&&right==node.right&&value.equals(node.value)?node:new Node(node.key,value,left,right);
+    }
+    /** Shared immutable branches already have their fixed join. Only differing
+     * branches need evaluation; split handles independently projected key sets. */
+    private static Node join(Node a,Node b) {
+        if(a==b||b==null)return a;
+        if(a==null)return b;
+        if(a.key==b.key)return rebuild(a,join(a.left,b.left),join(a.right,b.right),a.value.join(b.value));
+        if(above(a.key,b.key)) {
+            var part=split(b,a.key);
+            return rebuild(a,join(a.left,part.left),join(a.right,part.right),part.value==null?a.value:a.value.join(part.value));
+        }
+        var part=split(a,b.key);
+        return rebuild(b,join(part.left,b.left),join(part.right,b.right),part.value==null?b.value:part.value.join(b.value));
+    }
     private static Node insert(Node n,int key,DependencyValues value) {
         if(n==null)return new Node(key,value,null,null);
         if(n.key==key)return n.value.equals(value)?n:new Node(key,value,n.left,n.right);

@@ -18,7 +18,7 @@ final class DependencyFlow {
         State withHandlers(Map<String,Set<String>> handlers){return new State(values,handlers,reached);}
         State join(State other) {
             if(this==other||equals(other))return this;
-            var out=new DependencyEnvironment.Builder(values);other.values.forEach((k,v)->out.merge(k,v,DependencyValues::join));
+            var out=DependencyEnvironment.copyOf(values).join(other.values);
             var h=new HashMap<>(handlers);other.handlers.forEach((k,v)->h.merge(k,v,(x,y)->union(x,y)));
             return new State(out,h,union(reached,other.reached));
         }
@@ -78,7 +78,50 @@ final class DependencyFlow {
     final Set<String> paragraphEntries=new HashSet<>();
     final Set<String> prerequisites=new HashSet<>();
     final DependencyRelevance relevance;
-    final Map<Point,DependencyEnvironment.Projection> projections=new HashMap<>();
+    final Map<Point,Selection> projections=new HashMap<>();
+    final Map<String,Selection> operands=new HashMap<>();
+    record Computation(String node,State input) { }
+    final Map<Computation,List<Action>> computations=new HashMap<>();
+    long evaluations,reusedEvaluations;
+    /** A local transformation reads only its operands and preserves the rest of
+     * each caller. Explicit writes, including UNKNOWN, are returned as patches. */
+    record Selection(DependencyEnvironment.Projection values,Set<String> handlers,Set<String> facts) {
+        static Selection of(Set<Input> inputs) {
+            var values=new HashSet<Integer>();var handlers=new HashSet<String>();var facts=new HashSet<String>();
+            for(var input:inputs) {
+                if(input instanceof Value value)values.add(value.declaration());
+                else if(input instanceof Handler handler)handlers.add(handler.name());
+                else if(input instanceof Fact fact)facts.add(fact.statement());
+            }
+            return new Selection(new DependencyEnvironment.Projection(values),Set.copyOf(handlers),Set.copyOf(facts));
+        }
+        State apply(State input) {
+            var selectedHandlers=new HashMap<String,Set<String>>();var selectedFacts=new HashSet<String>();
+            for(String name:handlers)if(input.handlers().containsKey(name))selectedHandlers.put(name,input.handlers().get(name));
+            for(String fact:facts)if(input.reached().contains(fact))selectedFacts.add(fact);
+            return new State(values.apply(input.values()),selectedHandlers,selectedFacts);
+        }
+    }
+    record Patch(State result,Set<Integer> removed) {
+        static Patch of(State input,State result) {
+            var removed=new HashSet<>(input.values().keySet());removed.removeAll(result.values().keySet());
+            var values=new HashMap<Integer,DependencyValues>();var handlers=new HashMap<String,Set<String>>();
+            result.values().forEach((id,value)->{if(!value.equals(input.values().get(id)))values.put(id,value);});
+            result.handlers().forEach((name,value)->{if(!value.equals(input.handlers().get(name)))handlers.put(name,value);});
+            var reached=new HashSet<>(result.reached());reached.removeAll(input.reached());
+            return new Patch(new State(values,handlers,reached),Set.copyOf(removed));
+        }
+        State apply(State input) {
+            if(removed.isEmpty()&&result.values().isEmpty()&&result.handlers().isEmpty()&&result.reached().isEmpty())return input;
+            var values=new DependencyEnvironment.Builder(input.values());removed.forEach(values::remove);values.putAll(result.values());
+            var handlers=new HashMap<>(input.handlers());handlers.putAll(result.handlers());
+            return new State(values,handlers,union(input.reached(),result.reached()));
+        }
+    }
+    sealed interface Action permits Advance,Phase,Enter { Patch patch(); }
+    record Advance(Exit target,Patch patch) implements Action { }
+    record Phase(String binding,String phase,Patch patch) implements Action { }
+    record Enter(Exit entry,String endpoint,Patch patch) implements Action { }
     final Map<Exit,Effect> accessEffects=new HashMap<>();
     final Map<Location,State> before=new HashMap<>();
     final ArrayDeque<Location> work=new ArrayDeque<>();
@@ -639,18 +682,9 @@ final class DependencyFlow {
     private void subscribe(Continuation caller,Exit entry) {
         String endpoint=caller.endpoint();State state=caller.input();
         entry=normalize(entry);
-        var point=new Point(entry,endpoint);var needed=relevance.needed(point);
-        var projection=projections.computeIfAbsent(point,key->{
-            var declarations=new HashSet<Integer>();
-            for(var input:needed)if(input instanceof Value value)declarations.add(value.declaration());
-            return new DependencyEnvironment.Projection(declarations);
-        });
-        var projected=projection.apply(state.values());var handlers=new HashMap<String,Set<String>>();var facts=new HashSet<String>();
-        for(var input:needed) {
-            if(input instanceof Handler handler&&state.handlers().containsKey(handler.name()))handlers.put(handler.name(),state.handlers().get(handler.name()));
-            else if(input instanceof Fact fact&&state.reached().contains(fact.statement()))facts.add(fact.statement());
-        }
-        var key=new SummaryKey(entry,endpoint,new State(projected,handlers,facts));
+        var point=new Point(entry,endpoint);
+        var selection=projections.computeIfAbsent(point,key->Selection.of(relevance.needed(key)));
+        var key=new SummaryKey(entry,endpoint,selection.apply(state));
         Integer context=memo.get(key);
         if(context==null) {
             context=contexts.size();memo.put(key,context);contexts.add(new Context(key));route(context,entry,key.input());
@@ -795,6 +829,48 @@ final class DependencyFlow {
         if(paragraphEntries.contains(node)&&!relevance.sameComponent(inputPoint(context.key.entry(),context.key.endpoint()),inputPoint(new Exit(TargetKind.OCCURRENCE,node),context.key.endpoint()))) {
             subscribe(new Forward(location.context(),context.key.endpoint(),input),new Exit(TargetKind.OCCURRENCE,node));return;
         }
+        var selection=operands.computeIfAbsent(node,this::operands);
+        var key=new Computation(node,selection.apply(input));
+        var actions=computations.get(key);
+        if(actions==null) {
+            evaluations++;actions=compute(node,key.input());computations.put(key,actions);
+        }else reusedEvaluations++;
+        for(var action:actions) {
+            var state=action.patch().apply(input);
+            if(action instanceof Advance advance)route(location.context(),advance.target(),state);
+            else if(action instanceof Phase phase)phase(location.context(),bindings.get(phase.binding()),phase.phase(),state);
+            else if(action instanceof Enter enter)subscribe(new Entry(enter.endpoint(),state),enter.entry());
+        }
+    }
+    private Selection operands(String node) {
+        var statement=statements.get(node);
+        if(node.startsWith("phase/")) {
+            int split=node.lastIndexOf('/');statement=statements.get(bindings.get(node.substring(6,split)).caller());
+        }
+        if(statement==null)return Selection.of(Set.of());
+        var effect=localEffect(new Exit(TargetKind.OCCURRENCE,handle(statement)));
+        var inputs=new HashSet<>(effect.reads());
+        // Full scalar kills need no previous destination. Other writes may read
+        // aliases, group snapshots or table elements while updating the target.
+        var written=new HashSet<Input>();valueInputs(written,writes(statement));inputs.addAll(written);
+        var values=new HashSet<Integer>();for(var operand:inputs)if(operand instanceof Value value)values.add(value.declaration());
+        boolean changed;
+        do {
+            int size=values.size();
+            for(int id:new ArrayList<>(values)){values.addAll(declarations.related(id));values.addAll(elementIds.getOrDefault(id,List.of()));}
+            for(int group:textGroups)if(values.contains(group)||!Collections.disjoint(values,declarations.leaves(group))) {
+                values.add(group);values.addAll(declarations.leaves(group));
+            }
+            values.retainAll(demand);changed=size!=values.size();
+        }while(changed);
+        for(int id:values)inputs.add(new Value(id));
+        // A destination needed as an actual source remains an operand even if
+        // the same statement also fully overwrites it (e.g. MOVE A TO A).
+        for(var kill:effect.kills())if(!effect.reads().contains(kill))inputs.remove(kill);
+        return Selection.of(inputs);
+    }
+    private List<Action> compute(String node,State input) {
+        var actions=new ArrayList<Action>();
         if(node.startsWith("phase/")) {
             int split=node.lastIndexOf('/');var b=bindings.get(node.substring(6,split));String id=node.substring(split+1);
             var p=b.phases().stream().filter(x->x.id().equals(id)).findFirst().orElseThrow();
@@ -815,10 +891,10 @@ final class DependencyFlow {
                     state=assign(variable.get(),assigned,state);
                 }
             }
-            for(var edge:p.edges())if(edge.role().equals("next")||edge.role().equals("true")&&(truth&1)!=0||edge.role().equals("false")&&(truth&2)!=0)phase(location.context(),b,edge.target(),state);
-            return;
+            for(var edge:p.edges())if(edge.role().equals("next")||edge.role().equals("true")&&(truth&1)!=0||edge.role().equals("false")&&(truth&2)!=0)actions.add(new Phase(b.id(),edge.target(),Patch.of(input,state)));
+            return List.copyOf(actions);
         }
-        var s=statements.get(node);if(s==null)return;
+        var s=statements.get(node);if(s==null)return List.copyOf(actions);
         State state=transfer(s,input);
         if(prerequisites.contains(node)&&!state.reached().contains(node))state=new State(state.values(),state.handlers(),union(state.reached(),Set.of(node)));
         var registration=abendRegistrations.get(node);
@@ -845,21 +921,21 @@ final class DependencyFlow {
                 if(index>=0 && !(e.role().equals("normal")?index==0||index>g.targets().size():e.role().equals("target-"+(index-1))))continue;
             }
             if(branch==null)continue;
-            if(e.kind()==OutcomeKind.LOCAL_INVOKE)phase(location.context(),bindings.get(e.binding()),bindings.get(e.binding()).entryPhase(),branch);
-            else route(location.context(),e.target(),branch);
+            if(e.kind()==OutcomeKind.LOCAL_INVOKE)actions.add(new Phase(e.binding(),bindings.get(e.binding()).entryPhase(),Patch.of(input,branch)));
+            else actions.add(new Advance(Exit.of(e.target()),Patch.of(input,branch)));
         }
         // Inventory the source-qualified continuations with uncertainty. Their
         // prerequisites must have been reached in this invocation.
-        for(var p:possibilities.getOrDefault(node,List.of()))if(state.reached().containsAll(p.prerequisites()))route(location.context(),p.target(),state);
+        for(var p:possibilities.getOrDefault(node,List.of()))if(state.reached().containsAll(p.prerequisites()))actions.add(new Advance(Exit.of(p.target()),Patch.of(input,state)));
         // File handler bodies already have grammar-owned entries/completions.
         var surface=fileSurface(s);
         if(surface.isPresent())for(var h:surface.get().handlers()) {
-            var r=regions.get("region:"+node+"/file/handler-"+h.kind());if(r!=null)route(location.context(),r.entry(),state);
+            var r=regions.get("region:"+node+"/file/handler-"+h.kind());if(r!=null)actions.add(new Advance(Exit.of(r.entry()),Patch.of(input,state)));
         }
-        for(var use:ioDeclarations.getOrDefault(node,List.of()))invoke(location.context(),use,state);
+        for(var use:ioDeclarations.getOrDefault(node,List.of()))actions.add(new Phase(use.id(),use.entryPhase(),Patch.of(input,state)));
         for(var event:events.getOrDefault(node,List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
             var hs=state.handlers().getOrDefault(event.condition(),state.handlers().getOrDefault("ERROR",Set.of("DEFAULT")));
-            for(String handler:hs)if(handler.equals("IGNORE"))route(location.context(),event.continuation(),state);else if(regions.containsKey(handler))route(location.context(),regions.get(handler).entry(),state);
+            for(String handler:hs)if(handler.equals("IGNORE"))actions.add(new Advance(Exit.of(event.continuation()),Patch.of(input,state)));else if(regions.containsKey(handler))actions.add(new Advance(Exit.of(regions.get(handler).entry()),Patch.of(input,state)));
         }
         for(var event:exceptionalEvents.getOrDefault(node,List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
             boolean explicit=event.origin()==EventOrigin.EXPLICIT_ABEND;
@@ -868,9 +944,10 @@ final class DependencyFlow {
             for(String handler:state.handlers().getOrDefault("ABEND",Set.of("UNKNOWN")))if(handlerEndpoints.containsKey(handler)) {
                 var h=new HashMap<>(state.handlers());h.put("ABEND",Set.of("CANCEL"));
                 State ingress=state.withHandlers(h);String endpoint=handlerEndpoints.get(handler);
-                subscribe(new Entry(endpoint,ingress),new Exit(TargetKind.OCCURRENCE,handler));
+                actions.add(new Enter(new Exit(TargetKind.OCCURRENCE,handler),endpoint,Patch.of(input,ingress)));
             }
         }
+        return List.copyOf(actions);
     }
     private static Optional<Ast.FileIoSurface> fileSurface(Ast.Statement s) {
         return s instanceof Ast.ModeledStatement m?m.fileIo():s instanceof Ast.PreservedStatement p?p.fileIo():Optional.empty();
