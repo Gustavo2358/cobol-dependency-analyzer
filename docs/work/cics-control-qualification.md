@@ -1,7 +1,7 @@
 # CICS control completion — qualification
 
 Implementation and qualification are complete and human review approved integration
-on 2026-09-27. [PR #65](https://github.com/Gustavo2358/proleap-poc/pull/65) records the merge status.
+on 2026-09-27. [PR #65](https://github.com/imd/proleap-poc/pull/65) records the merge status.
 Integration follows frontend #65 → lower #40 → CFG #50, with each consumer pinned
 to the actual upstream merge SHA. The results below are the qualified campaign
 evidence; new main FAST and integration checks are recorded separately.

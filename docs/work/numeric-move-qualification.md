@@ -114,7 +114,7 @@ relatórios/índices, sem alterar o código qualificado. O pin SRC-SP fixa o sna
 de código acima; os hashes dos arquivos fixados foram conferidos.
 
 [Contagens, pins e hashes](numeric-move-results.json). Evidência bruta local:
-`/home/gustavo/workspace/teste-e2e/.gap-reconciliation-20261003/numeric-evidence/`.
+`/home/imd/workspace/teste-e2e/.gap-reconciliation-20261003/numeric-evidence/`.
 Scripts: `run-frontend.py`, `audit-numeric.py`, `audit-conditions.py`,
 `run-pipeline.py` e `compare-dependencies.py`. Os logs RED e intermediários
 permanecem preservados; `frontend-full-reviewed.log` foi interrompido após um teste

@@ -1,6 +1,6 @@
 # Historical qualification failures — repair
 
-Status: IN_PROGRESS before merge; DONE once [PR #65](https://github.com/Gustavo2358/proleap-poc/pull/65) is MERGED with required checks passing. Repairs and review are complete; integration is authorized.
+Status: IN_PROGRESS before merge; DONE once [PR #65](https://github.com/imd/proleap-poc/pull/65) is MERGED with required checks passing. Repairs and review are complete; integration is authorized.
 
 Classify each existing failure against current product contracts before changing production or expectations. Initial evidence: six failures and one error in four frontend characterization classes; W2D hardcodes SP2.38 while the producer lock is SP2.50. Baseline reproductions are preserved.
 

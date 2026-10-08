@@ -70,7 +70,7 @@ Baseline: frontend `ed4830e41689e05001468fe8d4cf9ffcfb87207f`, lower
 AIR atualizado: `a4c49bcf5e07000cb78349c2cc6357ca2dfe7acd`.
 
 Evidência bruta local, preservada fora do Git do produto:
-`/home/gustavo/workspace/teste-e2e/.gap-reconciliation-20261003/condition88-evidence/`.
+`/home/imd/workspace/teste-e2e/.gap-reconciliation-20261003/condition88-evidence/`.
 Scripts: `run-frontend.py`, `audit-conditions.py`, `run-pipeline.py`,
 `compare-dependencies.py`. Auditoria final: `conditions-final-audit.json`.
 Execuções RED e correções intermediárias também permanecem nesse diretório.

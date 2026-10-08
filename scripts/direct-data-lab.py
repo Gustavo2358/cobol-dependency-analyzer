@@ -67,7 +67,7 @@ def main():
                 case.mkdir()
                 command = [str(time_binary), '-f', '%e %U %S %M', '-o', str(case / 'process-time.txt'),
                            args.java, '-Xms256m', '-Xmx2g', '-XX:+UseG1GC', '-DANALYZER_LOG_LEVEL=DEBUG',
-                           '-cp', args.classpath, 'io.github.gustavo2358.cobolexplorer.ExplorerMain',
+                           '-cp', args.classpath, 'com.imd.cobolexplorer.ExplorerMain',
                            '--parser', mode, '--source', str(source), '--copybooks', args.copybooks,
                            '--output', str(case / 'products'), '--json-compression', 'none'] + args.frontend_arg
                 started = time.monotonic()

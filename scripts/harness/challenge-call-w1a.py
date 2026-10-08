@@ -10,7 +10,7 @@ from lean import require_local
 require_local()
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = ROOT / 'src/main/java/io/github/gustavo2358/cobolexplorer'
+BASE = ROOT / 'src/main/java/com/imd/cobolexplorer'
 OUT = ROOT / 'target/cp6-w1a/challenges'
 WRITER = 'semanticproduct/transport/SemanticProductJsonWriter.java'
 MODEL = 'semanticproduct/CobolSemanticProduct.java'

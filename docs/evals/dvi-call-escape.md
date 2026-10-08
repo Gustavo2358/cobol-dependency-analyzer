@@ -121,11 +121,11 @@ escalation. E18 remains PENDING_SOURCE per user authorization.
 
 ## Git handoff
 
-- Original checkout: `/home/gustavo/workspace/teste-e2e/proleap-poc`, clean and
+- Original checkout: `/home/imd/workspace/teste-e2e/proleap-poc`, clean and
   unchanged; fetch updated refs only.
 - Fetched base: `a5a06ce6d5eb416b40cc35ce6b6b7e58ee8f72f5` (`origin/main`).
 - Branch: `fix/dvi-alias-aware-call-escape`.
-- Worktree: `/home/gustavo/workspace/teste-e2e/proleap-poc-dvi-escape`.
+- Worktree: `/home/imd/workspace/teste-e2e/proleap-poc-dvi-escape`.
 - E0 test commit replayed from approved evidence: `7e63803`.
 - Production/tested commit: `071a8b84141e6b4b9be9c569ba6975ec7af3bef1`.
 - Subsequent handoff commit changes documentation only; final head is recorded

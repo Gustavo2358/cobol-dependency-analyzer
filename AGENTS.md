@@ -2,7 +2,7 @@
 
 This independent clone implements the user mission in `MISSION.md`. Only this
 repository may change. The user subsequently authorized configuring origin as
-https://github.com/Gustavo2358/cobol-dependency-analyzer.git and publishing the
+the existing remote and publishing the
 initial implementation. This supersedes the original local-only restriction
 in the historical mission. Further publishing follows explicit user requests.
 Reuse the existing frontend and nominal binding. The operational path is

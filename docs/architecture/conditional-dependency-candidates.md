@@ -90,4 +90,4 @@ não é necessário substituir um pin validado apenas para apontar ao merge.
 Revisão e integração estão registradas nos PRs abaixo; os resultados brutos e
 os SHAs permanecem no repositório local de evidências.
 
-[frontend #60](https://github.com/Gustavo2358/proleap-poc/pull/60), [AIR #22](https://github.com/Gustavo2358/air-java/pull/22), [lower #35](https://github.com/Gustavo2358/cobol-lower/pull/35) e [análise #46](https://github.com/Gustavo2358/analysis-cfg/pull/46).
+[frontend #60](https://github.com/imd/proleap-poc/pull/60), [AIR #22](https://github.com/imd/air-java/pull/22), [lower #35](https://github.com/imd/cobol-lower/pull/35) e [análise #46](https://github.com/imd/analysis-cfg/pull/46).

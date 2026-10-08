@@ -2,28 +2,28 @@
   {
     "id": "lower-CTXBOOM-07",
     "source": "lower-CTXBOOM-07/CTXBOOM-07.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-context-explosion-20261002/fixtures/CTXBOOM-07.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/lower-context-explosion-20261002/fixtures/CTXBOOM-07.cbl",
     "sha256": "fedd3e527ca536926135d6f0884943240d85ecad8fea55f6d12d06a3dab6cbac",
     "expected": []
   },
   {
     "id": "lower-CTXBOOM-08",
     "source": "lower-CTXBOOM-08/CTXBOOM-08.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-context-explosion-20261002/fixtures/CTXBOOM-08.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/lower-context-explosion-20261002/fixtures/CTXBOOM-08.cbl",
     "sha256": "4020ef361b9ccec22428ead5d4ac4892b4e8981262e3a68a052c711f08fabab7",
     "expected": []
   },
   {
     "id": "lower-CTXBOOM-CONTROL-08",
     "source": "lower-CTXBOOM-CONTROL-08/CTXBOOM-CONTROL-08.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-context-explosion-20261002/fixtures/CTXBOOM-CONTROL-08.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/lower-context-explosion-20261002/fixtures/CTXBOOM-CONTROL-08.cbl",
     "sha256": "a395f8bdd2cde387a45af2594eec9093f22c2b8a736967991b918e97f795b9c0",
     "expected": []
   },
   {
     "id": "and76",
     "source": "and76/input.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/activation-and76-dependency-512m/and-0076/input.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/activation-and76-dependency-512m/and-0076/input.cbl",
     "sha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4",
     "expected": [
       "SYNROOT",
@@ -34,7 +34,7 @@
   {
     "id": "or76",
     "source": "or76/input.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/activation-or76-dependency-512m/or-0076/input.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/activation-or76-dependency-512m/or-0076/input.cbl",
     "sha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8",
     "expected": [
       "SYNROOT",
@@ -45,14 +45,14 @@
   {
     "id": "overlap900",
     "source": "overlap900/input.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/overlap900-512m/overlap-0900/input.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/overlap900-512m/overlap-0900/input.cbl",
     "sha256": "c6a5e046700cda53e5651b0293798acac0e4fd187a795919923c7d7f3ef6c469",
     "expected": []
   },
   {
     "id": "fixed-pasted",
     "source": "fixed-pasted/input.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/fixed-pasted-512m/fixed-0001/input.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/fixed-pasted-512m/fixed-0001/input.cbl",
     "sha256": "dfebd5ad5d75c1718ec58fdeba2b311819b7e0593fd6a6cd0b010e19be2ded64",
     "expectedFailure": "INVALID_SOURCE",
     "reason": "COPY is followed by numeric tokens inside area B. These are parser-recovery inputs, not valid sources with a dependency oracle."
@@ -60,7 +60,7 @@
   {
     "id": "fixed-star",
     "source": "fixed-star/input.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/fixed-star72-512m/fixed-star-0001/input.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/fixed-star72-512m/fixed-star-0001/input.cbl",
     "sha256": "29eb1de5b49940b0fd0fb92d3f645c1a428a3bb997e205c201e3847858bc1078",
     "expectedFailure": "INVALID_SOURCE",
     "reason": "COPY is followed by numeric tokens inside area B. These are parser-recovery inputs, not valid sources with a dependency oracle."
@@ -68,7 +68,7 @@
   {
     "id": "context-cics-09",
     "source": "context-cics-09/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/cics-09/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/cics-09/CTXBOOM.cbl",
     "sha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799",
     "expected": [
       "DUMMY"
@@ -77,7 +77,7 @@
   {
     "id": "context-cics-09-control",
     "source": "context-cics-09-control/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/cics-09-control/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/cics-09-control/CTXBOOM.cbl",
     "sha256": "16998d864497eb6b401b7bfc7fac4d119bbb8c65ecfa5d924a2a8ecdf40b95fb",
     "expected": [
       "DUMMY"
@@ -86,7 +86,7 @@
   {
     "id": "context-cics-16",
     "source": "context-cics-16/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/cics-16/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/cics-16/CTXBOOM.cbl",
     "sha256": "ad91b8580f9ec98f357d9885782581fab5aab1a1e993221724e0206de58ed649",
     "expected": [
       "DUMMY"
@@ -95,7 +95,7 @@
   {
     "id": "context-cics-20",
     "source": "context-cics-20/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/cics-20/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/cics-20/CTXBOOM.cbl",
     "sha256": "7a6115b0d1664c71d748d0903c6ca98e1f4e7a8a9a2f59d846466dfe4c62b134",
     "expected": [
       "DUMMY"
@@ -104,56 +104,56 @@
   {
     "id": "context-escape-08",
     "source": "context-escape-08/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/escape-08/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/escape-08/CTXBOOM.cbl",
     "sha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
     "expected": []
   },
   {
     "id": "context-escape-09-control",
     "source": "context-escape-09-control/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/escape-09-control/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/escape-09-control/CTXBOOM.cbl",
     "sha256": "b8b2693953a3e24e7af22cbce53da10e8a61b36090414107b78fd93a05462c28",
     "expected": []
   },
   {
     "id": "context-escape-16",
     "source": "context-escape-16/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/escape-16/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/escape-16/CTXBOOM.cbl",
     "sha256": "302c3c187b04eba84322a946ed9203af42d38b5798ab41a7e9f8f1de0da5eae1",
     "expected": []
   },
   {
     "id": "context-escape-20",
     "source": "context-escape-20/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/escape-20/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/escape-20/CTXBOOM.cbl",
     "sha256": "f96462bf6407560e830efbb2b21df846ef5c38a45663ac5ca9d13aa5fc8abf10",
     "expected": []
   },
   {
     "id": "context-plain-09",
     "source": "context-plain-09/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/plain-09/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/plain-09/CTXBOOM.cbl",
     "sha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
     "expected": []
   },
   {
     "id": "context-plain-09-control",
     "source": "context-plain-09-control/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/plain-09-control/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/plain-09-control/CTXBOOM.cbl",
     "sha256": "dec528142335e5ab831550c5a39f8de3e84ba39b74ff85cb3c8e46b26e9b333b",
     "expected": []
   },
   {
     "id": "context-plain-16",
     "source": "context-plain-16/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/plain-16/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/plain-16/CTXBOOM.cbl",
     "sha256": "e4917084b5d3016a860d961104c28f77b401f224e3aa736c98496d0db6902b9c",
     "expected": []
   },
   {
     "id": "context-plain-20",
     "source": "context-plain-20/CTXBOOM.cbl",
-    "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/plain-20/CTXBOOM.cbl",
+    "original": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-fix-20261003/stress-final-06/plain-20/CTXBOOM.cbl",
     "sha256": "c4ace72add2226c880efc495ec2b47937830a06746238f390a559f968e0ca928",
     "expected": []
   }

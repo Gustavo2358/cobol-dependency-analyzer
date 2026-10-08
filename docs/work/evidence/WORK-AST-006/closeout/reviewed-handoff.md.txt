@@ -81,7 +81,7 @@ Não houve alteração da regra do gate nem edição de conteúdo da evidência.
 
 ## Superfície final de produção
 
-Oito arquivos, todos no namespace `src/main/java/io/github/gustavo2358/cobolexplorer/`:
+Oito arquivos, todos no namespace `src/main/java/io/github/imd/cobolexplorer/`:
 
 - `Ast.java`: presença lexical, origem dos braços e operador relacional tipado, sem novos nós/IDs.
 - `AstBuilder.java`: índice canônico de completion com sucessor herdado e stack; origem dos braços por token de entrada.

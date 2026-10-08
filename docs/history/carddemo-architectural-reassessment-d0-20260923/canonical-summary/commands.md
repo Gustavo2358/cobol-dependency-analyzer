@@ -1,6 +1,6 @@
 # Comandos e parâmetros
 
-Diretório de trabalho: `/home/gustavo/workspace/teste-e2e`; data 2026-09-23 (America/Sao_Paulo).
+Diretório de trabalho: `/home/imd/workspace/teste-e2e`; data 2026-09-23 (America/Sao_Paulo).
 
 ```sh
 python3 -B artefatos-e2e/carddemo-validation-20260923/run_carddemo.py --work artefatos-e2e/carddemo-validation-20260923/preflight --select app/cbl/CBACT01C.cbl --stage-timeout-seconds 120
@@ -8,7 +8,7 @@ python3 -B artefatos-e2e/carddemo-validation-20260923/run_carddemo.py --work art
 python3 -B artefatos-e2e/carddemo-validation-20260923/summarize.py
 ```
 
-A rodada canônica usou o `runtime-closure.json` W8, Java absoluto `/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java`, `-Xmx2g`, uma JVM por etapa e timeout 120 s. `run_carddemo.py` lê e confere os SHAs do source e dos cinco produtores, além da existência de cada entrada do classpath.
+A rodada canônica usou o `runtime-closure.json` W8, Java absoluto `/home/imd/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java`, `-Xmx2g`, uma JVM por etapa e timeout 120 s. `run_carddemo.py` lê e confere os SHAs do source e dos cinco produtores, além da existência de cada entrada do classpath.
 
 Para os contraprobes, o mesmo runner recebeu `--select <caminho lógico>` e `--frontend-arg=--storage-profile --frontend-arg=ibm-enterprise-6.4-fixed-display-1047@1`, gravando em diretório novo para cada fonte. Foram rodados `COPAUS2C.cbl`, `COADM01C.cbl` e os sete caminhos listados em `profile-pure-7/selection.json`. Os comandos individuais e exits constam de `profile-pure-7/case-*.log`/`measurement.json`, `profile-probe/measurements.json` e `profile-input-probe/measurements.json`.
 

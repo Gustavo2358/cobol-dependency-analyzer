@@ -3,7 +3,7 @@
 Usage: python3 -B benchmark/run-explosion-review.py OUTPUT_DIR [--heap MiB] [--case ID] [--max-work N] [--timeout SECONDS]
 Original artifacts are read only; each case runs sequentially in a fresh JVM.
 """
-import argparse, hashlib, json, runpy, subprocess, sys, time
+import argparse, hashlib, json, runpy, shutil, subprocess, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,7 +20,8 @@ args = parser.parse_args()
 assert args.heap > 0 and args.max_work > 0 and args.timeout > 0
 OUT = Path(args.output).resolve()
 OUT.mkdir(parents=True, exist_ok=False)
-JAVA = '/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java'
+JAVA = shutil.which('java')
+if JAVA is None: raise SystemExit('Java not found on PATH')
 JAR = args.jar.resolve()
 GENERATOR = WORKSPACE / 'artefatos-e2e/memory-general-discovery-20261005/generate.py'
 generator = runpy.run_path(str(GENERATOR))

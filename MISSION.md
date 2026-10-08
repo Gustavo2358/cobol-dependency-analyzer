@@ -6,7 +6,7 @@ Você é um agente de engenharia de software responsável por implementar, de po
 
 O ponto de partida é o repositório:
 
-https://github.com/Gustavo2358/proleap-poc
+https://github.com/imd/proleap-poc
 
 O objetivo é clonar esse projeto e transformá-lo em um **analisador especializado exclusivamente em descoberta de dependências**, com CFG e dataflow próprios, sem depender da pipeline atual de múltiplos repositórios.
 
@@ -87,7 +87,7 @@ Não estamos construindo uma nova plataforma de análise estática. Estamos cons
 
 Execute inicialmente:
 
-1. Clone `https://github.com/Gustavo2358/proleap-poc.git` em um novo diretório de trabalho dedicado.
+1. Clone `https://github.com/imd/proleap-poc.git` em um novo diretório de trabalho dedicado.
 2. Entre no diretório clonado.
 3. Execute `git remote remove origin`.
 4. Confirme que `git remote -v` não apresenta nenhum remote.
@@ -226,7 +226,7 @@ Se o custo de materializar todo o Semantic Product for excessivo, utilize os obj
 
 Consulte também:
 
-https://github.com/Gustavo2358/analysis-cfg/blob/main/analysis-dependencies/src/main/java/io/github/gustavo2358/analysis/dependencies/SourceValuesProvider.java
+https://github.com/imd/analysis-cfg/blob/main/analysis-dependencies/src/main/java/io/github/imd/analysis/dependencies/SourceValuesProvider.java
 
 Esse componente contém lógica útil de propagação de valores nominais.
 
@@ -975,11 +975,11 @@ A pipeline atual é o principal oráculo funcional.
 
 Repositórios relevantes:
 
-- https://github.com/Gustavo2358/proleap-poc
-- https://github.com/Gustavo2358/cobol-lower
-- https://github.com/Gustavo2358/air-java
-- https://github.com/Gustavo2358/analysis-ir
-- https://github.com/Gustavo2358/analysis-cfg
+- https://github.com/imd/proleap-poc
+- https://github.com/imd/cobol-lower
+- https://github.com/imd/air-java
+- https://github.com/imd/analysis-ir
+- https://github.com/imd/analysis-cfg
 
 Consulte o código e os testes necessários.
 

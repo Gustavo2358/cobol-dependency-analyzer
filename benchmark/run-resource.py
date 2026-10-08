@@ -15,8 +15,8 @@ parser.add_argument('--timeout',type=int,default=30)
 args=parser.parse_args()
 assert args.heap>0 and args.max_work>0 and args.timeout>0
 out=Path(args.output); out.mkdir(parents=True,exist_ok=True)
-java='/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java'
-if not Path(java).exists(): java=shutil.which('java')
+java=shutil.which('java')
+if java is None: raise SystemExit('Java not found on PATH')
 results=[]
 for case in load(fixtures/'expected.json'):
     dest=out/case['id']; dest.mkdir(exist_ok=True)

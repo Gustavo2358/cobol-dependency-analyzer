@@ -420,7 +420,7 @@ confirma a perda de papel na view `controlExpressions`. Nenhuma AST foi alterada
 ### Registro do probe temporário
 
 - **Probe:** `ControlFlowProbe` descartável, fora do repositório, em `/tmp/semantic-product-discovery-control-flow/`.
-- **Comando:** compilação direta com `javac` contra `target/classes`, `target/test-classes` e as dependências já disponíveis; execução com `java` da classe `io.github.gustavo2358.cobolexplorer.ControlFlowProbe`.
+- **Comando:** compilação direta com `javac` contra `target/classes`, `target/test-classes` e as dependências já disponíveis; execução com `java` da classe `io.github.imd.cobolexplorer.ControlFlowProbe`.
 - **Input:** programa COBOL sintético com `PERFORM paragraph`, `PERFORM THRU`, `PERFORM TIMES`, `UNTIL`, `WITH TEST BEFORE`, `WITH TEST AFTER`, `VARYING`, `VARYING ... AFTER ...` e cinco variantes de `EXIT`.
 - **Resultado observado:** targets/range foram separados; controles foram publicados como `VALUE`/`CONDITION` em lista plana; `TEST BEFORE`/`AFTER` só mudou `writtenControl`; `EXIT` e `EXIT PROGRAM` produziram `ModeledStatement`; `EXIT PARAGRAPH`, `EXIT SECTION` e `EXIT PERFORM` produziram erros de sintaxe.
 - **Conclusão:** a evidência confirma `STRUCTURALLY_SUFFICIENT` somente para os papéis limitados de target/range/body; controls e variantes de EXIT permanecem parciais, preservados ou desconhecidos conforme a matriz. O probe foi apagado antes do handoff.
@@ -446,9 +446,9 @@ downstream_impact:
   rationale: >
     A primeira boundary downstream ainda não foi definida; não é possível provar se a ausência de um aggregate bloqueia um Semantic Product, um lowerer ou apenas requer uma composição diferente.
   evidence:
-    - src/main/java/io/github/gustavo2358/cobolexplorer/ExplorerMain.java:132-207
-    - src/main/java/io/github/gustavo2358/cobolexplorer/ResolutionAnalysisReport.java
-    - src/test/java/io/github/gustavo2358/cobolexplorer/AstBoundaryTestSupport.java:32-206
+    - src/main/java/io/github/imd/cobolexplorer/ExplorerMain.java:132-207
+    - src/main/java/io/github/imd/cobolexplorer/ResolutionAnalysisReport.java
+    - src/test/java/io/github/imd/cobolexplorer/AstBoundaryTestSupport.java:32-206
   reassess_when:
     - semantic-product-contract-defined
 ```
@@ -469,9 +469,9 @@ downstream_impact:
   rationale: >
     Sem o contrato de identidade do produto semântico e do lowerer, não se pode dizer se a estabilidade cross-run é exigida na primeira camada downstream ou se será responsabilidade de um adapter posterior.
   evidence:
-    - src/main/java/io/github/gustavo2358/cobolexplorer/ResolutionContracts.java
-    - src/main/java/io/github/gustavo2358/cobolexplorer/ReferenceOccurrences.java
-    - src/main/java/io/github/gustavo2358/cobolexplorer/ReferenceResolution.java
+    - src/main/java/io/github/imd/cobolexplorer/ResolutionContracts.java
+    - src/main/java/io/github/imd/cobolexplorer/ReferenceOccurrences.java
+    - src/main/java/io/github/imd/cobolexplorer/ReferenceResolution.java
   reassess_when:
     - semantic-product-identity-contract-defined
 ```
@@ -495,9 +495,9 @@ downstream_impact:
     depende da projection primary-unit. A pergunta futura sobre visão multi-unit do
     lowerer é Decision Input independente, não impacto deste finding.
   evidence:
-    - src/main/java/io/github/gustavo2358/cobolexplorer/AstSnapshot.java
-    - src/main/java/io/github/gustavo2358/cobolexplorer/SymbolTableSnapshot.java
-    - src/main/java/io/github/gustavo2358/cobolexplorer/ResolutionSnapshot.java
+    - src/main/java/io/github/imd/cobolexplorer/AstSnapshot.java
+    - src/main/java/io/github/imd/cobolexplorer/SymbolTableSnapshot.java
+    - src/main/java/io/github/imd/cobolexplorer/ResolutionSnapshot.java
 ```
 
 **Rationale:** snapshot/HTML continuam adapters e não foram promovidos a API de domínio;
@@ -521,9 +521,9 @@ downstream_impact:
   rationale: >
     O contrato do Semantic Product e do futuro consumer de controle ainda não existe; a evidência mostra lacuna de modelagem especializada, mas não permite escolher entre requisito do produto, requisito de lowering ou responsabilidade exclusiva de CFG.
   evidence:
-    - src/main/java/io/github/gustavo2358/cobolexplorer/AstBuilder.java:553-602
-    - src/main/java/io/github/gustavo2358/cobolexplorer/AstBuilder.java:714-745
-    - src/main/java/io/github/gustavo2358/cobolexplorer/Ast.java:163-230
+    - src/main/java/io/github/imd/cobolexplorer/AstBuilder.java:553-602
+    - src/main/java/io/github/imd/cobolexplorer/AstBuilder.java:714-745
+    - src/main/java/io/github/imd/cobolexplorer/Ast.java:163-230
   reassess_when:
     - semantic-product-sufficiency-matrix-defined
     - cfg-consumer-contract-defined
@@ -557,9 +557,9 @@ downstream_impact:
     possível escolher entre BLOCKS_SEMANTIC_PRODUCT, BLOCKS_IR, BLOCKS_CFG ou REDUCES_PRECISION;
     essas classes são rejeitadas por falta de contrato e oracle, não por defesa da representação.
   evidence:
-    - src/main/java/io/github/gustavo2358/cobolexplorer/Ast.java:220-248
-    - src/main/java/io/github/gustavo2358/cobolexplorer/AstBuilder.java:955-972
-    - src/test/java/io/github/gustavo2358/cobolexplorer/ContextualConditionOccurrenceDiscoveryTest.java:221-244
+    - src/main/java/io/github/imd/cobolexplorer/Ast.java:220-248
+    - src/main/java/io/github/imd/cobolexplorer/AstBuilder.java:955-972
+    - src/test/java/io/github/imd/cobolexplorer/ContextualConditionOccurrenceDiscoveryTest.java:221-244
   reassess_when:
     - semantic-product-sufficiency-matrix-defined
     - lowerer-control-role-contract-defined
@@ -617,10 +617,10 @@ downstream_impact:
     carregar evidence bruta, policy normalizada, somente facts derivados com
     uncertainty, ou combinação auditável desses elementos.
   evidence:
-    - src/main/java/io/github/gustavo2358/cobolexplorer/PreprocessorEngine.java
-    - src/main/java/io/github/gustavo2358/cobolexplorer/ResolutionContracts.java
-    - src/main/java/io/github/gustavo2358/cobolexplorer/ExplorerMain.java
-    - src/test/java/io/github/gustavo2358/cobolexplorer/CallSemanticsTest.java
+    - src/main/java/io/github/imd/cobolexplorer/PreprocessorEngine.java
+    - src/main/java/io/github/imd/cobolexplorer/ResolutionContracts.java
+    - src/main/java/io/github/imd/cobolexplorer/ExplorerMain.java
+    - src/test/java/io/github/imd/cobolexplorer/CallSemanticsTest.java
   reassess_when:
     - analysis-context-boundary-responsibility-defined
 ```
@@ -638,7 +638,7 @@ downstream_impact:
   rationale: >
     A relação futura entre produtos pós-binding e a boundary ainda não foi decidida; classificar a ausência de versionamento como bloqueio anteciparia o contrato que este checkpoint deve apenas investigar.
   evidence:
-    - src/main/java/io/github/gustavo2358/cobolexplorer/CicsIntrinsicClassifier.java
+    - src/main/java/io/github/imd/cobolexplorer/CicsIntrinsicClassifier.java
     - docs/architecture/decisions/0012-contextual-conditions-use-post-binding-projection.md
     - docs/domain/reference-resolution.md
   reassess_when:
@@ -661,8 +661,8 @@ downstream_impact:
   rationale: >
     O contrato do Semantic Product ainda não existe; a primeira camada downstream afetada não pode ser provada neste checkpoint e o finding deve permanecer no estado canônico UNASSESSED.
   evidence:
-    - src/test/java/io/github/gustavo2358/cobolexplorer/ConditionNameSurfaceDiscoveryTest.java
-    - src/test/java/io/github/gustavo2358/cobolexplorer/ContextualConditionOccurrenceDiscoveryTest.java
+    - src/test/java/io/github/imd/cobolexplorer/ConditionNameSurfaceDiscoveryTest.java
+    - src/test/java/io/github/imd/cobolexplorer/ContextualConditionOccurrenceDiscoveryTest.java
     - docs/engineering/downstream-impact-classification.md
   reassess_when:
     - semantic-product-contract-defined

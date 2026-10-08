@@ -23,7 +23,7 @@ for ordinal,row in enumerate(rows):
    runtime=Path(sys.argv[3]).resolve()
    classpath=str(runtime/'analysis-launcher/target/classes')+':'+str(runtime/'analysis-launcher/target/dependency/*')
    cmd=[cmd[0],'-Xms32m','-Xmx768m','-DANALYZER_LOG_LEVEL=ERROR','-cp',classpath,
-        'io.github.gustavo2358.analysis.launcher.AnalysisDependencies',str(dest/'dependency-input.json.zst'),str(dest/'dependencies.json.zst'),'--conservative-control']
+        old['command'][old['command'].index('-cp')+2],str(dest/'dependency-input.json.zst'),str(dest/'dependencies.json.zst'),'--conservative-control']
   started=time.monotonic()
   try:
    with (dest/(name+'.stdout')).open('w') as stdout,(dest/(name+'.stderr')).open('w') as stderr:

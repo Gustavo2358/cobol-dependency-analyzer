@@ -20,7 +20,7 @@
 Comando executado:
 
 ```text
-/home/gustavo/.sdkman/candidates/maven/current/bin/mvn test
+/home/imd/.sdkman/candidates/maven/current/bin/mvn test
 ```
 
 Resultado observado:

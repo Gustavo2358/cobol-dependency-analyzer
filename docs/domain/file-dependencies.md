@@ -2,7 +2,7 @@
 
 **MERGED / COMPLETE.** Core N+C em main; smoke final PASS. W10 DEFERRED /
 OPTIONAL_EXTENSION / NOT_PART_OF_CORE, requer nova autorização.
-[Handoff final](https://github.com/Gustavo2358/analysis-cfg/blob/main/docs/product/file-dependencies/closeout.md).
+[Handoff final](https://github.com/imd/analysis-cfg/blob/main/docs/product/file-dependencies/closeout.md).
 
 ## Incomplete declarations and effect bounds
 
@@ -25,11 +25,11 @@ carry this information. [Work and oracles](../work/incomplete-file-effects.md).
 ## Checkpoints históricos
 
 CORE N+C qualificado; closeout/merges autorizados. W10 DEFERRED / OPTIONAL_EXTENSION,
-NOT_PART_OF_CORE, requer nova autorização. [Estado canônico](https://github.com/Gustavo2358/analysis-cfg/blob/main/docs/product/file-dependencies/closeout.md).
+NOT_PART_OF_CORE, requer nova autorização. [Estado canônico](https://github.com/imd/analysis-cfg/blob/main/docs/product/file-dependencies/closeout.md).
 As seções abaixo registram checkpoints históricos.
 
 H4 aprovado; core N+C autorizado em 2026-09-16. W0–W9 qualificadas local; W11 em qualificação; W10 não autorizado.
-[Campanha canônica](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
+[Campanha canônica](https://github.com/imd/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/README.md)
 (workspace: `../analysis-cfg/docs/product/file-dependencies/README.md`).
 Comece pelo brief e pelo item atual indicado no estado canônico.
 
@@ -59,7 +59,7 @@ e evolução coordenada do decoder lower; nenhum cálculo de valor no projector.
 
 ## Semântica a consultar
 
-O [perfil e as fontes](https://github.com/Gustavo2358/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/profiles.md)
+O [perfil e as fontes](https://github.com/imd/analysis-cfg/blob/feat/file-dependencies/docs/product/file-dependencies/profiles.md)
 selecionam IBM z/OS 6.4 + CICS TS 5.6 como core obrigatório; subset GnuCOBOL 3.2
 é extensão posterior por decisão humana H4, sem bloquear W0 ou W11. Cobertura, non-goals,
 casos e invariantes ficam somente no brief/matriz canônicos. Não importar regra

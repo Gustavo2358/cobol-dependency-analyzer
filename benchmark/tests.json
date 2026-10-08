@@ -6,7 +6,7 @@
   "newDependencyTests": 280,
   "skipDetails": [
     {
-      "suite": "io.github.gustavo2358.cobolexplorer.SemanticConditionContextDiscoveryTest",
+      "suite": "io.github.imd.cobolexplorer.SemanticConditionContextDiscoveryTest",
       "test": "requiredSemanticOraclesForFutureImplementation",
       "reason": {
         "message": "System property [semantic.condition.required] does not exist"

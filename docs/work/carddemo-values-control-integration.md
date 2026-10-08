@@ -6,7 +6,7 @@
 
 ## Integrated implementation
 
-- [proleap-poc PR](https://github.com/Gustavo2358/proleap-poc/pull/75): `221c967ce22d7b78706efeb8b35aca1ca4efdad5`; reviewed head `73cca8e59045355c3b5e45ac147c29a8f9d865b9`.
+- [proleap-poc PR](https://github.com/imd/proleap-poc/pull/75): `221c967ce22d7b78706efeb8b35aca1ca4efdad5`; reviewed head `73cca8e59045355c3b5e45ac147c29a8f9d865b9`.
 
 Commits are preserved with normal merges. Consumer locks pin actual merged
 upstream revisions; no floating main is used as product authority. Documentation

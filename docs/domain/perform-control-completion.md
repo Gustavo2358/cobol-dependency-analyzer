@@ -1,7 +1,7 @@
 # PERFORM control completion
 
 Implementation and qualification complete. Integration is recorded in
-[PR #62](https://github.com/Gustavo2358/proleap-poc/pull/62); merge authorized by the user.
+[PR #62](https://github.com/imd/proleap-poc/pull/62); merge authorized by the user.
 
 ## Discovery and authority
 

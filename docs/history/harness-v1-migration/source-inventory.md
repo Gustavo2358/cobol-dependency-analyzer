@@ -47,7 +47,7 @@ inferida; ela não promove documentos históricos a contrato atual.
 | Ocorrências e resolução | `ReferenceOccurrenceCollector.java`, `ReferenceOccurrences.java`, `ReferenceResolution*.java`, `CobolReferenceResolver.java`, `DataAndIndexReferenceResolver.java`, `ExternalProgramCatalog.java`, `ProgramNameCanonicalizer.java`, `ResolutionContracts.java`, `ResolutionAnalysisReport.java` | binding nominal, cobertura e relatórios | ativo |
 | Observabilidade | `AnalysisLogContext.java`, `src/main/resources/logback.xml` e pontos de logging no pipeline | logging estrutural e degradação | ativo |
 | Frontend | `src/main/resources/web/*`; snapshots `*Snapshot.java` | visualização de artefatos de análise | ativo |
-| Testes Java | 31 arquivos em `src/test/java/io/github/gustavo2358/cobolexplorer/` | oráculos de contrato, semântica, regressão, determinismo e escala | ativo |
+| Testes Java | 31 arquivos em `src/test/java/io/github/imd/cobolexplorer/` | oráculos de contrato, semântica, regressão, determinismo e escala | ativo |
 | Fixtures sintéticas | 50+ arquivos em `src/test/resources/cobol/{source-format,source-format-integration,provenance,preprocessor,semantic,resolution}/` | classes semânticas e contraexemplos | ativo |
 | Corpus e copybooks | `corpus/cbl/{COACTUPC.cbl,CBSTM03A.CBL,CBSTM03D.CBL}` e `corpus/cpy/*` | cenários reais e variante didática | ativo; evidência, não especificação |
 | Artefatos gerados | `dist/`, `dist-cbstm03a/`, `dist-cbstm03d/` | saídas versionadas para inspeção visual | histórico/regressão |

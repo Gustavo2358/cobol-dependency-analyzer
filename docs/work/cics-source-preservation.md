@@ -69,7 +69,7 @@ confirmados com programas válidos. Nenhum compilador IBM foi executado.
 
 A correção reutiliza SP 2.52 e os consumidores existentes. Nenhum contrato,
 modelo AIR ou filtro global de alcance foi alterado. Foi aprovada junto com
-[REMARKS](remarks-area-a-compatibility.md) no [PR #85](https://github.com/Gustavo2358/proleap-poc/pull/85).
+[REMARKS](remarks-area-a-compatibility.md) no [PR #85](https://github.com/imd/proleap-poc/pull/85).
 O fechamento abaixo é efetivado pelo merge desse PR na main.
 
 - RED: três falhas em quatro testes; controles terminais/malformados passaram.
@@ -178,7 +178,7 @@ que toda a AIR ficou vazia nem se remove informação conhecida do comando.
 ## Fechamento
 
 Fechamento documental e merge autorizados em 3 de outubro de 2026 no
-[PR #85](https://github.com/Gustavo2358/proleap-poc/pull/85). O merge desse PR,
+[PR #85](https://github.com/imd/proleap-poc/pull/85). O merge desse PR,
 registrado no Git, efetiva o estado DONE. Implementação qualificada:
 `c56030624cdbdaf7d4b5cbf6673a2b741051fca1`; FAST 777 e CI remoto aprovados.
 A alteração final de fechamento é somente documental e usa o gate documental.

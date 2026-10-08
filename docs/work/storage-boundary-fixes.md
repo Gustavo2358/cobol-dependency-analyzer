@@ -1,7 +1,7 @@
 # Storage boundary fixes
 
 - id: STORAGE-BOUNDARY-FIXES
-- status: DONE upon merge of [PR #63](https://github.com/Gustavo2358/proleap-poc/pull/63); required technical gates passed.
+- status: DONE upon merge of [PR #63](https://github.com/imd/proleap-poc/pull/63); required technical gates passed.
 - scope: Canonical storage semantics: invalid RENAMES parentage and uncertain REDEFINES components.
 
 ## Rule and algorithm

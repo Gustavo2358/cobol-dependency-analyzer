@@ -150,7 +150,7 @@ Só COACCT01 usou o caminho próprio: **1.501,9 → 613,8 ms (−59,1%)**, CLI *
 
 ## Método e reprodução
 
-- Frontend: `4a85db8de97cc5075ac2c1285d6f415ec47c72ff`, branch `lab/direct-ast-parser`, [PR #82](https://github.com/Gustavo2358/proleap-poc/pull/82). Nenhuma mudança produtiva nesta medição.
+- Frontend: `4a85db8de97cc5075ac2c1285d6f415ec47c72ff`, branch `lab/direct-ast-parser`, [PR #82](https://github.com/imd/proleap-poc/pull/82). Nenhuma mudança produtiva nesta medição.
 - CardDemo: `59cc6c2fd7ebd7ef7925cad552a01a4b8b6e4d5e`. Seleção e ordem de copybooks por variante reutilizadas da campanha integral anterior; hashes dos 73 fontes conferidos.
 - AMD Ryzen 5 5600GT; Temurin 25.0.4; G1; `-Xms256m -Xmx2g`; DEBUG nos dois modos; JSON sem compressão. Ordem ANTLR/direto alternada por programa. Sem builds ou JVMs da medição concorrentes.
 - A métrica principal inclui reconhecimento, indexação de origens sintáticas e construção da AST. Preprocessing, lexer, análises semânticas e exportação ficam fora dessa métrica nos dois modos, mas dentro do tempo de CLI. CPU é user + system e pode superar o tempo de parede por uso de múltiplas threads.

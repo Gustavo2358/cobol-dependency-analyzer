@@ -21,8 +21,8 @@ for source,digest in json.loads(input_hashes.read_text()).items():
  assert hashlib.sha256(Path(source).read_bytes()).hexdigest()==digest, 'Source/include changed: '+source
 out=args.output
 out.mkdir(parents=True,exist_ok=True)
-JAVA='/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java'
-if not Path(JAVA).exists(): JAVA=shutil.which('java')
+JAVA=shutil.which('java')
+if JAVA is None: raise SystemExit('Java not found on PATH')
 from normalize import load, reference, product
 results=[]
 for i,row in enumerate(rows):

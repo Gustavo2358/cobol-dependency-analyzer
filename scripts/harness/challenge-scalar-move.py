@@ -13,7 +13,7 @@ from lean import require_local
 require_local()
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = ROOT / 'src/main/java/io/github/gustavo2358/cobolexplorer'
+BASE = ROOT / 'src/main/java/com/imd/cobolexplorer'
 OUT = ROOT / 'target/checkpoint-4a/challenges'
 OUT.mkdir(parents=True, exist_ok=True)
 PROJECTOR = 'semanticproduct/projection/CobolSemanticProductProjector.java'

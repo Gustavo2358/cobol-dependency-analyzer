@@ -21,4 +21,4 @@ Proposta: escolher tab stops explícitos, expansão até o próximo stop (não �
 
 A futura wave deve provar os dois casos reais, testes de fronteira de coluna e negativos para mudança de indicador/literal. Expandir apenas depois de COPY já perde as colunas do copybook; aceitar HT como largura 1 mantém o erro. Nenhum normalization fix foi aplicado em D0.
 
-A investigação anterior [report 2026-09-14](https://github.com/Gustavo2358/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/references/artefatos-e2e/carddemo-blockers-20260914/report.md) contém witness mínimo e stack; a conclusão D0 acima se apoia também nos bytes/logs canônicos atuais. Nenhum programa foi retirado dos 73 por esse motivo.
+A investigação anterior [report 2026-09-14](https://github.com/imd/proleap-poc/blob/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923/references/artefatos-e2e/carddemo-blockers-20260914/report.md) contém witness mínimo e stack; a conclusão D0 acima se apoia também nos bytes/logs canônicos atuais. Nenhum programa foi retirado dos 73 por esse motivo.

@@ -40,11 +40,11 @@ ou entre os adapters de CFG e de análise. Os núcleos continuam sem compressão
 ```sh
 # O frontend publica cobol-semantic-product.json.zst por padrão.
 # Use os classpaths runtime produzidos pelo Maven, que incluem zstd-jni.
-java -cp "$FRONTEND_CP" io.github.gustavo2358.cobolexplorer.ExplorerMain \
+java -cp "$FRONTEND_CP" com.imd.cobolexplorer.ExplorerMain \
   --source input.cbl --copybooks copybooks --output out/frontend
-java -cp "$LOWER_CP" io.github.gustavo2358.lower.adapters.cli.CobolDependencyInput \
+java -cp "$LOWER_CP" io.github.imd.lower.adapters.cli.CobolDependencyInput \
   out/frontend/cobol-semantic-product.json.zst out/dependency-input.json.zst
-java -cp "$ANALYSIS_CP" io.github.gustavo2358.analysis.launcher.AnalysisDependencies \
+java -cp "$ANALYSIS_CP" io.github.imd.analysis.launcher.AnalysisDependencies \
   out/dependency-input.json.zst out/dependencies.json.zst
 zstd -d -c out/dependencies.json.zst | python3 -m json.tool
 ```
@@ -56,17 +56,17 @@ validação independente, mas não é invocado pelas aplicações Java.
 ## Qualificação e fechamento
 
 Fechamento e merge autorizados em 2026-10-02 pelo
-[PR #80](https://github.com/Gustavo2358/proleap-poc/pull/80).
-A ordem de integração é [frontend #80](https://github.com/Gustavo2358/proleap-poc/pull/80)
-→ [lower #54](https://github.com/Gustavo2358/cobol-lower/pull/54)
-→ [CFG #60](https://github.com/Gustavo2358/analysis-cfg/pull/60).
+[PR #80](https://github.com/imd/proleap-poc/pull/80).
+A ordem de integração é [frontend #80](https://github.com/imd/proleap-poc/pull/80)
+→ [lower #54](https://github.com/imd/cobol-lower/pull/54)
+→ [CFG #60](https://github.com/imd/analysis-cfg/pull/60).
 O estado efetivo da integração, o HEAD final e o merge SHA são registrados nos PRs.
 
 FAST local: 732 testes, zero falhas/erros/skips. A qualificação anterior é reutilizada neste fechamento documental;
 código, testes, configuração de build e pins executáveis permanecem iguais.
 Os checks documentais locais e o Fast CI nos HEADs finais validam o fechamento.
 
-O [CardDemo completo](https://github.com/Gustavo2358/analysis-cfg/blob/4c1b8552e4368aac0254e2079dd8088b40f8fbc8/docs/evals/carddemo-full.md) cobre 73 variantes, duas execuções por formato:
+O [CardDemo completo](https://github.com/imd/analysis-cfg/blob/4c1b8552e4368aac0254e2079dd8088b40f8fbc8/docs/evals/carddemo-full.md) cobre 73 variantes, duas execuções por formato:
 657 artefatos por processamento, **2.690,967 MB → 164,341 MB (−93,89%)**.
 Tempo médio do corpus: **543,655 s → 546,195 s (+0,47%)**. São medições locais
 com duas repetições, sem garantia estatística de tempo em outras máquinas.

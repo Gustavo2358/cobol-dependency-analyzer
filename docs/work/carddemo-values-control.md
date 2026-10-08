@@ -6,7 +6,7 @@
 
 ## Current status — integration authorized and implementation merged
 
-Implementation [PR #75](https://github.com/Gustavo2358/proleap-poc/pull/75) merged as `221c967ce22d7b78706efeb8b35aca1ca4efdad5`.
+Implementation [PR #75](https://github.com/imd/proleap-poc/pull/75) merged as `221c967ce22d7b78706efeb8b35aca1ca4efdad5`.
 The qualified behavior, tests and limits are retained. See the
 [integration closeout](carddemo-values-control-integration.md) for current pins,
 validation reuse and the separate scope of point 5.

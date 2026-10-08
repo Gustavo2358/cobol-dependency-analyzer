@@ -129,13 +129,13 @@ Evidência bruta na raiz agregadora local: `artefatos-e2e/direct-ast-complete-20
 - `runs.jsonl` e `runs/`: comandos, exit codes, tempos, logs e produtos sem reescrita de baselines.
 - `run.py`, `summarize.py` e `report.py`: execução, comparação e relatório.
 
-O teste estrutural local é `io.github.gustavo2358.cobolexplorer.DirectDataCorpusCheck`,
+O teste estrutural local é `io.github.imd.cobolexplorer.DirectDataCorpusCheck`,
 executado no classpath de testes com dois argumentos: manifesto JSON não vazio de
 caminhos de fontes preprocessados e diretório de saída. Ele falha se qualquer
 entrada cair em fallback ou diferir em AST, origens, coverage ou diagnósticos.
 A comparação CLI complementar usa os fontes originais e os copybooks reais.
 
-FAST remoto do código medido: [PASS](https://github.com/Gustavo2358/proleap-poc/actions/runs/37036576945).
+FAST remoto do código medido: [PASS](https://github.com/imd/proleap-poc/actions/runs/37036576945).
 Nenhuma pipeline AIR/CFG foi reexecutada: os produtos de entrada desses consumidores
 foram comparados integralmente e os contratos não mudaram. A implementação continua
-na branch `lab/direct-ast-parser`, [PR #82](https://github.com/Gustavo2358/proleap-poc/pull/82), sem merge.
+na branch `lab/direct-ast-parser`, [PR #82](https://github.com/imd/proleap-poc/pull/82), sem merge.

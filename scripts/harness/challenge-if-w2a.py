@@ -11,7 +11,7 @@ from lean import require_local
 require_local()
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = ROOT / 'src/main/java/io/github/gustavo2358/cobolexplorer'
+BASE = ROOT / 'src/main/java/com/imd/cobolexplorer'
 OUT = ROOT / os.getenv('W2A_CHALLENGE_OUT', 'target/cp6-w2a/challenges')
 TESTS = 'IfCheckpointW2ATest,IfCanonicalProofTest,IfSemanticsScaleTest'
 BUILDER = 'AstBuilder.java'

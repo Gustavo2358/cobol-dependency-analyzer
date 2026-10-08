@@ -1,19 +1,19 @@
 # Analyzer integration — DONE / MERGED
 
-Approved on 2026-10-01. [Frontend #77](https://github.com/Gustavo2358/proleap-poc/pull/77)
+Approved on 2026-10-01. [Frontend #77](https://github.com/imd/proleap-poc/pull/77)
 merged as `fb88bf8299f368d65f5fb61b009261faae441735`, preserving qualified HEAD
 `188300e78c792b8f39db0c4f04c03f4b1716273e` and its implementation commits.
 The fixes cover continuation normalization, partial FILE publication, SUPPRESS,
 partial EVALUATE/IF composition, localized CICS nominal gaps and JSON GENERATE.
 
-[Discovery #59](https://github.com/Gustavo2358/proleap-poc/pull/59) merged as
+[Discovery #59](https://github.com/imd/proleap-poc/pull/59) merged as
 `3e3ad03bb29442e8d1c53fb9ade2f66d309d315d`. Its D0 measurements and recommendations remain historical, not a description
 of current pipeline coverage.
 No product code or normative contract came from that documentation publication.
 
 ## Qualification retained
 
-[Final implementation Fast CI](https://github.com/Gustavo2358/proleap-poc/actions/runs/36794479412)
+[Final implementation Fast CI](https://github.com/imd/proleap-poc/actions/runs/36794479412)
 passed. The checkpoint-4 qualification records Fast 725, local full 1,296 Maven
 tests (zero failures/errors, one existing opt-in skip), normalization and naming.
 It includes 28 new four-stage JSON GENERATE runs and four rejected oracle mutations.

@@ -69,7 +69,7 @@ main` confirmaram sincronização. O ZIP já estava fora do Git, em
 | --- | --- |
 | AIR | README e todos os documentos normativos declaram **2.0.0** |
 | ZIP | 101117 bytes; SHA-256 `6d89854f6cd4abf5d0f2e20dcbd6b003cc700d617dd2483c0e28244fa3fbb7e6` |
-| Metadata real | Comentário do ZIP: `0b2fbce7046010b22b32efa8cbc3e75ccba09442`; API GitHub confirmou esse [commit](https://github.com/Gustavo2358/analysis-ir/commit/0b2fbce7046010b22b32efa8cbc3e75ccba09442), de 2026-09-06T01:41:23Z. Não há diretório `.git` extraído. |
+| Metadata real | Comentário do ZIP: `0b2fbce7046010b22b32efa8cbc3e75ccba09442`; API GitHub confirmou esse [commit](https://github.com/imd/analysis-ir/commit/0b2fbce7046010b22b32efa8cbc3e75ccba09442), de 2026-09-06T01:41:23Z. Não há diretório `.git` extraído. |
 | F-02 na partida do audit | PR #28 **OPEN**, `mergedAt=null`; head `52ee4ebfb9f10f6d3d4467bf20377b6f2df9e4ef`, fora da main `107ce08` originalmente auditada |
 | F-02 na revalidação | PR #28 **MERGED** em `2026-09-06T10:05:04Z`; merge commit `6d3400ed6247f20effb49c4547378437096a1457`, usado como base do rebase |
 
@@ -689,28 +689,28 @@ dependências nominais, CALL literal pode preceder diamond/controle complexo,
 preservando frontier aberta. Isso altera prioridade, não elimina prerequisites
 de cada claim. Nenhuma questão em aberto impede concluir este Discovery.
 
-[A00]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/00-escopo-e-convencoes.md
-[A01]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/01-modelo-e-identidades.md
-[A02]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/02-tipos-valores-e-operandos.md
-[A03]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/03-memoria-e-aliases.md
-[A04]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/04-operacoes.md
-[A05]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/05-controle-e-invocacoes.md
-[A06]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/06-incompletude-e-proveniencia.md
-[A07]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/07-contrato-de-produtores.md
-[A08]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/08-contrato-de-consumidores.md
-[A09]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/09-extensibilidade-e-compatibilidade.md
-[A10]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/10-perfis-de-conformidade.md
-[A11]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/11-rastreabilidade-bilateral.md
-[invariantes AIR]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/conformidade/01-invariantes.md
-[oracles AIR]: https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/conformidade/02-oraculos.md
-[S1]: ../../src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/CobolSemanticProduct.java
-[S2]: ../../src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/CobolSemanticPort.java
-[S3]: ../../src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct/projection/CobolSemanticProductProjector.java
-[S4]: ../../src/test/java/io/github/gustavo2358/cobolexplorer/semanticproduct/loweringreadiness/SemanticPortLoweringProbe.java
-[S5]: ../../src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductCheckpoint8LoweringReadinessTest.java
-[S6]: ../../src/main/java/io/github/gustavo2358/cobolexplorer/Ast.java
-[S7]: ../../src/main/java/io/github/gustavo2358/cobolexplorer/ExplorerMain.java
-[S8]: ../../src/main/java/io/github/gustavo2358/cobolexplorer/SourceMap.java
+[A00]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/00-escopo-e-convencoes.md
+[A01]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/01-modelo-e-identidades.md
+[A02]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/02-tipos-valores-e-operandos.md
+[A03]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/03-memoria-e-aliases.md
+[A04]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/04-operacoes.md
+[A05]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/05-controle-e-invocacoes.md
+[A06]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/06-incompletude-e-proveniencia.md
+[A07]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/07-contrato-de-produtores.md
+[A08]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/08-contrato-de-consumidores.md
+[A09]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/09-extensibilidade-e-compatibilidade.md
+[A10]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/10-perfis-de-conformidade.md
+[A11]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/11-rastreabilidade-bilateral.md
+[invariantes AIR]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/conformidade/01-invariantes.md
+[oracles AIR]: https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/conformidade/02-oraculos.md
+[S1]: ../../src/main/java/io/github/imd/cobolexplorer/semanticproduct/CobolSemanticProduct.java
+[S2]: ../../src/main/java/io/github/imd/cobolexplorer/semanticproduct/CobolSemanticPort.java
+[S3]: ../../src/main/java/io/github/imd/cobolexplorer/semanticproduct/projection/CobolSemanticProductProjector.java
+[S4]: ../../src/test/java/io/github/imd/cobolexplorer/semanticproduct/loweringreadiness/SemanticPortLoweringProbe.java
+[S5]: ../../src/test/java/io/github/imd/cobolexplorer/SemanticProductCheckpoint8LoweringReadinessTest.java
+[S6]: ../../src/main/java/io/github/imd/cobolexplorer/Ast.java
+[S7]: ../../src/main/java/io/github/imd/cobolexplorer/ExplorerMain.java
+[S8]: ../../src/main/java/io/github/imd/cobolexplorer/SourceMap.java
 [COBOL Semantic Product]: ../domain/cobol-semantic-product.md
 [WORK-SEMANTIC-PRODUCT-002]: ../work/history/WORK-SEMANTIC-PRODUCT-002.md
 [classificação de impacto]: ../engineering/downstream-impact-classification.md

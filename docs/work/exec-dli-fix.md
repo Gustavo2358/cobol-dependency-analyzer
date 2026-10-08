@@ -1,6 +1,6 @@
 # EXEC DLI — handoff do fix
 
-**DONE / APPROVED / MERGED** — [PR #50](https://github.com/Gustavo2358/proleap-poc/pull/50).
+**DONE / APPROVED / MERGED** — [PR #50](https://github.com/imd/proleap-poc/pull/50).
 `EXEC DLI` deixou de bloquear o preprocessing: agora é uma embedded language
 explicitamente identificada, lexicalmente delimitada e semanticamente
 opaca/PARTIAL. Nenhuma semântica IMS foi implementada.
@@ -13,7 +13,7 @@ opaca/PARTIAL. Nenhuma semântica IMS foi implementada.
   `6dfdf3bb302873e0ff87756b476d08fd96a674eb`. A aprovação externa foi informada
   pelo responsável; não há reviews, comentários ou threads registrados no GitHub.
 - Pré-merge: head e base inalterados desde a entrega, PR aberto e mergeable,
-  [Fast CI #105](https://github.com/Gustavo2358/proleap-poc/actions/runs/34871451078)
+  [Fast CI #105](https://github.com/imd/proleap-poc/actions/runs/34871451078)
   `completed/success` no head qualificado, sem novos blockers.
 - Merge explícito pelo método usual do repositório, merge commit:
   `88e9493472c183357445c0be61ca80e7193b6e37`, em `2026-09-14T17:09:45Z`
@@ -161,7 +161,7 @@ Build lower: `run.bootstrap(fast=True)` e
 `run.run(run.maven('-o','-Dexec.skip=true','-DskipTests=true','install'))`, pelo
 harness existente, com `LOWER_BUILD_ROOT=../build-lower` absoluto e JDK 21.
 Exit 0 em `lower-build.log`; build apenas, sem claim de testes/qualificação AIR.
-`java -ea -Xmx1g -cp <lower-classpath.txt> io.github.gustavo2358.lower.adapters.testing.DecoderSuite`
+`java -ea -Xmx1g -cp <lower-classpath.txt> io.github.imd.lower.adapters.testing.DecoderSuite`
 executou com exit 0 e `LOWER_TESTS=590`, incluindo AdmissionAdapterSuite,
 sem performance (`lower-decoder.log`).
 
@@ -176,7 +176,7 @@ identidade; `final-cli/oracles.json` e `final-oracles.log` guardam o resultado.
 ## Diff e revisão adversarial
 
 - Produção: `src/main/antlr4/{Cobol,CobolPreprocessor}.g4`;
-  `src/main/java/io/github/gustavo2358/cobolexplorer/{DliRegion,PreprocessorEngine,Ast,AstBuilder}.java`.
+  `src/main/java/io/github/imd/cobolexplorer/{DliRegion,PreprocessorEngine,Ast,AstBuilder}.java`.
 - Manifesto: `src/main/resources/semantic-coverage/grammar-rule-manifest.tsv`.
   Contagem calculada sobre a base: COBOL 598+1=599, preprocessor 30+1=31,
   total 630; statements 50+1=51. Igualdade de conjuntos e ausência de duplicatas

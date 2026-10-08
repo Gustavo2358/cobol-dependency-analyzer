@@ -2,7 +2,7 @@
 
 Status do work item: `completed`. **APPROVED / MERGED / CLOSED**.
 
-PR [#53](https://github.com/Gustavo2358/proleap-poc/pull/53) mergeado por
+PR [#53](https://github.com/imd/proleap-poc/pull/53) mergeado por
 merge commit `ce0d421ba9f4a86bb1e1695ab6ebbb3449f643d5`, com proteção pelo
 source HEAD aprovado `220d77daa29580cd86c940c323c22fd3ea4ab3ae`.
 Fast CI #126 passou nesse source HEAD. A qualificação executável pertence ao

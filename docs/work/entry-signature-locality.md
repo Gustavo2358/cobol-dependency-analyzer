@@ -107,7 +107,7 @@ Autoridades: [formato fixo IBM](https://www.ibm.com/docs/en/cobol-zos/6.4.0?topi
 ## Fechamento
 
 Implementação: `83959c920afadb9d9912ab1f1e1db2b0ebdf45da`.
-[PR #83](https://github.com/Gustavo2358/proleap-poc/pull/83) mergeado na main em
+[PR #83](https://github.com/imd/proleap-poc/pull/83) mergeado na main em
 2026-10-02, com autorização explícita do usuário e os dois checks FAST verdes.
 Merge: `8ef4f0fa83800f9d192f238e9600addd60c52b9d`. O item está DONE pelo contrato
 Git/PR/testes do harness. O fechamento cobre a assinatura; não declara resolvida

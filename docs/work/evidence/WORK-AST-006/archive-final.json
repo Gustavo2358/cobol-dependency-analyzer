@@ -936,576 +936,576 @@
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ArchitectureBoundaryTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ArchitectureBoundaryTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ArchitectureBoundaryTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ArchitectureBoundaryTest.xml.gz",
     "rawSha256": "47874ac1239bc2b138bee6a59cc6a153be8be57d6adcabd49da43a3b63761133",
     "artifactSha256": "c093d835c720ac46a244e9d49dfca9b4b6f6ccbad57ed80dd6b3dee4e6d6495e",
     "rawBytes": 9701,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstBuildCoverageTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstBuildCoverageTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.AstBuildCoverageTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.AstBuildCoverageTest.xml.gz",
     "rawSha256": "fb98239bc41576d910d57cdbecae80d3ff3e2bcb42b8f80341ef395c10a60de0",
     "artifactSha256": "92c43bc36e12e02c9988edc57bcf79fd6d1e083ea08c9bd5bf73073f1bfca65f",
     "rawBytes": 7506,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstBuilderTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstBuilderTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.AstBuilderTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.AstBuilderTest.xml.gz",
     "rawSha256": "09f7b1b711b0420077d61e9cbddd8e12ee7bf5e8fe96fe661bce202b4f0dea4f",
     "artifactSha256": "c84645db6d024c72a6c3ac1fc159b39409cc88ff612a6f2635276114b9ad4dc6",
     "rawBytes": 7821,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstBuilderTypedTraversalTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstBuilderTypedTraversalTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.AstBuilderTypedTraversalTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.AstBuilderTypedTraversalTest.xml.gz",
     "rawSha256": "f94d97a8e02968c4732b6a5d800f0af4ff228b1a7bc3e7ac49e98b4e8af70208",
     "artifactSha256": "6e8fa7e94018d0b6b2528c13cec7696ff8535fe521e4ae9ff109143a4d6f021f",
     "rawBytes": 9126,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstPreorderInvariantTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstPreorderInvariantTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.AstPreorderInvariantTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.AstPreorderInvariantTest.xml.gz",
     "rawSha256": "2322a6034178aba0e0814d391d963d017d83e7313269bf34d509be5c164bfa38",
     "artifactSha256": "1cdccea03e2e2c31a61c951200b840d673f099ee669b3cf8b9a43837dce74d6a",
     "rawBytes": 8226,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstSemanticBoundaryCharacterizationTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstSemanticBoundaryCharacterizationTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.AstSemanticBoundaryCharacterizationTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.AstSemanticBoundaryCharacterizationTest.xml.gz",
     "rawSha256": "7f8c9e6c2464ea6e58519f756fd2a408ccc832920bb1140bc24b877c5d2abf3c",
     "artifactSha256": "a7be284afcf0aa90f9f211f9d624938b7ee2c5fd068d3fdc781836e202dfa739",
     "rawBytes": 9242,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstSemanticBoundaryRequiredOracleTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.AstSemanticBoundaryRequiredOracleTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.AstSemanticBoundaryRequiredOracleTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.AstSemanticBoundaryRequiredOracleTest.xml.gz",
     "rawSha256": "5065149e3a481e446b9073e95aa4b7e40fa5f189eb867a8218035e216fa64490",
     "artifactSha256": "0606189812e6062496decca39c1c82d2b3df2573d53ff3b045a4a9489bfd716b",
     "rawBytes": 8111,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.CallCheckpointW1ATest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.CallCheckpointW1ATest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.CallCheckpointW1ATest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.CallCheckpointW1ATest.xml.gz",
     "rawSha256": "463fa968734895971266372ddae041e306a1554155c9aac598f8d8b2f58661a6",
     "artifactSha256": "92af800a3d8faa0ea76bc98539a7a506f34db1b2f6a801f00d8f6d88fdef340b",
     "rawBytes": 8863,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.CallSemanticsTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.CallSemanticsTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.CallSemanticsTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.CallSemanticsTest.xml.gz",
     "rawSha256": "87b552aa7856f4955fd38fa0934aa85426811d15d6bcdd5634898df16f5ed04e",
     "artifactSha256": "440869e8454915d4fcad9777f51d425bb6fd9ad90fc4a2a3b5b066d492e034dd",
     "rawBytes": 8449,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.CicsIntrinsicClassifierTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.CicsIntrinsicClassifierTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.CicsIntrinsicClassifierTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.CicsIntrinsicClassifierTest.xml.gz",
     "rawSha256": "3a9f5c3ca25e92da3f7d358223405c7e83941da428f5fc5b40ef0e06d3eb84d6",
     "artifactSha256": "842dca9966c22ab8eecd5a827fc926a6707700e333adbec15c034967ee464b4d",
     "rawBytes": 9481,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.CobolSemanticProductProjectorTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.CobolSemanticProductProjectorTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.CobolSemanticProductProjectorTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.CobolSemanticProductProjectorTest.xml.gz",
     "rawSha256": "6423a10fbe51f477b53ead0d07b354b9089434d9197b79daf2400e312bc28050",
     "artifactSha256": "1d16d113dffa1b113bb5965b9fd29952ec48d01d33c45556cfa2c38c11b53e97",
     "rawBytes": 10322,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.CompilationUnitModelTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.CompilationUnitModelTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.CompilationUnitModelTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.CompilationUnitModelTest.xml.gz",
     "rawSha256": "2e66086f786902e2f51c4e28420b21cef455513334842c510e5f843d5d32856d",
     "artifactSha256": "fae50f3ea9e5d7f914912790d7a8c81eedb90a2efa741794055ce750f159eb34",
     "rawBytes": 7869,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ConditionNameSurfaceAstTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ConditionNameSurfaceAstTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ConditionNameSurfaceAstTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ConditionNameSurfaceAstTest.xml.gz",
     "rawSha256": "5272e27554c6caba7e3a7f4293ffef8bd6cd0bb29cf9be6b6433f3cecf4d0484",
     "artifactSha256": "9b089e0805fc5e2534a3b99c71fa71d84659daae33542febd6e6ba47a204d14e",
     "rawBytes": 9911,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ConditionNameSurfaceDiscoveryTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ConditionNameSurfaceDiscoveryTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ConditionNameSurfaceDiscoveryTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ConditionNameSurfaceDiscoveryTest.xml.gz",
     "rawSha256": "796ee1a18cc262f19b1822b6b5cf31e36dc938d83e829a1eab36ff5eccbd4854",
     "artifactSha256": "22dcffdf047aefc02200ca29757c81bddec8c7019f8239e0e67f6453287232fc",
     "rawBytes": 12666,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ConditionSurfaceAstTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ConditionSurfaceAstTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ConditionSurfaceAstTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ConditionSurfaceAstTest.xml.gz",
     "rawSha256": "21a0b49723e8861b34ad51e0f78d895cf8c32137e17e27063fdd5600e0f8c29d",
     "artifactSha256": "5e0c46c26fe408b1f973c5154af6826b6811909c4c31d8abc751b27116005eab",
     "rawBytes": 12077,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ContextualConditionOccurrenceDiscoveryTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ContextualConditionOccurrenceDiscoveryTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ContextualConditionOccurrenceDiscoveryTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ContextualConditionOccurrenceDiscoveryTest.xml.gz",
     "rawSha256": "e9d6f73709f548fd8923f4d11a789ca2fbb5d1ec2595f5e0b35fb04af5147694",
     "artifactSha256": "663665f2d169cab86c8a92bfd4907f9b18b785a35e91158da87b17d685086e20",
     "rawBytes": 10512,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ContextualConditionOccurrenceTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ContextualConditionOccurrenceTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ContextualConditionOccurrenceTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ContextualConditionOccurrenceTest.xml.gz",
     "rawSha256": "185b00cec49f257cf051edb1c6673992aefb7944921d96e52a5921a1769703a8",
     "artifactSha256": "dfe89b6ab47cd8284fd2398b420f0c4445a0bf73fd7ac7dc3f2e50e6aac91934",
     "rawBytes": 9771,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.CopybookDirectoriesTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.CopybookDirectoriesTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.CopybookDirectoriesTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.CopybookDirectoriesTest.xml.gz",
     "rawSha256": "87eebd0de5df679c6e50a83efc4185c4bae6c89e17a1cd319ea5fb51c62e5722",
     "artifactSha256": "c495bf9e1facec648f2f1e44c24c409831ed91d5db8ba4f358a76ea804b8e294",
     "rawBytes": 9006,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.CoverageSnapshotTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.CoverageSnapshotTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.CoverageSnapshotTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.CoverageSnapshotTest.xml.gz",
     "rawSha256": "a2f874a6772e91d559ddfcd423ae4645064c70589d2fd2500405e501c43c4d48",
     "artifactSha256": "0ca7ed493c230a3e27c25e69eca988627761dbe8e1e47e31482d81a558b2b997",
     "rawBytes": 7655,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.DataAndIndexReferenceResolverTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.DataAndIndexReferenceResolverTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.DataAndIndexReferenceResolverTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.DataAndIndexReferenceResolverTest.xml.gz",
     "rawSha256": "452f3893345ea4a8025490e268bf2a6f424965b497d742bc46f81894106cf91f",
     "artifactSha256": "3458850a40ba3c17a595655f541719c9917eb1aa7f574b6686602a647d9ae96c",
     "rawBytes": 11445,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.DeclarationModelAstTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.DeclarationModelAstTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.DeclarationModelAstTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.DeclarationModelAstTest.xml.gz",
     "rawSha256": "bcdff2cf52352d78e86ac0937c1470ba65e417f2cd49b705e7096f988a772e11",
     "artifactSha256": "82b6a8329526de316c9c80c2dc62e9a87fe55476e3ce2f50f0f0acd6713a3e3f",
     "rawBytes": 7672,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.DynamicCallVariantTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.DynamicCallVariantTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.DynamicCallVariantTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.DynamicCallVariantTest.xml.gz",
     "rawSha256": "818739b0beba561a31be0a0df5c479cca2e69e8c17a8a0405e0ba504fadddf4a",
     "artifactSha256": "ab3f287efbae34585e65c0090df642f53a7125d7c9522dc0a0620c24bbc9a8c9",
     "rawBytes": 7511,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.EntityScopeAndOccurrenceTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.EntityScopeAndOccurrenceTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.EntityScopeAndOccurrenceTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.EntityScopeAndOccurrenceTest.xml.gz",
     "rawSha256": "6b5f3593f473025fbd8a7d6f606c18ac1217e76d5f67d92526ee42ab4c150452",
     "artifactSha256": "30a3c387bdb832f036f93a732a73e3a499e397d71e3f96958b1caa7e6f81bb6a",
     "rawBytes": 8040,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ExplorerMainLoggingTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ExplorerMainLoggingTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ExplorerMainLoggingTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ExplorerMainLoggingTest.xml.gz",
     "rawSha256": "6a61bf3f1ea431dfd05d3443d888bb9bc5aaba71cd2da7592f0712963acadbc1",
     "artifactSha256": "0f3fa905ad327f29878660dabe292cfda232addbef24f297f433582b43f46ad3",
     "rawBytes": 9885,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ExternalCicsCharacterizationTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ExternalCicsCharacterizationTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ExternalCicsCharacterizationTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ExternalCicsCharacterizationTest.xml.gz",
     "rawSha256": "9272c703de29dbfb3b2a181621b8d4f9ee4aa8ee91f7d9f5e92bdabadab434e1",
     "artifactSha256": "740713a3319dc7f52f8548d978714724c826a9f2812df0d5862747fe222ac586",
     "rawBytes": 7916,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ExternalClassificationProductTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ExternalClassificationProductTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ExternalClassificationProductTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ExternalClassificationProductTest.xml.gz",
     "rawSha256": "847609b746eb76276cc0468087fc9bdafb2e1a303b854e449426b61e616d3ac0",
     "artifactSha256": "4e270619b7b27b202f698d6a4b4bc14d25a138a51d6e29f57ab8b992042ac657",
     "rawBytes": 7539,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ExternalClassificationProjectionTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ExternalClassificationProjectionTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ExternalClassificationProjectionTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ExternalClassificationProjectionTest.xml.gz",
     "rawSha256": "9c383cf32346141ef4e2de3443e54946efe555cd4f89dc4cf0d43a4159e9430b",
     "artifactSha256": "be0b7365dcb24c3c06031d33454a115e9e225a127a514a324324325acb50c79b",
     "rawBytes": 13674,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.FrontendLoggingTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.FrontendLoggingTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.FrontendLoggingTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.FrontendLoggingTest.xml.gz",
     "rawSha256": "fd1ddcaa84f7adaac109a29fba661397a2665efcb9b7ffd66d96d1f61021ee45",
     "artifactSha256": "f43ba4d38b5076b5b0afd151ee2e1d2a9dcdc29d639b681e072bc7a2aa8a9fc8",
     "rawBytes": 8855,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.GrammarCoverageManifestTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.GrammarCoverageManifestTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.GrammarCoverageManifestTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.GrammarCoverageManifestTest.xml.gz",
     "rawSha256": "4c471ca18d10365e64f879d3ff040a74a03c81a8ca79e6f1d08196d80d72be59",
     "artifactSha256": "228d859c76441f5ad033620fb486c4bb669a0f09f9a746283c91539233028546",
     "rawBytes": 7862,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.HarnessDocsTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.HarnessDocsTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.HarnessDocsTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.HarnessDocsTest.xml.gz",
     "rawSha256": "2d820c3353fe30782b2258f6870ee82be2f58c5fbe1cfaab933a06dd00154a91",
     "artifactSha256": "bb4644826efcd7cec1ce6f80d844edc0a20414a8647b862c5d6ae9ec23d370f0",
     "rawBytes": 8812,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.IfCanonicalProofTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.IfCanonicalProofTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.IfCanonicalProofTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.IfCanonicalProofTest.xml.gz",
     "rawSha256": "7a5575042b1c8854ef2b97769c1f4d1116d3ea177a89c926cc8554a33f760da4",
     "artifactSha256": "f31d144f058bf98e613e29e82966a081536248f80810e1534412681b9949b32b",
     "rawBytes": 7806,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.IfCheckpointW2ATest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.IfCheckpointW2ATest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.IfCheckpointW2ATest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.IfCheckpointW2ATest.xml.gz",
     "rawSha256": "301924a9442aea3cc2254821672fc0f1d06989b68b2f4dfc05b958fd7ab7ae22",
     "artifactSha256": "ae3605f059b5ceb77ce88154453eacac9c3ed5baf6bff5672ed39aa5abe04f42",
     "rawBytes": 9181,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.IfSemanticsScaleTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.IfSemanticsScaleTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.IfSemanticsScaleTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.IfSemanticsScaleTest.xml.gz",
     "rawSha256": "7ca7ec8f783359e234523af11649c526889120d7b10c3b4e50ad4e1745fc9c31",
     "artifactSha256": "a2a53ef5994629830b147ab31ea1dca80e1020420b634966450f6f1141b5780a",
     "rawBytes": 7788,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.LoggingInfrastructureTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.LoggingInfrastructureTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.LoggingInfrastructureTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.LoggingInfrastructureTest.xml.gz",
     "rawSha256": "0a7cc7e8862ed72c8423cc74336a99f809cbcac3e0b017ce1d6ba89fb2b1e79d",
     "artifactSha256": "f2db2eb338957d6b36a0850f7f9efb530f27d15550c1696f95a9c06be2f06b7a",
     "rawBytes": 7980,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.NextSentenceCoverageDiscoveryTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.NextSentenceCoverageDiscoveryTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.NextSentenceCoverageDiscoveryTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.NextSentenceCoverageDiscoveryTest.xml.gz",
     "rawSha256": "96d73fa841b40cf46416d391b2726764fd2122818d251f1e3df8421a43c756fb",
     "artifactSha256": "60c5616c3aca1680d8acb3043cf725e16edcb30dd9e29d79f2b8570a35fe669e",
     "rawBytes": 10249,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.NominalReferenceAstTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.NominalReferenceAstTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.NominalReferenceAstTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.NominalReferenceAstTest.xml.gz",
     "rawSha256": "0ac02e66a07847d9ed4c9c57b4a855cb83963c3a0d0c651d45031613e30d228a",
     "artifactSha256": "cfb27551e8308e9c189b2daa34576769dd3cfc1e4cf8a959e78c23cd5d82dcf7",
     "rawBytes": 7691,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.PartialAnalysisMissingCopyTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.PartialAnalysisMissingCopyTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.PartialAnalysisMissingCopyTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.PartialAnalysisMissingCopyTest.xml.gz",
     "rawSha256": "b0ab89956a5d74bf3b1fb203624b275df45b84582afb6656f0219d1a30a8f5b2",
     "artifactSha256": "434ed7b97bf7b86b1094f434d442420fb7e4c0f13905bd8ec660e8b6dd777470",
     "rawBytes": 29118,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.PreprocessorEnginePolicyTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.PreprocessorEnginePolicyTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.PreprocessorEnginePolicyTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.PreprocessorEnginePolicyTest.xml.gz",
     "rawSha256": "ba8300374599f23b4c3575b59607fa3710425ba1d9cd6f32cf49acd3ee304651",
     "artifactSha256": "b7c42ba22e5cc3ed1c0c374f1903398c01e3869101ed2567cb4788d2f3d1892b",
     "rawBytes": 7896,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ProcedureFileProgramReferenceResolverTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ProcedureFileProgramReferenceResolverTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ProcedureFileProgramReferenceResolverTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ProcedureFileProgramReferenceResolverTest.xml.gz",
     "rawSha256": "e96bf7c41ff864cc3a2cc0809af4845fb86c38d22e4b40fa3b16b62a59d31167",
     "artifactSha256": "129c22aaff69974d0538c756398c291a58a621f0197e6f3ce1a834286ba90429",
     "rawBytes": 10369,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ProgramNameCanonicalizerTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ProgramNameCanonicalizerTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ProgramNameCanonicalizerTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ProgramNameCanonicalizerTest.xml.gz",
     "rawSha256": "3aedcc0a33ecde2abf5262c3409c378269121ff075f948f439e44e9a16d42c19",
     "artifactSha256": "2136e3ffb0f8ea456b362c607f14f5e2c474f2c3d51d07d66bebce5491b588d1",
     "rawBytes": 7529,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ReferenceResolutionBaselineCharacterizationTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ReferenceResolutionBaselineCharacterizationTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ReferenceResolutionBaselineCharacterizationTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ReferenceResolutionBaselineCharacterizationTest.xml.gz",
     "rawSha256": "2113b89c82132e671c1418a2c0f56d2c9e6b64395ae930baee482346977f8bf7",
     "artifactSha256": "7d72978b785ca415175c91a773a94a43ad2a319ee0884e07c0470f2d0b2a79e1",
     "rawBytes": 7906,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ReferenceResolutionManifestTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ReferenceResolutionManifestTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ReferenceResolutionManifestTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ReferenceResolutionManifestTest.xml.gz",
     "rawSha256": "b3d3265e5e2e0fa2689f29fe8bb7900990c0e5ac6e62078b6ffb1f0e2dbf565d",
     "artifactSha256": "9d4182d1e13370f14931cfc4a52bb0c6bc0159b0f1392e8aa5dfd58d1ec9fc88",
     "rawBytes": 7861,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ResolutionAnalysisReportTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ResolutionAnalysisReportTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ResolutionAnalysisReportTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ResolutionAnalysisReportTest.xml.gz",
     "rawSha256": "7660a9ec7365fc62b3b040a64161af463e094e702c9cf42c3a99a9962c88495d",
     "artifactSha256": "594b72ca19524682ed568d917e0b734129050feb2f2b078bfb1df2c6009436d2",
     "rawBytes": 8885,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ResolutionLoggingTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ResolutionLoggingTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ResolutionLoggingTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ResolutionLoggingTest.xml.gz",
     "rawSha256": "02ebca02b37e0cc8b297c25f89c4d06829c338ff170a038f170cec2650d8cd9c",
     "artifactSha256": "d13a114bb940720a5ff436176a268b22e8570fc638707ae1ad70ed11ce567ad9",
     "rawBytes": 8236,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ResolutionSnapshotTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ResolutionSnapshotTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ResolutionSnapshotTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ResolutionSnapshotTest.xml.gz",
     "rawSha256": "1fb4a444043f1091a0ce432ea042748fd76c6ffa1d53818427523f9fb79d7fa5",
     "artifactSha256": "227be5d9341c564299c1bebf63d9d534d8053b92db11f155d4819f7a21a12117",
     "rawBytes": 9740,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ScalarMoveCheckpoint4ATest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ScalarMoveCheckpoint4ATest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ScalarMoveCheckpoint4ATest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ScalarMoveCheckpoint4ATest.xml.gz",
     "rawSha256": "7ed1031eea972a4f3ca9cc149ce0a207ed72fa13883fe2bec74fbeb653eedb21",
     "artifactSha256": "11225fb53dcccbecb9c82f0f38a9a097647681ce41d38d8c52e6748fe47aca2e",
     "rawBytes": 9464,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.ScalarMoveScaleTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.ScalarMoveScaleTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.ScalarMoveScaleTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.ScalarMoveScaleTest.xml.gz",
     "rawSha256": "c8d446e1160094c726eac87529c74f8d6eadd027d1d1962d6ffab75f5b7ba10d",
     "artifactSha256": "44abe660a2c5c6c44d993e74309c089643719708e65cbbe770142a552942c5de",
     "rawBytes": 8938,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SearchWhenConditionDiscoveryTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SearchWhenConditionDiscoveryTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SearchWhenConditionDiscoveryTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SearchWhenConditionDiscoveryTest.xml.gz",
     "rawSha256": "aeafc1b8fa15000b186dc5a8c48bd07b42e5a201493a8809415953c5d01c49c7",
     "artifactSha256": "3e881081e9776ad48545a9647037e758cd58360cfcc01959e4def1c53c9cbad2",
     "rawBytes": 10758,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SearchWhenMaterializationAdversarialTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SearchWhenMaterializationAdversarialTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SearchWhenMaterializationAdversarialTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SearchWhenMaterializationAdversarialTest.xml.gz",
     "rawSha256": "7d2002f22da783dc80c182a9061970d815ad29fc31aa55048683555f28079b48",
     "artifactSha256": "c731bcdb4c8084be0e8c6545a3d5f7c48e89c8156b353d5287b11d57bdf41776",
     "rawBytes": 9138,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticConditionContextDiscoveryTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticConditionContextDiscoveryTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticConditionContextDiscoveryTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticConditionContextDiscoveryTest.xml.gz",
     "rawSha256": "5a8d0ded6a6a0d0de2af90672bb8a61c1076af75b2d289dc01471cb93b4e55de",
     "artifactSha256": "aa3a1c33eaad4e81571354022c3c1a8e0796e69d68639f184edd644ac247aa0a",
     "rawBytes": 8855,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticCoverageTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticCoverageTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticCoverageTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticCoverageTest.xml.gz",
     "rawSha256": "b48ba495682f2ce6a678fc339869c5734c84eb53c4ebeb7bacfcd31afa072a9d",
     "artifactSha256": "2347311aba337775bf3f913cdc2486c4b946e0fd211728d7fc1dbb34c75b14a8",
     "rawBytes": 7814,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticModelBaselineCharacterizationTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticModelBaselineCharacterizationTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticModelBaselineCharacterizationTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticModelBaselineCharacterizationTest.xml.gz",
     "rawSha256": "748fa55d7db583cfc3b023f08eeb389a7eb6fe621e3d7c6c26cd438c0d803951",
     "artifactSha256": "0b1470d21b69e6bbe57cc44f508cf6dbf6e777af69f49599622c026a36be8f47",
     "rawBytes": 8387,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticModelLoggingTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticModelLoggingTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticModelLoggingTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticModelLoggingTest.xml.gz",
     "rawSha256": "62adee2cfbd19512187d5cd95bf7e7d6882341d107b78852599dc10f57798fc2",
     "artifactSha256": "0bef56ff177c8724a17891efae7ba0e23f68be4b7a8d74d1ee107c2a052c6cec",
     "rawBytes": 7709,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductBoundaryCheckpoint3ATest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductBoundaryCheckpoint3ATest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductBoundaryCheckpoint3ATest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductBoundaryCheckpoint3ATest.xml.gz",
     "rawSha256": "49c099f83af443d17bc78fa37fc29c77d52230fd014f6b01b0dc4f27925b7fcb",
     "artifactSha256": "37bf175591833e40d7e5aad3c2d4ce16e8ae0a80299e09d0b9e7d4dbe29051ff",
     "rawBytes": 8552,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductBoundaryCheckpoint3BTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductBoundaryCheckpoint3BTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductBoundaryCheckpoint3BTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductBoundaryCheckpoint3BTest.xml.gz",
     "rawSha256": "88bbcb56ac0c34a0c65ae81c1a7e9e76981ed5271a8c19874c6055b67068bd81",
     "artifactSha256": "9365fa4657d2acdbb03e8a5611d1b6513d66789c0d4e9b53306d9df0da18353b",
     "rawBytes": 8236,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductCheckpoint6IntegrationTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductCheckpoint6IntegrationTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductCheckpoint6IntegrationTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductCheckpoint6IntegrationTest.xml.gz",
     "rawSha256": "a443dfa88cd82c39fc03ebd32dc57ec82efcccb88a7e2a6d041735d2a3ad923f",
     "artifactSha256": "26b66f3a8d41a77f3b187b4478c706d96c161523464debfb0a7a4b33630b8708",
     "rawBytes": 8104,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductCheckpoint7JsonTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductCheckpoint7JsonTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductCheckpoint7JsonTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductCheckpoint7JsonTest.xml.gz",
     "rawSha256": "1aa730b8a0931e78c7013c59f78e0987a42efd4badcc41e6f377dbddc1879c98",
     "artifactSha256": "6bff36cedaacb472713c73c417ec7aab0bd61b7612ebc39af57503fea2f4778c",
     "rawBytes": 10111,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductCheckpoint8LoweringReadinessTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductCheckpoint8LoweringReadinessTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductCheckpoint8LoweringReadinessTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductCheckpoint8LoweringReadinessTest.xml.gz",
     "rawSha256": "b9b99e83283221882aa0a2f67994e0d656b582505f3bb67325926c585aca5b6c",
     "artifactSha256": "515abfc4209f38b8928d11b391a8d8d12f18c47776f3c0db07c3a3f655d57eb5",
     "rawBytes": 8510,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductEntryGobackTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductEntryGobackTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductEntryGobackTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductEntryGobackTest.xml.gz",
     "rawSha256": "b9a80fe6e7a5c3a67f9afad9318d15175165ddfe860407c73624b8d8e07773f4",
     "artifactSha256": "c343c8f46e68f44166b3f5b7b3f7d979235153680e11b9eeff1e8c874993a397",
     "rawBytes": 11850,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductFileWriteTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductFileWriteTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductFileWriteTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductFileWriteTest.xml.gz",
     "rawSha256": "f1a9181b04a1f236db2e6a5bf4519e0eeb8ac2a619d774a07fcf8ecef3e32492",
     "artifactSha256": "59e0e237e98c715259bded9cad1f8d3ce2edb620b4f6a4f83bb51d1ea509ebfa",
     "rawBytes": 7549,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductIntegrityValidatorTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductIntegrityValidatorTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductIntegrityValidatorTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductIntegrityValidatorTest.xml.gz",
     "rawSha256": "03a6c3e624f90373adb3dea6e0ae7d45d658bcf959b87aa042d3af72692b1b6d",
     "artifactSha256": "42066de2224f30489418506d57120b2f2f0bf28fe91893a5f63e1d3f4644d6ae",
     "rawBytes": 21237,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductStatementInventoryTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductStatementInventoryTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductStatementInventoryTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductStatementInventoryTest.xml.gz",
     "rawSha256": "4ce394d3c7f7798885e34c10c3246e3f787d8f91f46dc7eece41bc9f1cd394b2",
     "artifactSha256": "bb734f0a012ec6128312f1cc6896951d806548c439608ad6343787e663fbf5f1",
     "rawBytes": 9053,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductTargetModelOracleTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SemanticProductTargetModelOracleTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductTargetModelOracleTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SemanticProductTargetModelOracleTest.xml.gz",
     "rawSha256": "231ca936425f0a90f86761d325d311f06fceba9597016e95402db8ae72d6f7af",
     "artifactSha256": "c7e95b2343ac4edf586def53b699af08adb292e4220095b16134f8da02e85a1d",
     "rawBytes": 8680,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SourceMapUnicodePerformanceTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SourceMapUnicodePerformanceTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SourceMapUnicodePerformanceTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SourceMapUnicodePerformanceTest.xml.gz",
     "rawSha256": "8415424d3287d0068bd2aca4faf8116070a5a354662131e3bee00da5e5aa0dad",
     "artifactSha256": "b0ad2ccd8ca9186698e3f9643739bbf669284f763a2fc8749563daf5f9aae852",
     "rawBytes": 8202,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SourceNormalizationPreprocessingIntegrationTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SourceNormalizationPreprocessingIntegrationTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SourceNormalizationPreprocessingIntegrationTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SourceNormalizationPreprocessingIntegrationTest.xml.gz",
     "rawSha256": "7daa962f7bc5420dad8a85e79c02d32c80ab9ee749ca50c74414b3311859520c",
     "artifactSha256": "24b9cdf19a2841ab58b421edb9b575ec48b684adbfbd07a088bbe951a612df11",
     "rawBytes": 9031,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SourceNormalizerTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SourceNormalizerTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SourceNormalizerTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SourceNormalizerTest.xml.gz",
     "rawSha256": "de5b49bfffd59491215caff5838fc9ef50deadd1d5777beee565bf7619d3dde9",
     "artifactSha256": "f2d2b9e657ca4688092b085c102796156e8e071931446a313dbc2fb9e056e099",
     "rawBytes": 10046,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SourceProvenanceTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SourceProvenanceTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SourceProvenanceTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SourceProvenanceTest.xml.gz",
     "rawSha256": "81c5fed30bf36fe44ed29916a16acbde778f58e4433cb816057d57d5be3aac4c",
     "artifactSha256": "d4f8e6cd7d603200b17b4125f13944bcb1ea15e1257975117f4f607b1e1df9fa",
     "rawBytes": 8319,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.StatementModelAstTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.StatementModelAstTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.StatementModelAstTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.StatementModelAstTest.xml.gz",
     "rawSha256": "cc1d9727bbb114a6d444b89e5da991840f3de3088a5bda1eee90eb7d946c32bd",
     "artifactSha256": "fae61107644d00c13114679a049af4fd658814895448c7d9adb6dad1a8dff42e",
     "rawBytes": 7839,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.StructuredExpressionAstTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.StructuredExpressionAstTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.StructuredExpressionAstTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.StructuredExpressionAstTest.xml.gz",
     "rawSha256": "d7c95cd38fb38070a1372b99d0892ac1e88f78091524b89b8378593c21b347f9",
     "artifactSha256": "3520cc9347f687687e20ebbc101720cc4480c2b3f6600c37500507b68cc1a710",
     "rawBytes": 7689,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.SymbolTableBuilderTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.SymbolTableBuilderTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.SymbolTableBuilderTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.SymbolTableBuilderTest.xml.gz",
     "rawSha256": "c8ed3a5b26eff3940058edb9c6bb2c802436951a80b34c973d5a91d6a213931e",
     "artifactSha256": "3bfefcd5f4a1a1ae9b8b5862aaacb99d2974aa283037a6712bb408b22121db73",
     "rawBytes": 8021,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.W1CompatibilityW2ATest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.W1CompatibilityW2ATest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.W1CompatibilityW2ATest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.W1CompatibilityW2ATest.xml.gz",
     "rawSha256": "8d38551c5476217bbc8d2a5ae1b089a4236ee0d0a46e89c2985c2aa8992bca93",
     "artifactSha256": "f475cd7b2e400c56c70afb40a8b8cc07d4aacd32aadf58da1f68d69efe0d581e",
     "rawBytes": 7528,
     "lossless": true
   },
   {
-    "source": "target/cp6-w2a/full-suite/TEST-io.github.gustavo2358.cobolexplorer.semanticproduct.SemanticProductMoveCallContractTest.xml",
-    "artifact": "full-suite/TEST-io.github.gustavo2358.cobolexplorer.semanticproduct.SemanticProductMoveCallContractTest.xml.gz",
+    "source": "target/cp6-w2a/full-suite/TEST-io.github.imd.cobolexplorer.semanticproduct.SemanticProductMoveCallContractTest.xml",
+    "artifact": "full-suite/TEST-io.github.imd.cobolexplorer.semanticproduct.SemanticProductMoveCallContractTest.xml.gz",
     "rawSha256": "0afa25ce53fe5aa2e717195981a8a54eebbbab31fab30637d7ff2c6b17094fda",
     "artifactSha256": "08f371d11aa2977ef30b186cb8411ea6d8414074ebaad3d77ab7f08ed1d24f7c",
     "rawBytes": 10694,

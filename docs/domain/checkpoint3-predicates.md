@@ -1,6 +1,6 @@
 # Checkpoint 3 — predicados escalares
 
-Estado: **MERGED / DONE**, [PR #88](https://github.com/Gustavo2358/proleap-poc/pull/88), merge `1a5842265d6f09619990543f2ddff7ef4a84b808`. FAST remoto e qualificação local aprovados. O merge preserva integralmente a árvore do head qualificado `79908ed5c80a7ae5ecc2c85bb6592f4600c512de`. A fronteira BOOL é consumida pelo lower com redução de constantes e transporte compatível com o codec AIR pinado; o frontend publica o significado da fonte.
+Estado: **MERGED / DONE**, [PR #88](https://github.com/imd/proleap-poc/pull/88), merge `1a5842265d6f09619990543f2ddff7ef4a84b808`. FAST remoto e qualificação local aprovados. O merge preserva integralmente a árvore do head qualificado `79908ed5c80a7ae5ecc2c85bb6592f4600c512de`. A fronteira BOOL é consumida pelo lower com redução de constantes e transporte compatível com o codec AIR pinado; o frontend publica o significado da fonte.
 
 Autorização: implementação solicitada em 2026-10-04; revisão por PR, sem merge.
 

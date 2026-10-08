@@ -2,7 +2,7 @@
 
 Estado: PASS de admissão e equivalência no corpus. Laboratório opt-in; não implica equivalência universal da linguagem.
 
-- Implementação medida: `2e604535cff027979df5427e7f7787fdf1db7000`; branch `lab/direct-ast-parser`; [PR #82](https://github.com/Gustavo2358/proleap-poc/pull/82).
+- Implementação medida: `2e604535cff027979df5427e7f7787fdf1db7000`; branch `lab/direct-ast-parser`; [PR #82](https://github.com/imd/proleap-poc/pull/82).
 - Fonte: CardDemo `59cc6c2fd7ebd7ef7925cad552a01a4b8b6e4d5e`; 44 fontes upstream e 29 variantes UniKix. A seleção integral e a ordem de COPY estão preservadas.
 - **73/73 unidades completas pelo parser próprio, zero fallback; 146/146 processos com exit code zero.** Lexer e preprocessador preservados, com hashes das classes idênticos ao laboratório anterior.
 - Uma execução por programa e modo. JVM fria por processo, ordem AB/BA alternada, G1, heap 256 MiB–2 GiB, mesma JVM e dependências, DEBUG habilitado nos dois modos, JSON sem compressão. Não houve aquecimento ou descarte de amostras.
@@ -102,7 +102,7 @@ de semântica de assinatura de entrada é a alteração já integrada pela main.
 ## Fechamento
 
 Fechamento e merge autorizados em 2 de outubro de 2026 no
-[PR #82](https://github.com/Gustavo2358/proleap-poc/pull/82). O registro DONE passa
+[PR #82](https://github.com/imd/proleap-poc/pull/82). O registro DONE passa
 a valer com o merge e os checks aprovados; Git/GitHub registram o SHA e a data
 efetivos. O código qualificado é `66bd4d29cc9876217642666e1db96a9595a25755`.
 O commit de fechamento contém somente documentação.
@@ -137,7 +137,7 @@ originais, inclusive falhas já corrigidas.
 Dados por execução estão em [CSV das 146 medições](direct-parser-full-measurements.csv).
 As fontes são fixadas em [CSV dos 73 programas](direct-parser-full-programs.csv).
 O conjunto bruto preservado está em
-`/home/gustavo/workspace/teste-e2e/artefatos-e2e/direct-parser-full-20261002/`:
+`/home/imd/workspace/teste-e2e/artefatos-e2e/direct-parser-full-20261002/`:
 `run.py`, `summarize.py`, `report.py`, `manifest.json`, `selection.json`,
 `integrity.json`, `admission.json`, `unchanged-components.json`, `runs.jsonl`
 e `runs/` com todos os comandos, logs, tempos e produtos. O executável medido está

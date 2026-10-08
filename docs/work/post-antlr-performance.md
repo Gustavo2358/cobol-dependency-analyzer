@@ -1,7 +1,7 @@
 # Desempenho pós-ANTLR — implementação e qualificação
 
 Implementação e merge aprovados em 2026-10-01 no
-[PR #79](https://github.com/Gustavo2358/proleap-poc/pull/79).
+[PR #79](https://github.com/imd/proleap-poc/pull/79).
 O PR registra o HEAD final, os checks e o commit de integração.
 
 ## Escopo e algoritmos
@@ -67,7 +67,7 @@ não são uma previsão para todo o corpus ou outras máquinas.
 - `qualification-local`: PASS; 1.301 testes em 190 suítes, zero falhas/erros e um
   teste histórico opcional ignorado (`SemanticConditionContextDiscoveryTest`).
   Regressão de normalização/artefatos e naming também passaram.
-- FAST local e [Fast CI da implementação](https://github.com/Gustavo2358/proleap-poc/actions/runs/36891737862):
+- FAST local e [Fast CI da implementação](https://github.com/imd/proleap-poc/actions/runs/36891737862):
   730 testes em 118 suítes, zero falhas/erros/skips. O remoto usa Java 17.
 - Os novos testes confrontam o índice com uma varredura independente, incluindo
   intervalos aninhados, coincidentes, pontuais e limites estritos; rejeitam
@@ -97,7 +97,7 @@ dessas duas chaves, com igualdade dos valores JSON e dos demais bytes.
 
 Os caminhos exatos dos resultados brutos, resumos de medições, manifests de
 runtime e logs permanecem no
-[registro histórico imutável](https://github.com/Gustavo2358/proleap-poc/blob/3646754b14519b0fa95f2a7233bdfce4527ebdba/docs/work/post-antlr-performance.md#evidência-preservada).
+[registro histórico imutável](https://github.com/imd/proleap-poc/blob/3646754b14519b0fa95f2a7233bdfce4527ebdba/docs/work/post-antlr-performance.md#evidência-preservada).
 Essa referência conserva os nomes usados pela execução original; nenhum arquivo
 de evidência foi renomeado ou removido no fechamento documental.
 

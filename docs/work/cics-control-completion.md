@@ -1,6 +1,6 @@
 # CICS control completion — D1–D5
 
-Status: IN_PROGRESS before merge; DONE once [PR #65](https://github.com/Gustavo2358/proleap-poc/pull/65) is MERGED with required checks passing. Implementation and qualification are complete; human review approved integration on 2026-09-27.
+Status: IN_PROGRESS before merge; DONE once [PR #65](https://github.com/imd/proleap-poc/pull/65) is MERGED with required checks passing. Implementation and qualification are complete; human review approved integration on 2026-09-27.
 
 ## Checkpoints
 
