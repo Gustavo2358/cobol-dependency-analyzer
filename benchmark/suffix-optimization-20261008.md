@@ -1,5 +1,9 @@
 # Compartilhamento de caudas de PERFORM — 8/10/2026
 
+> Registro histórico da implementação com elegibilidade global, em 981e1c5.
+> Esse seletor e os caminhos alternativos foram removidos pela unificação;
+> veja [o relatório atual](solver-unification-20261008.md).
+
 O custo aproximadamente quadrático caiu para crescimento próximo do linear
 nas famílias estruturadas AND e overlap testadas, mantendo as saídas completas.
 Overlap1800 passou de **42,09 s para 4,37 s**, de **3.078,9 MiB para 514,8 MiB**

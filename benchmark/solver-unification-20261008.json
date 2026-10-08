@@ -1,0 +1,3932 @@
+{
+  "productionCommit": "f9f77dd49d2f2e7b490119cc224ce1cf8edefc88",
+  "jarSha256": "98e1a30464b3c18349f6311c275f760fc3a032d9b5498cc5b741f4c7502782d4",
+  "baselineProductionCommit": "981e1c535b47f7ffeba27cbaa16084dac825b249",
+  "baselineCheckoutCommit": "2b0ebd6c25b2c2c7ac938d567ce00c82e16b5b65",
+  "baselineJarSha256": "64c403308574e82916c93e80e2ba58912c4de601668b5c3ba70bc61eb209d554",
+  "unchangedProducts": {
+    "proleap-poc": "3bb653a62161626f804aa7ae90f5c9c24f2d581c",
+    "cobol-lower": "c4d48991b88ef6d13eef659859b23d801684093b",
+    "air-java": "6c4a6eb225fb4bb4fdc5871bc5232f03387ef099",
+    "analysis-ir": "2c7f31f19efbe3211a2aea5bbda90173a9666fe2",
+    "analysis-cfg": "c09c6712625f21d3155214406549e4a13de92ff4"
+  },
+  "method": {
+    "heapMiB": 4096,
+    "maxWork": 100000000,
+    "timeoutSeconds": 300,
+    "java": "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+    "sequentialFreshJvms": true,
+    "baselineRunnerCommitNote": "The --jar baseline run records the current runner checkout (33ac660); artifact identity is the pinned baseline JAR and production commit above.",
+    "timingsAreNotConfidenceIntervals": true
+  },
+  "focused": {
+    "tests": 294,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "fast": {
+    "tests": 856,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "standaloneSmoke": "PASS",
+  "stress": {
+    "metadata": {
+      "commit": "f9f77dd49d2f2e7b490119cc224ce1cf8edefc88",
+      "jarSha256": "98e1a30464b3c18349f6311c275f760fc3a032d9b5498cc5b741f4c7502782d4",
+      "java": "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+      "heapMiB": 4096,
+      "timeoutSeconds": 300,
+      "maxWork": 100000000,
+      "cases": [
+        {
+          "id": "plain-original-oom09",
+          "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/plain-stress-512m/plain-09/CTXBOOM.cbl",
+          "sourceSha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+          "sourceKind": "original",
+          "expected": []
+        },
+        {
+          "id": "escape-original-oom08",
+          "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/escape-growth/escape-08/CTXBOOM.cbl",
+          "sourceSha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+          "sourceKind": "original",
+          "expected": []
+        },
+        {
+          "id": "cics-original-oom09",
+          "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/cics-effects-growth/cics-09/CTXBOOM.cbl",
+          "sourceSha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799",
+          "sourceKind": "original",
+          "expected": [
+            "DUMMY"
+          ]
+        },
+        {
+          "id": "empty-paragraphs10000",
+          "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-fix-20261005/review-f1-f2-20261006/long-empty.cbl",
+          "sourceSha256": "2dcb236b112a5e749231642f8a45467ad93f0dbc20e26a31b37d2c959698cc98",
+          "sourceKind": "original",
+          "expected": [
+            "AFTER",
+            "BODY"
+          ]
+        },
+        {
+          "id": "inline-original20",
+          "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-unification-20261003/inline-stress-11-20/20/INLINEBOOM.cbl",
+          "sourceSha256": "451518a55dc65d29f9b1ca55a0abaee269804f392cb058c5e11572dcd5fe80f8",
+          "sourceKind": "original",
+          "expected": []
+        },
+        {
+          "id": "and-control76",
+          "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/activation-and-control-512m/and-0076/input.cbl",
+          "sourceSha256": "167c35f4d6930c4186b17f2a974baad3a22d419a6a66e1fb1e90527f5691857a",
+          "sourceKind": "original",
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "overlap-compact900",
+          "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/overlap900-compact-8g/overlap-0900/input.cbl",
+          "sourceSha256": "70fdc458aeb463aa7c4320731184369a11da758f257833e7f07084a7fd593850",
+          "sourceKind": "original",
+          "expected": []
+        },
+        {
+          "id": "plain-dynamic09",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/plain-dynamic09/input.cbl",
+          "sourceSha256": "6f8877dbc3b81c7861085328704029d87410ddde04693453a769538234f224a4",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-09/CTXBOOM.cbl",
+            "sha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+            "change": "CALL WS-OBS after its existing MOVE"
+          },
+          "dimension": 9,
+          "expected": [
+            "A"
+          ]
+        },
+        {
+          "id": "escape-dynamic08",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-dynamic08/input.cbl",
+          "sourceSha256": "cbae6ee0913d954a6cc02e15f69cadb187e875610ec49dcee245469485318fe6",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-08/CTXBOOM.cbl",
+            "sha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+            "change": "CALL WS-OBS after its existing MOVE"
+          },
+          "dimension": 8,
+          "expected": [
+            "A"
+          ]
+        },
+        {
+          "id": "escape-dynamic20",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-dynamic20/input.cbl",
+          "sourceSha256": "f42d89acddc4761e14557495586e4dd757fd8653453f3aca9920bf500d8d1771",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-20/CTXBOOM.cbl",
+            "sha256": "f96462bf6407560e830efbb2b21df846ef5c38a45663ac5ca9d13aa5fc8abf10",
+            "change": "CALL WS-OBS after its existing MOVE"
+          },
+          "dimension": 20,
+          "expected": [
+            "A"
+          ]
+        },
+        {
+          "id": "inline-observed20",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/inline-observed20/input.cbl",
+          "sourceSha256": "513cf06766c8a451fed5ec675a0d832657ea37d7773e5df4e2f79a2a308dae13",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-unification-20261003/inline-stress-11-20/20/INLINEBOOM.cbl",
+            "sha256": "451518a55dc65d29f9b1ca55a0abaee269804f392cb058c5e11572dcd5fe80f8",
+            "change": "reachable literal query"
+          },
+          "dimension": 20,
+          "expected": [
+            "INLINEOK"
+          ]
+        },
+        {
+          "id": "and76",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and76/input.cbl",
+          "sourceSha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 76,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "and152",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and152/input.cbl",
+          "sourceSha256": "dfd957ede4669d4037e104b69dc0571de5d73498157a57e8844e4152e370339f",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 152,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "and304",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and304/input.cbl",
+          "sourceSha256": "ffa42d82a47fdca5688c9a1c8562c6fea71ffde5eaa0dcf649dc35d0da220e57",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 304,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "and608",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and608/input.cbl",
+          "sourceSha256": "41d5999adfb7a7c98ff8283bb642ff1f42e09c81ffb767da24fb6f4a83c8b67c",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 608,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "and1216",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and1216/input.cbl",
+          "sourceSha256": "0d2ba89ca1729f17fca4917966245a57d566be08cb78713d52656e1c410c93c4",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 1216,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "or76",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or76/input.cbl",
+          "sourceSha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 76,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "or152",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or152/input.cbl",
+          "sourceSha256": "1f2bf3672a1c6b831958cf5439a563a47f1a239c51bcbadaf4f2ea8db23ae2f8",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 152,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "or304",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or304/input.cbl",
+          "sourceSha256": "63536fb6957fc5f1642a1fb869ff4a85a54e1fc93ceb38d265577de99e11384e",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 304,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "or608",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or608/input.cbl",
+          "sourceSha256": "71a8de317ff49e17a28c09f4214b60916ef2bee116c0acc0c2570ae1509e90dc",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 608,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "or1216",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or1216/input.cbl",
+          "sourceSha256": "1fba314d25d5f266322b120fd7b3076bc9a653c199e55b51804748f736ea63c3",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 1216,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ]
+        },
+        {
+          "id": "overlap-dynamic400",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic400/input.cbl",
+          "sourceSha256": "f3f9eff1be048c77d731cdfb043f2569b53d08020ba7159240ca9ebec6d43a02",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 400,
+          "expected": [
+            "H"
+          ]
+        },
+        {
+          "id": "overlap-dynamic900",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic900/input.cbl",
+          "sourceSha256": "b77567bb9a670445834824fb7796bfe164d5603bbd72847001ebaf1d6c2bba9d",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 900,
+          "expected": [
+            "H"
+          ]
+        },
+        {
+          "id": "overlap-dynamic1800",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic1800/input.cbl",
+          "sourceSha256": "818ead3bf482dd732fc200a874581e538c5d0d00c494246b65021b71a3857c0f",
+          "sourceKind": "derived",
+          "basis": {
+            "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+            "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
+          },
+          "dimension": 1800,
+          "expected": [
+            "H"
+          ]
+        },
+        {
+          "id": "dead-callers800",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/dead-callers800/input.cbl",
+          "sourceSha256": "91ef27103dfa86b376c8deab75c05214d39924ccf6c1c05b8bf7f4210212c005",
+          "sourceKind": "derived",
+          "basis": "COBOL counterpart of the AIR-only dead-frames mechanism; not the same original input",
+          "dimension": 800,
+          "expected": [
+            "SYNPROG"
+          ]
+        },
+        {
+          "id": "dead-callers6400",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/dead-callers6400/input.cbl",
+          "sourceSha256": "24d7ead117984d2ceb44b7a0d8002c8084949ac753e0607877a8e7b414ae6bae",
+          "sourceKind": "derived",
+          "basis": "COBOL counterpart of the AIR-only dead-frames mechanism; not the same original input",
+          "dimension": 6400,
+          "expected": [
+            "SYNPROG"
+          ]
+        },
+        {
+          "id": "linear-statements16000",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements16000/input.cbl",
+          "sourceSha256": "d626d694a2e2731e248d6292b04168efe764a6d3a01c7e4cefc736c4c2affef3",
+          "sourceKind": "derived",
+          "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
+          "dimension": 16000,
+          "expected": [
+            "PROGA"
+          ]
+        },
+        {
+          "id": "linear-statements32000",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements32000/input.cbl",
+          "sourceSha256": "3a5818f9e2dd8e493a76915ce46ebad6703eb5e9c28052e65806875ba06aed6e",
+          "sourceKind": "derived",
+          "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
+          "dimension": 32000,
+          "expected": [
+            "PROGA"
+          ]
+        },
+        {
+          "id": "linear-statements64000",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements64000/input.cbl",
+          "sourceSha256": "aa00b1ca57b8ccee2ff57655f4eb0c26e9e5315516fbd7def1840e43e3ccc0fc",
+          "sourceKind": "derived",
+          "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
+          "dimension": 64000,
+          "expected": [
+            "PROGA"
+          ]
+        },
+        {
+          "id": "linear-statements117000",
+          "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements117000/input.cbl",
+          "sourceSha256": "79fa75b81e30bcacef5de348e55e271b177e6c3183e8cedade3f8a0e77c09f8b",
+          "sourceKind": "derived",
+          "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
+          "dimension": 117000,
+          "expected": [
+            "PROGA"
+          ]
+        }
+      ]
+    },
+    "results": [
+      {
+        "id": "plain-original-oom09",
+        "sourceKind": "original",
+        "sourceSha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+        "lines": 51,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.6649467109964462,
+        "peakRssKiB": 125816,
+        "expected": [],
+        "actual": [],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 389574214,
+          "bindingNanos": 46435696,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 7989819,
+          "totalNanos": 447508370,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/plain-stress-512m/plain-09/CTXBOOM.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/plain-original-oom09/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/plain-original-oom09/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "d716cc4d0a5eac9dd2ad73b9fdbccd933bd95dde0e8b2953096f1b987923ad33",
+        "stderrSha256": "89f5e5fc26cd56877ac2d5666a0b59add950422f7fd92efd44be5fa398d0ab27"
+      },
+      {
+        "id": "escape-original-oom08",
+        "sourceKind": "original",
+        "sourceSha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+        "lines": 52,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7150131100061117,
+        "peakRssKiB": 127960,
+        "expected": [],
+        "actual": [],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 391735699,
+          "bindingNanos": 45587435,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 6521262,
+          "totalNanos": 447081736,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/escape-growth/escape-08/CTXBOOM.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-original-oom08/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-original-oom08/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "d716cc4d0a5eac9dd2ad73b9fdbccd933bd95dde0e8b2953096f1b987923ad33",
+        "stderrSha256": "b1fdcddef512397b43a1064c3c6046bd584ca4dc3efe7e4453dc2ea0a711b0af"
+      },
+      {
+        "id": "cics-original-oom09",
+        "sourceKind": "original",
+        "sourceSha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799",
+        "lines": 55,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7651849999965634,
+        "peakRssKiB": 138944,
+        "expected": [
+          "DUMMY"
+        ],
+        "actual": [
+          "DUMMY"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 420947817,
+          "bindingNanos": 52341150,
+          "cfgNanos": 36384072,
+          "dataflowNanos": 23881428,
+          "resolutionNanos": 1003352,
+          "totalNanos": 537696329,
+          "workItems": 35,
+          "contexts": 4,
+          "trackedDeclarations": 2
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/cics-effects-growth/cics-09/CTXBOOM.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/cics-original-oom09/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/cics-original-oom09/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "83ce94312795b7d41e948ea624465025f0933e430d80476a9f42c46cfae15e09",
+        "stderrSha256": "dd34f1cceb3109f90f5692273fe3f187874f3a9815212a99dc2195f53e83be24"
+      },
+      {
+        "id": "empty-paragraphs10000",
+        "sourceKind": "original",
+        "sourceSha256": "2dcb236b112a5e749231642f8a45467ad93f0dbc20e26a31b37d2c959698cc98",
+        "lines": 10009,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.817026349992375,
+        "peakRssKiB": 263720,
+        "expected": [
+          "AFTER",
+          "BODY"
+        ],
+        "actual": [
+          "AFTER",
+          "BODY"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 765687773,
+          "bindingNanos": 136862538,
+          "cfgNanos": 535976796,
+          "dataflowNanos": 123150126,
+          "resolutionNanos": 1525440,
+          "totalNanos": 1568549363,
+          "workItems": 6,
+          "contexts": 2,
+          "trackedDeclarations": 0
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-fix-20261005/review-f1-f2-20261006/long-empty.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/empty-paragraphs10000/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/empty-paragraphs10000/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "21e12d94524103ed2947ae5c62008a1b9a00898c667eb93007b105eb2c938a8c",
+        "stderrSha256": "209b2a5d6c868f832518ec149b4b8b7ff8599b05688cd09bb316067510abf9f1"
+      },
+      {
+        "id": "inline-original20",
+        "sourceKind": "original",
+        "sourceSha256": "451518a55dc65d29f9b1ca55a0abaee269804f392cb058c5e11572dcd5fe80f8",
+        "lines": 157,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7150662869971711,
+        "peakRssKiB": 126484,
+        "expected": [],
+        "actual": [],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 416758761,
+          "bindingNanos": 55487804,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 3552932,
+          "totalNanos": 479247358,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-unification-20261003/inline-stress-11-20/20/INLINEBOOM.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/inline-original20/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/inline-original20/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "34022061efe0215ad5ac7146f897dda40d06e109931f80e98b1cbc1c03922649",
+        "stderrSha256": "2a1b0e6a3c08a9217d32e7eaada3060f0ff8f0c23c409bb40d31d7607c38cc3a"
+      },
+      {
+        "id": "and-control76",
+        "sourceKind": "original",
+        "sourceSha256": "167c35f4d6930c4186b17f2a974baad3a22d419a6a66e1fb1e90527f5691857a",
+        "lines": 444,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9154656150058145,
+        "peakRssKiB": 164504,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 444933555,
+          "bindingNanos": 61143535,
+          "cfgNanos": 85717069,
+          "dataflowNanos": 50584480,
+          "resolutionNanos": 1088818,
+          "totalNanos": 647386943,
+          "workItems": 436,
+          "contexts": 79,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/activation-and-control-512m/and-0076/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and-control76/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and-control76/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "dc41e0125b6f8914579156440c24ba4bb2d117a3a9b3f112fea454d3e78084a8",
+        "stderrSha256": "ef7dcb6404b6f612f57eedee37b3d626d787de52d488abd943280bf9bc5f6b0d"
+      },
+      {
+        "id": "overlap-compact900",
+        "sourceKind": "original",
+        "sourceSha256": "70fdc458aeb463aa7c4320731184369a11da758f257833e7f07084a7fd593850",
+        "lines": 7253,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.6166635769914137,
+        "peakRssKiB": 328760,
+        "expected": [],
+        "actual": [],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1040036922,
+          "bindingNanos": 287543619,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 19141510,
+          "totalNanos": 1354200442,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/overlap900-compact-8g/overlap-0900/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-compact900/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-compact900/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "2de6716ceca3f4dbbe1f21dd0f33b313db4bd63f5f0063eafd7d5f0b929e4528",
+        "stderrSha256": "52f815957db0000375088a73f87a8cb8b3569942c703c792156292a9a32032ca"
+      },
+      {
+        "id": "plain-dynamic09",
+        "sourceKind": "derived",
+        "sourceSha256": "6f8877dbc3b81c7861085328704029d87410ddde04693453a769538234f224a4",
+        "lines": 52,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7651984350086423,
+        "peakRssKiB": 141336,
+        "expected": [
+          "A"
+        ],
+        "actual": [
+          "A"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 409611791,
+          "bindingNanos": 50364010,
+          "cfgNanos": 33045490,
+          "dataflowNanos": 24863782,
+          "resolutionNanos": 932584,
+          "totalNanos": 527607948,
+          "workItems": 32,
+          "contexts": 3,
+          "trackedDeclarations": 3
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/plain-dynamic09/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/plain-dynamic09/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/plain-dynamic09/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "99e41fdadc7ee6648112e53d3969e576906a89ace259a5debd8dd9d4fc0994bb",
+        "stderrSha256": "d7d8fefe057d41e35ce86fed637849d304c25040847f1ae5465901f6d2b57796"
+      },
+      {
+        "id": "escape-dynamic08",
+        "sourceKind": "derived",
+        "sourceSha256": "cbae6ee0913d954a6cc02e15f69cadb187e875610ec49dcee245469485318fe6",
+        "lines": 53,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7652070199983427,
+        "peakRssKiB": 146148,
+        "expected": [
+          "A"
+        ],
+        "actual": [
+          "A"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 395010687,
+          "bindingNanos": 46236624,
+          "cfgNanos": 34308954,
+          "dataflowNanos": 26552088,
+          "resolutionNanos": 953902,
+          "totalNanos": 510605773,
+          "workItems": 39,
+          "contexts": 4,
+          "trackedDeclarations": 3
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-dynamic08/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-dynamic08/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-dynamic08/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "99e41fdadc7ee6648112e53d3969e576906a89ace259a5debd8dd9d4fc0994bb",
+        "stderrSha256": "77a4eb438bd20e0225f4d4636532f5e3bb3b87aeb1eb9d0583be78bacda13808"
+      },
+      {
+        "id": "escape-dynamic20",
+        "sourceKind": "derived",
+        "sourceSha256": "f42d89acddc4761e14557495586e4dd757fd8653453f3aca9920bf500d8d1771",
+        "lines": 92,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.8152750820008805,
+        "peakRssKiB": 142504,
+        "expected": [
+          "A"
+        ],
+        "actual": [
+          "A"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 426646546,
+          "bindingNanos": 51538021,
+          "cfgNanos": 39639023,
+          "dataflowNanos": 30757425,
+          "resolutionNanos": 988725,
+          "totalNanos": 552709051,
+          "workItems": 63,
+          "contexts": 4,
+          "trackedDeclarations": 3
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-dynamic20/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-dynamic20/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/escape-dynamic20/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "99e41fdadc7ee6648112e53d3969e576906a89ace259a5debd8dd9d4fc0994bb",
+        "stderrSha256": "b60f1cae2115cad8f78fc0e1d3d9d73f0c4a6b70576452e682d2372e0fa1a336"
+      },
+      {
+        "id": "inline-observed20",
+        "sourceKind": "derived",
+        "sourceSha256": "513cf06766c8a451fed5ec675a0d832657ea37d7773e5df4e2f79a2a308dae13",
+        "lines": 158,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.8669976389937801,
+        "peakRssKiB": 161196,
+        "expected": [
+          "INLINEOK"
+        ],
+        "actual": [
+          "INLINEOK"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 414817414,
+          "bindingNanos": 53404651,
+          "cfgNanos": 41728898,
+          "dataflowNanos": 71850989,
+          "resolutionNanos": 1077707,
+          "totalNanos": 586338992,
+          "workItems": 1409,
+          "contexts": 22,
+          "trackedDeclarations": 2
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/inline-observed20/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/inline-observed20/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/inline-observed20/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "d5ee270dbc934667be95154f00e48f96470f00ba41be5fb3d2dd2b9839d20d8e",
+        "stderrSha256": "be8ddb62bbefdd0918d4a84b5f911fe92f097fc24853e840e9a915b0e23005fe"
+      },
+      {
+        "id": "and76",
+        "sourceKind": "derived",
+        "sourceSha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4",
+        "lines": 444,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9154385959991487,
+        "peakRssKiB": 155616,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 455140911,
+          "bindingNanos": 64731010,
+          "cfgNanos": 68731354,
+          "dataflowNanos": 50359872,
+          "resolutionNanos": 1008572,
+          "totalNanos": 644133515,
+          "workItems": 586,
+          "contexts": 79,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and76/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and76/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and76/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "dc41e0125b6f8914579156440c24ba4bb2d117a3a9b3f112fea454d3e78084a8",
+        "stderrSha256": "eaee64dd537cd704b033c4f1bf77c3526ee4ac988e1de49bbfbd8c9214e57ab6"
+      },
+      {
+        "id": "and152",
+        "sourceKind": "derived",
+        "sourceSha256": "dfd957ede4669d4037e104b69dc0571de5d73498157a57e8844e4152e370339f",
+        "lines": 976,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.0659266370057594,
+        "peakRssKiB": 158316,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 533619806,
+          "bindingNanos": 83287878,
+          "cfgNanos": 114238173,
+          "dataflowNanos": 87486483,
+          "resolutionNanos": 1241855,
+          "totalNanos": 823464234,
+          "workItems": 1270,
+          "contexts": 155,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and152/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and152/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and152/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "b203f9e087a080d026a45c460da1cd9be71bd3fb3e0806f5f71f46bc642c19ef",
+        "stderrSha256": "31de910c73565d787c30c194758a2671453f57db0320bafae9ce97c667101aee"
+      },
+      {
+        "id": "and304",
+        "sourceKind": "derived",
+        "sourceSha256": "ffa42d82a47fdca5688c9a1c8562c6fea71ffde5eaa0dcf649dc35d0da220e57",
+        "lines": 2040,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.4164825360057876,
+        "peakRssKiB": 188284,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 627127964,
+          "bindingNanos": 120726365,
+          "cfgNanos": 198428219,
+          "dataflowNanos": 209158134,
+          "resolutionNanos": 1365340,
+          "totalNanos": 1163296618,
+          "workItems": 2638,
+          "contexts": 307,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and304/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and304/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and304/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "9b95ec48cb5c184fe5edfecdb8cde138dff425d4c5483338e0bc5ebbd6a70681",
+        "stderrSha256": "24bf7036923193eb5dec7235c885e5fc69c11e86501ea0b0d58d88c9884ac939"
+      },
+      {
+        "id": "and608",
+        "sourceKind": "derived",
+        "sourceSha256": "41d5999adfb7a7c98ff8283bb642ff1f42e09c81ffb767da24fb6f4a83c8b67c",
+        "lines": 4168,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.9674591210059589,
+        "peakRssKiB": 290484,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 731872046,
+          "bindingNanos": 166287663,
+          "cfgNanos": 382244033,
+          "dataflowNanos": 415894480,
+          "resolutionNanos": 1759365,
+          "totalNanos": 1702578186,
+          "workItems": 5374,
+          "contexts": 611,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and608/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and608/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and608/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "5b36cb72922102a5111d64933d323af3613e55a62eace89bc00c34644ccb537e",
+        "stderrSha256": "6400af3354040d6d1332589711ede672a7069e5082ecd8a0b7bc32ae726209d8"
+      },
+      {
+        "id": "and1216",
+        "sourceKind": "derived",
+        "sourceSha256": "0d2ba89ca1729f17fca4917966245a57d566be08cb78713d52656e1c410c93c4",
+        "lines": 8424,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 3.820388528998592,
+        "peakRssKiB": 428800,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 918993742,
+          "bindingNanos": 232604412,
+          "cfgNanos": 1328139828,
+          "dataflowNanos": 1034312878,
+          "resolutionNanos": 2616000,
+          "totalNanos": 3522552318,
+          "workItems": 10846,
+          "contexts": 1219,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and1216/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and1216/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/and1216/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "930939f360cc904f74a05d4f90f871469ba8743cc208f084589c18a4f2c46082",
+        "stderrSha256": "92897db54aa2a761484986d206c73d7a373e7cbc246322fdfab63422beda7dde"
+      },
+      {
+        "id": "or76",
+        "sourceKind": "derived",
+        "sourceSha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8",
+        "lines": 546,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9154393780045211,
+        "peakRssKiB": 167056,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 462862223,
+          "bindingNanos": 68475990,
+          "cfgNanos": 73773289,
+          "dataflowNanos": 61639776,
+          "resolutionNanos": 979980,
+          "totalNanos": 672015268,
+          "workItems": 940,
+          "contexts": 130,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or76/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or76/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or76/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "8028202dbd55f5d85ca70d0d43add6a3a13a3cc658cf27221286ba4caba5d821",
+        "stderrSha256": "090932864ccbf62605f5869de80b5868c43ef4d641537b4fdcda9a2410d43f79"
+      },
+      {
+        "id": "or152",
+        "sourceKind": "derived",
+        "sourceSha256": "1f2bf3672a1c6b831958cf5439a563a47f1a239c51bcbadaf4f2ea8db23ae2f8",
+        "lines": 1230,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.165853471000446,
+        "peakRssKiB": 165932,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 560532247,
+          "bindingNanos": 86151217,
+          "cfgNanos": 135004003,
+          "dataflowNanos": 110614412,
+          "resolutionNanos": 1218623,
+          "totalNanos": 897398035,
+          "workItems": 2080,
+          "contexts": 282,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or152/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or152/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or152/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "449c746969afc8d14ab5b02e3f0f2145067bdbda619dabda301ec767b91ba9fa",
+        "stderrSha256": "f11e6c8a4f5a4f1669c50230751633d15e5def260a8ecc6377bcfbf31c8d01ef"
+      },
+      {
+        "id": "or304",
+        "sourceKind": "derived",
+        "sourceSha256": "63536fb6957fc5f1642a1fb869ff4a85a54e1fc93ceb38d265577de99e11384e",
+        "lines": 2598,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.4163209310063394,
+        "peakRssKiB": 191896,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 645594899,
+          "bindingNanos": 102970521,
+          "cfgNanos": 243293182,
+          "dataflowNanos": 165101008,
+          "resolutionNanos": 2314593,
+          "totalNanos": 1163523571,
+          "workItems": 4360,
+          "contexts": 586,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or304/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or304/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or304/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "6701321cf979e584ba648ca297fff3d8390a825c7eb2c38b104c7720d5a96849",
+        "stderrSha256": "b5b080c60bfc9bf6008fdcf538f2783e8a60b75cd241b75d9b33e60e5549d6b5"
+      },
+      {
+        "id": "or608",
+        "sourceKind": "derived",
+        "sourceSha256": "71a8de317ff49e17a28c09f4214b60916ef2bee116c0acc0c2570ae1509e90dc",
+        "lines": 5334,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 2.2177641870075604,
+        "peakRssKiB": 316532,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 783086880,
+          "bindingNanos": 168635225,
+          "cfgNanos": 664103620,
+          "dataflowNanos": 339918501,
+          "resolutionNanos": 3080113,
+          "totalNanos": 1963981826,
+          "workItems": 8920,
+          "contexts": 1194,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or608/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or608/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or608/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "d8e168b3d4d877ba47a44cf19e1cb1f571411e0e14a896397c6d8518cb005698",
+        "stderrSha256": "1069c537f4065ce20dc6fd046f088360289d26bbd065666e0525ab7871e98f19"
+      },
+      {
+        "id": "or1216",
+        "sourceKind": "derived",
+        "sourceSha256": "1fba314d25d5f266322b120fd7b3076bc9a653c199e55b51804748f736ea63c3",
+        "lines": 10806,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 3.9241920829954324,
+        "peakRssKiB": 608524,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1056080878,
+          "bindingNanos": 297939869,
+          "cfgNanos": 1429860179,
+          "dataflowNanos": 825945289,
+          "resolutionNanos": 4253885,
+          "totalNanos": 3621870547,
+          "workItems": 18040,
+          "contexts": 2410,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or1216/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or1216/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/or1216/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "9e1a10f5415253b39c504004bfa10d16b9dcc6a3d40f2154f904ae1e62490368",
+        "stderrSha256": "d2ad1acefad1922e4f184a980f0da9a8cf7e989320d4e24c98a0e7418fe0c21f"
+      },
+      {
+        "id": "overlap-dynamic400",
+        "sourceKind": "derived",
+        "sourceSha256": "f3f9eff1be048c77d731cdfb043f2569b53d08020ba7159240ca9ebec6d43a02",
+        "lines": 3655,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.6667852370010223,
+        "peakRssKiB": 225440,
+        "expected": [
+          "H"
+        ],
+        "actual": [
+          "H"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 765809465,
+          "bindingNanos": 169592494,
+          "cfgNanos": 295232663,
+          "dataflowNanos": 182851002,
+          "resolutionNanos": 1827879,
+          "totalNanos": 1420999297,
+          "workItems": 6966,
+          "contexts": 762,
+          "trackedDeclarations": 2
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic400/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic400/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic400/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "f375883e54a531b0794e24637cc1ad13f0195d3c74d87e5e82fa99f69bffbd71",
+        "stderrSha256": "1aca2e0454f6eff9d5b42b38659144623bdd690a3ef30c76c4987ccd6eabb08e"
+      },
+      {
+        "id": "overlap-dynamic900",
+        "sourceKind": "derived",
+        "sourceSha256": "b77567bb9a670445834824fb7796bfe164d5603bbd72847001ebaf1d6c2bba9d",
+        "lines": 8155,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 2.6183811929950025,
+        "peakRssKiB": 383552,
+        "expected": [
+          "H"
+        ],
+        "actual": [
+          "H"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1050596078,
+          "bindingNanos": 285242331,
+          "cfgNanos": 696032342,
+          "dataflowNanos": 313232921,
+          "resolutionNanos": 3667630,
+          "totalNanos": 2359912032,
+          "workItems": 15966,
+          "contexts": 1762,
+          "trackedDeclarations": 2
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic900/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic900/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic900/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "7c9afd2573d10646873021c3fc334d0e5914efbaaf435fe5710a0e0176228813",
+        "stderrSha256": "77e80ed40ade1a8992bc4abf767e073b48a2d9d0c6e1430d4652c553419a83b7"
+      },
+      {
+        "id": "overlap-dynamic1800",
+        "sourceKind": "derived",
+        "sourceSha256": "818ead3bf482dd732fc200a874581e538c5d0d00c494246b65021b71a3857c0f",
+        "lines": 16255,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 5.072458978000213,
+        "peakRssKiB": 582396,
+        "expected": [
+          "H"
+        ],
+        "actual": [
+          "H"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1560398001,
+          "bindingNanos": 370638107,
+          "cfgNanos": 2259144030,
+          "dataflowNanos": 585813838,
+          "resolutionNanos": 6393390,
+          "totalNanos": 4793683570,
+          "workItems": 32166,
+          "contexts": 3562,
+          "trackedDeclarations": 2
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic1800/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic1800/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/overlap-dynamic1800/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "ae49b58e5101b1e3825cf6f0cae7e80eec4da812cea54f16c885847c873f5b7e",
+        "stderrSha256": "37d6cce3c2d6bb2653c1eed5995cbf50de6f3d1ad99abe28823c6331142f687e"
+      },
+      {
+        "id": "dead-callers800",
+        "sourceKind": "derived",
+        "sourceSha256": "91ef27103dfa86b376c8deab75c05214d39924ccf6c1c05b8bf7f4210212c005",
+        "lines": 1610,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.0656555250025121,
+        "peakRssKiB": 155308,
+        "expected": [
+          "SYNPROG"
+        ],
+        "actual": [
+          "SYNPROG"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 544434395,
+          "bindingNanos": 82656731,
+          "cfgNanos": 164215570,
+          "dataflowNanos": 25853188,
+          "resolutionNanos": 1546638,
+          "totalNanos": 823052306,
+          "workItems": 3,
+          "contexts": 1,
+          "trackedDeclarations": 0
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/dead-callers800/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/dead-callers800/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/dead-callers800/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "1552fc1d1631fd0d5d5ad39a3e8c5b929c704d1d3149dc79689c8317c55c6431",
+        "stderrSha256": "f27c26e0f236f93eaaac2f237511f9603ea5bdd9b8b2650f2f4a4f7665a469ea"
+      },
+      {
+        "id": "dead-callers6400",
+        "sourceKind": "derived",
+        "sourceSha256": "24d7ead117984d2ceb44b7a0d8002c8084949ac753e0607877a8e7b414ae6bae",
+        "lines": 12810,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 2.968940306993318,
+        "peakRssKiB": 398288,
+        "expected": [
+          "SYNPROG"
+        ],
+        "actual": [
+          "SYNPROG"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1073510479,
+          "bindingNanos": 252062627,
+          "cfgNanos": 1204668048,
+          "dataflowNanos": 61029929,
+          "resolutionNanos": 3238090,
+          "totalNanos": 2603340350,
+          "workItems": 3,
+          "contexts": 1,
+          "trackedDeclarations": 0
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/dead-callers6400/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/dead-callers6400/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/dead-callers6400/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "1552fc1d1631fd0d5d5ad39a3e8c5b929c704d1d3149dc79689c8317c55c6431",
+        "stderrSha256": "7645a27ae294197ea7ba9ccd816c52111b41e71cc9c6b21bf29eb48f2329c253"
+      },
+      {
+        "id": "linear-statements16000",
+        "sourceKind": "derived",
+        "sourceSha256": "d626d694a2e2731e248d6292b04168efe764a6d3a01c7e4cefc736c4c2affef3",
+        "lines": 16008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 3.8729691930057015,
+        "peakRssKiB": 551700,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 1816276508,
+          "bindingNanos": 511674434,
+          "cfgNanos": 749134794,
+          "dataflowNanos": 436486645,
+          "resolutionNanos": 11135642,
+          "totalNanos": 3537535507,
+          "workItems": 16003,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements16000/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements16000/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements16000/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "8aedae773d18ccb82c21beec951b206fa372088a8f7cb68bd5efaa4eca1c1afd",
+        "stderrSha256": "dd85094e18dd6aa70c6aa54605c9137978cc03b6b8f79258234720dce2c1cfaa"
+      },
+      {
+        "id": "linear-statements32000",
+        "sourceKind": "derived",
+        "sourceSha256": "3a5818f9e2dd8e493a76915ce46ebad6703eb5e9c28052e65806875ba06aed6e",
+        "lines": 32008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 7.535163066000678,
+        "peakRssKiB": 1200788,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 3445527023,
+          "bindingNanos": 757844411,
+          "cfgNanos": 2319979065,
+          "dataflowNanos": 632550551,
+          "resolutionNanos": 7793062,
+          "totalNanos": 7188765259,
+          "workItems": 32003,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements32000/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements32000/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements32000/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "e4692fd84c4a13fc8de2ce789099d014467df81f197f44a05328425525f5e156",
+        "stderrSha256": "1044948f59c2ffbe1a6c9819531210dfd78ee6c81f5c166d21618f0c9af01051"
+      },
+      {
+        "id": "linear-statements64000",
+        "sourceKind": "derived",
+        "sourceSha256": "aa00b1ca57b8ccee2ff57655f4eb0c26e9e5315516fbd7def1840e43e3ccc0fc",
+        "lines": 64008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 15.596841115999268,
+        "peakRssKiB": 1736888,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 4943855177,
+          "bindingNanos": 1208509603,
+          "cfgNanos": 7980567967,
+          "dataflowNanos": 1092890222,
+          "resolutionNanos": 21412775,
+          "totalNanos": 15285458015,
+          "workItems": 64003,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements64000/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements64000/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements64000/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "7adf2036e8b11fb595547ce8ede50637dda597c4210cdc42d055e95a1b6ab8a0",
+        "stderrSha256": "b80dcc3de0f4d62d3ae9f4e5d25e06c054a5d9979043073802a3a3b7b5b94bfe"
+      },
+      {
+        "id": "linear-statements117000",
+        "sourceKind": "derived",
+        "sourceSha256": "79fa75b81e30bcacef5de348e55e271b177e6c3183e8cedade3f8a0e77c09f8b",
+        "lines": 117008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 45.24626764100685,
+        "peakRssKiB": 1654944,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "outputPublished": true,
+        "metrics": {
+          "parseNanos": 8267575473,
+          "bindingNanos": 1647739851,
+          "cfgNanos": 33130086239,
+          "dataflowNanos": 1777148342,
+          "resolutionNanos": 25308609,
+          "totalNanos": 44894536790,
+          "workItems": 117003,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        },
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements117000/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements117000/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-final-20261008/linear-statements117000/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "outputSha256": "d9bc817b8b5b8a16ceb20f83b695b32a52a38970c8f9d3d6eee1d8e59f5c87fe",
+        "stderrSha256": "be04a1c9d9c931ff63949d6742634f2b239abef03c45391be1caca15562e75aa"
+      }
+    ]
+  },
+  "stressSummary": {
+    "cases": 30,
+    "passed": 30,
+    "seconds": 114.89077255102166,
+    "peakRssKiB": 1736888
+  },
+  "freshPaired": {
+    "beforeJarSha256": "64c403308574e82916c93e80e2ba58912c4de601668b5c3ba70bc61eb209d554",
+    "afterJarSha256": "98e1a30464b3c18349f6311c275f760fc3a032d9b5498cc5b741f4c7502782d4",
+    "beforeResultsSha256": "a8a46b8a170674e98699a981983e994403aca97f4f7dc1241ce172ed51d3ba00",
+    "afterResultsSha256": "0e7c316346c2c357abd127f8f1d441593429a0562f1c11e2e482b3bc3895cd37",
+    "beforeDirectory": "benchmark/results/unified-before-fresh-20261008",
+    "afterDirectory": "benchmark/results/unified-scc-after-fresh-20261008",
+    "compared": 6,
+    "passed": 6,
+    "onlyBefore": [],
+    "onlyAfter": [],
+    "results": [
+      {
+        "id": "and1216",
+        "passed": true,
+        "sameSource": true,
+        "byteIdentical": true,
+        "sameDiagnostics": true,
+        "beforeDiagnostics": [],
+        "afterDiagnostics": [],
+        "outputSha256": "930939f360cc904f74a05d4f90f871469ba8743cc208f084589c18a4f2c46082",
+        "before": {
+          "id": "and1216",
+          "sourceKind": "derived",
+          "sourceSha256": "0d2ba89ca1729f17fca4917966245a57d566be08cb78713d52656e1c410c93c4",
+          "lines": 8424,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 2.6183598350035027,
+          "peakRssKiB": 370928,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 944263562,
+            "bindingNanos": 233255168,
+            "cfgNanos": 992060582,
+            "dataflowNanos": 165489622,
+            "resolutionNanos": 2684233,
+            "totalNanos": 2346325902,
+            "workItems": 9685,
+            "contexts": 2437,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/.tmp/unified-baseline.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/and1216/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/and1216/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/and1216/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "after": {
+          "id": "and1216",
+          "sourceKind": "derived",
+          "sourceSha256": "0d2ba89ca1729f17fca4917966245a57d566be08cb78713d52656e1c410c93c4",
+          "lines": 8424,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 3.619976788002532,
+          "peakRssKiB": 418336,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 942435021,
+            "bindingNanos": 233807486,
+            "cfgNanos": 1159630120,
+            "dataflowNanos": 995391919,
+            "resolutionNanos": 2788934,
+            "totalNanos": 3340444476,
+            "workItems": 10846,
+            "contexts": 1219,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/and1216/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/and1216/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/and1216/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "speedup": 0.7233084597894033,
+        "rssReductionPercent": -12.780917051287588
+      },
+      {
+        "id": "or1216",
+        "passed": true,
+        "sameSource": true,
+        "byteIdentical": true,
+        "sameDiagnostics": true,
+        "beforeDiagnostics": [],
+        "afterDiagnostics": [],
+        "outputSha256": "9e1a10f5415253b39c504004bfa10d16b9dcc6a3d40f2154f904ae1e62490368",
+        "before": {
+          "id": "or1216",
+          "sourceKind": "derived",
+          "sourceSha256": "1fba314d25d5f266322b120fd7b3076bc9a653c199e55b51804748f736ea63c3",
+          "lines": 10806,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 9.980990611991729,
+          "peakRssKiB": 887156,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 1048962772,
+            "bindingNanos": 261561931,
+            "cfgNanos": 1840201965,
+            "dataflowNanos": 6514178040,
+            "resolutionNanos": 3341527,
+            "totalNanos": 9675509150,
+            "workItems": 1485530,
+            "contexts": 2409,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/.tmp/unified-baseline.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or1216/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or1216/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or1216/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "after": {
+          "id": "or1216",
+          "sourceKind": "derived",
+          "sourceSha256": "1fba314d25d5f266322b120fd7b3076bc9a653c199e55b51804748f736ea63c3",
+          "lines": 10806,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 4.12105598099879,
+          "peakRssKiB": 504812,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 1035896524,
+            "bindingNanos": 246170307,
+            "cfgNanos": 1671032880,
+            "dataflowNanos": 862776774,
+            "resolutionNanos": 4130080,
+            "totalNanos": 3826749801,
+            "workItems": 18040,
+            "contexts": 2410,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or1216/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or1216/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or1216/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "speedup": 2.4219497764679017,
+        "rssReductionPercent": 43.09771900319673
+      },
+      {
+        "id": "or152",
+        "passed": true,
+        "sameSource": true,
+        "byteIdentical": true,
+        "sameDiagnostics": true,
+        "beforeDiagnostics": [],
+        "afterDiagnostics": [],
+        "outputSha256": "449c746969afc8d14ab5b02e3f0f2145067bdbda619dabda301ec767b91ba9fa",
+        "before": {
+          "id": "or152",
+          "sourceKind": "derived",
+          "sourceSha256": "1f2bf3672a1c6b831958cf5439a563a47f1a239c51bcbadaf4f2ea8db23ae2f8",
+          "lines": 1230,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.2670768899988616,
+          "peakRssKiB": 192908,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 537316259,
+            "bindingNanos": 78305721,
+            "cfgNanos": 130404602,
+            "dataflowNanos": 269108934,
+            "resolutionNanos": 1881436,
+            "totalNanos": 1020840675,
+            "workItems": 23594,
+            "contexts": 281,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/.tmp/unified-baseline.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or152/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or152/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or152/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "after": {
+          "id": "or152",
+          "sourceKind": "derived",
+          "sourceSha256": "1f2bf3672a1c6b831958cf5439a563a47f1a239c51bcbadaf4f2ea8db23ae2f8",
+          "lines": 1230,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.1158702230022755,
+          "peakRssKiB": 166528,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 540019258,
+            "bindingNanos": 79025798,
+            "cfgNanos": 123244227,
+            "dataflowNanos": 99255846,
+            "resolutionNanos": 1412656,
+            "totalNanos": 846771530,
+            "workItems": 2080,
+            "contexts": 282,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or152/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or152/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or152/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "speedup": 1.1355056026047197,
+        "rssReductionPercent": 13.674912393472539
+      },
+      {
+        "id": "or304",
+        "passed": true,
+        "sameSource": true,
+        "byteIdentical": true,
+        "sameDiagnostics": true,
+        "beforeDiagnostics": [],
+        "afterDiagnostics": [],
+        "outputSha256": "6701321cf979e584ba648ca297fff3d8390a825c7eb2c38b104c7720d5a96849",
+        "before": {
+          "id": "or304",
+          "sourceKind": "derived",
+          "sourceSha256": "63536fb6957fc5f1642a1fb869ff4a85a54e1fc93ceb38d265577de99e11384e",
+          "lines": 2598,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.8169483350066002,
+          "peakRssKiB": 257856,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 625843179,
+            "bindingNanos": 106796690,
+            "cfgNanos": 275367256,
+            "dataflowNanos": 568043658,
+            "resolutionNanos": 1619631,
+            "totalNanos": 1581938222,
+            "workItems": 93818,
+            "contexts": 585,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/.tmp/unified-baseline.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or304/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or304/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or304/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "after": {
+          "id": "or304",
+          "sourceKind": "derived",
+          "sourceSha256": "63536fb6957fc5f1642a1fb869ff4a85a54e1fc93ceb38d265577de99e11384e",
+          "lines": 2598,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.416316693997942,
+          "peakRssKiB": 196596,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 632613425,
+            "bindingNanos": 111393577,
+            "cfgNanos": 253874488,
+            "dataflowNanos": 180755696,
+            "resolutionNanos": 1573477,
+            "totalNanos": 1184828750,
+            "workItems": 4360,
+            "contexts": 586,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or304/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or304/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or304/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "speedup": 1.2828686851651558,
+        "rssReductionPercent": 23.757446016381234
+      },
+      {
+        "id": "or608",
+        "passed": true,
+        "sameSource": true,
+        "byteIdentical": true,
+        "sameDiagnostics": true,
+        "beforeDiagnostics": [],
+        "afterDiagnostics": [],
+        "outputSha256": "d8e168b3d4d877ba47a44cf19e1cb1f571411e0e14a896397c6d8518cb005698",
+        "before": {
+          "id": "or608",
+          "sourceKind": "derived",
+          "sourceSha256": "71a8de317ff49e17a28c09f4214b60916ef2bee116c0acc0c2570ae1509e90dc",
+          "lines": 5334,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 3.770344443997601,
+          "peakRssKiB": 550984,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 763098909,
+            "bindingNanos": 166040733,
+            "cfgNanos": 711511327,
+            "dataflowNanos": 1816653961,
+            "resolutionNanos": 2036367,
+            "totalNanos": 3464080262,
+            "workItems": 372890,
+            "contexts": 1193,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/.tmp/unified-baseline.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or608/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or608/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/or608/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "after": {
+          "id": "or608",
+          "sourceKind": "derived",
+          "sourceSha256": "71a8de317ff49e17a28c09f4214b60916ef2bee116c0acc0c2570ae1509e90dc",
+          "lines": 5334,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 2.2678516229934758,
+          "peakRssKiB": 335332,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 766159891,
+            "bindingNanos": 166242691,
+            "cfgNanos": 704660891,
+            "dataflowNanos": 361220444,
+            "resolutionNanos": 2160153,
+            "totalNanos": 2005969173,
+            "workItems": 8920,
+            "contexts": 1194,
+            "trackedDeclarations": 1
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or608/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or608/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/or608/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "speedup": 1.6625181320376212,
+        "rssReductionPercent": 39.139430546077556
+      },
+      {
+        "id": "overlap-dynamic1800",
+        "passed": true,
+        "sameSource": true,
+        "byteIdentical": true,
+        "sameDiagnostics": true,
+        "beforeDiagnostics": [],
+        "afterDiagnostics": [],
+        "outputSha256": "ae49b58e5101b1e3825cf6f0cae7e80eec4da812cea54f16c885847c873f5b7e",
+        "before": {
+          "id": "overlap-dynamic1800",
+          "sourceKind": "derived",
+          "sourceSha256": "818ead3bf482dd732fc200a874581e538c5d0d00c494246b65021b71a3857c0f",
+          "lines": 16255,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 5.072446756996214,
+          "peakRssKiB": 582404,
+          "expected": [
+            "H"
+          ],
+          "actual": [
+            "H"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 1529940735,
+            "bindingNanos": 425863305,
+            "cfgNanos": 2387795413,
+            "dataflowNanos": 408450732,
+            "resolutionNanos": 8056747,
+            "totalNanos": 4771743010,
+            "workItems": 33926,
+            "contexts": 5363,
+            "trackedDeclarations": 2
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/.tmp/unified-baseline.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/overlap-dynamic1800/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/overlap-dynamic1800/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-before-fresh-20261008/overlap-dynamic1800/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "after": {
+          "id": "overlap-dynamic1800",
+          "sourceKind": "derived",
+          "sourceSha256": "818ead3bf482dd732fc200a874581e538c5d0d00c494246b65021b71a3857c0f",
+          "lines": 16255,
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 5.222714196002926,
+          "peakRssKiB": 563400,
+          "expected": [
+            "H"
+          ],
+          "actual": [
+            "H"
+          ],
+          "outputPublished": true,
+          "metrics": {
+            "parseNanos": 1515434398,
+            "bindingNanos": 380795622,
+            "cfgNanos": 2486061715,
+            "dataflowNanos": 553668604,
+            "resolutionNanos": 5875930,
+            "totalNanos": 4952898229,
+            "workItems": 32166,
+            "contexts": 3562,
+            "trackedDeclarations": 2
+          },
+          "command": [
+            "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+            "-Xms32m",
+            "-Xmx4096m",
+            "-jar",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+            "--source",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/overlap-dynamic1800/input.cbl",
+            "--output",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/overlap-dynamic1800/dependencies.json",
+            "--metrics",
+            "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/unified-scc-after-fresh-20261008/overlap-dynamic1800/metrics.jsonl",
+            "--max-work",
+            "100000000"
+          ]
+        },
+        "speedup": 0.9712280945563296,
+        "rssReductionPercent": 3.2630270396494576
+      }
+    ]
+  },
+  "original20": {
+    "summary": {
+      "cases": 20,
+      "passed": 20,
+      "failed": 0,
+      "seconds": 16.10701465200691,
+      "peakRssKiB": 339760,
+      "heapMiB": 4096,
+      "maxWork": 100000000,
+      "timeoutSeconds": 300
+    },
+    "results": [
+      {
+        "id": "lower-CTXBOOM-07",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7150795600027777,
+        "peakRssKiB": 123524,
+        "sourceSha256": "fedd3e527ca536926135d6f0884943240d85ecad8fea55f6d12d06a3dab6cbac",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/lower-CTXBOOM-07/CTXBOOM-07.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/lower-CTXBOOM-07/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/lower-CTXBOOM-07/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "lower-CTXBOOM-08",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7151315049995901,
+        "peakRssKiB": 128660,
+        "sourceSha256": "4020ef361b9ccec22428ead5d4ac4892b4e8981262e3a68a052c711f08fabab7",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/lower-CTXBOOM-08/CTXBOOM-08.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/lower-CTXBOOM-08/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/lower-CTXBOOM-08/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "lower-CTXBOOM-CONTROL-08",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7152212780056288,
+        "peakRssKiB": 129620,
+        "sourceSha256": "a395f8bdd2cde387a45af2594eec9093f22c2b8a736967991b918e97f795b9c0",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/lower-CTXBOOM-CONTROL-08/CTXBOOM-CONTROL-08.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/lower-CTXBOOM-CONTROL-08/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/lower-CTXBOOM-CONTROL-08/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "and76",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.9158027380035492,
+        "peakRssKiB": 162960,
+        "sourceSha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/and76/input.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/and76/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/and76/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "or76",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.9657118510076543,
+        "peakRssKiB": 168860,
+        "sourceSha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/or76/input.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/or76/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/or76/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "overlap900",
+        "exit": 0,
+        "passed": true,
+        "seconds": 1.6668538810044993,
+        "peakRssKiB": 339760,
+        "sourceSha256": "c6a5e046700cda53e5651b0293798acac0e4fd187a795919923c7d7f3ef6c469",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/overlap900/input.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/overlap900/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/overlap900/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "fixed-pasted",
+        "exit": 2,
+        "passed": true,
+        "seconds": 0.7150433250062633,
+        "peakRssKiB": 113092,
+        "sourceSha256": "dfebd5ad5d75c1718ec58fdeba2b311819b7e0593fd6a6cd0b010e19be2ded64",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/fixed-pasted/input.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/fixed-pasted/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/fixed-pasted/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "fixed-star",
+        "exit": 2,
+        "passed": true,
+        "seconds": 0.7151275879878085,
+        "peakRssKiB": 113124,
+        "sourceSha256": "29eb1de5b49940b0fd0fb92d3f645c1a428a3bb997e205c201e3847858bc1078",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/fixed-star/input.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/fixed-star/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/fixed-star/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-cics-09",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.8153002379985992,
+        "peakRssKiB": 143960,
+        "sourceSha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-cics-09/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-cics-09/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-cics-09/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-cics-09-control",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.8153310339985183,
+        "peakRssKiB": 145488,
+        "sourceSha256": "16998d864497eb6b401b7bfc7fac4d119bbb8c65ecfa5d924a2a8ecdf40b95fb",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-cics-09-control/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-cics-09-control/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-cics-09-control/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-cics-16",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.8154823889926774,
+        "peakRssKiB": 149652,
+        "sourceSha256": "ad91b8580f9ec98f357d9885782581fab5aab1a1e993221724e0206de58ed649",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-cics-16/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-cics-16/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-cics-16/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-cics-20",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.8153582230006577,
+        "peakRssKiB": 148996,
+        "sourceSha256": "7a6115b0d1664c71d748d0903c6ca98e1f4e7a8a9a2f59d846466dfe4c62b134",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-cics-20/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-cics-20/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-cics-20/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-escape-08",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7151217479986371,
+        "peakRssKiB": 129872,
+        "sourceSha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-08/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-escape-08/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-escape-08/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-escape-09-control",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7151440680027008,
+        "peakRssKiB": 128104,
+        "sourceSha256": "b8b2693953a3e24e7af22cbce53da10e8a61b36090414107b78fd93a05462c28",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-09-control/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-escape-09-control/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-escape-09-control/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-escape-16",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7153421770053683,
+        "peakRssKiB": 128408,
+        "sourceSha256": "302c3c187b04eba84322a946ed9203af42d38b5798ab41a7e9f8f1de0da5eae1",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-16/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-escape-16/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-escape-16/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-escape-20",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7151613390014973,
+        "peakRssKiB": 128800,
+        "sourceSha256": "f96462bf6407560e830efbb2b21df846ef5c38a45663ac5ca9d13aa5fc8abf10",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-20/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-escape-20/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-escape-20/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-plain-09",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7152279500005534,
+        "peakRssKiB": 129164,
+        "sourceSha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-09/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-plain-09/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-plain-09/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-plain-09-control",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7152243830059888,
+        "peakRssKiB": 125804,
+        "sourceSha256": "dec528142335e5ab831550c5a39f8de3e84ba39b74ff85cb3c8e46b26e9b333b",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-09-control/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-plain-09-control/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-plain-09-control/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-plain-16",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7151529839902651,
+        "peakRssKiB": 122540,
+        "sourceSha256": "e4917084b5d3016a860d961104c28f77b401f224e3aa736c98496d0db6902b9c",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-16/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-plain-16/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-plain-16/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-plain-20",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7151963929936755,
+        "peakRssKiB": 128604,
+        "sourceSha256": "c4ace72add2226c880efc495ec2b47937830a06746238f390a559f968e0ca928",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-20/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/unified-scc-original20-final-20261008/context-plain-20/dependencies.json",
+          "--metrics",
+          "benchmark/results/unified-scc-original20-final-20261008/context-plain-20/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      }
+    ]
+  },
+  "carddemo": {
+    "summary": {
+      "sources": 73,
+      "processed": 73,
+      "equal": 815,
+      "missing": 0,
+      "additional": 0,
+      "seconds": 157.92160444398178,
+      "peakRssKiB": 764680,
+      "heapMiB": 4096,
+      "maxWork": 100000000,
+      "timeoutSeconds": 300,
+      "baselineReused": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/carddemo-scanner-discovery-20261003/results.json"
+    },
+    "byteIdentical": 73,
+    "sameExit": 73,
+    "sameDiagnostics": 73,
+    "exit0": 26,
+    "exit1": 47,
+    "outputs": [
+      {
+        "id": "4affdc7a0fa00605",
+        "sourceSha256": "b5bb7d6ccad022e0fc91b4dd1e971f49d184adf89b56abdce14eccff35b39396",
+        "beforeOutputSha256": "955747bca6e7da7c48b43b00b4dea34ff20fc93b30964420a50c6bcd0e3fadf7",
+        "afterOutputSha256": "955747bca6e7da7c48b43b00b4dea34ff20fc93b30964420a50c6bcd0e3fadf7",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "63240f83ff849372ad99457abaffb2faf2b34330482d7d386fd7dacf4ae69d1f",
+        "diagnosticCount": 15
+      },
+      {
+        "id": "4157c234cff53544",
+        "sourceSha256": "e944b2b469cf737296489e87158801cfe1a174e2965b5bb9ad5006fc65a2b176",
+        "beforeOutputSha256": "60c2bbb1552c54d22aea944e4f3309c770135ab961ede13ae1d857ea578e897d",
+        "afterOutputSha256": "60c2bbb1552c54d22aea944e4f3309c770135ab961ede13ae1d857ea578e897d",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "33d8a8c8438ad848a528974e99c42c328de1536680794eddb683535422943dcc",
+        "diagnosticCount": 15
+      },
+      {
+        "id": "6b6e7ba3fb8b02e7",
+        "sourceSha256": "916a5fe2279ad626147990d8f86fac1e4b296f827889485b020cc310b5323601",
+        "beforeOutputSha256": "83e07fdfd0509c33823bfca9719f239f86c1c1c2f61106c1e39c032afa31f98d",
+        "afterOutputSha256": "83e07fdfd0509c33823bfca9719f239f86c1c1c2f61106c1e39c032afa31f98d",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "e0d3cd90dd23a9a68e9e53fac2bc7de77e01695250a3ceecc69e3243442d2635",
+        "diagnosticCount": 25
+      },
+      {
+        "id": "fdb6a11aa23211a4",
+        "sourceSha256": "7ab6dadad6d9d738f6a0cb402f394c25ccda5f7fef26ad644feeb76c11065254",
+        "beforeOutputSha256": "39e75ba71684c3cb8f4f5692002fc6cc731f9bc86178c3a0c10e11acfaf4adc4",
+        "afterOutputSha256": "39e75ba71684c3cb8f4f5692002fc6cc731f9bc86178c3a0c10e11acfaf4adc4",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "3b79a53c8a32d647319a59d8bc258b0c6ec4dbc8036b21562d652de8b4c148a1",
+        "diagnosticCount": 18
+      },
+      {
+        "id": "84d813ff30351b47",
+        "sourceSha256": "d6a9210ad3062bd657881fc3f0d2a7368db3ff4869594e0d6a878d8f410d87b6",
+        "beforeOutputSha256": "65f80b710240c825994b27f673633d0aeb3278090eb3f43291a69b4b38d826cf",
+        "afterOutputSha256": "65f80b710240c825994b27f673633d0aeb3278090eb3f43291a69b4b38d826cf",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "aac046b76959e37ea94bbba4cf779bf8bbb78b50e79f4c0b8f9e91a05f5bd878",
+        "diagnosticCount": 20
+      },
+      {
+        "id": "296678f011e781e5",
+        "sourceSha256": "d6a9210ad3062bd657881fc3f0d2a7368db3ff4869594e0d6a878d8f410d87b6",
+        "beforeOutputSha256": "d0de6375051a7e6c39885006d624cd7416ea385988c541690109b8151e1ba265",
+        "afterOutputSha256": "d0de6375051a7e6c39885006d624cd7416ea385988c541690109b8151e1ba265",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "0443b91fbd25a04b37190df841ae6e23f4b34155d29157b67d92e7d8e9caed82",
+        "diagnosticCount": 20
+      },
+      {
+        "id": "7f1a0501d082b5dd",
+        "sourceSha256": "c245cf383a4a3f721773a13ca231eb76bd5ae75c1830d58c7aba898a554a0de9",
+        "beforeOutputSha256": "b86c964df8cf2cb792c8dd168826a131b355897754f5976e551d1e0bb27b922b",
+        "afterOutputSha256": "b86c964df8cf2cb792c8dd168826a131b355897754f5976e551d1e0bb27b922b",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "b7f31d04129aecfe0c654e7a38c94edbc4b92f55b19514a6555677cd1bf7c66c",
+        "diagnosticCount": 10
+      },
+      {
+        "id": "1ff5d16035ba70ac",
+        "sourceSha256": "3ffeeb3d3c53e64e632bde36771dbbcf080e92ed4168d30d90c21e4dc198e6ef",
+        "beforeOutputSha256": "8ee1a7a778414341f93afee659f29abe0aed14094edc9c8a4f616c7f52ba4ca2",
+        "afterOutputSha256": "8ee1a7a778414341f93afee659f29abe0aed14094edc9c8a4f616c7f52ba4ca2",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "32c0546600745985197907afd6c124b75bb3b35e47b866fd2ee3913cfff99885",
+        "diagnosticCount": 10
+      },
+      {
+        "id": "d2bed9bd0c9b2662",
+        "sourceSha256": "51479f131b4fb300008403f0c4f9fdbde56f22a7fb341c782492da29f0d23bbe",
+        "beforeOutputSha256": "24c55e979f7d583c86c7d14e2d3597f9bb5bb2404e124864fdb33d7bc41e81f5",
+        "afterOutputSha256": "24c55e979f7d583c86c7d14e2d3597f9bb5bb2404e124864fdb33d7bc41e81f5",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4ba6e43e77c9d66c4d1c76f9976a0fa767f23f8943400177007e73940f216e0d",
+        "diagnosticCount": 12
+      },
+      {
+        "id": "0332bc7dce75ea7c",
+        "sourceSha256": "51479f131b4fb300008403f0c4f9fdbde56f22a7fb341c782492da29f0d23bbe",
+        "beforeOutputSha256": "3a3aeb13795bd42e478cae36651b794c063a87d878424b1c74d5139719b529a2",
+        "afterOutputSha256": "3a3aeb13795bd42e478cae36651b794c063a87d878424b1c74d5139719b529a2",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "38ba20758b4f44cc39a7a5281b63f5a6e0c902d976863340111dbcb178f08991",
+        "diagnosticCount": 12
+      },
+      {
+        "id": "b72618dbeb8d4654",
+        "sourceSha256": "831433c6ec8306038c85cb86a8307f91dca48c26ef33a997f402187cbd9f4e04",
+        "beforeOutputSha256": "089d5c70f1435caa6cad8e0df2a9198925fa030b84ee17b482f3ce3b2ab450c5",
+        "afterOutputSha256": "089d5c70f1435caa6cad8e0df2a9198925fa030b84ee17b482f3ce3b2ab450c5",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "62f2192108ad7bca7d01f60aada846a082f22c2912e539ed1032c9bb46a56e6c",
+        "diagnosticCount": 13
+      },
+      {
+        "id": "6df5138a4c6d9daa",
+        "sourceSha256": "831433c6ec8306038c85cb86a8307f91dca48c26ef33a997f402187cbd9f4e04",
+        "beforeOutputSha256": "f26efbb395bf7f204eecdc1e9b69e169c6d9051140db89a0a4d34a4945e76199",
+        "afterOutputSha256": "f26efbb395bf7f204eecdc1e9b69e169c6d9051140db89a0a4d34a4945e76199",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "565c41ed2110b1568bf381e189888cac30bc863746d3ca379da2ebe3dfad5934",
+        "diagnosticCount": 13
+      },
+      {
+        "id": "54eaa77fe6501981",
+        "sourceSha256": "c16e40c391c0ad2d3e797a0e01144ef5b78d3b0db0a1771411a95a9d08b01f67",
+        "beforeOutputSha256": "89b85105e251c2ad64900ba68e1d02401d65b7e02fa5c8573afc1be0e5594d79",
+        "afterOutputSha256": "89b85105e251c2ad64900ba68e1d02401d65b7e02fa5c8573afc1be0e5594d79",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "d72f1d6de674e6db08fa67defe282107f2d63c0b66b4899dd5ef61f6713e7b04",
+        "diagnosticCount": 16
+      },
+      {
+        "id": "fb675863f8d09c36",
+        "sourceSha256": "dc33b4c797a98d2732070a223f43cc78992c2846681163a032e376630742b1ed",
+        "beforeOutputSha256": "f8c7f168d492be24b3c6a318f20d40af1cccbd939d4f320901c561f64c508dc7",
+        "afterOutputSha256": "f8c7f168d492be24b3c6a318f20d40af1cccbd939d4f320901c561f64c508dc7",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "97daab992b099079181bcf69fc6c9bcc09d803902e067056e2e4ef7508edbfa5",
+        "diagnosticCount": 12
+      },
+      {
+        "id": "a82318348427f821",
+        "sourceSha256": "dc33b4c797a98d2732070a223f43cc78992c2846681163a032e376630742b1ed",
+        "beforeOutputSha256": "de77d4d8821bc9a216b951109935fe19163455e38d2b547a5331d24d477aabf8",
+        "afterOutputSha256": "de77d4d8821bc9a216b951109935fe19163455e38d2b547a5331d24d477aabf8",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "795411352e2fa86a253b770b0d178da7613fd2b5b170e2553a993847cba2faa7",
+        "diagnosticCount": 12
+      },
+      {
+        "id": "f966744c71354a80",
+        "sourceSha256": "5084bb8b0c9a0f0199f737487ae1863f12e43cabbdc459a62b6b67bedc683cc4",
+        "beforeOutputSha256": "d160504c850e8e3d60a3ee239a9cfadfcb0d6e553cf151bfb3adc68c621ca7a5",
+        "afterOutputSha256": "d160504c850e8e3d60a3ee239a9cfadfcb0d6e553cf151bfb3adc68c621ca7a5",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "70f27939c3f2618e",
+        "sourceSha256": "76dea08b410b653ee2fa967c564e9f2e992b7c09f52b2d1fbb5a212149aefbce",
+        "beforeOutputSha256": "d160504c850e8e3d60a3ee239a9cfadfcb0d6e553cf151bfb3adc68c621ca7a5",
+        "afterOutputSha256": "d160504c850e8e3d60a3ee239a9cfadfcb0d6e553cf151bfb3adc68c621ca7a5",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "2fe17320f9cffe07",
+        "sourceSha256": "708f3cadc555acab63f11e2f3238f5372ac7180e6b01197bf960d96bf0d2e83f",
+        "beforeOutputSha256": "74703b4361f479e3c6d126e7ff331a0720332871fba779921cba1475ef9e57b1",
+        "afterOutputSha256": "74703b4361f479e3c6d126e7ff331a0720332871fba779921cba1475ef9e57b1",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "f0bab7303f51e786",
+        "sourceSha256": "136ab808a10d01814269a4a29bd6c249b1b86952d0abded98419458db43f2aef",
+        "beforeOutputSha256": "74703b4361f479e3c6d126e7ff331a0720332871fba779921cba1475ef9e57b1",
+        "afterOutputSha256": "74703b4361f479e3c6d126e7ff331a0720332871fba779921cba1475ef9e57b1",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "313a2941cb8f9f59",
+        "sourceSha256": "8691e625502b7efcfd7ba4ae61797132e7b68f3fd5fedcdcc7dd6488f6871eef",
+        "beforeOutputSha256": "054d0b674f869dcfbe6b76d18b80f2434990c7cd5d31d18cf28aab1716024d2c",
+        "afterOutputSha256": "054d0b674f869dcfbe6b76d18b80f2434990c7cd5d31d18cf28aab1716024d2c",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "7557c459401603a2",
+        "sourceSha256": "c9c5428073cbe19c1cd19fc066ed99972560c209a80b4aea3bae3cc5e20a3536",
+        "beforeOutputSha256": "054d0b674f869dcfbe6b76d18b80f2434990c7cd5d31d18cf28aab1716024d2c",
+        "afterOutputSha256": "054d0b674f869dcfbe6b76d18b80f2434990c7cd5d31d18cf28aab1716024d2c",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "d0c029a3108572a7",
+        "sourceSha256": "224856ce6ef1b7417aefcec033a36a9315c0005decf9f11d21d11e9240e3f8fa",
+        "beforeOutputSha256": "7fc1ba294529dec21785a72bb8457ad9c954b455751248beab3fde74440e83b5",
+        "afterOutputSha256": "7fc1ba294529dec21785a72bb8457ad9c954b455751248beab3fde74440e83b5",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "f031616363aa8ca5e810e9187ea8d64a15be0cd67316307599ba83c53aebe13a",
+        "diagnosticCount": 18
+      },
+      {
+        "id": "33feae00b4be6a55",
+        "sourceSha256": "23c8753b6b4e0c24d4560c83861fe8162626bab195faec0fe88cf80b8bf432b5",
+        "beforeOutputSha256": "7dfdebc75e6578ca9ddb4abd82fcccdfe991827870dc372f7d78083cea5bfcab",
+        "afterOutputSha256": "7dfdebc75e6578ca9ddb4abd82fcccdfe991827870dc372f7d78083cea5bfcab",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "5d3d9e52fe3bf4187a691a348baaec0baec44ad2013b7c34696b3bb40d586ab6",
+        "diagnosticCount": 1
+      },
+      {
+        "id": "a367f4acd2bec18b",
+        "sourceSha256": "382c4131561a7843704fb84212c5d15b69ed5fa7b69101ee999680880a1d8879",
+        "beforeOutputSha256": "9e0c214c5b63943f582511ec009377b421cf28246dfe49f97ab4ebc4df139a37",
+        "afterOutputSha256": "9e0c214c5b63943f582511ec009377b421cf28246dfe49f97ab4ebc4df139a37",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "5d3d9e52fe3bf4187a691a348baaec0baec44ad2013b7c34696b3bb40d586ab6",
+        "diagnosticCount": 1
+      },
+      {
+        "id": "85931700529ae9bd",
+        "sourceSha256": "0b06bd5d4f38f17871de8985c439dfce7ed30d28e02b6ffeb8459e0cd8db4fc2",
+        "beforeOutputSha256": "7e45cf2db795130d459d3eb1aded97afcf95510c75ab771d32c5463f624b3766",
+        "afterOutputSha256": "7e45cf2db795130d459d3eb1aded97afcf95510c75ab771d32c5463f624b3766",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "5d555d9fe73f89de6d2671567e84cc10482b03e176990bb5c9c42aece30c8449",
+        "diagnosticCount": 5
+      },
+      {
+        "id": "1344f55da698ca45",
+        "sourceSha256": "0b06bd5d4f38f17871de8985c439dfce7ed30d28e02b6ffeb8459e0cd8db4fc2",
+        "beforeOutputSha256": "84d21633e37605bfe9043d9d2259c4cd9b80a26fc4b1372cf0cfbf1ea2e1c661",
+        "afterOutputSha256": "84d21633e37605bfe9043d9d2259c4cd9b80a26fc4b1372cf0cfbf1ea2e1c661",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "5d555d9fe73f89de6d2671567e84cc10482b03e176990bb5c9c42aece30c8449",
+        "diagnosticCount": 5
+      },
+      {
+        "id": "069938f27c5c9d1c",
+        "sourceSha256": "92776ed2801da1148839a9ed98b6537de4b41e0c7f050c8dcaae0d4e4ea543b5",
+        "beforeOutputSha256": "4e1c74212fe8168a4106c9a889665e9c27e3f82d475ef981236b41120b70f750",
+        "afterOutputSha256": "4e1c74212fe8168a4106c9a889665e9c27e3f82d475ef981236b41120b70f750",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "cf90eb29dfb59ded14e63f6e984c0702aaa86f4a7ceb2818d29d1395a1fab0b3",
+        "diagnosticCount": 8
+      },
+      {
+        "id": "270d89141e57ffe5",
+        "sourceSha256": "b5c46039eb8fd2f7ed7d3ca379172e56fa87385a369023bef706b04986fe1cfb",
+        "beforeOutputSha256": "938808acd267c8b07ba9e9a5238ea74c018fdcc63978eb043cdb327413e546e1",
+        "afterOutputSha256": "938808acd267c8b07ba9e9a5238ea74c018fdcc63978eb043cdb327413e546e1",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "c7b22f823918a95e084dbebd681b36319bdc12eeaa3953130440ce2f7755e84b",
+        "diagnosticCount": 15
+      },
+      {
+        "id": "b7bb370b3171956f",
+        "sourceSha256": "b5c46039eb8fd2f7ed7d3ca379172e56fa87385a369023bef706b04986fe1cfb",
+        "beforeOutputSha256": "c45cec843207b0ec2fe1ff0198f4f0e9ebfaeb15959a1b0ea696de1150b18563",
+        "afterOutputSha256": "c45cec843207b0ec2fe1ff0198f4f0e9ebfaeb15959a1b0ea696de1150b18563",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "63fd8406c101bfd74efb5f24ae2afa2b9b5aed5bcd91c7631568c37194403200",
+        "diagnosticCount": 15
+      },
+      {
+        "id": "da1614ca80f46ff2",
+        "sourceSha256": "598e3c9055b96b79266910e080bc24048eb308ee61afc828c06dbade9f501d38",
+        "beforeOutputSha256": "e17a1ee04285c44fe37f6fe210b4170609f7e1e99bd50f21013797b7d5876c85",
+        "afterOutputSha256": "e17a1ee04285c44fe37f6fe210b4170609f7e1e99bd50f21013797b7d5876c85",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "0e4fd74fc651750a",
+        "sourceSha256": "4f1e55176f69edfb55b7af7a161aceb8c3bc3bd1b2924a704a76256e0e751b54",
+        "beforeOutputSha256": "874501a7fae70efaaf6ddf03aa226afc5cfd2a45a6516c3e8bbb41fb56e0c82f",
+        "afterOutputSha256": "874501a7fae70efaaf6ddf03aa226afc5cfd2a45a6516c3e8bbb41fb56e0c82f",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "46b8f09208c76404c6e6180bc269cbed4a4a707bc84f46327830562fdd177719",
+        "diagnosticCount": 11
+      },
+      {
+        "id": "f3c66a2033a66a2b",
+        "sourceSha256": "4f1e55176f69edfb55b7af7a161aceb8c3bc3bd1b2924a704a76256e0e751b54",
+        "beforeOutputSha256": "4b77a09c364b109ef1ed6d60d4612236d80d41371d2537a2e70df4098a772859",
+        "afterOutputSha256": "4b77a09c364b109ef1ed6d60d4612236d80d41371d2537a2e70df4098a772859",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "c08cfeb96b24994dbafac7c11fc958e651b671c73387aae0b1efb860db0d1995",
+        "diagnosticCount": 11
+      },
+      {
+        "id": "8e0bfbb0bb8f4acd",
+        "sourceSha256": "27a969cbee69426fa1056053e676041430e99399912f0e27ee1f1a454093c21e",
+        "beforeOutputSha256": "45933167d0880678af04a57cb89cd3fc808c6aaeab9653685ab8b85e8f32206c",
+        "afterOutputSha256": "45933167d0880678af04a57cb89cd3fc808c6aaeab9653685ab8b85e8f32206c",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "b02a6e52540cfd63aadd4d368042ede25cbc6cd226b0dc855acc50aa49335d1a",
+        "diagnosticCount": 19
+      },
+      {
+        "id": "4b5ec43c105bb64f",
+        "sourceSha256": "d5af307fb4b1a155f03df9eea14b402d866a332360e14a1e37dbefe59b73363b",
+        "beforeOutputSha256": "4ec057d91ee91150d2f64475dd32c78f7024f20c79a0a037a5e84b22d2241d89",
+        "afterOutputSha256": "4ec057d91ee91150d2f64475dd32c78f7024f20c79a0a037a5e84b22d2241d89",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "84ef0ffc6de92a8d8db79c8cf8a0f787d41bb9b6343e7cb99a678d323ffbb1b8",
+        "diagnosticCount": 9
+      },
+      {
+        "id": "287d36f735ecab42",
+        "sourceSha256": "d5af307fb4b1a155f03df9eea14b402d866a332360e14a1e37dbefe59b73363b",
+        "beforeOutputSha256": "9638bf347e62e1961297a99f1b068ba97cbda6ee0b305e7c6297b390b382e2ee",
+        "afterOutputSha256": "9638bf347e62e1961297a99f1b068ba97cbda6ee0b305e7c6297b390b382e2ee",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "3960397d1427a08f441d859752702d52276f705fd437b72af16865c66cf0f981",
+        "diagnosticCount": 9
+      },
+      {
+        "id": "1dac7e501ccb2956",
+        "sourceSha256": "55c2aebd59528aa42b28878ba5ca4d17a00b3548fc25e4ce1529710d366fd576",
+        "beforeOutputSha256": "b63abc833276337b7eb154ccae9acea3de6dd6251dc0f6b3dd3abf16ab41ec29",
+        "afterOutputSha256": "b63abc833276337b7eb154ccae9acea3de6dd6251dc0f6b3dd3abf16ab41ec29",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "a3874978fb9d76a2",
+        "sourceSha256": "18cebdd95bff49b5316c271204fb20f59d2dd72615bc1715498c9cc8a50187f7",
+        "beforeOutputSha256": "b63abc833276337b7eb154ccae9acea3de6dd6251dc0f6b3dd3abf16ab41ec29",
+        "afterOutputSha256": "b63abc833276337b7eb154ccae9acea3de6dd6251dc0f6b3dd3abf16ab41ec29",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "405c1833bbe66f51",
+        "sourceSha256": "97fcba3faa272c98778eb7ef50ef87faec7290168e24a9b1714996453d660ddb",
+        "beforeOutputSha256": "390e74c3a189a4e02060144537f02c218fd8e51ac396dd2a556259b0f6a12ff2",
+        "afterOutputSha256": "390e74c3a189a4e02060144537f02c218fd8e51ac396dd2a556259b0f6a12ff2",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "2635b1f926a535be9e93d6e3ffbd113d31b65d25cefdb332bddb0face952d646",
+        "diagnosticCount": 8
+      },
+      {
+        "id": "c8bd92491fae8f50",
+        "sourceSha256": "f8eb6e3a561ff96a1889a8f777a8998850a11dddae221da2c5018067d7b95551",
+        "beforeOutputSha256": "fb31eda8f66486e46e197a0d96e39a2a70b2001f882d9319cbd51e5741ee0439",
+        "afterOutputSha256": "fb31eda8f66486e46e197a0d96e39a2a70b2001f882d9319cbd51e5741ee0439",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "f55d741512b8cc47",
+        "sourceSha256": "85d36699cbd3079320e689576ea8406d07ad78901f4f3a68a129b869359b46ca",
+        "beforeOutputSha256": "c008de540cf39104d0d2be52f12037aa3c3245c5ff4ad32f1f9f317443895cfc",
+        "afterOutputSha256": "c008de540cf39104d0d2be52f12037aa3c3245c5ff4ad32f1f9f317443895cfc",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "8907aa7aeb767bfb69aeba517023fced1a3846a8bb1f461e102bccd2ee3949f0",
+        "diagnosticCount": 8
+      },
+      {
+        "id": "5e3ce0f6b5e6b3e7",
+        "sourceSha256": "85d36699cbd3079320e689576ea8406d07ad78901f4f3a68a129b869359b46ca",
+        "beforeOutputSha256": "0f8ad5d6738f489eb5634bb649208a5f4f0df3c4b9319e571e0995a90c70d48d",
+        "afterOutputSha256": "0f8ad5d6738f489eb5634bb649208a5f4f0df3c4b9319e571e0995a90c70d48d",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "3ea6fa6a062c372c39475f27f8f16cd5ad895ac38726d15d35ac7138efa39a0a",
+        "diagnosticCount": 8
+      },
+      {
+        "id": "e4602df7a0ed5f88",
+        "sourceSha256": "0eccb28695cb3a8ea6f6ea7da26d1b48a4529787f6130b2c98bead33bc661967",
+        "beforeOutputSha256": "7bfe74bfb7abe7409e7615cb235b5923063648aa4fb6ded40640047dfb689e9c",
+        "afterOutputSha256": "7bfe74bfb7abe7409e7615cb235b5923063648aa4fb6ded40640047dfb689e9c",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "03c557ca5d9ae101",
+        "sourceSha256": "bcd68f08c145b3b9b9c809a7082834e9519d78b6f363a0d1c5ff9d9576dcf888",
+        "beforeOutputSha256": "2cbf5c5f78feaac7826fc3d80572ddb49309c596c5ed69ddc14d801edb2dd1f4",
+        "afterOutputSha256": "2cbf5c5f78feaac7826fc3d80572ddb49309c596c5ed69ddc14d801edb2dd1f4",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "baf0004b68dc51a7bfcf9037325c81e8a307c0a2c32898ba73ef659d858fbe02",
+        "diagnosticCount": 8
+      },
+      {
+        "id": "9401561db503964f",
+        "sourceSha256": "bcd68f08c145b3b9b9c809a7082834e9519d78b6f363a0d1c5ff9d9576dcf888",
+        "beforeOutputSha256": "87975972c87171739f32212c6e7970bcdf168f7e533f83f96fc3210fe9ae1efe",
+        "afterOutputSha256": "87975972c87171739f32212c6e7970bcdf168f7e533f83f96fc3210fe9ae1efe",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "6e7b3206ff26c8bd7d7dcb5cd6e3a57de5ab60eaae05bca44b7bbedbb893b92e",
+        "diagnosticCount": 8
+      },
+      {
+        "id": "c5a1c856e8d5db78",
+        "sourceSha256": "aa131b1e3382dc6d101b42f1c97d4fb0c2fdd706819ed9f9a0187c82b30f3019",
+        "beforeOutputSha256": "39acc435f7408b8f648f90526ef66a166566aadc6db0fa2d89b738f54da9800d",
+        "afterOutputSha256": "39acc435f7408b8f648f90526ef66a166566aadc6db0fa2d89b738f54da9800d",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "145db0208b3fd7fa704012ba2bd6c18b370dcab8002ca88511cd1de8d258e2c6",
+        "diagnosticCount": 6
+      },
+      {
+        "id": "686f858db2f86601",
+        "sourceSha256": "aa131b1e3382dc6d101b42f1c97d4fb0c2fdd706819ed9f9a0187c82b30f3019",
+        "beforeOutputSha256": "14752096009e428ef5a9f8ae54a3d3f25053eb77b5ce60ad5b82f15b6803111d",
+        "afterOutputSha256": "14752096009e428ef5a9f8ae54a3d3f25053eb77b5ce60ad5b82f15b6803111d",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "a5c718dd707cb4adee87bcd793a750055a6dc133c682118f5239b23d8fde4186",
+        "diagnosticCount": 6
+      },
+      {
+        "id": "792f46d55ee54e05",
+        "sourceSha256": "309468a5c4745f92c6dcf6ed28b396334b2f131ced78eb43eda962a63d2b174e",
+        "beforeOutputSha256": "f7fac768b577ddf949eeb8137d80efaeedb9ef0f7039467e90a6b5b4462ace10",
+        "afterOutputSha256": "f7fac768b577ddf949eeb8137d80efaeedb9ef0f7039467e90a6b5b4462ace10",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "5eb47d950101cbe6",
+        "sourceSha256": "fc24ff879ac6ae12bc6817554cb756f14c5e86e0ca2dd0037af49599887f03c0",
+        "beforeOutputSha256": "e24ee383d7b467da85ee40177c49cdca3a1566ef99d0972b2d46b6c64910ea90",
+        "afterOutputSha256": "e24ee383d7b467da85ee40177c49cdca3a1566ef99d0972b2d46b6c64910ea90",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "252268dc7fb74008b5c92b2e213036d11b4c02b1b5f32527031ebeccbac95f87",
+        "diagnosticCount": 7
+      },
+      {
+        "id": "90f81d7b685a1abd",
+        "sourceSha256": "fc24ff879ac6ae12bc6817554cb756f14c5e86e0ca2dd0037af49599887f03c0",
+        "beforeOutputSha256": "08641b36b3de6516537e7d2049a75ed8fcdd2bc08b9e1464d461aa56a2933d33",
+        "afterOutputSha256": "08641b36b3de6516537e7d2049a75ed8fcdd2bc08b9e1464d461aa56a2933d33",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4285dbe1711a1b145fe3bc69a1eb99267218311ba4a0a388a035edffedf50586",
+        "diagnosticCount": 7
+      },
+      {
+        "id": "90096622fff47265",
+        "sourceSha256": "c77747b4caaf00b45177a6449562b7f59ec336db832937595edef8b32fdce6fa",
+        "beforeOutputSha256": "2f241658593f0b9e1187574c0a6241a9b533780aaa0c80fecc107bb92e41087a",
+        "afterOutputSha256": "2f241658593f0b9e1187574c0a6241a9b533780aaa0c80fecc107bb92e41087a",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "2ea1f315a97b786b95cc19251b355387190cea778538be2251598a81fd8369ea",
+        "diagnosticCount": 10
+      },
+      {
+        "id": "1490e5fb7f36ac22",
+        "sourceSha256": "ad5e376ac9221b21b8ce47597a5ca17fc1f39dc913793c814c6675e9b046fc09",
+        "beforeOutputSha256": "5ea64187ee3e3b5dc9b6d0588f465b08ed92e439f3632dff57e581f6ff5aec38",
+        "afterOutputSha256": "5ea64187ee3e3b5dc9b6d0588f465b08ed92e439f3632dff57e581f6ff5aec38",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "e550a5b73b57621c8ca0219d96ff20554ebbdb8788ab88c931416c61a9af5e55",
+        "diagnosticCount": 8
+      },
+      {
+        "id": "385b562b6298cf72",
+        "sourceSha256": "4e49afda5f685f3ebeb95ed04a93cf88df93d39c66d8d7f9ba2b9a3e00a1f690",
+        "beforeOutputSha256": "8f7721a9454f097119f70755f69e50dcfed9966b2afc8e7c7cb6fe7edb887fbf",
+        "afterOutputSha256": "8f7721a9454f097119f70755f69e50dcfed9966b2afc8e7c7cb6fe7edb887fbf",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "c0c25ec261993ec36e0d69277a761a88abbed509ed79cf049c21f5f1bee0ae86",
+        "diagnosticCount": 9
+      },
+      {
+        "id": "143ef5a6f9d7c943",
+        "sourceSha256": "69842c4dd419ed70365682d65423d2744173f3eec695b25b5ed27bd29289608d",
+        "beforeOutputSha256": "116300f6285b3638a48ce611eea03b23ff7674da1ac7b9ab03b4ab6c8407e4c5",
+        "afterOutputSha256": "116300f6285b3638a48ce611eea03b23ff7674da1ac7b9ab03b4ab6c8407e4c5",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "38f3e401c02c76522694cfd74bc969d46872412893528240ebd27194dfea8bdf",
+        "diagnosticCount": 8
+      },
+      {
+        "id": "9d80faee8c58d8de",
+        "sourceSha256": "4f901ae6b113eebae60ae1d94b30f8cb9906d031a4419770bf56980bdf97e377",
+        "beforeOutputSha256": "18179a95ee6dc4d779a83a666bec9ff20600413219e8b9e248a87de245783d8d",
+        "afterOutputSha256": "18179a95ee6dc4d779a83a666bec9ff20600413219e8b9e248a87de245783d8d",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "d67c9cfb3d0a92e72698b3309bcbdd296f0a42426285f517871f93d07657c82d",
+        "diagnosticCount": 9
+      },
+      {
+        "id": "89f1427bafb2e03e",
+        "sourceSha256": "4f901ae6b113eebae60ae1d94b30f8cb9906d031a4419770bf56980bdf97e377",
+        "beforeOutputSha256": "7928142af7ebe057ab05ad6f01a05a9e49ae7fb791f7b89547655fcdc08bcbc2",
+        "afterOutputSha256": "7928142af7ebe057ab05ad6f01a05a9e49ae7fb791f7b89547655fcdc08bcbc2",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "7e698069ec0d38f0e8fd9bd677cc41770aeabf60f5b7d544beb9ce25bca6366f",
+        "diagnosticCount": 9
+      },
+      {
+        "id": "07d08e0b43a895bc",
+        "sourceSha256": "5694a2ed8a12dd4dc82717b401c655866a0e1f9abb0acf395151ead2b0cb31a7",
+        "beforeOutputSha256": "bd5b87cf547d4e0f983620a2155c2000dd5df36fa3cda2a5995fe0e53847284d",
+        "afterOutputSha256": "bd5b87cf547d4e0f983620a2155c2000dd5df36fa3cda2a5995fe0e53847284d",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "6dc77bb7e613059f",
+        "sourceSha256": "426cf9bd190b777104bb964e9d5a2929197ed7621f8b334f229ef12e60e63966",
+        "beforeOutputSha256": "8c555de22f9d92358a3bda454176877af3801f1c2d1e619790de9d2488e7f16b",
+        "afterOutputSha256": "8c555de22f9d92358a3bda454176877af3801f1c2d1e619790de9d2488e7f16b",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "29be9b929ed1cbd3",
+        "sourceSha256": "0213fd5718c6aadd3fba6bbfb1818456d75d10843181bff63aca9ff57d39e87c",
+        "beforeOutputSha256": "08dc2f866a0dc244c56212c8445281958b29733ddedd7efc03b31f0e93aec1ac",
+        "afterOutputSha256": "08dc2f866a0dc244c56212c8445281958b29733ddedd7efc03b31f0e93aec1ac",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "c696a4a03b280418594c3694b746399afc6f8c4e79bb4a4d5078c98fcf405035",
+        "diagnosticCount": 2
+      },
+      {
+        "id": "c4ff728a15e2c448",
+        "sourceSha256": "ee1019bc3ef7bc4e0f807b6e9b7167c9386ee7c2f647c63dfddc6fc464487855",
+        "beforeOutputSha256": "0b47155254a4a697d309b2afdc1ef2ede923f60a3166fb0e26bc048b3924d78c",
+        "afterOutputSha256": "0b47155254a4a697d309b2afdc1ef2ede923f60a3166fb0e26bc048b3924d78c",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "dc79e9c1c875df01",
+        "sourceSha256": "233dbc3bc33a3b9ac555922085a92be56e88d16316bff624b5723c4c36c99714",
+        "beforeOutputSha256": "c696b3c59b9e70fa1ee4c3aee307417d7ebf1f90d029bf51ebd02e53623b687a",
+        "afterOutputSha256": "c696b3c59b9e70fa1ee4c3aee307417d7ebf1f90d029bf51ebd02e53623b687a",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "c6a3a68f36e5247b",
+        "sourceSha256": "d290cbbbec1e25859847d9dfe6b28040cd6b09c3b71747e39de7b4713d838e76",
+        "beforeOutputSha256": "98c0c4937b47a233c90f532d44cdb0520e863f685412f256d7ca98d5e473acde",
+        "afterOutputSha256": "98c0c4937b47a233c90f532d44cdb0520e863f685412f256d7ca98d5e473acde",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "2c5dba9b88f1c2c8",
+        "sourceSha256": "2e16c29ee12fd20eec4500278f49d1430fe6aec4dd0a0963188ed62ccce9e171",
+        "beforeOutputSha256": "0b47155254a4a697d309b2afdc1ef2ede923f60a3166fb0e26bc048b3924d78c",
+        "afterOutputSha256": "0b47155254a4a697d309b2afdc1ef2ede923f60a3166fb0e26bc048b3924d78c",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "d35fa32d3a27149f",
+        "sourceSha256": "494b1ca4ab8a4334eef77d2b87cc7df266f80cbeab2a3f191e9c776d4437d497",
+        "beforeOutputSha256": "c696b3c59b9e70fa1ee4c3aee307417d7ebf1f90d029bf51ebd02e53623b687a",
+        "afterOutputSha256": "c696b3c59b9e70fa1ee4c3aee307417d7ebf1f90d029bf51ebd02e53623b687a",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "4299fd5b5337cd99",
+        "sourceSha256": "f81506881aec5d44d340d8b125efe67e2b355343c8893ab6bc95e2cb72c292b7",
+        "beforeOutputSha256": "98c0c4937b47a233c90f532d44cdb0520e863f685412f256d7ca98d5e473acde",
+        "afterOutputSha256": "98c0c4937b47a233c90f532d44cdb0520e863f685412f256d7ca98d5e473acde",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "52c234a1ef052153",
+        "sourceSha256": "13c409d1b14b52c4d334c9297aaa7dafa209901569f809127f3831d780722e33",
+        "beforeOutputSha256": "23513b6aba908a987d6b299fbf5dce5399ef7ebed426f0efc15956090a898971",
+        "afterOutputSha256": "23513b6aba908a987d6b299fbf5dce5399ef7ebed426f0efc15956090a898971",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "db90a0cbde11bd30",
+        "sourceSha256": "cf174417cd833193fec178a782fa8d7cabb95da9a8c2ca709af598c45f485625",
+        "beforeOutputSha256": "29fcaf447e13351949b3ea4a22eada8d5df0dcfe38a1ed9e483954c1e6e4b4a9",
+        "afterOutputSha256": "29fcaf447e13351949b3ea4a22eada8d5df0dcfe38a1ed9e483954c1e6e4b4a9",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "a6340eefcff72047",
+        "sourceSha256": "ac004f7f40dcb3f2a14dfb83a743f83fed9383675bc93452f3424c40cb6475a7",
+        "beforeOutputSha256": "00b46ba0bbb523a75ce8ea0e3bcd3883f04490beeb563caeed28daa8cc5447d6",
+        "afterOutputSha256": "00b46ba0bbb523a75ce8ea0e3bcd3883f04490beeb563caeed28daa8cc5447d6",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "18b5464e520dbfdd",
+        "sourceSha256": "c183707f0dae0b5e9387373fc3624f0462ad95ccbbb6c8a34167591e206bcbf8",
+        "beforeOutputSha256": "3457cf81db9238ec373f570015684e8994edbd310ad84722f14fe194acf3e175",
+        "afterOutputSha256": "3457cf81db9238ec373f570015684e8994edbd310ad84722f14fe194acf3e175",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "8d1308febaf7041d",
+        "sourceSha256": "57232060f8bdaecc679b74e93fcf91d93cffd400326c001bd187ab5fad14789e",
+        "beforeOutputSha256": "5f99623daee48c0e82c5da154fc7ea9b9299a1b0ae19c2145b26762661f81ecc",
+        "afterOutputSha256": "5f99623daee48c0e82c5da154fc7ea9b9299a1b0ae19c2145b26762661f81ecc",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "c696a4a03b280418594c3694b746399afc6f8c4e79bb4a4d5078c98fcf405035",
+        "diagnosticCount": 2
+      },
+      {
+        "id": "8e4db16c1710b40c",
+        "sourceSha256": "05565b6ca61098097391bd6ae14268eb122d41c76570d2336253b0cdb5a961fa",
+        "beforeOutputSha256": "2befbe0966bebdc752fadd121bcdb445a019abcb2f09e7fbdf2555fdfd5c67c5",
+        "afterOutputSha256": "2befbe0966bebdc752fadd121bcdb445a019abcb2f09e7fbdf2555fdfd5c67c5",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "b6b562b4f2e684bb82f895d590a19cb4f4dd462449b65277ea20fac88f7fb6cd",
+        "diagnosticCount": 1
+      },
+      {
+        "id": "6fe2e16e2ce733e4",
+        "sourceSha256": "58c165dcfc3927232c02c152c673e3dee551587b85e7fe56ca67325c980eebb6",
+        "beforeOutputSha256": "82c8eeff82b10956233a380c7f358a118901327b53e0478f8bd7628425a8ac78",
+        "afterOutputSha256": "82c8eeff82b10956233a380c7f358a118901327b53e0478f8bd7628425a8ac78",
+        "byteIdentical": true,
+        "beforeExit": 1,
+        "afterExit": 1,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "c5759e2f1328623bc28eda9dea7de7d13e93854a39cac8a67b6d1286224b211c",
+        "diagnosticCount": 1
+      },
+      {
+        "id": "8e2f1a6e49366d8f",
+        "sourceSha256": "38a8d28235e58509776f5c8c74c113d5848a7ac68fab753c55ab887221c3b43a",
+        "beforeOutputSha256": "12aa661e79a7c9fce9ed271f080ac2e1082064a5d739dbb393a6956bb63200d7",
+        "afterOutputSha256": "12aa661e79a7c9fce9ed271f080ac2e1082064a5d739dbb393a6956bb63200d7",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      },
+      {
+        "id": "a866a57778cd77af",
+        "sourceSha256": "d01b013e55ef4f7b76044ef98fa30fa077ec8d0a6847efab7f2c466087264027",
+        "beforeOutputSha256": "0d1dd95b6d78ac829ebe170c477c25ecb907f7ef09a83f859d766797fbe1fc62",
+        "afterOutputSha256": "0d1dd95b6d78ac829ebe170c477c25ecb907f7ef09a83f859d766797fbe1fc62",
+        "byteIdentical": true,
+        "beforeExit": 0,
+        "afterExit": 0,
+        "sameDiagnostics": true,
+        "diagnosticsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "diagnosticCount": 0
+      }
+    ]
+  },
+  "historicalComparisons": [
+    {
+      "compared": 30,
+      "passed": 30,
+      "beforeJarSha256": "64c403308574e82916c93e80e2ba58912c4de601668b5c3ba70bc61eb209d554",
+      "afterJarSha256": "98e1a30464b3c18349f6311c275f760fc3a032d9b5498cc5b741f4c7502782d4",
+      "beforeResultsSha256": "83e2e9c876ab5a3983795ec0e348b3216b9068883bbdc17d613bb25a228467ac",
+      "afterResultsSha256": "bf45cf4836be142dc0cde4668155d085ec308741151d84dce13de4e610134b32"
+    },
+    {
+      "compared": 30,
+      "passed": 30,
+      "beforeJarSha256": "7eddd887626b3dce0bca205a51fa88424ed07d7aae4ad8e3bd8e0061a6e4f10a",
+      "afterJarSha256": "98e1a30464b3c18349f6311c275f760fc3a032d9b5498cc5b741f4c7502782d4",
+      "beforeResultsSha256": "06633d3f04bfd5e5ac823d6ffbc309fd24bf201cd4f94bb2dfab7bd840a9fc89",
+      "afterResultsSha256": "bf45cf4836be142dc0cde4668155d085ec308741151d84dce13de4e610134b32"
+    }
+  ],
+  "rawFileHashes": {
+    ".tmp/unified-scc-fast-final.log": "24948fcb353682531aba2eeff0dc1ac88e61a2940392fa9e8b4c9f7233318a7f",
+    ".tmp/unified-scc-fast-final-summary.json": "00a165bc59d5be293eb70fa2ea974c3987ea8c925252edcb82120666dd53ffe6",
+    ".tmp/unified-scc-package-final.log": "182c4652059d030c57720d6aae38ed775206adc2eb91fca6099181bbe19e5012",
+    ".tmp/unified-scc-package-final-summary.json": "135500be7238a81a64f686008e5e2772163c63adb61f2100ce84fc5d3bc15942",
+    ".tmp/unified-scc-isolation-final.log": "dfc3ee562883f3b0fd1ce06077a283c5a9de1e9b9e94ffa6e6e7b0455edcf8c9",
+    ".tmp/unified-seeded-baseline.log": "dd978ada2430a337e7d5f0f54f2f03cf992b61a82f216d2d12912929e74439bb",
+    ".tmp/unified-comparator-negative.log": "ee2c88212c112fa08fea8e11fd9965d6c55c7def26a29f607e995c439beca8a0",
+    ".tmp/unified-comparator-negative.json": "4d7aab12b05c3474e539ec3bf540caa3ca84335f97ebc3448c184ec3bcf3623b",
+    "benchmark/results/unified-scc-final-20261008/inputs.json": "c23f1be3d54932a7c5dc8f035a87f2a8efccb06a165ccaeebcc8a6fc0523f15a",
+    "benchmark/results/unified-scc-final-20261008/results.json": "bf45cf4836be142dc0cde4668155d085ec308741151d84dce13de4e610134b32",
+    "benchmark/results/unified-before-fresh-20261008/inputs.json": "8ec27fe219dc999af977378e558f8cb233b56e68340bc1ecfa684dd5c5a1a2cb",
+    "benchmark/results/unified-before-fresh-20261008/results.json": "a8a46b8a170674e98699a981983e994403aca97f4f7dc1241ce172ed51d3ba00",
+    "benchmark/results/unified-scc-after-fresh-20261008/inputs.json": "2812125012aa817eae619cb8c9193a31328de408631a95f076fe2dec39069dfd",
+    "benchmark/results/unified-scc-after-fresh-20261008/results.json": "0e7c316346c2c357abd127f8f1d441593429a0562f1c11e2e482b3bc3895cd37",
+    "benchmark/results/unified-scc-original20-final-20261008/results.json": "0dc8f3935b2613e276ccc47b2bd2f823835fc262114f862d56c9b09962c9a8d0",
+    "benchmark/results/unified-scc-carddemo-final-20261008/results.json": "1608f33001ad2aa70a310d379e48d39b469c8258a589c78de347fdb6db4513a8",
+    "benchmark/results/unified-scc-carddemo-final-20261008/summary.json": "c5df023006c7ebb3fbe038b7d4022145762cc0d546384ce178b76ba81dc9cc61",
+    "benchmark/results/unified-first-20261008/inputs.json": "79b44eea9fd7aa0e96a5fca6be25d7518e603961e839a0c134ea0c7d282d8614",
+    "benchmark/results/unified-first-20261008/results.json": "3bc1f2e888e0406aafeb02169c1cb2a6e20eb6f810e7e2d320c3b1ed51711054",
+    "benchmark/results/unified-second-20261008/inputs.json": "08a71eba7967c52551bf6789b73d76d2bde7e7892043e2ad2b47d1b0c5e8aa47",
+    "benchmark/results/unified-second-20261008/results.json": "e5ab4676aa5ff7da90e3c008f1d38ba480ec2a257c30dd3735398fc1b87fb1dd",
+    "benchmark/results/unified-carddemo-final-20261008/results.json": "fd9afa21802d680e596c7c44176bb620f16c2a3f6f78a8932605f50de57370f2",
+    "benchmark/results/unified-final-20261008/inputs.json": "559eb25a5ff419d7347981e65b3f6a1590d204169240450a0d5d0c924bc9e3aa",
+    "benchmark/results/unified-final-20261008/results.json": "3359fa26665da460628d7513a5801292d3cc8d4e2a1db1a44a69cfa71100626c",
+    "benchmark/results/unified-after-fresh-20261008/inputs.json": "4a3b2f7f7dec1b35b23f96cac983715fde2d9bf1ef4ea6318c55bcfda3bdcf9c",
+    "benchmark/results/unified-after-fresh-20261008/results.json": "6304cacd4200e3dd884a4db0fe6c40e847b000c14b59fd3ce2365779c01a5f26",
+    ".tmp/unified-package-second.log": "d4822947ce8d911b51c4f545e47d031f239c99216ae873b5707f7a5196e14019",
+    ".tmp/unified-scc-carddemo-final.log": "5658e5d501cb7e382519164b86778fe7fe0aecf5b228def68b87fb2cbddb80e3",
+    ".tmp/unified-package-final.log": "b55e2a302152befa0df3ce4fa14fff2bcee558ee8527310e6a8a33c192b86d64",
+    ".tmp/unified-scc-explosion-final.log": "a4159a85fbb21927150498f44950b8a865bbf51f60dcd087fab93370d16efeac",
+    ".tmp/unified-before-fresh.log": "8ce59adef62b94c29d97e9e6a0ec862a9066530eb5c7e0b0368ee033266ba415",
+    ".tmp/unified-scc-focused.log": "d97c2427583d082c14f9370da9a3f71719b48492b8ef8e266100a8b0c0fbdce6",
+    ".tmp/unified-isolation-final.log": "dfc3ee562883f3b0fd1ce06077a283c5a9de1e9b9e94ffa6e6e7b0455edcf8c9",
+    ".tmp/unified-focused.log": "e474c25cfce56ec709af655739b987bc4f5d13ae17ebcfe4a5715e7bd45255b5",
+    ".tmp/unified-explosion-final.log": "4cd28ad9919c3213c2551de4db4757aabe202d01214f94afd369efeceacece31",
+    ".tmp/unified-carddemo-final.log": "6a501dcd87ea3919532941353c7d982e7e520c5e7f47f26d167760dc56827c0a",
+    ".tmp/unified-scc-original20-final.log": "a1ec98e5c57e774ded77ebd167ca81b34d753ec24267cf162eacf75cad0cf23d",
+    ".tmp/unified-second-bench.log": "a536dc061eb9e12dd94fc7d926ba266f8a00da1b599c48e2fa65ee49e976e7e5",
+    ".tmp/unified-first-bench.log": "4b9700fbbb63d7d419209d1620085d199fdc22d80eca8ed76d666d1347803cc2",
+    ".tmp/unified-after-fresh.log": "9d104516bf36fea566482180f70b3370990bc85d608fa49bef8ae38c0a841404",
+    ".tmp/unified-original20-final.log": "7c344c1b9aad57d3219e1a4995dd40390a70dae88f693cce8b204c3e27831e70",
+    ".tmp/unified-fast-final.log": "38dc34e9d4631f1115fc9c8aa9ee17b645807fb74e9a602f3de112855755a35b",
+    ".tmp/unified-package-first.log": "ea1bbea3dc36188aeeceda71d61f7c703d6d1508db45b5d20ae2781b82628e7b",
+    ".tmp/unified-scc-after-fresh.log": "bacaeb21c1faf842a0863e019411f14f29d1b8c7c818fbe46a94cb32a2291767",
+    "benchmark/results/unified-scc-counterexample-20261008/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "benchmark/results/unified-scc-counterexample-20261008/dependencies.json": "7dfdebc75e6578ca9ddb4abd82fcccdfe991827870dc372f7d78083cea5bfcab",
+    "benchmark/results/unified-scc-counterexample-20261008/stderr.log": "72a51621d4da879cd36220cc1cc8c1c944679ed81f2f1fba9ee94bdbb75343bc",
+    "benchmark/results/unified-scc-counterexample-20261008/command.json": "59ff8aa4e06ce8ce8cfb9b556eed604af4ca95973e4de38ff564ca91f132478f",
+    "benchmark/results/unified-scc-counterexample-20261008/time.txt": "a2c9daf199b3eae440ccc5adde24bb1d49ffc577857bdae0096cb76caca60a4e",
+    "benchmark/results/unified-scc-counterexample-20261008/metrics.jsonl": "31406bfebd70ac6a079938c40cb50d8c8bc444a59a067878a7e804ea222717d0",
+    "benchmark/results/unified-carddemo-final-20261008/33feae00b4be6a55/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "benchmark/results/unified-carddemo-final-20261008/33feae00b4be6a55/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "benchmark/results/unified-carddemo-final-20261008/33feae00b4be6a55/time.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "benchmark/results/unified-carddemo-final-20261008/33feae00b4be6a55/dependencies-7830762808362704848.tmp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "benchmark/results/unified-scc-versus-guarded-20261008.json": "98b84bbccaefab825f22811cf0b7bb6d7e07ef23cfe999b0a727ff7126307950",
+    "benchmark/results/unified-scc-versus-original-20261008.json": "03f1370a27afe86ce5c974d034fc68a2e5665fd74e2f86d6d2077fce2fa7e6c2",
+    "benchmark/results/unified-scc-fresh-paired-20261008.json": "1a566e730bc4a416271ca8c60061bbb2685782ea72a6f8f7710add34fb6398c4"
+  },
+  "limitations": [
+    "Full inherited suite was not rerun; its earlier 1720 PASS plus one optional skip is historical.",
+    "The corporate 117k-line source is unavailable. The tested 117k assignment source is synthetic.",
+    "General summaries do not guarantee linear complexity across distinct relevant input states, endpoints or growing logical candidate sets.",
+    "Equal dependency oracles preserve 47 PARTIAL CardDemo inputs; unknown remainders remain explicit."
+  ],
+  "interruptedCounterexample": {
+    "sourceId": "33feae00b4be6a55",
+    "productionCommit": "33ac660b1693186709ebde811510a9deebc293a1",
+    "directory": "benchmark/results/unified-carddemo-final-20261008",
+    "status": "INTERRUPTED after 22/73 outputs; case 23 did not finish",
+    "cause": "Paragraph splitting inside a strongly connected component enumerated successive inputs",
+    "resolution": "A single component worklist now joins loop states; final corpus is rerun in a new directory"
+  },
+  "preparationExperiment": {
+    "directory": "benchmark/results/unified-first-20261008",
+    "or1216Seconds": 35.8800708730123,
+    "note": "Initial eager whole-program preparation per endpoint was replaced by incremental reachable preparation; these logs were preserved."
+  }
+}

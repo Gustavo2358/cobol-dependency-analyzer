@@ -1,13 +1,17 @@
 # Medições locais
 
-[Otimização de caudas de PERFORM](suffix-optimization-20261008.md): overlap1800
-caiu de 42,09 s para 4,37 s e de 3.078,9 MiB para 514,8 MiB de RSS na comparação
-nova com os mesmos recursos. Trabalho de 9,80 milhões para 33.926 itens;
-30/30 casos ampliados aprovados, com JSONs byte-idênticos aos anteriores.
-A família OR com GO TO mantém o solver e o custo anteriores.
-CardDemo reexecutado: 73/73, 815 relações iguais, nenhum destino ausente ou
-adicional; JSONs e códigos de saída preservados. 290 testes do analisador,
-856 FAST, smoke isolado e 20/20 resultados esperados nos insumos originais.
+[Solver canônico de resumos](solver-unification-20261008.md): um único caminho
+para PERFORM, transferências, escapes e handlers, com junção por componentes
+fortemente conexos. OR1216 passou de 1.485.530 para 18.040 itens de trabalho;
+na comparação nova, de 9.98 s para 4.12 s.
+294 testes específicos, 856 FAST, 30/30 ampliados, 20/20 originais e CardDemo
+73/73, com 815 relações e saídas/códigos/diagnósticos preservados. O relatório
+registra overhead, o contraexemplo corrigido e os limites restantes.
+
+[Otimização de caudas estruturadas](suffix-optimization-20261008.md) é o registro
+histórico de `981e1c5`: overlap1800 de 42,09 para 4,37 s, com OR ainda quadrática.
+A elegibilidade global e os caminhos alternativos dessa implementação foram
+removidos pela unificação.
 
 [Auditoria ampliada de explosão](explosion-review-20261008.md): matriz ampliada
 30/30 PASS com heap de 4 GiB e orçamento de 100 milhões, incluindo 117 mil
