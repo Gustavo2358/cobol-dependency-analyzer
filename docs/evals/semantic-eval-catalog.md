@@ -8,7 +8,7 @@ Este catálogo dá IDs estáveis às capacidades críticas do harness. Ele não 
 - **Tier:** `fast` para estrutura/documentação; `semantic` para a suíte Maven; `full` para corpus/scripts; `performance` para propriedades algorítmicas sem limite de tempo dependente de hardware.
 - **Fixtures:** `synthetic` identifica fontes construídas no teste; caminhos identificam regressões versionadas.
 - **Rejeita implementação ingênua:** explicita o contraexemplo protegido, sem reproduzir a expectativa detalhada do teste.
-- Os nomes de classes abaixo referem-se a `src/test/java/io/github/gustavo2358/cobolexplorer/`, salvo indicação contrária.
+- Os nomes de classes abaixo referem-se a `src/test/java/io/github/imd/cobolexplorer/`, salvo indicação contrária.
 
 ## Source format, preprocessing e provenance
 

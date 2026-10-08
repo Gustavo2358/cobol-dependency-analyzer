@@ -8,6 +8,6 @@
     "coordinated lower admission",
     "CardDemo regression validation"
   ],
-  "pr": "https://github.com/Gustavo2358/proleap-poc/pull/86",
+  "pr": "https://github.com/imd/proleap-poc/pull/86",
   "notes": "Frontend merged in PR #86, 21065f83e2a3c01c1429068dd3e199666ccbe17e, with required tests passed. See priority2-integration.md."
 }

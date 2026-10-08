@@ -1,6 +1,6 @@
 # Incomplete native file effects
 
-Status: DONE upon merge of [PR #63](https://github.com/Gustavo2358/proleap-poc/pull/63); required technical gates passed.
+Status: DONE upon merge of [PR #63](https://github.com/imd/proleap-poc/pull/63); required technical gates passed.
 Scope: F04/F07 and the same missing-target effect contracts.
 
 The producer must preserve independently known record/control/operand identities.
@@ -87,6 +87,6 @@ one DLI oracle and one skipped discovery test. W2 ACCEPT and the copy-cycle orac
 also remain outside this delivery. These limits are not failures of the 39-case
 PERFORM suite or the 48-case Chaos suite. The full suite is not claimed green.
 
-Integrate this producer before [lower PR #38](https://github.com/Gustavo2358/cobol-lower/pull/38).
+Integrate this producer before [lower PR #38](https://github.com/imd/cobol-lower/pull/38).
 The lower must pin the producer merge SHA with its tree and selected file hashes;
 unchanged production permits reuse of the recorded integrated evidence.

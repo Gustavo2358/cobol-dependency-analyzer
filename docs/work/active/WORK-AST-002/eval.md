@@ -472,8 +472,8 @@ Espaço auxiliar: `O(units + nodes + occurrences + relations + candidates)`, ou 
 
 ### 12. Superfície provável da futura implementação
 
-- novo `src/main/java/io/github/gustavo2358/cobolexplorer/SemanticProductIntegrityValidator.java`, incluindo a única exception package-private ou uma classe package-private adjacente;
-- novo `src/test/java/io/github/gustavo2358/cobolexplorer/SemanticProductIntegrityValidatorTest.java`;
+- novo `src/main/java/io/github/imd/cobolexplorer/SemanticProductIntegrityValidator.java`, incluindo a única exception package-private ou uma classe package-private adjacente;
+- novo `src/test/java/io/github/imd/cobolexplorer/SemanticProductIntegrityValidatorTest.java`;
 - `ExplorerMain.java`: reter `scopeIndexesByUnit` e executar uma chamada antes do classifier;
 - `AstSemanticBoundaryRequiredOracleTest.java`: refinar o call target e promover os dois F-02 quando verdes;
 - `AstBoundaryTestSupport.java`: reutilizar o validator como oracle positivo somente depois de manter independência suficiente dos asserts de caracterização;

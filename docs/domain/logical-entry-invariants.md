@@ -1,6 +1,6 @@
 # Logical VALUE invariants
 
-Implementation reviewed and approved on 2026-09-26; integration: [PR](https://github.com/Gustavo2358/proleap-poc/pull/60).
+Implementation reviewed and approved on 2026-09-26; integration: [PR](https://github.com/imd/proleap-poc/pull/60).
 
 Scope: source-owned lifetime proof for a closed local text cell.
 

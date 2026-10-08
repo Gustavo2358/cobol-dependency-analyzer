@@ -8,7 +8,7 @@
     "air-java": "d760b07b0fac42a106d09342ee9d5b8445ccf630"
   },
   "frontendJarSha256": "4f492c49539e4b608ec13200ae3e8f271d9636f951ec603f1bf9ae8f93c87514",
-  "rawEvidence": "/home/gustavo/workspace/teste-e2e/.synthetic-dfh",
+  "rawEvidence": "/home/imd/workspace/teste-e2e/.synthetic-dfh",
   "validation": {
     "frontendFast": {
       "tests": 596,
@@ -75,10 +75,10 @@
     }
   },
   "presentationRefinement": {
-    "previousRuntime": "/home/gustavo/workspace/teste-e2e/.synthetic-dfh/runtime.json",
+    "previousRuntime": "/home/imd/workspace/teste-e2e/.synthetic-dfh/runtime.json",
     "changedClasses": [
-      "io/github/gustavo2358/cobolexplorer/CoverageSnapshot.class",
-      "io/github/gustavo2358/cobolexplorer/ExplorerMain.class"
+      "io/github/imd/cobolexplorer/CoverageSnapshot.class",
+      "io/github/imd/cobolexplorer/ExplorerMain.class"
     ],
     "scope": "CoverageSnapshot presentation and ExplorerMain debug logging only; semantic producer classes identical. Final FAST and selected SP byte comparison cover the refinement."
   },

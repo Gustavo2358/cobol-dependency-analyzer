@@ -511,7 +511,7 @@
       "heapMiB": 4096,
       "maxWork": 100000000,
       "timeoutSeconds": 300,
-      "baselineReused": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/carddemo-scanner-discovery-20261003/results.json"
+      "baselineReused": "/home/imd/workspace/teste-e2e/artefatos-e2e/carddemo-scanner-discovery-20261003/results.json"
     },
     "exitCounts": {
       "1": 47,

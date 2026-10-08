@@ -22,7 +22,7 @@ preservados.
 
 ## Evidência integral no histórico
 
-A [publicação original completa](https://github.com/Gustavo2358/proleap-poc/tree/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923) está no commit
+A [publicação original completa](https://github.com/imd/proleap-poc/tree/5a2eaa333fc74da8d1229f7203716e4e775ed060/docs/history/carddemo-architectural-reassessment-d0-20260923) está no commit
 `5a2eaa333fc74da8d1229f7203716e4e775ed060`. Ela contém os três bundles, probes, ferramentas,
 snapshots de referência, inventário, manifestos e verificador, incluindo todos os
 **5.911 arquivos arquivados**. Os hashes dos bundles continuam disponíveis em

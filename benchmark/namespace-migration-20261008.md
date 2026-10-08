@@ -36,7 +36,9 @@ As coordenadas e imports externos `com.github.luben` pertencem à biblioteca
 Zstandard e precisam corresponder ao artefato publicado. `.github/workflows`,
 `GITHUB_*` e o contexto `github` pertencem à integração de CI. Esses nomes
 funcionais foram preservados, assim como copyrights, licenças e evidências
-históricas. O remote permanece necessário para a publicação do PR.
+históricas na rodada original. Posteriormente, o usuário solicitou a
+[anonimização integral das cópias distribuídas](../docs/identity-redaction.md).
+O remote permanece necessário para a publicação do PR.
 
 ## Validação nova
 

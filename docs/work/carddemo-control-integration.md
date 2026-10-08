@@ -10,14 +10,14 @@ Os commits progressivos foram preservados por merges normais em `main`. Antes e 
 
 | PR | Commit de merge |
 | --- | --- |
-| [#66](https://github.com/Gustavo2358/proleap-poc/pull/66) | `1c4285a664bbc8014119d564735a27f5ede03953` |
-| [#67](https://github.com/Gustavo2358/proleap-poc/pull/67) | `43d94419b730722297ca9f9440ad1f6b54145943` |
-| [#68](https://github.com/Gustavo2358/proleap-poc/pull/68) | `696b267d571e8bef5a9e1a6b3ff6b1bdc9ac3b3b` |
-| [#69](https://github.com/Gustavo2358/proleap-poc/pull/69) | `699fe16a1baf03dd04d68454ed241b5478cda8e3` |
-| [#70](https://github.com/Gustavo2358/proleap-poc/pull/70) | `4e07e56aa0533b79972c4e0f92bb80fab2fc697e` |
-| [#71](https://github.com/Gustavo2358/proleap-poc/pull/71) | `93b7beec8d46ba222af5a3fcadde289539c5e198` |
-| [#72](https://github.com/Gustavo2358/proleap-poc/pull/72) | `f4b79781fcb5645c3c4d0a9a16db1ac0dd9b4d25` |
-| [#73](https://github.com/Gustavo2358/proleap-poc/pull/73) | `79ea0a6d9469f6ab2211ef1cc33d0c7e2d4a75d3` |
+| [#66](https://github.com/imd/proleap-poc/pull/66) | `1c4285a664bbc8014119d564735a27f5ede03953` |
+| [#67](https://github.com/imd/proleap-poc/pull/67) | `43d94419b730722297ca9f9440ad1f6b54145943` |
+| [#68](https://github.com/imd/proleap-poc/pull/68) | `696b267d571e8bef5a9e1a6b3ff6b1bdc9ac3b3b` |
+| [#69](https://github.com/imd/proleap-poc/pull/69) | `699fe16a1baf03dd04d68454ed241b5478cda8e3` |
+| [#70](https://github.com/imd/proleap-poc/pull/70) | `4e07e56aa0533b79972c4e0f92bb80fab2fc697e` |
+| [#71](https://github.com/imd/proleap-poc/pull/71) | `93b7beec8d46ba222af5a3fcadde289539c5e198` |
+| [#72](https://github.com/imd/proleap-poc/pull/72) | `f4b79781fcb5645c3c4d0a9a16db1ac0dd9b4d25` |
+| [#73](https://github.com/imd/proleap-poc/pull/73) | `79ea0a6d9469f6ab2211ef1cc33d0c7e2d4a75d3` |
 
 ## Qualificação preservada
 

@@ -7,7 +7,7 @@
     "SourceMap physical boundary",
     "R4 tests and contract documentation"
   ],
-  "authority": "/home/gustavo/workspace/teste-e2e/.positive-memory-topology/eof-unit-boundary-r4/R4_AUTHORITY.md",
+  "authority": "/home/imd/workspace/teste-e2e/.positive-memory-topology/eof-unit-boundary-r4/R4_AUTHORITY.md",
   "pr": 58,
   "notes": "R4 only; SP2.40 and lower unchanged; Draft/no merge. R5\u2013R9 not authorized. Status remains IN_PROGRESS pending human review/merge."
 }

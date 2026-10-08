@@ -4,7 +4,7 @@
 - title: Parser COBOL próprio com AST e fallback integral
 - status: DONE
 - scope: parser próprio opt-in no frontend, AST canônica e fallback integral; contratos downstream preservados.
-- pr: [#82](https://github.com/Gustavo2358/proleap-poc/pull/82)
+- pr: [#82](https://github.com/imd/proleap-poc/pull/82)
 
 O estado DONE deste fechamento tem vigência com o merge do PR #82 e os checks
 aprovados. O PR registra o SHA e a data efetivos da integração. A implementação

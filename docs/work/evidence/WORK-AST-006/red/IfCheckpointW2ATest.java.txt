@@ -1,8 +1,8 @@
-package io.github.gustavo2358.cobolexplorer;
+package io.github.imd.cobolexplorer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.gustavo2358.cobolexplorer.semanticproduct.transport.SemanticProductJsonWriter;
+import io.github.imd.cobolexplorer.semanticproduct.transport.SemanticProductJsonWriter;
 import org.junit.jupiter.api.Test;
 import java.nio.file.*;
 import java.util.*;

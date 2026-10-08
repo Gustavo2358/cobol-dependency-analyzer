@@ -46,7 +46,7 @@
         "trackedDeclarations": 0
       },
       "basis": null,
-      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/plain-stress-512m/plain-09/CTXBOOM.cbl"
+      "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/plain-stress-512m/plain-09/CTXBOOM.cbl"
     },
     {
       "id": "escape-original-oom08",
@@ -72,7 +72,7 @@
         "trackedDeclarations": 0
       },
       "basis": null,
-      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/escape-growth/escape-08/CTXBOOM.cbl"
+      "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/escape-growth/escape-08/CTXBOOM.cbl"
     },
     {
       "id": "cics-original-oom09",
@@ -102,7 +102,7 @@
         "trackedDeclarations": 2
       },
       "basis": null,
-      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/cics-effects-growth/cics-09/CTXBOOM.cbl"
+      "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/dataflow-context-explosion-20261002/runs/cics-effects-growth/cics-09/CTXBOOM.cbl"
     },
     {
       "id": "empty-paragraphs10000",
@@ -134,7 +134,7 @@
         "trackedDeclarations": 0
       },
       "basis": null,
-      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-fix-20261005/review-f1-f2-20261006/long-empty.cbl"
+      "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-fix-20261005/review-f1-f2-20261006/long-empty.cbl"
     },
     {
       "id": "inline-original20",
@@ -160,7 +160,7 @@
         "trackedDeclarations": 0
       },
       "basis": null,
-      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-unification-20261003/inline-stress-11-20/20/INLINEBOOM.cbl"
+      "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/lower-unification-20261003/inline-stress-11-20/20/INLINEBOOM.cbl"
     },
     {
       "id": "and-control76",
@@ -194,7 +194,7 @@
         "trackedDeclarations": 1
       },
       "basis": null,
-      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/activation-and-control-512m/and-0076/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/activation-and-control-512m/and-0076/input.cbl"
     },
     {
       "id": "overlap-compact900",
@@ -220,7 +220,7 @@
         "trackedDeclarations": 0
       },
       "basis": null,
-      "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/overlap900-compact-8g/overlap-0900/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/overlap900-compact-8g/overlap-0900/input.cbl"
     },
     {
       "id": "plain-dynamic09",
@@ -250,11 +250,11 @@
         "trackedDeclarations": 3
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-09/CTXBOOM.cbl",
+        "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-09/CTXBOOM.cbl",
         "sha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
         "change": "CALL WS-OBS after its existing MOVE"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/plain-dynamic09/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/plain-dynamic09/input.cbl"
     },
     {
       "id": "escape-dynamic08",
@@ -284,11 +284,11 @@
         "trackedDeclarations": 3
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-08/CTXBOOM.cbl",
+        "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-08/CTXBOOM.cbl",
         "sha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
         "change": "CALL WS-OBS after its existing MOVE"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/escape-dynamic08/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/escape-dynamic08/input.cbl"
     },
     {
       "id": "escape-dynamic20",
@@ -318,11 +318,11 @@
         "trackedDeclarations": 3
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-20/CTXBOOM.cbl",
+        "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-20/CTXBOOM.cbl",
         "sha256": "f96462bf6407560e830efbb2b21df846ef5c38a45663ac5ca9d13aa5fc8abf10",
         "change": "CALL WS-OBS after its existing MOVE"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/escape-dynamic20/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/escape-dynamic20/input.cbl"
     },
     {
       "id": "inline-observed20",
@@ -352,11 +352,11 @@
         "trackedDeclarations": 2
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/lower-unification-20261003/inline-stress-11-20/20/INLINEBOOM.cbl",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/lower-unification-20261003/inline-stress-11-20/20/INLINEBOOM.cbl",
         "sha256": "451518a55dc65d29f9b1ca55a0abaee269804f392cb058c5e11572dcd5fe80f8",
         "change": "reachable literal query"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/inline-observed20/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/inline-observed20/input.cbl"
     },
     {
       "id": "and76",
@@ -390,10 +390,10 @@
         "trackedDeclarations": 1
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and76/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and76/input.cbl"
     },
     {
       "id": "and152",
@@ -427,10 +427,10 @@
         "trackedDeclarations": 1
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and152/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and152/input.cbl"
     },
     {
       "id": "and304",
@@ -464,10 +464,10 @@
         "trackedDeclarations": 1
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and304/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and304/input.cbl"
     },
     {
       "id": "and608",
@@ -501,10 +501,10 @@
         "trackedDeclarations": 1
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and608/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/and608/input.cbl"
     },
     {
       "id": "or76",
@@ -538,10 +538,10 @@
         "trackedDeclarations": 1
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or76/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or76/input.cbl"
     },
     {
       "id": "or152",
@@ -575,10 +575,10 @@
         "trackedDeclarations": 1
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or152/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or152/input.cbl"
     },
     {
       "id": "or304",
@@ -612,10 +612,10 @@
         "trackedDeclarations": 1
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or304/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or304/input.cbl"
     },
     {
       "id": "or608",
@@ -649,10 +649,10 @@
         "trackedDeclarations": 1
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or608/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/or608/input.cbl"
     },
     {
       "id": "overlap-dynamic400",
@@ -682,10 +682,10 @@
         "trackedDeclarations": 2
       },
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/overlap-dynamic400/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/overlap-dynamic400/input.cbl"
     },
     {
       "id": "overlap-dynamic900",
@@ -703,10 +703,10 @@
       "outputPublished": false,
       "metrics": {},
       "basis": {
-        "source": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
+        "source": "/home/imd/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/generate.py",
         "sha256": "ada71a773ce679a4bd782724bc956d8c1aff7fccd7da52d44cb36ce0bcc7cd34"
       },
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/overlap-dynamic900/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/overlap-dynamic900/input.cbl"
     },
     {
       "id": "dead-callers800",
@@ -736,7 +736,7 @@
         "trackedDeclarations": 0
       },
       "basis": "COBOL counterpart of the AIR-only dead-frames mechanism; not the same original input",
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/dead-callers800/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/dead-callers800/input.cbl"
     },
     {
       "id": "dead-callers6400",
@@ -766,7 +766,7 @@
         "trackedDeclarations": 0
       },
       "basis": "COBOL counterpart of the AIR-only dead-frames mechanism; not the same original input",
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/dead-callers6400/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/dead-callers6400/input.cbl"
     },
     {
       "id": "linear-statements16000",
@@ -796,7 +796,7 @@
         "trackedDeclarations": 1
       },
       "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements16000/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements16000/input.cbl"
     },
     {
       "id": "linear-statements32000",
@@ -826,7 +826,7 @@
         "trackedDeclarations": 1
       },
       "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements32000/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements32000/input.cbl"
     },
     {
       "id": "linear-statements64000",
@@ -856,7 +856,7 @@
         "trackedDeclarations": 1
       },
       "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements64000/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements64000/input.cbl"
     },
     {
       "id": "linear-statements117000",
@@ -874,7 +874,7 @@
       "outputPublished": false,
       "metrics": {},
       "basis": "Additional synthetic size curve with a demanded target; not the unavailable corporate input",
-      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements117000/input.cbl"
+      "source": "/home/imd/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/explosion-review-20261008-expanded/linear-statements117000/input.cbl"
     }
   ],
   "followups": [

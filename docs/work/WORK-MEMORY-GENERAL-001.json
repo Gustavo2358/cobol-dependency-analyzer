@@ -9,7 +9,7 @@
   ],
   "notes": "Implementation approved by the user on 2026-10-06, required technical qualification passed, and product PR merged. Complete facts/dependencies and explicit partial states remain preserved. Performance claims stay limited to the measured operational controls; no universal corpus or OOM guarantee.",
   "closure": {
-    "pull_request": "https://github.com/Gustavo2358/proleap-poc/pull/90",
+    "pull_request": "https://github.com/imd/proleap-poc/pull/90",
     "approved_head": "35f9c732ab8a44d644077acad771e322ebc5def6",
     "merge_commit": "8d5f71e3a9ea7bb5fd5f875f7e1f6a178cca7000",
     "approval": "Explicit user approval and merge authorization, 2026-10-06",

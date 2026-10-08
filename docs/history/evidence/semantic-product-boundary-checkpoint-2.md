@@ -904,7 +904,7 @@ downstream_impact:
     posteriores são rejeitadas porque não há produto IR/CFG/dataflow incorreto.
   evidence:
     - docs/history/evidence/semantic-product-boundary-checkpoint-1.md §2 (C1–C3 e CALL literal)
-    - src/test/java/io/github/gustavo2358/cobolexplorer/CallSemanticsTest.java
+    - src/test/java/io/github/imd/cobolexplorer/CallSemanticsTest.java
     - Este relatório §7 (decision de analysis context)
 ```
 
@@ -955,8 +955,8 @@ downstream_impact:
     não apenas reduzir precisão. A surface lossless continua disponível e a
     correção permanece fora deste checkpoint.
   evidence:
-    - src/test/java/io/github/gustavo2358/cobolexplorer/ConditionNameSurfaceDiscoveryTest.java
-    - src/test/java/io/github/gustavo2358/cobolexplorer/ContextualConditionOccurrenceDiscoveryTest.java
+    - src/test/java/io/github/imd/cobolexplorer/ConditionNameSurfaceDiscoveryTest.java
+    - src/test/java/io/github/imd/cobolexplorer/ContextualConditionOccurrenceDiscoveryTest.java
     - docs/work/backlog.md BACKLOG-RES-003 e docs/architecture/decisions/0012-contextual-conditions-use-post-binding-projection.md
     - Este relatório §8–§9 (conditions/F-01 e suficiência)
 ```

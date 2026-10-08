@@ -31,13 +31,13 @@ evals:
   - EVAL-SP-005
   - EVAL-SP-007
 source_scope:
-  - src/main/java/io/github/gustavo2358/cobolexplorer/IfSemantics.java
-  - src/main/java/io/github/gustavo2358/cobolexplorer/Ast.java
-  - src/main/java/io/github/gustavo2358/cobolexplorer/AstBuilder.java
-  - src/main/java/io/github/gustavo2358/cobolexplorer/ScalarMoveSemantics.java
-  - src/main/java/io/github/gustavo2358/cobolexplorer/semanticproduct
+  - src/main/java/io/github/imd/cobolexplorer/IfSemantics.java
+  - src/main/java/io/github/imd/cobolexplorer/Ast.java
+  - src/main/java/io/github/imd/cobolexplorer/AstBuilder.java
+  - src/main/java/io/github/imd/cobolexplorer/ScalarMoveSemantics.java
+  - src/main/java/io/github/imd/cobolexplorer/semanticproduct
 test_scope:
-  - src/test/java/io/github/gustavo2358/cobolexplorer
+  - src/test/java/io/github/imd/cobolexplorer
   - src/test/resources/cobol/semantic
 must_not_change:
   - Grammar, vendor, AIR, lowering, CFG, solver, lattice, runtime values e siblings.

@@ -10,7 +10,7 @@
 A extensão delimitada é viável para o fixture reconstruído das fotos. O bloqueio
 era causado pela fronteira estrita de Area A do normalizador. Manter os banners
 como documentação permite publicar Semantic Product, AIR, CFG e dependências.
-Implementação e qualificação aprovadas no [PR #85](https://github.com/Gustavo2358/proleap-poc/pull/85).
+Implementação e qualificação aprovadas no [PR #85](https://github.com/imd/proleap-poc/pull/85).
 O fechamento abaixo é efetivado pelo merge desse PR na main.
 O mesmo PR inclui a [preservação após controle CICS parcial](cics-source-preservation.md);
 os sete controles de REMARKS foram repetidos com essa correção e mantiveram o
@@ -74,7 +74,7 @@ analisador têm propósitos distintos, explicitados no documento de domínio.
 ## Fechamento
 
 Fechamento documental e merge autorizados em 3 de outubro de 2026 no
-[PR #85](https://github.com/Gustavo2358/proleap-poc/pull/85). O merge desse PR,
+[PR #85](https://github.com/imd/proleap-poc/pull/85). O merge desse PR,
 registrado no Git, efetiva o estado DONE. Os limites de importação e as premissas
 da avaliação permanecem explícitos neste documento.
 

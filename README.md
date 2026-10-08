@@ -183,3 +183,7 @@ O projeto preserva o histórico do frontend de origem. Código e testes herdados
 do explorador permanecem para regressão do frontend; não integram o fluxo do
 novo CLI. [MISSION.md](MISSION.md) registra o pedido original; a autorização
 posterior de publicação substitui sua restrição inicial a commits locais.
+
+Documentação e evidências distribuídas usam a identidade IMD. As cópias
+históricas foram [anonimizadas](docs/identity-redaction.md); seus hashes originais
+não descrevem os arquivos após essa transformação.

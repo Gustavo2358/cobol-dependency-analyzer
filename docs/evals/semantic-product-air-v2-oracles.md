@@ -11,9 +11,9 @@ EVAL-SP-004 em WORK-SEMANTIC-PRODUCT-004: entry primária/start e saída local
 GOBACK pelo Semantic Product/JSON. Oracles AIR/lowering/CFG continuam futuros;
 esse teste local não certifica retorno/halt de runtime nem perfis AIR.
 
-Fontes fixadas: [invariantes I-01–I-54](https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/conformidade/01-invariantes.md),
-[oracles O-01–O-85](https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/conformidade/02-oraculos.md)
-e [perfis @2](https://github.com/Gustavo2358/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/10-perfis-de-conformidade.md).
+Fontes fixadas: [invariantes I-01–I-54](https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/conformidade/01-invariantes.md),
+[oracles O-01–O-85](https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/conformidade/02-oraculos.md)
+e [perfis @2](https://github.com/imd/analysis-ir/blob/0b2fbce7046010b22b32efa8cbc3e75ccba09442/especificacao/10-perfis-de-conformidade.md).
 STRUCT não exige RD/PV; SCALAR/REGION exigem seus resultados. Validator não
 certifica verdade de premissa externa apenas porque seu escopo é bem formado.
 

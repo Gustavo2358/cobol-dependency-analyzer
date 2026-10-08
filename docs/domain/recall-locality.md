@@ -1,6 +1,6 @@
 # Locality of logical storage proofs
 
-Implementation reviewed and approved on 2026-09-26; integration: [PR](https://github.com/Gustavo2358/proleap-poc/pull/60).
+Implementation reviewed and approved on 2026-09-26; integration: [PR](https://github.com/imd/proleap-poc/pull/60).
 
 Scope: preserve logical values of an elementary item when an
 unrelated sibling is repeated or redefined. No physical layout is inferred.

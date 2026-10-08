@@ -1,6 +1,6 @@
 # Fechamento do frontend — gaps ativos, condições 88 e MOVE
 
-Status: DONE / MERGED. [PR #86](https://github.com/Gustavo2358/proleap-poc/pull/86),
+Status: DONE / MERGED. [PR #86](https://github.com/imd/proleap-poc/pull/86),
 merge `21065f83e2a3c01c1429068dd3e199666ccbe17e`, aprovado em 2026-10-04.
 
 Foram integradas a lista canônica de gaps ativos, as 3.807 ocorrências de condições
