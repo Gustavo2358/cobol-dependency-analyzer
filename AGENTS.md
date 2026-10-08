@@ -1,7 +1,10 @@
 # COBOL Dependency Analyzer
 
 This independent clone implements the user mission in `MISSION.md`. Only this
-repository may change. No remotes, push, PR, or merge. Make local commits.
+repository may change. The user subsequently authorized configuring origin as
+https://github.com/Gustavo2358/cobol-dependency-analyzer.git and publishing the
+initial implementation. This supersedes the original local-only restriction
+in the historical mission. Further publishing follows explicit user requests.
 Reuse the existing frontend and nominal binding. The operational path is
 parse -> compact COBOL control -> demand-driven logical values -> dependencies.
 Do not add AIR, lowering, physical memory, intermediate serialization, UI,
