@@ -184,4 +184,22 @@ class DependencyAnalyzerTest {
         targets("01 ROWS-VIEW.\n05 ROW-ITEM OCCURS 2 TIMES.\n10 ROW-NUM PIC 99.\n10 ROW-PROG PIC X(6).\n01 TARGET PIC X(8).",
             "MOVE 1 TO ROW-NUM(1).\nMOVE 'PROGA' TO ROW-PROG(1).\nMOVE 2 TO ROW-NUM(2).\nMOVE 'PROGB' TO ROW-PROG(2).\nMOVE ROWS-VIEW TO TARGET.\nCALL TARGET.\nGOBACK.", "01PROGA");
     }
+    @Test void declaredTableValuesSeedAWholeGroupPossibility()throws Exception {
+        targets("01 ROWS-VIEW.\n05 ROW-PART PIC X(4) OCCURS 2 TIMES VALUE 'PROG'.",
+            "CALL ROWS-VIEW.\nGOBACK.", "PROGPROG");
+    }
+    @Test void unknownMutationOpensCorrespondingAliasElementsWithoutOtherRowNames()throws Exception {
+        var result=analyze("01 ROWS-A.\n05 ROW-A PIC X(8) OCCURS 2 TIMES.\n01 ROWS-B REDEFINES ROWS-A.\n05 ROW-B PIC X(8) OCCURS 2 TIMES.",
+            "MOVE 'PROGA001PROGB001' TO ROWS-A.\nCALL 'EXT' USING ROW-A(1).\nCALL ROW-B(1).\nGOBACK.");
+        assertEquals(Set.of("EXT","PROGA001"),new HashSet<>(result.programs().get(0).dependencies().stream().map(DependencyAnalyzer.Dependency::name).toList()));
+        assertTrue(result.diagnostics().stream().anyMatch(s->s.contains("DYNAMIC_REMAINDER")));
+    }
+    @Test void unknownIndexedWritePreservesNewCandidatesInCorrespondingAliasRows()throws Exception {
+        targets("01 ROWS-A.\n05 ROW-A PIC X(8) OCCURS 2 TIMES.\n01 ROWS-B REDEFINES ROWS-A.\n05 ROW-B PIC X(8) OCCURS 2 TIMES.\n01 IDX PIC 9.",
+            "MOVE 'PROGA001PROGB001' TO ROWS-A.\nMOVE 'PROGC001' TO ROW-A(IDX).\nCALL ROW-B(1).\nGOBACK.", "PROGA001","PROGC001");
+    }
+    @Test void aGroupValueInitializesTheCorrespondingRowInsteadOfRepeatingItsPrefix()throws Exception {
+        targets("01 ROWS-VIEW VALUE 'PROGA001PROGB001'.\n05 ROW-PROGRAM PIC X(8) OCCURS 2 TIMES.",
+            "CALL ROW-PROGRAM(2).\nGOBACK.", "PROGB001");
+    }
 }

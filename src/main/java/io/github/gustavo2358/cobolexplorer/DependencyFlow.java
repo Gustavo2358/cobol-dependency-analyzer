@@ -175,7 +175,15 @@ final class DependencyFlow {
             if(value.isEmpty()||d.levelKind()==Ast.DataLevelKind.CONDITION_88||d.meta().syntheticModel())continue;
             var text=value.get().logicalText().map(Ast.LogicalText::value).or(()->value.get().ranges().stream().findFirst().map(Ast.ConditionRange::first).flatMap(this::conditionText));
             if(text.isPresent()) {
-                state=writeLocal(d.meta().id(),DependencyValues.known(text.get()).open(),state,false);
+                var seed=DependencyValues.known(text.get()).open();
+                state=writeLocal(d.meta().id(),seed,state,false);
+                if(!declarations.children.getOrDefault(d.meta().id(),List.of()).isEmpty()) {
+                    state=decode(d.meta().id(),seed.fit(declarations.widths.getOrDefault(d.meta().id(),0)),state,0,false);
+                    if(textGroups.contains(d.meta().id())) {
+                        var groups=new DependencyEnvironment.Builder(state.values());
+                        groups.put(d.meta().id(),seed.fit(declarations.widths.getOrDefault(d.meta().id(),0)));state=new State(groups,state.handlers());
+                    }
+                }
                 if(!elementIds.getOrDefault(d.meta().id(),List.of()).isEmpty()) {
                     var outValues=new DependencyEnvironment.Builder(state.values());
                     for(int slot:elementIds.get(d.meta().id()))outValues.put(slot,state.get(d.meta().id()));state=new State(outValues,state.handlers());
@@ -188,7 +196,14 @@ final class DependencyFlow {
             var value=readDeclaration(view.getKey(),state);
             if(!value.values().isEmpty())for(int alias:view.getValue())state=decode(alias,value,state,0,false);
         }
-        var snapshots=new DependencyEnvironment.Builder(state.values());for(int id:textGroups)snapshots.put(id,assemble(id,state));
+        var snapshots=new DependencyEnvironment.Builder(state.values());for(int id:textGroups) {
+            var value=readDeclaration(id,state);
+            if(value.values().isEmpty()) {
+                var seed=singletonTableText(id,state,List.of(),false);
+                if(seed.isPresent())value=new DependencyValues(Set.of(seed.get()),true);
+            }
+            snapshots.put(id,value);
+        }
         return new State(snapshots,state.handlers());
     }
     private void indexElements(int declaration,List<Integer> dimensions,int level,List<Integer> path) {
@@ -344,8 +359,12 @@ final class DependencyFlow {
             if(cs.isEmpty()) {
                 var value=text.map(s->base+width<=s.length()?s.substring(base,base+width):null);
                 state=writeLocal(id,value,state,weak||declarations.repeated.contains(id));
-                Integer slot=elements.get(new Element(id,current));
-                if(slot!=null) {var out=new DependencyEnvironment.Builder(state.values());out.put(slot,weak?state.get(slot).join(value).open():value);state=new State(out,state.handlers());}
+                var out=new DependencyEnvironment.Builder(state.values());
+                for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id))) {
+                    Integer slot=elements.get(new Element(alias,current));
+                    if(slot!=null)out.put(slot,weak?state.get(slot).join(value).open():value);
+                }
+                state=new State(out,state.handlers());
             }else {int start=base;for(int c:cs) {
                 if(declarations.entries.get(c).clauses().stream().anyMatch(Ast.RedefinesClause.class::isInstance))continue;
                 state=decode(c,text,state,start,weak,current);start+=declarations.widths.getOrDefault(c,0)*declarations.counts.getOrDefault(c,1);
@@ -375,11 +394,14 @@ final class DependencyFlow {
             var next=weak?state.get(target).join(value).open():value;
             if(!next.equals(state.get(target))) {if(out==null)out=new DependencyEnvironment.Builder(state.values());out.put(target,next);}
         }
-        if(weak)for(int slot:elementIds.getOrDefault(id,List.of()))if(!state.get(slot).unknown()) {
+        if(weak)for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id)))for(int slot:elementIds.getOrDefault(alias,List.of()))if(!state.get(slot).unknown()) {
             if(out==null)out=new DependencyEnvironment.Builder(state.values());out.put(slot,state.get(slot).open());
         }
-        for(int alias:declarations.possibleAliases.getOrDefault(id,Set.of()))if(demand.contains(alias)&&!state.get(alias).unknown()) {
-            if(out==null)out=new DependencyEnvironment.Builder(state.values());out.put(alias,state.get(alias).open());
+        for(int alias:declarations.possibleAliases.getOrDefault(id,Set.of()))if(demand.contains(alias)) {
+            if(!state.get(alias).unknown()) {if(out==null)out=new DependencyEnvironment.Builder(state.values());out.put(alias,state.get(alias).open());}
+            for(int slot:elementIds.getOrDefault(alias,List.of()))if(!state.get(slot).unknown()) {
+                if(out==null)out=new DependencyEnvironment.Builder(state.values());out.put(slot,state.get(slot).open());
+            }
         }
         if(value.values().size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many logical candidates");
         return out==null?state:new State(out,state.handlers());
@@ -422,14 +444,12 @@ final class DependencyFlow {
                         var candidates=new HashSet<String>();checkProduct(prior,replacement);
                         for(String a:prior.values())for(String b:replacement.values())if(span[0]+span[1]<=a.length())candidates.add(a.substring(0,span[0])+b+a.substring(span[0]+span[1]));
                         var next=new DependencyValues(candidates,prior.unknown()||replacement.unknown());
-                        if(prior.values().isEmpty()) {
-                            var exact=exactTableText(group,new State(changed,out.handlers()),List.of());
-                            if(exact.isPresent())next=DependencyValues.known(exact.get());
-                        }
+                        var exact=singletonTableText(group,new State(changed,out.handlers()),List.of(),true);
+                        if(exact.isPresent())next=DependencyValues.known(exact.get());
                         changed.put(group,next);
                     }
                 }
-            }else for(int slot:elementIds.getOrDefault(id,List.of()))changed.put(slot,out.get(slot).join(fitField(id,value)).open());
+            }else for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id)))for(int slot:elementIds.getOrDefault(alias,List.of()))changed.put(slot,out.get(slot).join(fitField(alias,value)).open());
             State result=new State(changed,out.handlers());
             if(selected!=null)for(int group:textGroups)if(indexedSpan(group,id,indexes)!=null)
                 for(int alias:declarations.textualViews.getOrDefault(group,Set.of()))result=decode(alias,result.get(group),result,0,false);
@@ -438,7 +458,7 @@ final class DependencyFlow {
         return write(id,value,state,false);
     }
     /** Reassemble only singleton, closed elements; never form Cartesian names. */
-    private Optional<String> exactTableText(int id,State state,List<Integer> path) {
+    private Optional<String> singletonTableText(int id,State state,List<Integer> path,boolean closed) {
         var text=new StringBuilder();int count=declarations.counts.getOrDefault(id,1);
         var children=declarations.children.getOrDefault(id,List.of());
         if((long)count*declarations.widths.getOrDefault(id,0)>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: logical table text");
@@ -447,11 +467,11 @@ final class DependencyFlow {
             if(declarations.entries.get(id).clauses().stream().anyMatch(Ast.OccursClause.class::isInstance))current.add(i);
             if(children.isEmpty()) {
                 int slot=elements.getOrDefault(new Element(id,current),id);var v=state.get(slot);
-                if(v.unknown()||v.values().size()!=1)return Optional.empty();
+                if(closed&&v.unknown()||v.values().size()!=1)return Optional.empty();
                 text.append(v.values().iterator().next());
             }else for(int child:children) {
                 if(declarations.entries.get(child).clauses().stream().anyMatch(Ast.RedefinesClause.class::isInstance))continue;
-                var part=exactTableText(child,state,current);if(part.isEmpty())return Optional.empty();text.append(part.get());
+                var part=singletonTableText(child,state,current,closed);if(part.isEmpty())return Optional.empty();text.append(part.get());
             }
         }
         return Optional.of(text.toString());
