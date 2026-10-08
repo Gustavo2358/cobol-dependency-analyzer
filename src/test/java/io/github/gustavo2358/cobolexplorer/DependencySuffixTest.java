@@ -66,6 +66,16 @@ class DependencySuffixTest {
             +"NOT ON EXCEPTION MOVE 'SUCCESS' TO TARGET END-CALL.\n"
             +"GO TO B.\nCALL 'UNREACH'.\nB.\nCONTINUE.", "EXTERNAL","FAILURE","SUCCESS");
     }
+    @Test void grammarOwnedFileHandlersUseTheReferenceSolverWithoutFilePoints()throws Exception {
+        Path path=source("01 TARGET PIC X(8).", "MAIN.\nPERFORM A THRU B.\nCALL TARGET.\nGOBACK.\n"
+            +"A.\nREAD INFILE AT END MOVE 'END' TO TARGET END-READ.\nB.\nCALL TARGET.");
+        var reference=new DependencyAnalyzer(false).analyze(path,DependencyAnalyzer.Options.defaults());
+        var shared=new DependencyAnalyzer().analyze(path,DependencyAnalyzer.Options.defaults());
+        assertEquals(reference.programs(),shared.programs());
+        assertEquals(reference.diagnostics(),shared.diagnostics());
+        assertEquals(reference.metrics().contexts(),shared.metrics().contexts(),"file handlers must disable suffix sharing");
+        assertTrue(shared.programs().get(0).dependencies().stream().anyMatch(d->d.name().equals("END")));
+    }
     @Test void loopPhasesAndRecursiveBodiesReachTheSameFixedPoint()throws Exception {
         compare("01 TARGET PIC X(8).\n01 FLAG PIC X.", "MAIN.\nMOVE 'INITIAL' TO TARGET.\n"
             +"PERFORM A THRU B 0 TIMES.\nPERFORM A THRU B 1 TIMES.\n"

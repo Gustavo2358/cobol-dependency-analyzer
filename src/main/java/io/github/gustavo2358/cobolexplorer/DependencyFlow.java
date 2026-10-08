@@ -155,7 +155,8 @@ final class DependencyFlow {
                 && ioDeclarations.isEmpty() && filePoints.isEmpty()
                 && edges.values().stream().flatMap(List::stream).noneMatch(e->
                     e.kind()==OutcomeKind.EXPLICIT_TRANSFER || e.target().kind()==TargetKind.ESCAPE)
-                && regions.values().stream().noneMatch(r->r.kind()==RegionKind.CALL_HANDLER)) {
+                && regions.values().stream().noneMatch(r->r.kind()==RegionKind.CALL_HANDLER
+                    || r.kind()==RegionKind.FILE || r.kind()==RegionKind.FILE_HANDLER)) {
             for(var r:regions.values())if(r.kind()==RegionKind.PARAGRAPH && r.entry().kind()==TargetKind.OCCURRENCE)
                 suffixEntries.add(r.entry().reference());
         }
