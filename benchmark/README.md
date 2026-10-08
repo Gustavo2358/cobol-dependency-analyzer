@@ -111,3 +111,11 @@ python3 -B benchmark/summarize.py benchmark/results/carddemo benchmark/results/r
 
 Omitir o terceiro argumento de run-reference.py usa o consumidor congelado.
 Os testes Maven e o smoke do JAR não dependem de nenhum desses repositórios.
+
+## Discovery de frontend e solver
+
+[Discovery de 8/10/2026](frontend-solver-discovery-20261008.md): 40 fixtures
+comparados entre a CLI original e cópias instrumentadas, sem mudanças de
+produção. Isola projeções excessivas, fechamento por endpoint, custos
+quadráticos do frontend e crescimento combinatório real de contextos.
+Inclui a ordem recomendada de correções e evidência bruta local preservada.
