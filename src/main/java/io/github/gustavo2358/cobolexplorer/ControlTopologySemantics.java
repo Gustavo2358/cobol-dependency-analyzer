@@ -217,14 +217,14 @@ public final class ControlTopologySemantics {
             }
             if(s instanceof Ast.ModeledStatement m&&m.exitKind().isPresent()) {
                 var kind=m.exitKind().orElseThrow();String scope=owner;
-                var wanted=kind==Ast.ExitKind.PARAGRAPH?RegionKind.PARAGRAPH:RegionKind.INLINE_BODY;
+                var wanted=kind==Ast.ExitKind.PARAGRAPH?RegionKind.PARAGRAPH:kind==Ast.ExitKind.SECTION?RegionKind.SECTION:RegionKind.INLINE_BODY;
                 while(!scope.isEmpty()&&(!regions.containsKey(scope)||regions.get(scope).kind()!=wanted))
                     scope=regions.containsKey(scope)?regions.get(scope).parent():"";
                 if(!scope.isEmpty()) {
                     var exitProof=proof(id+"/exit",ProofKind.LOCAL_GRAMMAR,"exit-"+kind.name().toLowerCase(Locale.ROOT),s.meta().provenance(),List.of(p));
                     var target=kind==Ast.ExitKind.PERFORM_CYCLE?complete(scope,exitProof):new Target(TargetKind.ESCAPE,scope,List.of(exitProof));
                     add(s,owner,OutcomeKind.EXPLICIT_TRANSFER,"exit",target,"",exitProof);
-                } else if(kind!=Ast.ExitKind.PARAGRAPH) add(s,owner,OutcomeKind.EXPLICIT_TRANSFER,"exit-ignored",next,"",p);
+                } else if(kind!=Ast.ExitKind.PARAGRAPH&&kind!=Ast.ExitKind.SECTION) add(s,owner,OutcomeKind.EXPLICIT_TRANSFER,"exit-ignored",next,"",p);
                 else add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"exit-scope-unavailable",unknown(owner,p),"",p);
                 continue;
             }
@@ -284,6 +284,18 @@ public final class ControlTopologySemantics {
                     add(s,owner,OutcomeKind.EXPLICIT_TRANSFER,"target-"+(ordinal++),target,"",resolution);}
                 if(g.goToKind()==Ast.GoToKind.DEPENDING_ON)add(s,owner,OutcomeKind.NORMAL,"normal",next,"",p);
                 if(g.targets().isEmpty())add(s,owner,OutcomeKind.UNKNOWN_LOCAL,"transfer-unresolved",unknown(owner,p),"",p);continue;
+            }
+            if(s instanceof Ast.CallStatement call&&!call.handlerClauses().isEmpty()) {
+                String region="region:"+id+"/call";putRegion(region,RegionKind.CALL,owner,occ(s,p),List.of(),next,p);
+                var hypothesis=proof(id+"/call-outcomes",ProofKind.CONTROL_POSSIBILITY,"external-call-success-or-local-handler",s.meta().provenance(),List.of(p));
+                boolean success=false;
+                for(var handler:call.handlerClauses()) {
+                    var target=arm(region,handler.grammarRule(),RegionKind.CALL_HANDLER,handler.nestedStatements(),p,isolation);
+                    sourceContinuations.add(new SourceContinuation(id,target,List.of(hypothesis)));
+                    success|=handler.grammarRule().equals("notOnExceptionClause");
+                }
+                if(!success)sourceContinuations.add(new SourceContinuation(id,complete(region,p),List.of(hypothesis)));
+                add(s,region,OutcomeKind.UNKNOWN_LOCAL,"external-outcome",unknown(region,p),"",p);continue;
             }
             var surface=s instanceof Ast.ModeledStatement m?m.fileIo():s instanceof Ast.PreservedStatement v?v.fileIo():Optional.<Ast.FileIoSurface>empty();
             if(surface.isPresent()) {
@@ -490,9 +502,8 @@ public final class ControlTopologySemantics {
         var literal=perform.controls().size()==1&&perform.controls().get(0).expression() instanceof Ast.LiteralExpression l
             ?l.integerValue():Optional.<java.math.BigInteger>empty();
         if(perform.repetition()==Ast.PerformRepetition.TIMES&&literal.isPresent()&&literal.get().signum()<=0) {
-            var partial=proof(id+"/count-capability",ProofKind.PARTIAL_UNKNOWN,
-                "nonpositive-literal-count-outside-qualified-profile",perform.meta().provenance(),List.of(premise));
-            add(perform,owner,OutcomeKind.UNKNOWN_LOCAL,"invoke-unavailable",unknown(range,partial),"",partial);
+            var zero=proof(id+"/zero-count",ProofKind.LOCAL_GRAMMAR,"nonpositive-perform-count-skips-body",perform.meta().provenance(),List.of(premise));
+            add(perform,owner,OutcomeKind.NORMAL,"zero-count",resume,"",zero);
             return;
         }
         bindings.put(binding,invocation(binding,id,range,endpoint,resume,perform,premise));

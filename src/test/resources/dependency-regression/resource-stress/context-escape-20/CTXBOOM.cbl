@@ -1,0 +1,91 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CTXBOOM.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-FLAG PIC X.
+       01 WS-OBS PIC X.
+       01 WS-RETURN PIC 9(2).
+       PROCEDURE DIVISION.
+       MAIN.
+           MOVE 'A' TO WS-OBS
+           PERFORM BODY-START THRU BODY-END
+           GOBACK.
+       RETURN-01.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-02.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-03.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-04.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-05.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-06.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-07.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-08.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-09.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-10.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-11.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-12.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-13.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-14.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-15.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-16.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-17.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-18.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-19.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       RETURN-20.
+           PERFORM BODY-START THRU BODY-END
+           GO TO DISPATCH.
+       BODY-START.
+           PERFORM 1 TIMES
+               IF WS-FLAG = 'E'
+                   EXIT PARAGRAPH
+               END-IF
+           END-PERFORM
+           IF WS-FLAG = 'Y'
+               GO TO DISPATCH
+           END-IF.
+       BODY-END.
+           EXIT.
+       DISPATCH.
+           GO TO RETURN-01 RETURN-02 RETURN-03 RETURN-04
+                 RETURN-05 RETURN-06 RETURN-07 RETURN-08
+                 RETURN-09 RETURN-10 RETURN-11 RETURN-12
+                 RETURN-13 RETURN-14 RETURN-15 RETURN-16
+                 RETURN-17 RETURN-18 RETURN-19 RETURN-20
+                 DEPENDING ON WS-RETURN.
+           GOBACK.

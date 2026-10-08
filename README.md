@@ -1,131 +1,73 @@
-# COBOL Structure Atlas
+# COBOL Dependency Analyzer
 
-[Artefatos `.json.zst`: uso, identidade e compatibilidade](docs/engineering/json-zstd.md).
+Analisador de dependências COBOL em um processo Java. Reutiliza preprocessing,
+AST e binding do frontend e resolve valores sobre seu controle COBOL em memória.
+O caminho operacional não usa AIR, lowering, memória física, Semantic Product
+serializado, HTML ou outros repositórios.
 
-Storage W6–W8: [qualified profile, tests and limits](docs/engineering/storage-w8-qualification.md). Human review pending; no merge.
-
-Explorador visual da jornada `parse tree → AST → tabela de símbolos → resolução de referências` para programas COBOL. O projeto gera páginas estáticas que podem ser abertas localmente, sem servidor nem dependências web externas.
-
-Esta página é uma porta de entrada de uso. Os contratos semânticos, as políticas de engenharia e as decisões arquiteturais estão na [documentação canônica](docs/index.md).
-
-## Requisitos
-
-- JDK 17 ou superior;
-- Maven 3.9 ou superior;
-- Node.js 18 ou superior para a regressão E2E e o gate `full`.
-
-## Gerar e abrir
-
-Para gerar a jornada do programa padrão:
-
-```bash
-./run.sh
+```sh
+mvn package
+java -Xmx768m -jar target/cobol-dependency-analyzer.jar \
+  --source programa.cbl --copy-dir copybooks --output dependencies.json
 ```
 
-Após a execução, abra os artefatos em `dist/`:
+Requer Java 17+ e Maven para compilar; o JAR contém as dependências necessárias
+para executar. Java 21 foi usado na validação. Aceita um arquivo ou diretório;
+`--copy-dir` pode ser repetido. Diretórios são percorridos em ordem estável.
+O formato de fonte é FIXED; o charset padrão é UTF-8. O parser direto é padrão,
+com fallback ANTLR; `--parser antlr` seleciona a outra rota explicitamente.
 
-- `index.html`: parse tree;
-- `ast.html`: AST semântica;
-- `symbols.html`: tabela de símbolos;
-- `resolution.html`: bindings nominais e cobertura conservadora.
+A saída contém somente:
 
-Os diretórios `dist/`, `dist-cbstm03a/` e `dist-cbstm03d/` são gerados localmente e
-não acompanham o snapshot de fontes. Os comandos desta página os recriam; a
-interface original permanece em `src/main/resources/web/`.
-
-As páginas funcionam via `file://`. A navegação permite seguir um elemento semântico até sua origem na parse tree.
-
-Também é possível executar diretamente pelo Maven:
-
-```bash
-mvn compile exec:java
+```json
+{"program":"EXAMPLE","dependencies":[{"type":"program","name":"PROGA","at":{"file":"EXAMPLE.cbl","line":12}}]}
 ```
 
-Para escolher fonte, copybooks e diretório de saída:
+Vários programas, ou uma entrada de diretório, produzem um array desses objetos.
+Há uma entrada por `(type,name)` em cada programa, ordenada deterministicamente;
+a localização representa o consumidor original, inclusive dentro de COPY.
+Tipos: `program`, `file`, `logical-file`, `db2-table`, `copybook`, `dclgen` e
+`sql-include`. `logical-file` identifica um nome COBOL sem nome externo
+estabelecido; não afirma a existência de um dataset. DCLGEN requer classificação
+explícita em `--source-inventory` no formato do inventário já fornecido pelo
+frontend; um SQL INCLUDE genérico não é presumido como DCLGEN.
 
-```bash
-mvn exec:java \
-  -Dexec.args="--source corpus/cbl/COACTUPC.cbl --copybooks corpus/cpy,corpus/cpy-bms --output dist"
+O propagador conserva candidatos conhecidos junto à possibilidade desconhecida.
+MOVE completo substitui valores anteriores; grupos conservam alternativas
+textuais correlacionadas. PERFORM compartilha corpos e reutiliza resultados por
+entrada relevante e retorno, sem enumerar caminhos ou clonar parágrafos.
+REDEFINES/RENAMES são relações entre declarações e textos, sem simular bytes.
+UPPER-CASE, LOWER-CASE e TRIM usam as expressões tipadas do frontend.
+
+Saídas: **0** sem diagnóstico de incompletude; **1** candidatos publicados com
+limitações locais explicitadas em stderr; **2** falha global, preservando o JSON
+anterior. VALUE persistente, input externo, missing COPY/INCLUDE, SQL dinâmico e
+operações sem transformação lógica suportada mantêm incerteza explícita.
+Tabelas de extensão estática conservam os elementos lógicos para consultas com
+índice conhecido; subscrito desconhecido usa resumo dos elementos. Tabelas de
+extensão não estabelecida permanecem abertas. Representações binárias/edições numéricas complexas
+não são interpretadas como textos. Esses limites não são paridade universal de
+COBOL; a paridade medida refere-se aos insumos e oráculos documentados.
+
+`--max-work N` limita visitas, estados e produtos de candidatos (padrão 1000000).
+Ultrapassar o orçamento falha explicitamente; não corta candidatos para obter
+sucesso. `--metrics arquivo.jsonl` grava tempos e contadores fora do JSON de
+produto. Heap é configurado pelo Java, por exemplo `-Xmx768m`.
+
+```sh
+mvn -Dtest=DependencyAnalyzerTest,DependencyRegressionTest,DependencySourceTest,DependencyEnvironmentTest,DependencyResourceTest test
+python3 -B scripts/harness/lean.py fast
+mvn test
+python3 -B benchmark/run-carddemo.py /caminho/results.json benchmark/results/carddemo
+python3 -B benchmark/run-reference.py /caminho/results.json benchmark/results/reference
+python3 -B benchmark/smoke-standalone.py target/cobol-dependency-analyzer.jar
 ```
 
-`--copybooks` aceita uma lista de diretórios separada por vírgulas. Quando um
-copybook existe em mais de um diretório, o primeiro diretório informado tem
-precedência.
+Testes automatizados e seus fontes/oráculos estão neste repositório e executam
+sem a pipeline. Os scripts diferenciais usam o corpus e os artefatos de referência
+externos somente para validação. Veja [as medições](benchmark/README.md) e
+[a procedência dos fixtures](src/test/resources/dependency-regression/README.md).
 
-## Exemplos
-
-`COACTUPC.cbl` é o caso canônico do corpus e a melhor referência para navegar pela jornada completa.
-
-Para gerar uma visualização independente do programa com muitos `CALL`s estáticos:
-
-```bash
-mvn compile exec:java \
-  -Dexec.args="--source corpus/cbl/CBSTM03A.CBL --copybooks corpus/cpy --output dist-cbstm03a"
-```
-
-`CBSTM03D.CBL` é uma variante didática com `CALL`s dinâmicos. O resolvedor associa o uso à variável-alvo; a descoberta dos valores possíveis em runtime é intencionalmente uma fronteira futura de análise de fluxo. Veja o [contrato de resolução](docs/domain/reference-resolution.md).
-
-```bash
-mvn compile exec:java \
-  -Dexec.args="--source corpus/cbl/CBSTM03D.CBL --copybooks corpus/cpy --output dist-cbstm03d"
-```
-
-## Logging
-
-A execução normal registra apenas o lifecycle essencial. Para diagnosticar as fases do pipeline, habilite `DEBUG`:
-
-```bash
-mvn exec:java -DANALYZER_LOG_LEVEL=DEBUG
-```
-
-As políticas de observabilidade e os demais níveis de logger estão em [Observabilidade](docs/engineering/observability-policy.md).
-
-## Verificação
-
-Desenvolvimento:
-
-```bash
-./scripts/harness/check-fast.sh
-# Antes de merge tecnicamente importante (local/on-demand):
-./scripts/harness/check-full.sh
-```
-
-Abra PR, revisão humana quando aplicável, merge, DONE. CI remoto executa apenas FAST;
-documentação pura não executa Maven. Performance e challenges são locais sob demanda.
-Veja [a política lean](docs/engineering/lean-harness.md).
-
-## Documentação
-
-- [Índice da documentação](docs/index.md): ponto de partida para pessoas.
-- [Arquitetura](docs/architecture/index.md): pipeline e fronteiras entre camadas.
-- [Contratos de domínio](docs/domain/index.md): AST, símbolos, resolução, source map e cobertura.
-- [Engenharia](docs/engineering/index.md): invariantes, testes, logging e gates.
-- [Catálogo de evals](docs/evals/index.md): evidências executáveis.
-- [Trabalho ativo](docs/work/index.md): estado e escopo da implementação em curso.
-- [Instruções para agentes](AGENTS.md): roteamento de contexto para mudanças no repositório.
-
-## Estrutura do repositório
-
-```text
-corpus/                  programas COBOL e copybooks do corpus
-src/main/antlr4/         gramáticas ANTLR
-src/main/java/           pipeline, domínio semântico e exportadores
-src/main/resources/web/  interface estática da jornada visual
-docs/                    documentação canônica
-scripts/harness/         gates de verificação
-dist/                    saída gerada, pronta para abrir
-```
-
-[SP2.44 terminal SEND contract and bounded executable stop](docs/domain/terminal-send-r7-r7b.md).
-
-### Laboratório de parser próprio
-
-`--parser direct-ast-lab` ativa o laboratório de parser COBOL completo próprio:
-preprocessador/lexer atuais, AST e origens próprias, fallback integral em falha.
-A rota efetiva aparece em `event=direct_ast_lab`. O padrão continua ANTLR.
-Resultado no CardDemo: 73/73 programas sem fallback e redução agregada de 74,37%
-em parsing + origens + AST. [Medição e limites](docs/work/direct-parser-full.md).
-
-`--parser direct-data-lab` ativa o parser experimental de DATA que gera a AST
-diretamente, com fallback para a gramática original em construções não admitidas.
-O padrão é `--parser antlr`. Consulte [escopo, medição e limites](docs/work/direct-ast-parser-lab.md).
+Esta é uma cópia independente com histórico preservado, commits locais e nenhum
+remote. Código e testes herdados do explorador permanecem para regressão do
+frontend; não integram o fluxo do novo CLI.

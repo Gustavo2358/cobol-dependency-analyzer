@@ -1,0 +1,8 @@
+{
+  "next-sentence.cbl": {
+    "referenceTargets": [],
+    "validTargets": ["AFTERIO"],
+    "reason": "NEXT SENTENCE skips SKIPPED to the statement following the next separator period, line 12. It does not terminate the program.",
+    "authority": "IBM Enterprise COBOL 6.4 Language Reference, NEXT SENTENCE; grammar-owned SENTENCE escape in the reused frontend"
+  }
+}

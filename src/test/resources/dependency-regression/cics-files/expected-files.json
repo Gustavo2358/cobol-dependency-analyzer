@@ -1,0 +1,118 @@
+{
+  "browse-id.cbl": [
+    "ACCOUNTS"
+  ],
+  "computed-alias.cbl": [
+    "ACCOUNTS"
+  ],
+  "computed-closed.cbl": [
+    "ACCOUNTS",
+    "CUSTOMER"
+  ],
+  "computed-cycle.cbl": [
+    "ACCOUNTS",
+    "CUSTOMER"
+  ],
+  "computed-exact.cbl": [
+    "ACCOUNTS"
+  ],
+  "computed-partial.cbl": [
+    "ACCOUNTS"
+  ],
+  "computed-systems.cbl": [
+    "ACCOUNTS"
+  ],
+  "computed-timing.cbl": [
+    "ACCOUNTS",
+    "CUSTOMER"
+  ],
+  "computed-unknown.cbl": [],
+  "delete.cbl": [
+    "ACCOUNTS"
+  ],
+  "endbr.cbl": [
+    "ACCOUNTS"
+  ],
+  "file-slice.cbl": [
+    "OLDNAME"
+  ],
+  "handler-open.cbl": [
+    "ACCOUNTS"
+  ],
+  "host-and-output.cbl": [
+    "ACCOUNTS"
+  ],
+  "inquire-end.cbl": [],
+  "inquire-next.cbl": [],
+  "inquire-start.cbl": [],
+  "inquire.cbl": [
+    "ACCOUNTS"
+  ],
+  "length-open.cbl": [
+    "ACCOUNTS"
+  ],
+  "literal-systems.cbl": [
+    "ACCOUNTS"
+  ],
+  "not-files.cbl": [],
+  "read-call.cbl": [
+    "ACCOUNTS"
+  ],
+  "read-dataset-computed.cbl": [
+    "ACCOUNTS"
+  ],
+  "read-dataset-literal.cbl": [
+    "ACCOUNTS"
+  ],
+  "read-file-computed.cbl": [
+    "ACCOUNTS"
+  ],
+  "read.cbl": [
+    "ACCOUNTS"
+  ],
+  "readnext.cbl": [
+    "ACCOUNTS"
+  ],
+  "readprev.cbl": [
+    "ACCOUNTS"
+  ],
+  "resetbr.cbl": [
+    "ACCOUNTS"
+  ],
+  "resp-call.cbl": [
+    "ACCOUNTS"
+  ],
+  "response.cbl": [
+    "ACCOUNTS"
+  ],
+  "rewrite.cbl": [
+    "ACCOUNTS"
+  ],
+  "set-alias.cbl": [
+    "ACCOUNTS"
+  ],
+  "set-pointer.cbl": [
+    "ACCOUNTS"
+  ],
+  "set.cbl": [
+    "ACCOUNTS"
+  ],
+  "startbr.cbl": [
+    "ACCOUNTS"
+  ],
+  "sysid-short.cbl": [
+    "ACCOUNTS"
+  ],
+  "system-two.cbl": [
+    "ACCOUNTS"
+  ],
+  "unlock.cbl": [
+    "ACCOUNTS"
+  ],
+  "write-call.cbl": [
+    "ACCOUNTS"
+  ],
+  "write.cbl": [
+    "ACCOUNTS"
+  ]
+}

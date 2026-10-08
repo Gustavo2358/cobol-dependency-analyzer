@@ -1,0 +1,32 @@
+{
+  "mutable-no-transfer.cbl": [],
+  "mutable-perform.cbl": [
+    "POSSIBLE"
+  ],
+  "mutable-transfer.cbl": [
+    "POSSIBLE"
+  ],
+  "mutable-unreachable.cbl": [],
+  "next-sentence.cbl": [],
+  "sql-update.cbl": [
+    "AFTERIO"
+  ],
+  "unknown-before-terminal.cbl": [],
+  "unknown-branch-kill.cbl": [
+    "FINAL"
+  ],
+  "unknown-branch-query.cbl": [
+    "FIRST",
+    "SECOND"
+  ],
+  "unknown-copy-kill.cbl": [
+    "FIRST",
+    "SECOND"
+  ],
+  "unknown-native-dead.cbl": [],
+  "unknown-native.cbl": [],
+  "unknown-perform.cbl": [
+    "AFTERP"
+  ],
+  "unknown-unused.cbl": []
+}

@@ -310,10 +310,13 @@ public final class Ast {
     public record CallStatement(Meta meta, CallTargetSyntax targetSyntax, Expression target,
                                 List<CallArgument> arguments, Expression returning,
                                 List<Statement> exceptionFlow, CallSurface surface,
-                                Optional<LogicalText> literalText) implements Statement {
+                                Optional<LogicalText> literalText,List<StatementClause> handlerClauses) implements Statement {
+        public CallStatement(Meta meta,CallTargetSyntax syntax,Expression target,List<CallArgument> arguments,Expression returning,List<Statement> exceptionFlow,CallSurface surface,Optional<LogicalText> literalText) {
+            this(meta,syntax,target,arguments,returning,exceptionFlow,surface,literalText,List.of());
+        }
         public CallStatement {
             arguments = List.copyOf(arguments);
-            exceptionFlow = List.copyOf(exceptionFlow);
+            exceptionFlow = List.copyOf(exceptionFlow);handlerClauses=List.copyOf(handlerClauses);
         }
     }
 
@@ -501,7 +504,7 @@ public final class Ast {
         public FileIoSurface { files=List.copyOf(files);operands=List.copyOf(operands);options=List.copyOf(options);handlers=List.copyOf(handlers);procedures=List.copyOf(procedures);gapCodes=List.copyOf(gapCodes); }
     }
 
-    public enum ExitKind { PARAGRAPH, PERFORM, PERFORM_CYCLE, PROGRAM, STOP_RUN }
+    public enum ExitKind { SECTION, PARAGRAPH, PERFORM, PERFORM_CYCLE, PROGRAM, STOP_RUN }
 
     /** Aliases operands owned by ModeledStatement, preserving SET group/destination order. */
     public record ConditionSetTarget(DataReference target, boolean truth) { }
@@ -773,7 +776,7 @@ public final class Ast {
             List<Node> result = new ArrayList<>();
             result.add(n.target()); result.addAll(n.arguments());
             if (n.returning() != null) result.add(n.returning());
-            result.addAll(n.exceptionFlow());
+            if(n.handlerClauses().isEmpty())result.addAll(n.exceptionFlow());else result.addAll(n.handlerClauses());
             return result;
         }
         if (node instanceof EmbeddedLanguageStatement n) return java.util.stream.Stream.of(n.hostOperands().stream().map(EmbeddedHostOperand::reference).map(Node.class::cast),n.procedureOperands().stream().map(Node.class::cast),n.expressionOperands().stream().map(EmbeddedExpressionOperand::expression).map(Node.class::cast)).flatMap(s->s).toList();

@@ -13,3 +13,7 @@
 /dist/
 /dist-cbstm03a/
 /dist-cbstm03d/
+
+/.cache/
+/.tmp/
+/benchmark/results/

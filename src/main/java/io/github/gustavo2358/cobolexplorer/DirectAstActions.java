@@ -1144,11 +1144,15 @@ final class DirectAstActions  {
         DirectSyntax.CallGivingPhraseFrame giving = context.callGivingPhrase();
         Ast.Expression returning = giving == null ? null
                 : expression(giving.identifier(), "call returning");
-        return new Ast.CallStatement(meta, kind, target, arguments, returning, directNestedStatements(context),
+        var handlers=new ArrayList<Ast.StatementClause>();
+        if(context.onExceptionClause()!=null)handlers.add(buildStatementClause(context.onExceptionClause()));
+        if(context.notOnExceptionClause()!=null)handlers.add(buildStatementClause(context.notOnExceptionClause()));
+        if(context.onOverflowPhrase()!=null)handlers.add(buildStatementClause(context.onOverflowPhrase()));
+        return new Ast.CallStatement(meta, kind, target, arguments, returning, handlers.stream().flatMap(h->h.nestedStatements().stream()).toList(),
                 new Ast.CallSurface(context.callUsingPhrase() != null, giving != null,
                         context.onExceptionClause() != null, context.notOnExceptionClause() != null,
                         context.onOverflowPhrase() != null),
-                context.literal() == null ? Optional.empty() : basicLogicalText(context.literal()));
+                context.literal() == null ? Optional.empty() : basicLogicalText(context.literal()),handlers);
     }
 
     private Ast.Statement buildStructuredStatement(DirectFrame context, boolean preserved) {
@@ -1185,6 +1189,7 @@ final class DirectAstActions  {
         if(context instanceof DirectSyntax.StopStatementFrame stop&&(stop.RUN()!=null||stop.stopStatementGiving()!=null))return Optional.of(Ast.ExitKind.STOP_RUN);
         if (!(context instanceof DirectSyntax.ExitStatementFrame e)) return Optional.empty();
         if(e.PROGRAM()!=null)return Optional.of(Ast.ExitKind.PROGRAM);
+        if (e.SECTION()!=null) return Optional.of(Ast.ExitKind.SECTION);
         if (e.PARAGRAPH()!=null) return Optional.of(Ast.ExitKind.PARAGRAPH);
         if (e.PERFORM()!=null) return Optional.of(e.CYCLE()!=null?Ast.ExitKind.PERFORM_CYCLE:Ast.ExitKind.PERFORM);
         return Optional.empty();

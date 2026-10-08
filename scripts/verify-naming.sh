@@ -10,7 +10,7 @@ legacy_purpose="bench""mark"
 paths=()
 while IFS= read -r -d '' path; do
   case "$path" in
-    src/main/antlr4/Cobol.g4|src/main/antlr4/CobolPreprocessor.g4|THIRD_PARTY_NOTICES.md|specs/*|docs/history/*)
+    MISSION.md|.gitignore|$legacy_purpose/*|src/test/resources/dependency-regression/*.json|src/test/resources/dependency-regression/*/*.json|src/main/antlr4/Cobol.g4|src/main/antlr4/CobolPreprocessor.g4|THIRD_PARTY_NOTICES.md|specs/*|docs/history/*)
       continue
       ;;
   esac
@@ -54,7 +54,7 @@ excluded = {'src/main/antlr4/Cobol.g4', 'src/main/antlr4/CobolPreprocessor.g4', 
 paths = subprocess.check_output(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z'])
 contents = []
 for name in sorted(set(paths.decode().split('\0')) - {''}):
-    if name in excluded or name.startswith(('specs/', 'docs/history/')):
+    if name in excluded or name in {'MISSION.md', '.gitignore'} or name.startswith(('specs/', 'docs/history/', purpose+'/')) or name.startswith('src/test/resources/dependency-regression/') and name.endswith('.json'):
         continue
     path = Path(name)
     if path.is_symlink() or not path.is_file():
@@ -68,6 +68,8 @@ for name in sorted(set(paths.decode().split('\0')) - {''}):
             # Ordinary measurement vocabulary is valid in prose; compound
             # product identifiers, code and structured labels remain checked.
             content = measurement.sub('', content)
+    if name == 'README.md':
+        content = content.replace(purpose+'/', '')  # Documented measurement tool paths.
     if forbidden.search(content):
         contents.append(name)
 if contents:
