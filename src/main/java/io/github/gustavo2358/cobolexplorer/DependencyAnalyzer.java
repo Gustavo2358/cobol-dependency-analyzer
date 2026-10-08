@@ -9,10 +9,6 @@ import io.github.gustavo2358.cobolexplorer.semanticproduct.CobolSemanticProduct;
 /** Headless single-process analysis. Never builds/publishes the Semantic Product,
  * physical storage, AIR, presentation snapshots or intermediate files. */
 public final class DependencyAnalyzer {
-    private final boolean shareSuffixes;
-    public DependencyAnalyzer(){this(true);}
-    // Package-local reference solver for differential semantic tests.
-    DependencyAnalyzer(boolean shareSuffixes){this.shareSuffixes=shareSuffixes;}
     public record At(String file,int line) { }
     public record Dependency(String type,String name,At at) { }
     public record Program(String program,List<Dependency> dependencies) { }
@@ -79,7 +75,7 @@ public final class DependencyAnalyzer {
                 if(!queries.isEmpty()) {
                     var topology=ControlTopologySemantics.analyze(unit,table,resolution,report,handles,CobolSemanticProduct.FileInventory.unavailable(),cics);
                     cfg+=System.nanoTime()-mark;mark=System.nanoTime();
-                    var values=new DependencyFlow(unit,declarations,topology,queries,options.maxWork(),cics,conditions.uses(unit.id()),shareSuffixes);
+                    var values=new DependencyFlow(unit,declarations,topology,queries,options.maxWork(),cics,conditions.uses(unit.id()));
                     flow+=System.nanoTime()-mark;work+=values.visits;contexts+=values.contexts.size();tracked+=values.demand.size();mark=System.nanoTime();notices.addAll(values.diagnostics);
                     values.answers.forEach((q,v)->v.values().forEach(name->{
                         if(q.type().equals("file")&&(q.literal().isEmpty()&&name.length()!=8||name.stripTrailing().length()>8||!name.stripTrailing().matches("[A-Z0-9$@#]+")))

@@ -10,25 +10,44 @@ import io.github.gustavo2358.cobolexplorer.semanticproduct.ControlTopology;
  * control predicates. No call-stack or execution-path enumeration. */
 final class DependencyFlow {
     record Query(Ast.Statement statement,String type,Ast.Expression expression,Optional<String> literal) { }
-    record State(Map<Integer,DependencyValues> values,Map<String,Set<String>> handlers) {
-        State { values=DependencyEnvironment.copyOf(values);handlers=Map.copyOf(handlers); }
+    record State(Map<Integer,DependencyValues> values,Map<String,Set<String>> handlers,Set<String> reached) {
+        State { values=DependencyEnvironment.copyOf(values);handlers=Map.copyOf(handlers);reached=Set.copyOf(reached); }
         DependencyValues get(int id){return values.getOrDefault(id,DependencyValues.UNKNOWN);}
+        State withValues(Map<Integer,DependencyValues> values){return new State(values,handlers,reached);}
+        State withHandlers(Map<String,Set<String>> handlers){return new State(values,handlers,reached);}
         State join(State other) {
             if(this==other||equals(other))return this;
             var out=new DependencyEnvironment.Builder(values);other.values.forEach((k,v)->out.merge(k,v,DependencyValues::join));
-            var h=new HashMap<>(handlers);other.handlers.forEach((k,v)->h.merge(k,v,(a,b)->{var set=new HashSet<>(a);set.addAll(b);return Set.copyOf(set);}));
-            return new State(out,h);
+            var h=new HashMap<>(handlers);other.handlers.forEach((k,v)->h.merge(k,v,(x,y)->union(x,y)));
+            return new State(out,h,union(reached,other.reached));
         }
     }
-    record Invocation(String body,String endpoint,State input) { }
-    record Location(int context,String node) { }
-    record ReturnTo(int context,String binding,State input) { }
+    private static <T> Set<T> union(Set<T> a,Set<T> b) {
+        if(a.containsAll(b))return a;if(b.containsAll(a))return b;
+        var result=new HashSet<>(a);result.addAll(b);return Set.copyOf(result);
+    }
+    /** Exits are results of control, independent of a caller's return policy. */
+    record Exit(TargetKind kind,String reference) {
+        static Exit of(Target target){return new Exit(target.kind(),target.reference());}
+    }
+    record SummaryKey(Exit entry,String endpoint,State input) { }
+    record Location(int context,String node,Exit result) {
+        Location(int context,String node){this(context,node,null);}
+    }
+    sealed interface Continuation permits Forward,ReturnTo,Entry {
+        String endpoint();State input();
+    }
+    record Forward(int context,String endpoint,State input) implements Continuation { }
+    record ReturnTo(int context,String binding,String endpoint,State input) implements Continuation { }
+    record Entry(String endpoint,State input) implements Continuation { }
+    record Need(Set<Integer> values,Set<String> prerequisites) {
+        Need join(Need other){return new Need(union(values,other.values),union(prerequisites,other.prerequisites));}
+    }
     static final class Context {
-        final Invocation key;
-        final Set<ReturnTo> callers=new HashSet<>();
-        final Set<Integer> suffixCallers=new HashSet<>();
-        State result;
-        Context(Invocation key){this.key=key;}
+        final SummaryKey key;
+        final Set<Continuation> callers=new HashSet<>();
+        final Map<Exit,State> results=new HashMap<>();
+        Context(SummaryKey key){this.key=key;}
     }
     final DependencyDeclarations declarations;
     final ScalarPredicateSemantics predicates;
@@ -57,10 +76,14 @@ final class DependencyFlow {
     final Map<Integer,List<Integer>> elementIds=new HashMap<>();
     int nextElementId;
     final List<Context> contexts=new ArrayList<>();
-    final Map<Invocation,Integer> memo=new HashMap<>();
-    final Set<String> suffixEntries=new HashSet<>();
-    final Map<String,Set<Integer>> neededByRange=new HashMap<>();
-    final Map<String,Map<String,Set<Integer>>> sharedNeeded=new HashMap<>();
+    final Map<SummaryKey,Integer> memo=new HashMap<>();
+    final Set<String> paragraphEntries=new HashSet<>();
+    final Set<String> prerequisites=new HashSet<>();
+    static final class Relevance {
+        final Map<Exit,Need> footprints=new HashMap<>();
+        final Map<Exit,Set<Exit>> predecessors=new HashMap<>();
+    }
+    final Map<String,Relevance> relevance=new HashMap<>();
     final Map<Location,State> before=new HashMap<>();
     final ArrayDeque<Location> work=new ArrayDeque<>();
     final Set<Location> queued=new HashSet<>();
@@ -70,7 +93,7 @@ final class DependencyFlow {
     long visits;
 
     DependencyFlow(CompilationUnitModel.ProgramUnit unit,DependencyDeclarations declarations,
-            ControlTopology control,List<Query> queries,long maxWork,CicsProgramControlAnalyzer.Contribution cics,Map<Integer,ConditionNameSemantics.Use> conditions,boolean shareSuffixes) {
+            ControlTopology control,List<Query> queries,long maxWork,CicsProgramControlAnalyzer.Contribution cics,Map<Integer,ConditionNameSemantics.Use> conditions) {
         this.declarations=declarations;this.queries=queries;this.maxWork=maxWork;
         predicates=new ScalarPredicateSemantics(conditions,declarations.references.keySet());
         var todo=new ArrayDeque<Ast.Node>();todo.add(unit.program());
@@ -146,20 +169,13 @@ final class DependencyFlow {
         }
         for(int id:declarations.textualViews.keySet())if(!Collections.disjoint(declarations.leaves(id),demand))textGroups.add(id);
         demand.addAll(textGroups);
-        // A suffix has the same completion as its enclosing invocation. Share
-        // only structured paragraph fallthrough: transfers, contextual escapes
-        // and handler/prerequisite histories still use the original contexts.
-        // Branches and nested PERFORMs keep their existing worklist semantics.
-        if(shareSuffixes && possibilities.isEmpty() && registrations.isEmpty()
-                && events.isEmpty() && exceptionalEvents.isEmpty() && abendRegistrations.isEmpty()
-                && ioDeclarations.isEmpty() && filePoints.isEmpty()
-                && edges.values().stream().flatMap(List::stream).noneMatch(e->
-                    e.kind()==OutcomeKind.EXPLICIT_TRANSFER || e.target().kind()==TargetKind.ESCAPE)
-                && regions.values().stream().noneMatch(r->r.kind()==RegionKind.CALL_HANDLER
-                    || r.kind()==RegionKind.FILE || r.kind()==RegionKind.FILE_HANDLER)) {
-            for(var r:regions.values())if(r.kind()==RegionKind.PARAGRAPH && r.entry().kind()==TargetKind.OCCURRENCE)
-                suffixEntries.add(r.entry().reference());
+        // Paragraph entries are natural control joins, regardless of the source
+        // construct that reaches them. They all use the same summary mechanism.
+        for(var r:regions.values())if(r.kind()==RegionKind.PARAGRAPH) {
+            var entry=normalize(Exit.of(r.entry()));
+            if(entry.kind()==TargetKind.OCCURRENCE)paragraphEntries.add(entry.reference());
         }
+        possibilities.values().forEach(ps->ps.forEach(p->prerequisites.addAll(p.prerequisites())));
         nextElementId=declarations.entries.keySet().stream().mapToInt(Integer::intValue).max().orElse(0)+1;
         for(int id:new ArrayList<>(demand))if(declarations.repeated.contains(id)&&declarations.children.getOrDefault(id,List.of()).isEmpty()) {
             var dimensions=new ArrayList<Integer>();Integer ancestor=id;
@@ -167,12 +183,18 @@ final class DependencyFlow {
             if(!dimensions.contains(0))indexElements(id,dimensions,0,List.of());
         }
         State initial=initial();
-        contexts.add(new Context(new Invocation("","",initial)));
-        control.regions().stream().filter(r->r.kind()==RegionKind.PROCEDURE).findFirst().ifPresent(r->route(0,r.entry(),initial));
-        for(var e:control.entryPoints())route(0,e.target(),initial);
+        control.regions().stream().filter(r->r.kind()==RegionKind.PROCEDURE).findFirst().ifPresent(r->{
+            String endpoint="boundary:"+r.id();
+            subscribe(new Entry(endpoint,initial),Exit.of(r.entry()));
+            for(var e:control.entryPoints())subscribe(new Entry(endpoint,initial),Exit.of(e.target()));
+        });
         while(!work.isEmpty()) {
             if(++visits>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: dataflow did not complete within --max-work="+maxWork);
-            var location=work.removeFirst();queued.remove(location);step(location,before.get(location));
+            var location=work.removeFirst();queued.remove(location);
+            if(location.result()!=null) {
+                var ctx=contexts.get(location.context());
+                for(var caller:List.copyOf(ctx.callers))deliver(caller,location.result(),ctx.results.get(location.result()));
+            }else step(location,before.get(location));
         }
         for(var q:queries) {
             DependencyValues answer=null;
@@ -186,7 +208,7 @@ final class DependencyFlow {
     static String handle(Ast.Statement s){return "statement:"+s.meta().id();}
     private State initial() {
         var out=new HashMap<Integer,DependencyValues>();demand.stream().filter(id->!textGroups.contains(id)).forEach(id->out.put(id,DependencyValues.UNKNOWN));
-        State state=new State(out,Map.of());
+        State state=new State(out,Map.of(),Set.of());
         for(var d:declarations.entries.values())if(demand.stream().anyMatch(declarations.related(d.meta().id())::contains)) {
             var value=d.clauses().stream().filter(Ast.ValueClause.class::isInstance).map(Ast.ValueClause.class::cast).findFirst();
             if(value.isEmpty()||d.levelKind()==Ast.DataLevelKind.CONDITION_88||d.meta().syntheticModel())continue;
@@ -198,12 +220,12 @@ final class DependencyFlow {
                     state=decode(d.meta().id(),seed.fit(declarations.widths.getOrDefault(d.meta().id(),0)),state,0,false);
                     if(textGroups.contains(d.meta().id())) {
                         var groups=new DependencyEnvironment.Builder(state.values());
-                        groups.put(d.meta().id(),seed.fit(declarations.widths.getOrDefault(d.meta().id(),0)));state=new State(groups,state.handlers());
+                        groups.put(d.meta().id(),seed.fit(declarations.widths.getOrDefault(d.meta().id(),0)));state=state.withValues(groups);
                     }
                 }
                 if(!elementIds.getOrDefault(d.meta().id(),List.of()).isEmpty()) {
                     var outValues=new DependencyEnvironment.Builder(state.values());
-                    for(int slot:elementIds.get(d.meta().id()))outValues.put(slot,state.get(d.meta().id()));state=new State(outValues,state.handlers());
+                    for(int slot:elementIds.get(d.meta().id()))outValues.put(slot,state.get(d.meta().id()));state=state.withValues(outValues);
                 }
             }
         }
@@ -221,7 +243,7 @@ final class DependencyFlow {
             }
             snapshots.put(id,value);
         }
-        return new State(snapshots,state.handlers());
+        return state.withValues(snapshots);
     }
     private void indexElements(int declaration,List<Integer> dimensions,int level,List<Integer> path) {
         if(elements.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: logical table elements");
@@ -320,7 +342,7 @@ final class DependencyFlow {
         State original=state;
         var changedGroups=new HashSet<Integer>();
         for(int group:textGroups)if(!Collections.disjoint(declarations.leaves(group),declarations.related(id)))changedGroups.add(group);
-        if(!changedGroups.isEmpty()) {var out=new DependencyEnvironment.Builder(state.values());changedGroups.forEach(out::remove);state=new State(out,state.handlers());}
+        if(!changedGroups.isEmpty()) {var out=new DependencyEnvironment.Builder(state.values());changedGroups.forEach(out::remove);state=state.withValues(out);}
         state=writeLocal(id,value,state,weak);
         if(!weak&&!declarations.children.getOrDefault(id,List.of()).isEmpty()&&declarations.leaves(id).stream().anyMatch(elementIds::containsKey)) {
             state=decode(id,value.fit(declarations.widths.getOrDefault(id,0)),state,0,false);
@@ -328,7 +350,7 @@ final class DependencyFlow {
             for(int leaf:declarations.leaves(id))if(elementIds.containsKey(leaf)) {
                 DependencyValues all=null;for(int slot:elementIds.get(leaf))all=all==null?state.get(slot):all.join(state.get(slot));
                 exact.put(leaf,all);
-            }state=new State(exact,state.handlers());
+            }state=state.withValues(exact);
         }
         var ancestors=new LinkedHashSet<Integer>();ancestors.add(id);
         for(int leaf:declarations.leaves(id)){Integer ancestor=leaf;while(ancestor!=null){ancestors.add(ancestor);ancestor=declarations.parent.get(ancestor);}}
@@ -348,7 +370,7 @@ final class DependencyFlow {
                 }else next=assemble(group,state);
                 out.put(group,next);
             }
-            state=new State(out,state.handlers());
+            state=state.withValues(out);
         }
         return state;
     }
@@ -381,7 +403,7 @@ final class DependencyFlow {
                     Integer slot=elements.get(new Element(alias,current));
                     if(slot!=null)out.put(slot,weak?state.get(slot).join(value).open():value);
                 }
-                state=new State(out,state.handlers());
+                state=state.withValues(out);
             }else {int start=base;for(int c:cs) {
                 if(declarations.entries.get(c).clauses().stream().anyMatch(Ast.RedefinesClause.class::isInstance))continue;
                 state=decode(c,text,state,start,weak,current);start+=declarations.widths.getOrDefault(c,0)*declarations.counts.getOrDefault(c,1);
@@ -421,7 +443,7 @@ final class DependencyFlow {
             }
         }
         if(value.values().size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many logical candidates");
-        return out==null?state:new State(out,state.handlers());
+        return out==null?state:state.withValues(out);
     }
     private DependencyValues fitField(int id,DependencyValues value) {
         int width=declarations.widths.getOrDefault(id,0);
@@ -461,13 +483,13 @@ final class DependencyFlow {
                         var candidates=new HashSet<String>();checkProduct(prior,replacement);
                         for(String a:prior.values())for(String b:replacement.values())if(span[0]+span[1]<=a.length())candidates.add(a.substring(0,span[0])+b+a.substring(span[0]+span[1]));
                         var next=new DependencyValues(candidates,prior.unknown()||replacement.unknown());
-                        var exact=singletonTableText(group,new State(changed,out.handlers()),List.of(),true);
+                        var exact=singletonTableText(group,out.withValues(changed),List.of(),true);
                         if(exact.isPresent())next=DependencyValues.known(exact.get());
                         changed.put(group,next);
                     }
                 }
             }else for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id)))for(int slot:elementIds.getOrDefault(alias,List.of()))changed.put(slot,out.get(slot).join(fitField(alias,value)).open());
-            State result=new State(changed,out.handlers());
+            State result=out.withValues(changed);
             if(selected!=null)for(int group:textGroups)if(indexedSpan(group,id,indexes)!=null)
                 for(int alias:declarations.textualViews.getOrDefault(group,Set.of()))result=decode(alias,result.get(group),result,0,false);
             return result;
@@ -574,7 +596,7 @@ final class DependencyFlow {
         state=write(id,value,state,false);
         if(elementIds.containsKey(id)) {
             var initialized=new DependencyEnvironment.Builder(state.values());initialized.put(id,value);
-            for(int slot:elementIds.get(id))initialized.put(slot,value);state=new State(initialized,state.handlers());
+            for(int slot:elementIds.get(id))initialized.put(slot,value);state=state.withValues(initialized);
         }return state;
     }
     private void enqueue(int context,String node,State state) {
@@ -582,149 +604,154 @@ final class DependencyFlow {
         if(!joined.equals(old)){before.put(key,joined);if(queued.add(key))work.addLast(key);}
         if(before.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many states");
     }
-    private void route(int context,Target target,State state) {
-        var visited=new HashSet<String>();
+    private Exit normalize(Exit target) {
+        var seen=new HashSet<Exit>();
+        while(target.kind()==TargetKind.REGION_ENTRY) {
+            if(!seen.add(target))throw new IllegalStateException("cyclic control alias "+target);
+            target=Exit.of(regions.get(target.reference()).entry());
+        }return target;
+    }
+    private void route(int context,Target target,State state){route(context,Exit.of(target),state);}
+    private void route(int context,Exit target,State state) {
+        var seen=new HashSet<Exit>();
         while(true) {
-            String identity=target.kind()+"/"+target.reference();if(!visited.add(identity))throw new IllegalStateException("cyclic control alias "+identity);
+            target=normalize(target);
+            if(!seen.add(target))throw new IllegalStateException("cyclic control alias "+target);
             switch(target.kind()) {
                 case OCCURRENCE -> {enqueue(context,target.reference(),state);return;}
-                case REGION_ENTRY -> target=regions.get(target.reference()).entry();
-                case COMPLETE,ESCAPE -> {
-                    var ctx=contexts.get(context);String boundary="boundary:"+target.reference();
-                    if(target.kind()==TargetKind.ESCAPE && context!=0) {
-                        if(boundary.equals(ctx.key.endpoint())) {
-                            for(var caller:List.copyOf(ctx.callers))route(caller.context(),bindings.get(caller.binding()).resume(),restore(caller,state));return;
-                        }
-                        String body=ctx.key.body();boolean enclosing=false;
-                        while(regions.containsKey(body)&&!body.equals(target.reference()))body=regions.get(body).parent();
-                        enclosing=body.equals(target.reference())&&!ctx.key.body().equals(body);
-                        if(enclosing) {for(var caller:List.copyOf(ctx.callers))route(caller.context(),target,restore(caller,state));return;}
-                    }
-                    if(boundary.equals(ctx.key.endpoint())){finish(context,state);return;}
-                    target=boundaries.get(target.reference()).ordinaryDefault();
+                case COMPLETE -> {
+                    if(("boundary:"+target.reference()).equals(contexts.get(context).key.endpoint())){finish(context,target,state);return;}
+                    target=Exit.of(boundaries.get(target.reference()).ordinaryDefault());
                 }
+                case ESCAPE,PROGRAM_RETURN,PROGRAM_HALT -> {finish(context,target,state);return;}
                 case FILE_POINT -> {for(var t:filePoints.get(target.reference()).targets())route(context,t,state);return;}
-                case PROGRAM_RETURN,PROGRAM_HALT -> {return;}
                 case UNKNOWN_LOCAL -> {
-                    if(context!=0&&contexts.get(context).key.endpoint().equals("boundary:"+target.reference())&&regions.get(target.reference()).kind()==RegionKind.DECLARATIVE) {
-                        diagnostics.add("IO_HANDLER_REMAINDER "+target.reference());finish(context,state);return;
+                    if(contexts.get(context).key.endpoint().equals("boundary:"+target.reference())&&regions.get(target.reference()).kind()==RegionKind.DECLARATIVE) {
+                        diagnostics.add("IO_HANDLER_REMAINDER "+target.reference());finish(context,new Exit(TargetKind.COMPLETE,target.reference()),state);return;
                     }
                     diagnostics.add("CONTROL_REMAINDER "+target.reference());return;
                 }
+                default -> throw new IllegalStateException("unresolved control entry "+target);
             }
         }
     }
     private void invoke(int caller,Binding binding,State state) {
-        var range=regions.get(binding.region());
-        var needed=neededByRange.computeIfAbsent(range.entry().reference()+"/"+binding.endpoint(),k->needed(binding));
-        var projected=new HashMap<Integer,DependencyValues>();for(int id:needed)if(state.values().containsKey(id))projected.put(id,state.get(id));
-        var key=new Invocation(range.entry().reference(),binding.endpoint(),new State(projected,state.handlers()));
+        subscribe(new ReturnTo(caller,binding.id(),binding.endpoint(),state),Exit.of(regions.get(binding.region()).entry()));
+    }
+    private void subscribe(Continuation caller,Exit entry) {
+        String endpoint=caller.endpoint();State state=caller.input();
+        entry=normalize(entry);
+        var needed=needed(entry,endpoint);
+        var projected=new HashMap<Integer,DependencyValues>();
+        for(int id:needed.values())if(state.values().containsKey(id))projected.put(id,state.get(id));
+        var facts=new HashSet<>(state.reached());facts.retainAll(needed.prerequisites());
+        var key=new SummaryKey(entry,endpoint,new State(projected,state.handlers(),facts));
         Integer context=memo.get(key);
-        if(context==null) {context=contexts.size();memo.put(key,context);contexts.add(new Context(key));route(context,range.entry(),key.input());}
-        var ctx=contexts.get(context);var returnTo=new ReturnTo(caller,binding.id(),state);
-        if(ctx.callers.add(returnTo)&&ctx.result!=null)phase(caller,binding,binding.completionPhase(),restore(returnTo,ctx.result));
-    }
-    private State restore(ReturnTo caller,State result) {
-        var restored=new DependencyEnvironment.Builder(caller.input().values());restored.putAll(result.values());return new State(restored,result.handlers());
-    }
-    /** Static dependency slice for a shared body, including nested invocations,
-     * transfers and possible handlers. This projection is independent of values. */
-    private Set<Integer> needed(Binding binding) {
-        if(!suffixEntries.isEmpty())return sharedNeeded.computeIfAbsent(binding.endpoint(),this::neededForEndpoint)
-            .get(targetKey(regions.get(binding.region()).entry()));
-        var needed=new HashSet<Integer>();var seen=new HashSet<String>();var todo=new ArrayDeque<Target>();
-        todo.add(regions.get(binding.region()).entry());
-        while(!todo.isEmpty()) {
-            var t=todo.removeFirst();if(!seen.add(t.kind()+"/"+t.reference()))continue;
-            switch(t.kind()) {
-                case REGION_ENTRY -> todo.add(regions.get(t.reference()).entry());
-                case COMPLETE,ESCAPE -> {if(!("boundary:"+t.reference()).equals(binding.endpoint()))todo.add(boundaries.get(t.reference()).ordinaryDefault());}
-                case OCCURRENCE -> {
-                    var s=statements.get(t.reference());if(s==null)continue;
-                    needed.addAll(declarations.reads(s));needed.addAll(writes(s));
-                    if(StatementEffectSummary.of(s).filter(e->e.unknownWriteBound()==StatementEffectSummary.Bound.ALL).isPresent())needed.addAll(demand);
-                    if(exceptionalEvents.containsKey(t.reference()))needed.addAll(demand);
-                    for(var e:edges.getOrDefault(t.reference(),List.of())) {
-                        todo.add(e.target());if(e.kind()==OutcomeKind.LOCAL_INVOKE)todo.add(bindings.get(e.binding()).resume());
-                    }
-                    for(var p:possibilities.getOrDefault(t.reference(),List.of()))todo.add(p.target());
-                    for(var use:ioDeclarations.getOrDefault(t.reference(),List.of()))todo.add(regions.get(use.region()).entry());
-                    for(var e:events.getOrDefault(t.reference(),List.of())) {todo.add(e.continuation());registrations.values().forEach(rs->rs.forEach(r->todo.addAll(r.target())));}
-                }
-                case FILE_POINT -> todo.addAll(filePoints.get(t.reference()).targets());
-                default -> { }
-            }
+        if(context==null) {
+            context=contexts.size();memo.put(key,context);contexts.add(new Context(key));route(context,entry,key.input());
         }
-        return expandNeeded(needed);
+        var ctx=contexts.get(context);
+        if(ctx.callers.add(caller))for(var exit:ctx.results.keySet())queueResult(context,exit);
+        if(contexts.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many summaries");
+    }
+    private State restore(Continuation caller,State result) {
+        var restored=new DependencyEnvironment.Builder(caller.input().values());restored.putAll(result.values());
+        return new State(restored,result.handlers(),union(caller.input().reached(),result.reached()));
+    }
+    /** A fallthrough forwards the result unchanged. Only a real invocation owns
+     * repeat phases and contextual escapes; an independent entry has no resume. */
+    private void deliver(Continuation caller,Exit exit,State result) {
+        State state=restore(caller,result);
+        if(caller instanceof Forward forward){finish(forward.context(),exit,state);return;}
+        ReturnTo returnTo=caller instanceof ReturnTo r?r:null;
+        Binding binding=returnTo==null?null:bindings.get(returnTo.binding());
+        if(exit.kind()==TargetKind.COMPLETE) {
+            if(returnTo!=null)phase(returnTo.context(),binding,binding.completionPhase(),state);
+            return;
+        }
+        if(exit.kind()==TargetKind.ESCAPE) {
+            if(("boundary:"+exit.reference()).equals(caller.endpoint())) {
+                if(returnTo!=null)route(returnTo.context(),binding.resume(),state);
+                return;
+            }
+            if(returnTo!=null) {
+                String body=regions.get(binding.region()).entry().reference(),ancestor=body;
+                while(regions.containsKey(ancestor)&&!ancestor.equals(exit.reference()))ancestor=regions.get(ancestor).parent();
+                if(ancestor.equals(exit.reference())&&!ancestor.equals(body)){finish(returnTo.context(),exit,state);return;}
+            }
+            Continuation next=returnTo==null?new Entry(caller.endpoint(),state)
+                :new ReturnTo(returnTo.context(),returnTo.binding(),caller.endpoint(),state);
+            subscribe(next,Exit.of(boundaries.get(exit.reference()).ordinaryDefault()));
+        }else if(returnTo!=null)finish(returnTo.context(),exit,state);
     }
     private Set<Integer> expandNeeded(Set<Integer> needed) {
         for(int group:textGroups)if(!Collections.disjoint(needed,declarations.leaves(group)))needed.add(group);
         for(int id:new ArrayList<>(needed))needed.addAll(elementIds.getOrDefault(id,List.of()));
         needed.retainAll(demand);return Set.copyOf(needed);
     }
-    private static String targetKey(Target target){return target.kind()+"/"+target.reference();}
-    /** Backward set-union closure, once per endpoint. The old per-range BFS
-     * repeatedly walked the same suffix even before executing dataflow. This
-     * computes the same read/write footprint for all entries together, including
-     * nested invocation bodies and resumes. Cycles converge by finite union. */
-    private Map<String,Set<Integer>> neededForEndpoint(String endpoint) {
-        var footprints=new HashMap<String,Set<Integer>>();
-        var predecessors=new HashMap<String,Set<String>>();
-        var todo=new ArrayDeque<Target>();
-        for(var binding:bindings.values())if(binding.endpoint().equals(endpoint))todo.add(regions.get(binding.region()).entry());
+    /** One backward finite-union closure for every control entry. Handler targets,
+     * source prerequisites and invocation resumes are part of this same graph. */
+    private Need needed(Exit entry,String endpoint) {
+        var index=relevance.computeIfAbsent(endpoint,k->new Relevance());
+        var footprints=index.footprints;var predecessors=index.predecessors;
+        if(footprints.containsKey(entry))return footprints.get(entry);
+        var todo=new ArrayDeque<Exit>();todo.add(entry);
+        var seeds=new HashSet<Exit>();
         while(!todo.isEmpty()) {
-            var target=todo.removeFirst();String key=targetKey(target);if(footprints.containsKey(key))continue;
-            var local=new HashSet<Integer>();var successors=new ArrayList<Target>();
+            var target=normalize(todo.removeFirst());if(footprints.containsKey(target))continue;
+            var local=new HashSet<Integer>();var facts=new HashSet<String>();var successors=new ArrayList<Exit>();
             switch(target.kind()) {
-                case REGION_ENTRY -> successors.add(regions.get(target.reference()).entry());
                 case COMPLETE,ESCAPE -> {
-                    if(!("boundary:"+target.reference()).equals(endpoint))successors.add(boundaries.get(target.reference()).ordinaryDefault());
+                    if(!("boundary:"+target.reference()).equals(endpoint))successors.add(Exit.of(boundaries.get(target.reference()).ordinaryDefault()));
                 }
                 case OCCURRENCE -> {
                     var statement=statements.get(target.reference());
                     if(statement!=null) {
                         local.addAll(declarations.reads(statement));local.addAll(writes(statement));
-                        if(StatementEffectSummary.of(statement).filter(e->e.unknownWriteBound()==StatementEffectSummary.Bound.ALL).isPresent())local.addAll(demand);
+                        if(StatementEffectSummary.of(statement).filter(e->e.unknownWriteBound()==StatementEffectSummary.Bound.ALL).isPresent()
+                                ||exceptionalEvents.containsKey(target.reference()))local.addAll(demand);
                         for(var edge:edges.getOrDefault(target.reference(),List.of())) {
-                            successors.add(edge.target());
-                            if(edge.kind()==OutcomeKind.LOCAL_INVOKE)successors.add(bindings.get(edge.binding()).resume());
+                            successors.add(Exit.of(edge.target()));
+                            if(edge.kind()==OutcomeKind.LOCAL_INVOKE)successors.add(Exit.of(bindings.get(edge.binding()).resume()));
                         }
+                        for(var p:possibilities.getOrDefault(target.reference(),List.of())) {
+                            facts.addAll(p.prerequisites());successors.add(Exit.of(p.target()));
+                        }
+                        for(var use:ioDeclarations.getOrDefault(target.reference(),List.of()))successors.add(Exit.of(regions.get(use.region()).entry()));
+                        fileSurface(statement).ifPresent(surface->{for(var h:surface.handlers()) {
+                            var r=regions.get("region:"+handle(statement)+"/file/handler-"+h.kind());if(r!=null)successors.add(Exit.of(r.entry()));
+                        }});
+                        for(var event:events.getOrDefault(target.reference(),List.of())) {
+                            successors.add(Exit.of(event.continuation()));
+                            registrations.values().forEach(rs->rs.forEach(r->r.target().forEach(t->successors.add(Exit.of(t)))));
+                        }
+                        if(exceptionalEvents.containsKey(target.reference()))for(String handler:handlerEndpoints.keySet())successors.add(new Exit(TargetKind.OCCURRENCE,handler));
                     }
                 }
+                case FILE_POINT -> filePoints.get(target.reference()).targets().forEach(t->successors.add(Exit.of(t)));
                 default -> { }
             }
-            footprints.put(key,expandNeeded(local));
+            footprints.put(target,new Need(expandNeeded(local),Set.copyOf(facts)));seeds.add(target);
             for(var successor:successors) {
-                predecessors.computeIfAbsent(targetKey(successor),k->new HashSet<>()).add(key);todo.add(successor);
+                successor=normalize(successor);seeds.add(successor);predecessors.computeIfAbsent(successor,k->new HashSet<>()).add(target);todo.add(successor);
             }
         }
-        var pending=new ArrayDeque<String>();var queued=new HashSet<String>();
-        footprints.forEach((key,values)->{if(!values.isEmpty()){pending.add(key);queued.add(key);}});
+        // Existing successors must also seed newly added predecessors.
+        var pending=new ArrayDeque<>(seeds);var scheduled=new HashSet<>(seeds);
         while(!pending.isEmpty()) {
-            String key=pending.removeFirst();queued.remove(key);var values=footprints.get(key);
-            for(String predecessor:predecessors.getOrDefault(key,Set.of())) {
-                var old=footprints.get(predecessor);if(old.containsAll(values))continue;
-                var union=new HashSet<>(old);union.addAll(values);footprints.put(predecessor,Set.copyOf(union));
-                if(queued.add(predecessor))pending.addLast(predecessor);
+            var key=pending.removeFirst();scheduled.remove(key);var values=footprints.get(key);
+            for(var predecessor:predecessors.getOrDefault(key,Set.of())) {
+                var old=footprints.get(predecessor);var joined=old.join(values);if(joined.equals(old))continue;
+                footprints.put(predecessor,joined);if(scheduled.add(predecessor))pending.addLast(predecessor);
             }
-        }
-        return footprints;
+        }return footprints.get(entry);
     }
-    private void finish(int context,State state) {
-        var ctx=contexts.get(context);var joined=ctx.result==null?state:ctx.result.join(state);
-        if(joined.equals(ctx.result))return;ctx.result=joined;
-        for(var caller:List.copyOf(ctx.callers))phase(caller.context(),bindings.get(caller.binding()),bindings.get(caller.binding()).completionPhase(),restore(caller,joined));
-        // Queue completions instead of recursively unwinding a long suffix.
-        for(int caller:ctx.suffixCallers)enqueue(caller,"suffix-result",joined);
+    private void queueResult(int context,Exit exit) {
+        var location=new Location(context,"",exit);if(queued.add(location))work.addLast(location);
     }
-    private void suffix(int caller,String entry,State input) {
-        var key=new Invocation("suffix/"+entry,contexts.get(caller).key.endpoint(),input);
-        Integer context=memo.get(key);
-        if(context==null) {
-            context=contexts.size();memo.put(key,context);contexts.add(new Context(key));enqueue(context,entry,input);
-        }
-        var ctx=contexts.get(context);
-        if(ctx.suffixCallers.add(caller)&&ctx.result!=null)enqueue(caller,"suffix-result",ctx.result);
+    private void finish(int context,Exit exit,State state) {
+        var ctx=contexts.get(context);var old=ctx.results.get(exit);var joined=old==null?state:old.join(state);
+        if(joined.equals(old))return;ctx.results.put(exit,joined);queueResult(context,exit);
     }
     private void phase(int caller,Binding binding,String phase,State state) {
         if(phase.equals("BODY")){invoke(caller,binding,state);return;}
@@ -733,10 +760,9 @@ final class DependencyFlow {
     }
     private void step(Location location,State input) {
         String node=location.node();
-        if(node.equals("suffix-result")){finish(location.context(),input);return;}
-        if(location.context()!=0 && suffixEntries.contains(node)
-                && !contexts.get(location.context()).key.body().equals("suffix/"+node)) {
-            suffix(location.context(),node,input);return;
+        var context=contexts.get(location.context());
+        if(paragraphEntries.contains(node)&&!context.key.entry().equals(new Exit(TargetKind.OCCURRENCE,node))) {
+            subscribe(new Forward(location.context(),context.key.endpoint(),input),new Exit(TargetKind.OCCURRENCE,node));return;
         }
         if(node.startsWith("phase/")) {
             int split=node.lastIndexOf('/');var b=bindings.get(node.substring(6,split));String id=node.substring(split+1);
@@ -763,6 +789,7 @@ final class DependencyFlow {
         }
         var s=statements.get(node);if(s==null)return;
         State state=transfer(s,input);
+        if(prerequisites.contains(node)&&!state.reached().contains(node))state=new State(state.values(),state.handlers(),union(state.reached(),Set.of(node)));
         var registration=abendRegistrations.get(node);
         if(registration!=null) {
             var h=new HashMap<>(state.handlers());
@@ -771,12 +798,12 @@ final class DependencyFlow {
                 h.put("ABEND",target);h.put("ABEND-SAVED",target);
             } else if(registration.action()==CicsHandlerSemantics.Action.CANCEL)h.put("ABEND",Set.of("CANCEL"));
             else if(registration.action()==CicsHandlerSemantics.Action.RESET)h.put("ABEND",h.getOrDefault("ABEND-SAVED",Set.of("UNKNOWN")));
-            state=new State(state.values(),h);
+            state=state.withHandlers(h);
         }
         if(registrations.containsKey(node)) {
             var h=new HashMap<>(state.handlers());
             for(var r:registrations.get(node))h.put(r.condition(),Set.of(r.action()==ConditionAction.LABEL?r.target().get(0).reference():r.action().name()));
-            state=new State(state.values(),h);
+            state=state.withHandlers(h);
         }
         for(var e:edges.getOrDefault(node,List.of())) {
             State branch=state;
@@ -792,7 +819,7 @@ final class DependencyFlow {
         }
         // Inventory the source-qualified continuations with uncertainty. Their
         // prerequisites must have been reached in this invocation.
-        for(var p:possibilities.getOrDefault(node,List.of()))if(p.prerequisites().stream().allMatch(x->reached(location.context(),x)))route(location.context(),p.target(),state);
+        for(var p:possibilities.getOrDefault(node,List.of()))if(state.reached().containsAll(p.prerequisites()))route(location.context(),p.target(),state);
         // File handler bodies already have grammar-owned entries/completions.
         var surface=fileSurface(s);
         if(surface.isPresent())for(var h:surface.get().handlers()) {
@@ -809,20 +836,13 @@ final class DependencyFlow {
             if(!explicit&&!dispositions.contains("DEFAULT"))continue;
             for(String handler:state.handlers().getOrDefault("ABEND",Set.of("UNKNOWN")))if(handlerEndpoints.containsKey(handler)) {
                 var h=new HashMap<>(state.handlers());h.put("ABEND",Set.of("CANCEL"));
-                State ingress=new State(state.values(),h);var key=new Invocation(handler,handlerEndpoints.get(handler),ingress);
-                Integer ctx=memo.get(key);if(ctx==null){ctx=contexts.size();memo.put(key,ctx);contexts.add(new Context(key));enqueue(ctx,handler,ingress);}
+                State ingress=state.withHandlers(h);String endpoint=handlerEndpoints.get(handler);
+                subscribe(new Entry(endpoint,ingress),new Exit(TargetKind.OCCURRENCE,handler));
             }
         }
     }
     private static Optional<Ast.FileIoSurface> fileSurface(Ast.Statement s) {
         return s instanceof Ast.ModeledStatement m?m.fileIo():s instanceof Ast.PreservedStatement p?p.fileIo():Optional.empty();
-    }
-    private boolean reached(int context,String node) {
-        var todo=new ArrayDeque<Integer>();var seen=new HashSet<Integer>();todo.add(context);
-        while(!todo.isEmpty()) {int id=todo.removeFirst();if(!seen.add(id))continue;
-            if(before.containsKey(new Location(id,node)))return true;
-            contexts.get(id).callers.forEach(c->todo.add(c.context()));
-        }return false;
     }
     private State evaluate(Ast.EvaluateStatement e,String role,State state) {
         State remaining=state;int ordinal=0;
@@ -851,7 +871,7 @@ final class DependencyFlow {
             var kept=new HashSet<String>();
             for(String value:old.values()) {
                 var trial=new DependencyEnvironment.Builder(state.values());for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id)))trial.put(alias,DependencyValues.known(value));
-                if((truth(condition,new State(trial,state.handlers()))&bit)!=0)kept.add(value);
+                if((truth(condition,state.withValues(trial))&bit)!=0)kept.add(value);
             }
             if(kept.isEmpty()&&!old.unknown())return null;
             out.put(id,new DependencyValues(kept,old.unknown()));
@@ -864,11 +884,11 @@ final class DependencyFlow {
                 for(int leaf:declarations.leaves(group)) {var position=span(group,leaf,0);
                     if(position!=null&&position[0]+position[1]<=candidate.length())trial.put(leaf,DependencyValues.known(candidate.substring(position[0],position[0]+position[1])));
                 }
-                if((truth(condition,new State(trial,state.handlers()))&bit)!=0)kept.add(candidate);
+                if((truth(condition,state.withValues(trial))&bit)!=0)kept.add(candidate);
             }
             out.put(group,new DependencyValues(kept,original.unknown()));
         }
-        return new State(out,state.handlers());
+        return state.withValues(out);
     }
     private boolean needsNormalization(Ast.Expression expression) {
         return abbreviated.computeIfAbsent(expression,e->{
