@@ -2021,7 +2021,7 @@
   ],
   "newFiles": [
     "docs/identity-redaction.md",
-    "docs/identity-redaction.manifest.json"
+    "benchmark/identity-redaction.manifest.json"
   ],
   "validation": {
     "fast": {
@@ -2092,7 +2092,22 @@
       {
         "path": "/tmp/imd-identity-redaction/docs.log",
         "sha256": "e61c34d1ca0171442bece682e03a422e899954f281466ca675726a941247ed20"
+      },
+      {
+        "path": "/tmp/imd-identity-redaction/ci-failed.log",
+        "sha256": "803372cc79b2e49470abd4ac9ddeff76a6405c6d961ff3968e01b2b68f65adb1"
+      },
+      {
+        "path": "/tmp/imd-identity-redaction/docs-final.log",
+        "sha256": "f8007c73497894e70d3987bfce3d0664269f1c3d98b4ddcfc3810f105bf19572"
+      },
+      {
+        "path": "/tmp/imd-identity-redaction/naming-final.log",
+        "sha256": "bc84f5131324f9f26679dbce3f4a13512fdeb3d6024eff4a9eac2c845b72558b"
       }
-    ]
+    ],
+    "ciInitialAttempt": "Naming rejected the manifest in docs because it contains measurement artifact paths; moved into the existing measurement-report directory without weakening the guard.",
+    "finalNaming": "PASS, 19 tests and verify-naming guard",
+    "finalDocs": "PASS, policy and documentation gate"
   }
 }

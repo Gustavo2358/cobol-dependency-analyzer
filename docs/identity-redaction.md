@@ -12,7 +12,7 @@ A anonimização não equivale a uma nova execução dos testes registrados.
 
 Os hashes históricos continuam identificando os artefatos originais. Eles não
 devem ser usados como hashes das cópias anonimizadas. O
-[manifest de anonimização](identity-redaction.manifest.json) registra os hashes
+[manifest de anonimização](../benchmark/identity-redaction.manifest.json) registra os hashes
 anteriores e os das cópias modificadas, sem dados pessoais nos nomes dos arquivos.
 Os originais exatos permanecem recuperáveis no commit-base registrado no
 manifest; uma cópia de segurança também foi preservada fora da árvore da aplicação.
