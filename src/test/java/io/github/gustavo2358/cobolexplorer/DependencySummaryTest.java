@@ -160,4 +160,13 @@ class DependencySummaryTest {
         }
     }
 
+    @Test void cyclicParagraphsJoinWithinTheSameSummary()throws Exception {
+        var result=check("01 TARGET PIC X(8).\n01 FLAG PIC X.",
+            "MAIN.\nMOVE 'FIRST' TO TARGET.\nGO TO A.\n"
+            +"A.\nCALL TARGET.\nIF FLAG = 'Y' GO TO DONE END-IF.\nGO TO B.\n"
+            +"B.\nMOVE 'NEXT' TO TARGET.\nGO TO A.\nDONE.\nGOBACK.","FIRST","NEXT");
+        assertTrue(result.metrics().contexts()<=3,result.metrics().toString());
+        assertTrue(result.metrics().workItems()<40,result.metrics().toString());
+    }
+
 }

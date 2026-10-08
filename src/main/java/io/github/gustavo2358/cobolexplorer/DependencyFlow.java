@@ -82,6 +82,7 @@ final class DependencyFlow {
     static final class Relevance {
         final Map<Exit,Need> footprints=new HashMap<>();
         final Map<Exit,Set<Exit>> predecessors=new HashMap<>();
+        Map<Exit,Integer> components;
     }
     final Map<String,Relevance> relevance=new HashMap<>();
     final Map<Location,State> before=new HashMap<>();
@@ -695,6 +696,7 @@ final class DependencyFlow {
         var index=relevance.computeIfAbsent(endpoint,k->new Relevance());
         var footprints=index.footprints;var predecessors=index.predecessors;
         if(footprints.containsKey(entry))return footprints.get(entry);
+        index.components=null;
         var todo=new ArrayDeque<Exit>();todo.add(entry);
         var seeds=new HashSet<Exit>();
         while(!todo.isEmpty()) {
@@ -746,6 +748,41 @@ final class DependencyFlow {
             }
         }return footprints.get(entry);
     }
+    /** A summary keeps a strongly connected component in one worklist context.
+     * Splitting a loop by its successive input states would enumerate iterations
+     * instead of joining them at the same BEFORE location. Kosaraju is iterative
+     * so long control chains do not consume the Java call stack. */
+    private boolean sameComponent(Exit a,Exit b,String endpoint) {
+        var index=relevance.get(endpoint);
+        if(index.components==null) {
+            var successors=new HashMap<Exit,Set<Exit>>();
+            index.predecessors.forEach((node,parents)->parents.forEach(parent->
+                successors.computeIfAbsent(parent,k->new HashSet<>()).add(node)));
+            var seen=new HashSet<Exit>();var order=new ArrayList<Exit>();
+            record Visit(Exit node,Iterator<Exit> successors) { }
+            var stack=new ArrayDeque<Visit>();
+            for(var root:index.footprints.keySet())if(seen.add(root)) {
+                stack.push(new Visit(root,successors.getOrDefault(root,Set.of()).iterator()));
+                while(!stack.isEmpty()) {
+                    var top=stack.peek();
+                    if(top.successors().hasNext()) {
+                        var next=top.successors().next();
+                        if(seen.add(next))stack.push(new Visit(next,successors.getOrDefault(next,Set.of()).iterator()));
+                    }else {order.add(top.node());stack.pop();}
+                }
+            }
+            var components=new HashMap<Exit,Integer>();var todo=new ArrayDeque<Exit>();int component=0;
+            for(int i=order.size()-1;i>=0;i--) {
+                var root=order.get(i);if(components.containsKey(root))continue;
+                components.put(root,component);todo.add(root);
+                while(!todo.isEmpty())for(var parent:index.predecessors.getOrDefault(todo.removeFirst(),Set.of()))
+                    if(components.putIfAbsent(parent,component)==null)todo.add(parent);
+                component++;
+            }
+            index.components=components;
+        }
+        return Objects.equals(index.components.get(a),index.components.get(b));
+    }
     private void queueResult(int context,Exit exit) {
         var location=new Location(context,"",exit);if(queued.add(location))work.addLast(location);
     }
@@ -761,7 +798,7 @@ final class DependencyFlow {
     private void step(Location location,State input) {
         String node=location.node();
         var context=contexts.get(location.context());
-        if(paragraphEntries.contains(node)&&!context.key.entry().equals(new Exit(TargetKind.OCCURRENCE,node))) {
+        if(paragraphEntries.contains(node)&&!sameComponent(context.key.entry(),new Exit(TargetKind.OCCURRENCE,node),context.key.endpoint())) {
             subscribe(new Forward(location.context(),context.key.endpoint(),input),new Exit(TargetKind.OCCURRENCE,node));return;
         }
         if(node.startsWith("phase/")) {
