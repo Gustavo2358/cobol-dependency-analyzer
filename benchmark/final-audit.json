@@ -1,0 +1,49 @@
+{
+  "inputHashesVerified": 185,
+  "referenceRuntimeHashesVerified": 22,
+  "jarHashVerified": true,
+  "originalRepositories": {
+    "proleap-poc": {
+      "head": "3bb653a62161626f804aa7ae90f5c9c24f2d581c",
+      "dirtyPaths": 0,
+      "remotes": [
+        "origin"
+      ]
+    },
+    "cobol-lower": {
+      "head": "c4d48991b88ef6d13eef659859b23d801684093b",
+      "dirtyPaths": 0,
+      "remotes": [
+        "origin"
+      ]
+    },
+    "air-java": {
+      "head": "6c4a6eb225fb4bb4fdc5871bc5232f03387ef099",
+      "dirtyPaths": 0,
+      "remotes": [
+        "origin"
+      ]
+    },
+    "analysis-ir": {
+      "head": "2c7f31f19efbe3211a2aea5bbda90173a9666fe2",
+      "dirtyPaths": 0,
+      "remotes": [
+        "origin"
+      ]
+    },
+    "analysis-cfg": {
+      "head": "c09c6712625f21d3155214406549e4a13de92ff4",
+      "dirtyPaths": 0,
+      "remotes": [
+        "origin"
+      ]
+    },
+    "artefatos-e2e": {
+      "head": "9652ef739722d2bafb205e610cfb671c9a100be4",
+      "dirtyPaths": 5630,
+      "remotes": []
+    }
+  },
+  "monolithRemotes": [],
+  "note": "Original product repositories clean; artefatos-e2e contains existing local work and was read only in this task."
+}

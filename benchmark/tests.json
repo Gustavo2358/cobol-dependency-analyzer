@@ -1,0 +1,22 @@
+{
+  "tests": 1721,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 1,
+  "newDependencyTests": 280,
+  "skipDetails": [
+    {
+      "suite": "io.github.gustavo2358.cobolexplorer.SemanticConditionContextDiscoveryTest",
+      "test": "requiredSemanticOraclesForFutureImplementation",
+      "reason": {
+        "message": "System property [semantic.condition.required] does not exist"
+      }
+    }
+  ],
+  "fast": {
+    "passed": true,
+    "tests": 856,
+    "log": ".tmp/final-fast.log"
+  },
+  "fullLog": ".tmp/final-artifact-validation.log"
+}

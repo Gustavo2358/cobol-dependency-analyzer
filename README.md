@@ -13,7 +13,8 @@ java -Xmx768m -jar target/cobol-dependency-analyzer.jar \
 
 Requer Java 17+ e Maven para compilar; o JAR contém as dependências necessárias
 para executar. Java 21 foi usado na validação. Aceita um arquivo ou diretório;
-`--copy-dir` pode ser repetido. Diretórios são percorridos em ordem estável.
+`--copy-dir` pode ser repetido. Diretórios leem `.cbl`, `.cob` e `.cobol` em ordem estável; outras extensões,
+como `.cl2`, são aceitas por entrada de arquivo explícita.
 O formato de fonte é FIXED; o charset padrão é UTF-8. O parser direto é padrão,
 com fallback ANTLR; `--parser antlr` seleciona a outra rota explicitamente.
 
@@ -46,7 +47,9 @@ operações sem transformação lógica suportada mantêm incerteza explícita.
 Tabelas de extensão estática conservam os elementos lógicos para consultas com
 índice conhecido; subscrito desconhecido usa resumo dos elementos. Tabelas de
 extensão não estabelecida permanecem abertas. Representações binárias/edições numéricas complexas
-não são interpretadas como textos. Esses limites não são paridade universal de
+não são interpretadas como textos. PERFORM TIMES acima de uma iteração usa
+ponto fixo, podendo sobreaproximar alvos que dependem da contagem exata.
+Esses limites não são paridade universal de
 COBOL; a paridade medida refere-se aos insumos e oráculos documentados.
 
 `--max-work N` limita visitas, estados e produtos de candidatos (padrão 1000000).
