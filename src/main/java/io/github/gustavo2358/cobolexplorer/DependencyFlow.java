@@ -369,10 +369,7 @@ final class DependencyFlow {
             }
             return state;
         }
-        if(declarations.numeric.contains(id)) {
-            final int digits=width;
-            value=value.map(s->{String number=s.strip();return digits>0&&number.matches("[0-9]+")&&number.length()<digits?"0".repeat(digits-number.length())+number:number;});
-        } else value=value.fit(width);
+        value=fitField(id,value);
         Map<Integer,DependencyValues> out=null;
         for(int target:declarations.equivalents.getOrDefault(id,Set.of(id)))if(demand.contains(target)) {
             var next=weak?state.get(target).join(value).open():value;
@@ -386,6 +383,11 @@ final class DependencyFlow {
         }
         if(value.values().size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many logical candidates");
         return out==null?state:new State(out,state.handlers());
+    }
+    private DependencyValues fitField(int id,DependencyValues value) {
+        int width=declarations.widths.getOrDefault(id,0);
+        if(!declarations.numeric.contains(id))return value.fit(width);
+        return value.map(s->{String number=s.strip();return width>0&&number.matches("[0-9]+")&&number.length()<width?"0".repeat(width-number.length())+number:number;});
     }
     private State assign(Ast.Expression target,DependencyValues value,State state) {
         if(!(target instanceof Ast.DataReference r))return state;
@@ -407,12 +409,83 @@ final class DependencyFlow {
             State out=write(id,value,state,true);var changed=new DependencyEnvironment.Builder(out.values());
             Integer selected=indexes.stream().allMatch(i->i>0)?elements.get(new Element(id,indexes)):null;
             if(selected!=null) {
-                for(int slot:elementIds.get(id))changed.put(slot,state.get(slot));
-                changed.put(selected,value.fit(declarations.widths.getOrDefault(id,0)));
-            }else for(int slot:elementIds.getOrDefault(id,List.of()))changed.put(slot,out.get(slot).join(value.fit(declarations.widths.getOrDefault(id,0))).open());
-            return new State(changed,out.handlers());
+                for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id))) {
+                    Integer aliasSlot=elements.get(new Element(alias,indexes));if(aliasSlot==null)continue;
+                    for(int slot:elementIds.get(alias))changed.put(slot,state.get(slot));
+                    changed.put(aliasSlot,fitField(alias,value));
+                    DependencyValues summary=null;
+                    for(int slot:elementIds.get(alias))summary=summary==null?changed.get(slot):summary.join(changed.get(slot));
+                    changed.put(alias,summary);
+                    for(int group:textGroups) {
+                        var span=indexedSpan(group,alias,indexes);if(span==null)continue;
+                        var prior=state.get(group);var replacement=changed.get(aliasSlot).fit(span[1]);
+                        var candidates=new HashSet<String>();checkProduct(prior,replacement);
+                        for(String a:prior.values())for(String b:replacement.values())if(span[0]+span[1]<=a.length())candidates.add(a.substring(0,span[0])+b+a.substring(span[0]+span[1]));
+                        var next=new DependencyValues(candidates,prior.unknown()||replacement.unknown());
+                        if(prior.values().isEmpty()) {
+                            var exact=exactTableText(group,new State(changed,out.handlers()),List.of());
+                            if(exact.isPresent())next=DependencyValues.known(exact.get());
+                        }
+                        changed.put(group,next);
+                    }
+                }
+            }else for(int slot:elementIds.getOrDefault(id,List.of()))changed.put(slot,out.get(slot).join(fitField(id,value)).open());
+            State result=new State(changed,out.handlers());
+            if(selected!=null)for(int group:textGroups)if(indexedSpan(group,id,indexes)!=null)
+                for(int alias:declarations.textualViews.getOrDefault(group,Set.of()))result=decode(alias,result.get(group),result,0,false);
+            return result;
         }
         return write(id,value,state,false);
+    }
+    /** Reassemble only singleton, closed elements; never form Cartesian names. */
+    private Optional<String> exactTableText(int id,State state,List<Integer> path) {
+        var text=new StringBuilder();int count=declarations.counts.getOrDefault(id,1);
+        var children=declarations.children.getOrDefault(id,List.of());
+        if((long)count*declarations.widths.getOrDefault(id,0)>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: logical table text");
+        for(int i=1;i<=count;i++) {
+            var current=new ArrayList<>(path);
+            if(declarations.entries.get(id).clauses().stream().anyMatch(Ast.OccursClause.class::isInstance))current.add(i);
+            if(children.isEmpty()) {
+                int slot=elements.getOrDefault(new Element(id,current),id);var v=state.get(slot);
+                if(v.unknown()||v.values().size()!=1)return Optional.empty();
+                text.append(v.values().iterator().next());
+            }else for(int child:children) {
+                if(declarations.entries.get(child).clauses().stream().anyMatch(Ast.RedefinesClause.class::isInstance))continue;
+                var part=exactTableText(child,state,current);if(part.isEmpty())return Optional.empty();text.append(part.get());
+            }
+        }
+        return Optional.of(text.toString());
+    }
+    /** Character positions in a known static textual table element. */
+    private int[] indexedSpan(int group,int id,List<Integer> indexes) {
+        var chain=new ArrayList<Integer>();Integer cursor=id;
+        while(cursor!=null){chain.add(cursor);cursor=declarations.parent.get(cursor);}
+        Collections.reverse(chain);int offset=0,index=0;boolean inside=false;
+        for(int node:chain) {
+            if(node==group)inside=true;
+            if(inside&&node!=group) {
+                int parent=declarations.parent.get(node);
+                int positioned=node;var seen=new HashSet<Integer>();
+                while(seen.add(positioned)) {
+                    var redef=declarations.entries.get(positioned).clauses().stream().filter(Ast.RedefinesClause.class::isInstance).map(Ast.RedefinesClause.class::cast).findFirst();
+                    if(redef.isEmpty())break;
+                    Integer original=declarations.references.get(redef.get().target().meta().id());
+                    if(original==null||!Objects.equals(declarations.parent.get(original),parent))return null;
+                    positioned=original;
+                }
+                for(int sibling:declarations.children.getOrDefault(parent,List.of())) {
+                    if(sibling==positioned)break;
+                    if(declarations.entries.get(sibling).clauses().stream().anyMatch(Ast.RedefinesClause.class::isInstance))continue;
+                    offset+=declarations.widths.getOrDefault(sibling,0)*declarations.counts.getOrDefault(sibling,1);
+                }
+            }
+            if(declarations.entries.get(node).clauses().stream().anyMatch(Ast.OccursClause.class::isInstance)) {
+                if(index>=indexes.size()||indexes.get(index)>declarations.counts.getOrDefault(node,0))return null;
+                if(inside)offset+=(indexes.get(index)-1)*declarations.widths.getOrDefault(node,0);
+                index++;
+            }
+        }
+        return inside?new int[]{offset,declarations.widths.getOrDefault(id,0)}:null;
     }
     private State transfer(Ast.Statement s,State state) {
         if(s instanceof Ast.MoveStatement m) {

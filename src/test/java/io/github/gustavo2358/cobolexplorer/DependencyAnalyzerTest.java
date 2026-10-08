@@ -160,4 +160,28 @@ class DependencyAnalyzerTest {
         targets("01 ROWS-VIEW.\n05 ROW-PROGRAM PIC X(8) OCCURS 2 TIMES.",
             "MOVE 'PROGA001' TO ROW-PROGRAM(1).\nMOVE 'PROGB001' TO ROW-PROGRAM(2).\nMOVE 'C' TO ROW-PROGRAM(1)(5:1).\nCALL ROW-PROGRAM(1).\nGOBACK.", "PROGC001");
     }
+    @Test void overwritingEveryRowKillsTheOldUnknownIndexSummary()throws Exception {
+        targets("01 ROWS-VIEW.\n05 ROW-PROGRAM PIC X(8) OCCURS 2 TIMES VALUE 'OLD'.\n01 IDX PIC 9.",
+            "MOVE 'PROGA001' TO ROW-PROGRAM(1).\nMOVE 'PROGB001' TO ROW-PROGRAM(2).\nCALL ROW-PROGRAM(IDX).\nGOBACK.", "PROGA001","PROGB001");
+    }
+    @Test void aKnownRowWriteUpdatesTheWholeGroupCandidate()throws Exception {
+        targets("01 ROWS-VIEW.\n05 ROW-PART PIC X(4) OCCURS 2 TIMES.",
+            "MOVE 'OLDG0001' TO ROWS-VIEW.\nMOVE 'PROG' TO ROW-PART(1).\nCALL ROWS-VIEW.\nGOBACK.", "PROG0001");
+    }
+    @Test void knownRowWritesCanConstructAWholeGroupWithoutAnOldCandidate()throws Exception {
+        targets("01 ROWS-VIEW.\n05 ROW-PART PIC X(4) OCCURS 2 TIMES.",
+            "MOVE 'PROG' TO ROW-PART(1).\nMOVE '0001' TO ROW-PART(2).\nCALL ROWS-VIEW.\nGOBACK.", "PROG0001");
+    }
+    @Test void anIndexedWriteUpdatesItsTextualAlternativeView()throws Exception {
+        targets("01 ROWS-VIEW.\n05 ROW-PART PIC X(4) OCCURS 2 TIMES.\n01 TARGET REDEFINES ROWS-VIEW PIC X(8).",
+            "MOVE 'OLDG0001' TO ROWS-VIEW.\nMOVE 'PROG' TO ROW-PART(1).\nCALL TARGET.\nGOBACK.", "PROG0001");
+    }
+    @Test void arrayGroupBranchesDoNotInventCartesianNames()throws Exception {
+        targets("01 ROWS-VIEW.\n05 ROW-PART PIC X(4) OCCURS 2 TIMES.\n01 FLAG PIC X.",
+            "IF FLAG = 'Y'\nMOVE 'PROG' TO ROW-PART(1)\nMOVE '0001' TO ROW-PART(2)\nELSE\nMOVE 'MODU' TO ROW-PART(1)\nMOVE '0002' TO ROW-PART(2)\nEND-IF.\nCALL ROWS-VIEW.\nGOBACK.", "PROG0001","MODU0002");
+    }
+    @Test void numericRowFieldsUseTheSameLogicalDisplayFitAsScalars()throws Exception {
+        targets("01 ROWS-VIEW.\n05 ROW-ITEM OCCURS 2 TIMES.\n10 ROW-NUM PIC 99.\n10 ROW-PROG PIC X(6).\n01 TARGET PIC X(8).",
+            "MOVE 1 TO ROW-NUM(1).\nMOVE 'PROGA' TO ROW-PROG(1).\nMOVE 2 TO ROW-NUM(2).\nMOVE 'PROGB' TO ROW-PROG(2).\nMOVE ROWS-VIEW TO TARGET.\nCALL TARGET.\nGOBACK.", "01PROGA");
+    }
 }

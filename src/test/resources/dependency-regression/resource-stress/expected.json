@@ -55,7 +55,7 @@
     "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/fixed-pasted-512m/fixed-0001/input.cbl",
     "sha256": "dfebd5ad5d75c1718ec58fdeba2b311819b7e0593fd6a6cd0b010e19be2ded64",
     "expectedFailure": "INVALID_SOURCE",
-    "reason": "COPY is followed by numeric tokens inside area B; the star case also has an invalid trailing asterisk. These are parser-failure inputs, not valid sources with a dependency oracle."
+    "reason": "COPY is followed by numeric tokens inside area B. These are parser-recovery inputs, not valid sources with a dependency oracle."
   },
   {
     "id": "fixed-star",
@@ -63,7 +63,7 @@
     "original": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/memory-general-discovery-20261005/runs/fixed-star72-512m/fixed-star-0001/input.cbl",
     "sha256": "29eb1de5b49940b0fd0fb92d3f645c1a428a3bb997e205c201e3847858bc1078",
     "expectedFailure": "INVALID_SOURCE",
-    "reason": "COPY is followed by numeric tokens inside area B; the star case also has an invalid trailing asterisk. These are parser-failure inputs, not valid sources with a dependency oracle."
+    "reason": "COPY is followed by numeric tokens inside area B. These are parser-recovery inputs, not valid sources with a dependency oracle."
   },
   {
     "id": "context-cics-09",

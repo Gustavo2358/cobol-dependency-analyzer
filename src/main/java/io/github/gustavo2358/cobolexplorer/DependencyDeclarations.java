@@ -97,12 +97,12 @@ final class DependencyDeclarations {
             var immutable=Set.copyOf(merged);merged.forEach(k->equivalents.put(k,immutable));
             return;
         }
-        if(exact && ac.size()==bc.size() && !ac.isEmpty() && java.util.stream.IntStream.range(0,ac.size()).allMatch(i->Objects.equals(widths.get(ac.get(i)),widths.get(bc.get(i))))) {
+        if(exact && ac.size()==bc.size() && !ac.isEmpty() && java.util.stream.IntStream.range(0,ac.size()).allMatch(i->Objects.equals(widths.get(ac.get(i)),widths.get(bc.get(i)))&&Objects.equals(counts.getOrDefault(ac.get(i),1),counts.getOrDefault(bc.get(i),1)))) {
             for(int i=0;i<ac.size();i++)relate(ac.get(i),bc.get(i));return;
         }
         // One textual child is logically the same entire textual group.
-        if(exact && ac.size()==1 && bc.isEmpty()){relate(ac.get(0),b);return;}
-        if(exact && bc.size()==1 && ac.isEmpty()){relate(a,bc.get(0));return;}
+        if(exact && ac.size()==1 && bc.isEmpty()&&counts.getOrDefault(ac.get(0),1)==1){relate(ac.get(0),b);return;}
+        if(exact && bc.size()==1 && ac.isEmpty()&&counts.getOrDefault(bc.get(0),1)==1){relate(a,bc.get(0));return;}
         if(widths.getOrDefault(a,0)>0&&widths.getOrDefault(b,0)>0) {
             textualViews.computeIfAbsent(a,k->new HashSet<>()).add(b);
             textualViews.computeIfAbsent(b,k->new HashSet<>()).add(a);
