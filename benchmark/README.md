@@ -1,5 +1,9 @@
 # Medições locais
 
+[Migração para `com.imd.cobolexplorer`](namespace-migration-20261008.md):
+validação de build, identidade do JAR e preservação dos resultados após a
+troca dos pacotes Java e das coordenadas Maven.
+
 [Solver canônico de resumos](solver-unification-20261008.md): um único caminho
 para PERFORM, transferências, escapes e handlers, com junção por componentes
 fortemente conexos. OR1216 passou de 1.485.530 para 18.040 itens de trabalho;

@@ -63,7 +63,6 @@ externos ou produtos intermediários serializados.
 ## Compilar e executar
 
 ```sh
-git clone https://github.com/Gustavo2358/cobol-dependency-analyzer.git
 cd cobol-dependency-analyzer
 mvn package
 java -Xmx768m -jar target/cobol-dependency-analyzer.jar \
@@ -81,6 +80,7 @@ Os pacotes Java e o `groupId` Maven usam `com.imd.cobolexplorer`.
 O ponto de entrada é `com.imd.cobolexplorer.DependencyMain`; o nome do JAR e
 os argumentos do CLI permanecem os mesmos. Código que importava os pacotes
 anteriores precisa atualizar seus imports e suas coordenadas Maven.
+Os resultados da migração estão no [relatório de validação do namespace](benchmark/namespace-migration-20261008.md).
 
 ## Dependências e saída
 
