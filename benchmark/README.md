@@ -1,5 +1,24 @@
 # Medições locais
 
+[Solver canônico de resumos](solver-unification-20261008.md): um único caminho
+para PERFORM, transferências, escapes e handlers, com junção por componentes
+fortemente conexos. OR1216 passou de 1.485.530 para 18.040 itens de trabalho;
+na comparação nova, de 9.98 s para 4.12 s.
+294 testes específicos, 856 FAST, 30/30 ampliados, 20/20 originais e CardDemo
+73/73, com 815 relações e saídas/códigos/diagnósticos preservados. O relatório
+registra overhead, o contraexemplo corrigido e os limites restantes.
+
+[Otimização de caudas estruturadas](suffix-optimization-20261008.md) é o registro
+histórico de `981e1c5`: overlap1800 de 42,09 para 4,37 s, com OR ainda quadrática.
+A elegibilidade global e os caminhos alternativos dessa implementação foram
+removidos pela unificação.
+
+[Auditoria ampliada de explosão](explosion-review-20261008.md): matriz ampliada
+30/30 PASS com heap de 4 GiB e orçamento de 100 milhões, incluindo 117 mil
+atribuições e overlap1800 dinâmico. Falhas da rodada com heap/orçamento menores
+continuam registradas; essa qualificação adicional usa recursos diferentes
+dos benchmarks abaixo.
+
 Artefato medido: commit `f70a94b`, SHA completo e hash do JAR em
 [pins.json](pins.json). Os JSONs, comandos, logs, tempos e RSS por fonte
 permanecem em `results/` (ignorado pelo Git); os resultados normalizados e

@@ -27,11 +27,35 @@ Por exemplo, após `MOVE 'PROGA' TO WS-TARGET` seguido de
 Uma sobrescrita completa elimina o valor anterior; se branches viáveis
 atribuírem nomes diferentes, ambos permanecem candidatos.
 
-PERFORM compartilha corpos e reutiliza resultados por entrada relevante e
-retorno. Grupos conservam alternativas textuais correlacionadas, e
-REDEFINES/RENAMES relacionam declarações e textos logicamente. O analisador
-não simula memória física. UPPER-CASE, LOWER-CASE e TRIM usam expressões
-tipadas do frontend.
+O dataflow usa um único solver de resumos, com uma worklist até o ponto fixo.
+Cada resumo é identificado por entrada de controle normalizada, endpoint de
+retorno e estado relevante. Parágrafos alcançados por fallthrough, GO TO,
+PERFORM ou handlers compartilham esse mesmo mecanismo. Componentes fortemente
+conexos são identificados por Kosaraju iterativo: um ciclo permanece na mesma
+worklist para juntar seus estados, e trechos entre componentes podem compartilhar
+resumos. Isso evita transformar iterações em uma sequência de novas entradas.
+O estado contém valores
+lógicos, handlers ativos/salvos e os fatos de alcance necessários às continuações.
+O índice de relevância usa uma única propagação retrógrada de conjuntos, ampliada
+sob demanda; não percorre o programa inteiro para cada PERFORM inline.
+
+O resultado de um resumo conserva o tipo de saída: conclusão, escape ou término
+do programa. A continuação aplica a regra correspondente: seguir o trecho,
+retornar/repetir uma invocação ou encerrar uma entrada independente. Essas regras
+representam diferenças da linguagem no mesmo solver. Não há seletor de estratégia,
+modo antigo ou restrição global a programas estruturados. As conclusões também
+passam pela worklist, evitando desempilhar recursivamente caudas longas.
+
+Consultar uma dependência continua usando o estado anterior à instrução. Grupos
+conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam
+declarações e textos logicamente. O analisador não simula memória física.
+UPPER-CASE, LOWER-CASE e TRIM usam expressões tipadas do frontend.
+
+Compartilhar resumos elimina a repetição quando diferentes intervalos chegam ao
+mesmo trecho com o mesmo estado relevante e endpoint. Entradas, endpoints ou
+handlers diferentes podem exigir resumos diferentes: a solução geral não implica
+um limite linear para todo programa COBOL. O orçamento explícito continua sendo
+aplicado sem descartar candidatos para obter sucesso.
 
 O JAR executa sozinho: não requer AIR, lowering, outros repositórios, serviços
 externos ou produtos intermediários serializados.
@@ -91,10 +115,24 @@ ponto fixo, podendo sobreaproximar alvos que dependem da contagem exata.
 Não há garantia de paridade universal de COBOL; a paridade medida refere-se
 aos insumos e oráculos documentados.
 
-`--max-work N` limita visitas, estados e produtos de candidatos (padrão 1000000).
+`--max-work N` limita visitas, estados, resumos e produtos de candidatos (padrão 1000000).
 Ultrapassar o orçamento falha explicitamente; não corta candidatos para obter
 sucesso. `--metrics arquivo.jsonl` grava tempos e contadores fora do JSON de
 produto. Heap é configurado pelo Java, por exemplo `-Xmx768m`.
+
+Para programas grandes, os testes de escala usaram heap de 4 GiB e orçamento
+de 100 milhões de visitas:
+
+```sh
+java -Xmx4g -jar target/cobol-dependency-analyzer.jar \
+  --source programa.cbl --copy-dir copybooks --max-work 100000000 \
+  --output dependencies.json
+```
+
+A [auditoria de escala](benchmark/explosion-review-20261008.md) inclui
+117 mil atribuições e 1.800 faixas sobrepostas com consulta dinâmica, com
+destinos esperados conferidos. Consumo e tempo dependem também da estrutura
+do programa, além da quantidade de linhas.
 
 ## Validação
 
@@ -104,20 +142,28 @@ variantes de 45 nomes de programa. As duas execuções produziram JSONs idêntic
 Houve 26 fontes com código 0 e 47 com código 1 (PARTIAL): igualdade com os
 oráculos não significa que todos os valores desconhecidos estejam fechados.
 
-Na medição local, o monolito levou **123,2 s**, contra **482,2 s** da referência,
+Na medição anterior à otimização de caudas, o monolito levou **123,2 s**,
+contra **482,2 s** da referência,
 com pico de RSS de **464,4 MiB**, contra **792,4 MiB**. A referência usa os
 produtores congelados do corpus e o consumidor de 8/10/2026; SHAs, método e
 repetição estão no [relatório das medições](benchmark/README.md).
 
-Foram aprovados 280 testes específicos e 20 casos de estresse, incluindo
+Na versão anterior, foram aprovados 280 testes específicos e 20 casos de estresse, incluindo
 18 fontes válidas e dois negativos de sintaxe. A suíte completa teve 1.720
 aprovações, nenhuma falha e um teste herdado futuro opcional desabilitado.
 Nenhum caso obrigatório de estresse apresentou crash ou OOM.
 
+A [unificação do solver](benchmark/solver-unification-20261008.md) passou em
+294 testes do analisador, 856 FAST, 30 casos ampliados e 20 originais. O corpus
+CardDemo foi reexecutado integralmente, preservando JSONs, códigos e diagnósticos.
+Em OR1216, o trabalho caiu de 1.485.530 para 18.040 itens e o tempo de
+9.98 s para 4.12 s na comparação nova. Transferências,
+escapes e handlers usam o mesmo solver. O relatório registra também o overhead
+nos casos já otimizados e os limites de crescimento restantes.
+
 ```sh
-mvn -Dtest=DependencyAnalyzerTest,DependencyRegressionTest,DependencySourceTest,DependencyEnvironmentTest,DependencyResourceTest test
 python3 -B scripts/harness/lean.py fast
-mvn test
+mvn -Dtest=DependencySummaryTest,DependencyAnalyzerTest,DependencyRegressionTest,DependencySourceTest,DependencyEnvironmentTest,DependencyResourceTest package
 python3 -B benchmark/run-carddemo.py /caminho/results.json benchmark/results/carddemo
 python3 -B benchmark/run-reference.py /caminho/results.json benchmark/results/reference
 python3 -B benchmark/smoke-standalone.py target/cobol-dependency-analyzer.jar

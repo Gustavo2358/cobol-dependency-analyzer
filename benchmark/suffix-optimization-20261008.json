@@ -1,0 +1,2268 @@
+{
+  "production": {
+    "beforeCommit": "f70a94bdb4441fc8bf4fa2b6cb8ecec4f3059c33",
+    "beforeJarSha256": "7eddd887626b3dce0bca205a51fa88424ed07d7aae4ad8e3bd8e0061a6e4f10a",
+    "afterCommit": "981e1c535b47f7ffeba27cbaa16084dac825b249",
+    "afterJarSha256": "64c403308574e82916c93e80e2ba58912c4de601668b5c3ba70bc61eb209d554"
+  },
+  "environment": {
+    "jdk": "Temurin 21.0.12+1",
+    "heapMiB": 4096,
+    "initialHeapMiB": 32,
+    "maxWork": 100000000,
+    "timeoutSeconds": 300,
+    "cpuModel": "AMD Ryzen 5 5600GT with Radeon Graphics",
+    "method": "Sequential fresh JVMs; before then after; no file-cache flush; one sample per case/version",
+    "javaExecutable": "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java"
+  },
+  "gates": {
+    "fast": {
+      "tests": 856,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "log": ".tmp/suffix-fast-final.log"
+    },
+    "analyzer": {
+      "suites": [
+        {
+          "suite": "DependencySuffixTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "DependencyAnalyzerTest",
+          "tests": 50,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "DependencyRegressionTest",
+          "tests": 107,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "DependencySourceTest",
+          "tests": 102,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "DependencyEnvironmentTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "DependencyResourceTest",
+          "tests": 20,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "tests": 290,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "isolatedJar": "PASS",
+    "comparatorChangedOutput": "Rejected with exit 1",
+    "fullSuite": "Historical full suite not reexecuted; final focused analyzer suites and mandatory FAST executed"
+  },
+  "freshComparison": {
+    "compared": 6,
+    "passed": 6,
+    "results": [
+      {
+        "id": "and1216",
+        "sourceSha256": "0d2ba89ca1729f17fca4917966245a57d566be08cb78713d52656e1c410c93c4",
+        "outputSha256": "930939f360cc904f74a05d4f90f871469ba8743cc208f084589c18a4f2c46082",
+        "byteIdentical": true,
+        "speedup": 7.52880260909932,
+        "rssReductionPercent": 61.308011067015535,
+        "before": {
+          "seconds": 22.351913189006154,
+          "peakRssKiB": 958524,
+          "metrics": {
+            "parseNanos": 906500474,
+            "bindingNanos": 227221992,
+            "cfgNanos": 1271229669,
+            "dataflowNanos": 19617065807,
+            "resolutionNanos": 3349932,
+            "totalNanos": 22031070326,
+            "workItems": 2221544,
+            "contexts": 1219,
+            "trackedDeclarations": 1
+          }
+        },
+        "after": {
+          "seconds": 2.9688536610046867,
+          "peakRssKiB": 370872,
+          "metrics": {
+            "parseNanos": 959539472,
+            "bindingNanos": 249133491,
+            "cfgNanos": 1299948155,
+            "dataflowNanos": 166290125,
+            "resolutionNanos": 3090390,
+            "totalNanos": 2684415577,
+            "workItems": 9685,
+            "contexts": 2437,
+            "trackedDeclarations": 1
+          }
+        }
+      },
+      {
+        "id": "and608",
+        "sourceSha256": "41d5999adfb7a7c98ff8283bb642ff1f42e09c81ffb767da24fb6f4a83c8b67c",
+        "outputSha256": "5b36cb72922102a5111d64933d323af3613e55a62eace89bc00c34644ccb537e",
+        "byteIdentical": true,
+        "speedup": 2.9252165924101527,
+        "rssReductionPercent": 51.684918959818404,
+        "before": {
+          "seconds": 5.022583751997445,
+          "peakRssKiB": 502220,
+          "metrics": {
+            "parseNanos": 718287039,
+            "bindingNanos": 162629240,
+            "cfgNanos": 414398616,
+            "dataflowNanos": 3442990485,
+            "resolutionNanos": 1942146,
+            "totalNanos": 4744782157,
+            "workItems": 555928,
+            "contexts": 611,
+            "trackedDeclarations": 1
+          }
+        },
+        "after": {
+          "seconds": 1.7169955089921132,
+          "peakRssKiB": 242648,
+          "metrics": {
+            "parseNanos": 721351663,
+            "bindingNanos": 149912042,
+            "cfgNanos": 491262726,
+            "dataflowNanos": 96808728,
+            "resolutionNanos": 1847714,
+            "totalNanos": 1465779598,
+            "workItems": 4821,
+            "contexts": 1221,
+            "trackedDeclarations": 1
+          }
+        }
+      },
+      {
+        "id": "or1216",
+        "sourceSha256": "1fba314d25d5f266322b120fd7b3076bc9a653c199e55b51804748f736ea63c3",
+        "outputSha256": "9e1a10f5415253b39c504004bfa10d16b9dcc6a3d40f2154f904ae1e62490368",
+        "byteIdentical": true,
+        "speedup": 1.0049760740608098,
+        "rssReductionPercent": 9.443841882268833,
+        "before": {
+          "seconds": 10.18168862600578,
+          "peakRssKiB": 984684,
+          "metrics": {
+            "parseNanos": 1012166943,
+            "bindingNanos": 233130278,
+            "cfgNanos": 2104408434,
+            "dataflowNanos": 6504416813,
+            "resolutionNanos": 3393511,
+            "totalNanos": 9863544162,
+            "workItems": 1485530,
+            "contexts": 2409,
+            "trackedDeclarations": 1
+          }
+        },
+        "after": {
+          "seconds": 10.131274653002038,
+          "peakRssKiB": 891692,
+          "metrics": {
+            "parseNanos": 1012585934,
+            "bindingNanos": 246795607,
+            "cfgNanos": 1988661665,
+            "dataflowNanos": 6555438649,
+            "resolutionNanos": 3502839,
+            "totalNanos": 9813982487,
+            "workItems": 1485530,
+            "contexts": 2409,
+            "trackedDeclarations": 1
+          }
+        }
+      },
+      {
+        "id": "overlap-dynamic1800",
+        "sourceSha256": "818ead3bf482dd732fc200a874581e538c5d0d00c494246b65021b71a3857c0f",
+        "outputSha256": "ae49b58e5101b1e3825cf6f0cae7e80eec4da812cea54f16c885847c873f5b7e",
+        "byteIdentical": true,
+        "speedup": 9.626551665531624,
+        "rssReductionPercent": 83.28028003009385,
+        "before": {
+          "seconds": 42.08638836200407,
+          "peakRssKiB": 3152804,
+          "metrics": {
+            "parseNanos": 1553448133,
+            "bindingNanos": 389283430,
+            "cfgNanos": 2345194861,
+            "dataflowNanos": 37300984029,
+            "resolutionNanos": 8151789,
+            "totalNanos": 41607342645,
+            "workItems": 9800224,
+            "contexts": 1802,
+            "trackedDeclarations": 2
+          }
+        },
+        "after": {
+          "seconds": 4.371906973989098,
+          "peakRssKiB": 527140,
+          "metrics": {
+            "parseNanos": 1538741765,
+            "bindingNanos": 394826604,
+            "cfgNanos": 1752703374,
+            "dataflowNanos": 403107618,
+            "resolutionNanos": 5630151,
+            "totalNanos": 4106113539,
+            "workItems": 33926,
+            "contexts": 5363,
+            "trackedDeclarations": 2
+          }
+        }
+      },
+      {
+        "id": "overlap-dynamic400",
+        "sourceSha256": "f3f9eff1be048c77d731cdfb043f2569b53d08020ba7159240ca9ebec6d43a02",
+        "outputSha256": "f375883e54a531b0794e24637cc1ad13f0195d3c74d87e5e82fa99f69bffbd71",
+        "byteIdentical": true,
+        "speedup": 1.9294399842728047,
+        "rssReductionPercent": 48.45703849040226,
+        "before": {
+          "seconds": 3.1192941920016892,
+          "peakRssKiB": 442396,
+          "metrics": {
+            "parseNanos": 739864902,
+            "bindingNanos": 162319117,
+            "cfgNanos": 268050583,
+            "dataflowNanos": 1687417592,
+            "resolutionNanos": 2067713,
+            "totalNanos": 2865712116,
+            "workItems": 497224,
+            "contexts": 402,
+            "trackedDeclarations": 2
+          }
+        },
+        "after": {
+          "seconds": 1.6166837100026896,
+          "peakRssKiB": 228024,
+          "metrics": {
+            "parseNanos": 759321724,
+            "bindingNanos": 159016431,
+            "cfgNanos": 282985717,
+            "dataflowNanos": 129824986,
+            "resolutionNanos": 2235117,
+            "totalNanos": 1339116652,
+            "workItems": 7326,
+            "contexts": 1163,
+            "trackedDeclarations": 2
+          }
+        }
+      },
+      {
+        "id": "overlap-dynamic900",
+        "sourceSha256": "b77567bb9a670445834824fb7796bfe164d5603bbd72847001ebaf1d6c2bba9d",
+        "outputSha256": "7c9afd2573d10646873021c3fc334d0e5914efbaaf435fe5710a0e0176228813",
+        "byteIdentical": true,
+        "speedup": 3.7191254050625284,
+        "rssReductionPercent": 70.01187829318064,
+        "before": {
+          "seconds": 9.179451639996842,
+          "peakRssKiB": 1313320,
+          "metrics": {
+            "parseNanos": 1047368458,
+            "bindingNanos": 277595571,
+            "cfgNanos": 517477987,
+            "dataflowNanos": 6967382157,
+            "resolutionNanos": 3634228,
+            "totalNanos": 8823904876,
+            "workItems": 2469724,
+            "contexts": 902,
+            "trackedDeclarations": 2
+          }
+        },
+        "after": {
+          "seconds": 2.4681748099974357,
+          "peakRssKiB": 393840,
+          "metrics": {
+            "parseNanos": 1054296565,
+            "bindingNanos": 277580924,
+            "cfgNanos": 599144465,
+            "dataflowNanos": 237138845,
+            "resolutionNanos": 3644266,
+            "totalNanos": 2182437138,
+            "workItems": 16826,
+            "contexts": 2663,
+            "trackedDeclarations": 2
+          }
+        }
+      }
+    ]
+  },
+  "expanded": {
+    "cases": 30,
+    "passed": 30,
+    "byteIdenticalToHistorical": 30,
+    "seconds": 107.30281167106295,
+    "peakRssKiB": 1836892,
+    "results": [
+      {
+        "id": "plain-original-oom09",
+        "sourceKind": "original",
+        "sourceSha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+        "lines": 51,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7151420089940075,
+        "peakRssKiB": 127216,
+        "expected": [],
+        "actual": [],
+        "metrics": {
+          "parseNanos": 397916043,
+          "bindingNanos": 45537780,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 3424617,
+          "totalNanos": 450189410,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "escape-original-oom08",
+        "sourceKind": "original",
+        "sourceSha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+        "lines": 52,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7151675460045226,
+        "peakRssKiB": 124264,
+        "expected": [],
+        "actual": [],
+        "metrics": {
+          "parseNanos": 415654044,
+          "bindingNanos": 44614925,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 8090127,
+          "totalNanos": 471796035,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "cics-original-oom09",
+        "sourceKind": "original",
+        "sourceSha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799",
+        "lines": 55,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7652012869948521,
+        "peakRssKiB": 145088,
+        "expected": [
+          "DUMMY"
+        ],
+        "actual": [
+          "DUMMY"
+        ],
+        "metrics": {
+          "parseNanos": 430920931,
+          "bindingNanos": 53467786,
+          "cfgNanos": 36718079,
+          "dataflowNanos": 18555246,
+          "resolutionNanos": 992171,
+          "totalNanos": 544131294,
+          "workItems": 29,
+          "contexts": 3,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "empty-paragraphs10000",
+        "sourceKind": "original",
+        "sourceSha256": "2dcb236b112a5e749231642f8a45467ad93f0dbc20e26a31b37d2c959698cc98",
+        "lines": 10009,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.7668445559975225,
+        "peakRssKiB": 259972,
+        "expected": [
+          "AFTER",
+          "BODY"
+        ],
+        "actual": [
+          "AFTER",
+          "BODY"
+        ],
+        "metrics": {
+          "parseNanos": 753837608,
+          "bindingNanos": 140825537,
+          "cfgNanos": 542969114,
+          "dataflowNanos": 64241995,
+          "resolutionNanos": 1635078,
+          "totalNanos": 1508819082,
+          "workItems": 6,
+          "contexts": 3,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "inline-original20",
+        "sourceKind": "original",
+        "sourceSha256": "451518a55dc65d29f9b1ca55a0abaee269804f392cb058c5e11572dcd5fe80f8",
+        "lines": 157,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7151349860068876,
+        "peakRssKiB": 122736,
+        "expected": [],
+        "actual": [],
+        "metrics": {
+          "parseNanos": 416685076,
+          "bindingNanos": 52545351,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 3671585,
+          "totalNanos": 476506487,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "and-control76",
+        "sourceKind": "original",
+        "sourceSha256": "167c35f4d6930c4186b17f2a974baad3a22d419a6a66e1fb1e90527f5691857a",
+        "lines": 444,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.8654652980039828,
+        "peakRssKiB": 156760,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 452330818,
+          "bindingNanos": 59073734,
+          "cfgNanos": 73259676,
+          "dataflowNanos": 38590978,
+          "resolutionNanos": 1057820,
+          "totalNanos": 628059989,
+          "workItems": 415,
+          "contexts": 157,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "overlap-compact900",
+        "sourceKind": "original",
+        "sourceSha256": "70fdc458aeb463aa7c4320731184369a11da758f257833e7f07084a7fd593850",
+        "lines": 7253,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.6668935030029388,
+        "peakRssKiB": 363248,
+        "expected": [],
+        "actual": [],
+        "metrics": {
+          "parseNanos": 1049037367,
+          "bindingNanos": 292185497,
+          "cfgNanos": 0,
+          "dataflowNanos": 0,
+          "resolutionNanos": 23510100,
+          "totalNanos": 1375559470,
+          "workItems": 0,
+          "contexts": 0,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "plain-dynamic09",
+        "sourceKind": "derived",
+        "sourceSha256": "6f8877dbc3b81c7861085328704029d87410ddde04693453a769538234f224a4",
+        "lines": 52,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7652841580129461,
+        "peakRssKiB": 143036,
+        "expected": [
+          "A"
+        ],
+        "actual": [
+          "A"
+        ],
+        "metrics": {
+          "parseNanos": 397072572,
+          "bindingNanos": 45270214,
+          "cfgNanos": 37328076,
+          "dataflowNanos": 21021442,
+          "resolutionNanos": 876752,
+          "totalNanos": 504920380,
+          "workItems": 27,
+          "contexts": 2,
+          "trackedDeclarations": 3
+        }
+      },
+      {
+        "id": "escape-dynamic08",
+        "sourceKind": "derived",
+        "sourceSha256": "cbae6ee0913d954a6cc02e15f69cadb187e875610ec49dcee245469485318fe6",
+        "lines": 53,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7652509879990248,
+        "peakRssKiB": 141900,
+        "expected": [
+          "A"
+        ],
+        "actual": [
+          "A"
+        ],
+        "metrics": {
+          "parseNanos": 390371576,
+          "bindingNanos": 44940826,
+          "cfgNanos": 37305054,
+          "dataflowNanos": 20591843,
+          "resolutionNanos": 956887,
+          "totalNanos": 497281502,
+          "workItems": 29,
+          "contexts": 3,
+          "trackedDeclarations": 3
+        }
+      },
+      {
+        "id": "escape-dynamic20",
+        "sourceKind": "derived",
+        "sourceSha256": "f42d89acddc4761e14557495586e4dd757fd8653453f3aca9920bf500d8d1771",
+        "lines": 92,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.7653566299995873,
+        "peakRssKiB": 142024,
+        "expected": [
+          "A"
+        ],
+        "actual": [
+          "A"
+        ],
+        "metrics": {
+          "parseNanos": 402805950,
+          "bindingNanos": 52745374,
+          "cfgNanos": 38431980,
+          "dataflowNanos": 22491692,
+          "resolutionNanos": 996359,
+          "totalNanos": 520829672,
+          "workItems": 53,
+          "contexts": 3,
+          "trackedDeclarations": 3
+        }
+      },
+      {
+        "id": "inline-observed20",
+        "sourceKind": "derived",
+        "sourceSha256": "513cf06766c8a451fed5ec675a0d832657ea37d7773e5df4e2f79a2a308dae13",
+        "lines": 158,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.815328569005942,
+        "peakRssKiB": 146688,
+        "expected": [
+          "INLINEOK"
+        ],
+        "actual": [
+          "INLINEOK"
+        ],
+        "metrics": {
+          "parseNanos": 408495959,
+          "bindingNanos": 52476256,
+          "cfgNanos": 42005167,
+          "dataflowNanos": 43415968,
+          "resolutionNanos": 997160,
+          "totalNanos": 550445897,
+          "workItems": 1344,
+          "contexts": 21,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "and76",
+        "sourceKind": "derived",
+        "sourceSha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4",
+        "lines": 444,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9657163850060897,
+        "peakRssKiB": 162300,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 501390753,
+          "bindingNanos": 73435616,
+          "cfgNanos": 83913668,
+          "dataflowNanos": 33694650,
+          "resolutionNanos": 987132,
+          "totalNanos": 698442974,
+          "workItems": 565,
+          "contexts": 157,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "and152",
+        "sourceKind": "derived",
+        "sourceSha256": "dfd957ede4669d4037e104b69dc0571de5d73498157a57e8844e4152e370339f",
+        "lines": 976,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.0156751819886267,
+        "peakRssKiB": 162508,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 522905150,
+          "bindingNanos": 80973080,
+          "cfgNanos": 126061224,
+          "dataflowNanos": 48307258,
+          "resolutionNanos": 1199217,
+          "totalNanos": 783316104,
+          "workItems": 1173,
+          "contexts": 309,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "and304",
+        "sourceKind": "derived",
+        "sourceSha256": "ffa42d82a47fdca5688c9a1c8562c6fea71ffde5eaa0dcf649dc35d0da220e57",
+        "lines": 2040,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.2160102229972836,
+        "peakRssKiB": 171624,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 590313523,
+          "bindingNanos": 108638183,
+          "cfgNanos": 193600255,
+          "dataflowNanos": 62657549,
+          "resolutionNanos": 1303887,
+          "totalNanos": 960652262,
+          "workItems": 2389,
+          "contexts": 613,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "and608",
+        "sourceKind": "derived",
+        "sourceSha256": "41d5999adfb7a7c98ff8283bb642ff1f42e09c81ffb767da24fb6f4a83c8b67c",
+        "lines": 4168,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.7169955089921132,
+        "peakRssKiB": 242648,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 721351663,
+          "bindingNanos": 149912042,
+          "cfgNanos": 491262726,
+          "dataflowNanos": 96808728,
+          "resolutionNanos": 1847714,
+          "totalNanos": 1465779598,
+          "workItems": 4821,
+          "contexts": 1221,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "and1216",
+        "sourceKind": "derived",
+        "sourceSha256": "0d2ba89ca1729f17fca4917966245a57d566be08cb78713d52656e1c410c93c4",
+        "lines": 8424,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 2.9688536610046867,
+        "peakRssKiB": 370872,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 959539472,
+          "bindingNanos": 249133491,
+          "cfgNanos": 1299948155,
+          "dataflowNanos": 166290125,
+          "resolutionNanos": 3090390,
+          "totalNanos": 2684415577,
+          "workItems": 9685,
+          "contexts": 2437,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or76",
+        "sourceKind": "derived",
+        "sourceSha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8",
+        "lines": 546,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 0.9655453250015853,
+        "peakRssKiB": 158664,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 478293612,
+          "bindingNanos": 69692972,
+          "cfgNanos": 72316114,
+          "dataflowNanos": 109054830,
+          "resolutionNanos": 1090981,
+          "totalNanos": 734584947,
+          "workItems": 5810,
+          "contexts": 129,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or152",
+        "sourceKind": "derived",
+        "sourceSha256": "1f2bf3672a1c6b831958cf5439a563a47f1a239c51bcbadaf4f2ea8db23ae2f8",
+        "lines": 1230,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.2660094120074064,
+        "peakRssKiB": 189180,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 542926267,
+          "bindingNanos": 82805536,
+          "cfgNanos": 121385766,
+          "dataflowNanos": 231203921,
+          "resolutionNanos": 1335414,
+          "totalNanos": 983357001,
+          "workItems": 23594,
+          "contexts": 281,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or304",
+        "sourceKind": "derived",
+        "sourceSha256": "63536fb6957fc5f1642a1fb869ff4a85a54e1fc93ceb38d265577de99e11384e",
+        "lines": 2598,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.9172086080070585,
+        "peakRssKiB": 280068,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 642819023,
+          "bindingNanos": 110966691,
+          "cfgNanos": 260914408,
+          "dataflowNanos": 633132839,
+          "resolutionNanos": 1585197,
+          "totalNanos": 1653607974,
+          "workItems": 93818,
+          "contexts": 585,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or608",
+        "sourceKind": "derived",
+        "sourceSha256": "71a8de317ff49e17a28c09f4214b60916ef2bee116c0acc0c2570ae1509e90dc",
+        "lines": 5334,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 3.4709097300074063,
+        "peakRssKiB": 464372,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 887235279,
+          "bindingNanos": 175000548,
+          "cfgNanos": 500916221,
+          "dataflowNanos": 1644163458,
+          "resolutionNanos": 2086117,
+          "totalNanos": 3214593570,
+          "workItems": 372890,
+          "contexts": 1193,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "or1216",
+        "sourceKind": "derived",
+        "sourceSha256": "1fba314d25d5f266322b120fd7b3076bc9a653c199e55b51804748f736ea63c3",
+        "lines": 10806,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 10.131274653002038,
+        "peakRssKiB": 891692,
+        "expected": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "actual": [
+          "SYNROOT",
+          "SYNTGTA",
+          "SYNTGTB"
+        ],
+        "metrics": {
+          "parseNanos": 1012585934,
+          "bindingNanos": 246795607,
+          "cfgNanos": 1988661665,
+          "dataflowNanos": 6555438649,
+          "resolutionNanos": 3502839,
+          "totalNanos": 9813982487,
+          "workItems": 1485530,
+          "contexts": 2409,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "overlap-dynamic400",
+        "sourceKind": "derived",
+        "sourceSha256": "f3f9eff1be048c77d731cdfb043f2569b53d08020ba7159240ca9ebec6d43a02",
+        "lines": 3655,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.6166837100026896,
+        "peakRssKiB": 228024,
+        "expected": [
+          "H"
+        ],
+        "actual": [
+          "H"
+        ],
+        "metrics": {
+          "parseNanos": 759321724,
+          "bindingNanos": 159016431,
+          "cfgNanos": 282985717,
+          "dataflowNanos": 129824986,
+          "resolutionNanos": 2235117,
+          "totalNanos": 1339116652,
+          "workItems": 7326,
+          "contexts": 1163,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "overlap-dynamic900",
+        "sourceKind": "derived",
+        "sourceSha256": "b77567bb9a670445834824fb7796bfe164d5603bbd72847001ebaf1d6c2bba9d",
+        "lines": 8155,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 2.4681748099974357,
+        "peakRssKiB": 393840,
+        "expected": [
+          "H"
+        ],
+        "actual": [
+          "H"
+        ],
+        "metrics": {
+          "parseNanos": 1054296565,
+          "bindingNanos": 277580924,
+          "cfgNanos": 599144465,
+          "dataflowNanos": 237138845,
+          "resolutionNanos": 3644266,
+          "totalNanos": 2182437138,
+          "workItems": 16826,
+          "contexts": 2663,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "overlap-dynamic1800",
+        "sourceKind": "derived",
+        "sourceSha256": "818ead3bf482dd732fc200a874581e538c5d0d00c494246b65021b71a3857c0f",
+        "lines": 16255,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 4.371906973989098,
+        "peakRssKiB": 527140,
+        "expected": [
+          "H"
+        ],
+        "actual": [
+          "H"
+        ],
+        "metrics": {
+          "parseNanos": 1538741765,
+          "bindingNanos": 394826604,
+          "cfgNanos": 1752703374,
+          "dataflowNanos": 403107618,
+          "resolutionNanos": 5630151,
+          "totalNanos": 4106113539,
+          "workItems": 33926,
+          "contexts": 5363,
+          "trackedDeclarations": 2
+        }
+      },
+      {
+        "id": "dead-callers800",
+        "sourceKind": "derived",
+        "sourceSha256": "91ef27103dfa86b376c8deab75c05214d39924ccf6c1c05b8bf7f4210212c005",
+        "lines": 1610,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 1.0657346110092476,
+        "peakRssKiB": 160676,
+        "expected": [
+          "SYNPROG"
+        ],
+        "actual": [
+          "SYNPROG"
+        ],
+        "metrics": {
+          "parseNanos": 554678061,
+          "bindingNanos": 82805496,
+          "cfgNanos": 138782868,
+          "dataflowNanos": 22931120,
+          "resolutionNanos": 1300982,
+          "totalNanos": 804306550,
+          "workItems": 2,
+          "contexts": 1,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "dead-callers6400",
+        "sourceKind": "derived",
+        "sourceSha256": "24d7ead117984d2ceb44b7a0d8002c8084949ac753e0607877a8e7b414ae6bae",
+        "lines": 12810,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 2.8187285710009746,
+        "peakRssKiB": 358120,
+        "expected": [
+          "SYNPROG"
+        ],
+        "actual": [
+          "SYNPROG"
+        ],
+        "metrics": {
+          "parseNanos": 1128501208,
+          "bindingNanos": 258463158,
+          "cfgNanos": 1042614558,
+          "dataflowNanos": 70230437,
+          "resolutionNanos": 4171934,
+          "totalNanos": 2520747231,
+          "workItems": 2,
+          "contexts": 1,
+          "trackedDeclarations": 0
+        }
+      },
+      {
+        "id": "linear-statements16000",
+        "sourceKind": "derived",
+        "sourceSha256": "d626d694a2e2731e248d6292b04168efe764a6d3a01c7e4cefc736c4c2affef3",
+        "lines": 16008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 3.620237601993722,
+        "peakRssKiB": 579756,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "metrics": {
+          "parseNanos": 1788355838,
+          "bindingNanos": 423363210,
+          "cfgNanos": 848921464,
+          "dataflowNanos": 213477450,
+          "resolutionNanos": 7444946,
+          "totalNanos": 3297038943,
+          "workItems": 16002,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "linear-statements32000",
+        "sourceKind": "derived",
+        "sourceSha256": "3a5818f9e2dd8e493a76915ce46ebad6703eb5e9c28052e65806875ba06aed6e",
+        "lines": 32008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 6.024245874010376,
+        "peakRssKiB": 826004,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "metrics": {
+          "parseNanos": 2956620431,
+          "bindingNanos": 594341556,
+          "cfgNanos": 1836658176,
+          "dataflowNanos": 302648984,
+          "resolutionNanos": 5358057,
+          "totalNanos": 5716888152,
+          "workItems": 32002,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "linear-statements64000",
+        "sourceKind": "derived",
+        "sourceSha256": "aa00b1ca57b8ccee2ff57655f4eb0c26e9e5315516fbd7def1840e43e3ccc0fc",
+        "lines": 64008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 14.188697665013024,
+        "peakRssKiB": 1452600,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "metrics": {
+          "parseNanos": 4967386996,
+          "bindingNanos": 1089953958,
+          "cfgNanos": 7208065081,
+          "dataflowNanos": 549639661,
+          "resolutionNanos": 13912979,
+          "totalNanos": 13859009640,
+          "workItems": 64002,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        }
+      },
+      {
+        "id": "linear-statements117000",
+        "sourceKind": "derived",
+        "sourceSha256": "79fa75b81e30bcacef5de348e55e271b177e6c3183e8cedade3f8a0e77c09f8b",
+        "lines": 117008,
+        "status": "PASS",
+        "exit": 0,
+        "seconds": 35.17313363600988,
+        "peakRssKiB": 1836892,
+        "expected": [
+          "PROGA"
+        ],
+        "actual": [
+          "PROGA"
+        ],
+        "metrics": {
+          "parseNanos": 8377964347,
+          "bindingNanos": 1589308088,
+          "cfgNanos": 23918614655,
+          "dataflowNanos": 829011480,
+          "resolutionNanos": 23384033,
+          "totalNanos": 34796889855,
+          "workItems": 117002,
+          "contexts": 1,
+          "trackedDeclarations": 1
+        }
+      }
+    ]
+  },
+  "originals": {
+    "summary": {
+      "cases": 20,
+      "passed": 20,
+      "failed": 0,
+      "seconds": 16.155931860019336,
+      "peakRssKiB": 344596,
+      "heapMiB": 4096,
+      "maxWork": 100000000,
+      "timeoutSeconds": 300
+    },
+    "results": [
+      {
+        "id": "lower-CTXBOOM-07",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.6650936770020053,
+        "peakRssKiB": 124520,
+        "sourceSha256": "fedd3e527ca536926135d6f0884943240d85ecad8fea55f6d12d06a3dab6cbac",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/lower-CTXBOOM-07/CTXBOOM-07.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/lower-CTXBOOM-07/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/lower-CTXBOOM-07/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "lower-CTXBOOM-08",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7152098130027298,
+        "peakRssKiB": 129088,
+        "sourceSha256": "4020ef361b9ccec22428ead5d4ac4892b4e8981262e3a68a052c711f08fabab7",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/lower-CTXBOOM-08/CTXBOOM-08.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/lower-CTXBOOM-08/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/lower-CTXBOOM-08/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "lower-CTXBOOM-CONTROL-08",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7152630190103082,
+        "peakRssKiB": 121284,
+        "sourceSha256": "a395f8bdd2cde387a45af2594eec9093f22c2b8a736967991b918e97f795b9c0",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/lower-CTXBOOM-CONTROL-08/CTXBOOM-CONTROL-08.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/lower-CTXBOOM-CONTROL-08/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/lower-CTXBOOM-CONTROL-08/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "and76",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.8655168050026987,
+        "peakRssKiB": 167252,
+        "sourceSha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/and76/input.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/and76/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/and76/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "or76",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.9657406309997896,
+        "peakRssKiB": 160680,
+        "sourceSha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/or76/input.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/or76/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/or76/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "overlap900",
+        "exit": 0,
+        "passed": true,
+        "seconds": 1.6668031500012148,
+        "peakRssKiB": 344596,
+        "sourceSha256": "c6a5e046700cda53e5651b0293798acac0e4fd187a795919923c7d7f3ef6c469",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/overlap900/input.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/overlap900/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/overlap900/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "fixed-pasted",
+        "exit": 2,
+        "passed": true,
+        "seconds": 0.7150736559997313,
+        "peakRssKiB": 115272,
+        "sourceSha256": "dfebd5ad5d75c1718ec58fdeba2b311819b7e0593fd6a6cd0b010e19be2ded64",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/fixed-pasted/input.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/fixed-pasted/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/fixed-pasted/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "fixed-star",
+        "exit": 2,
+        "passed": true,
+        "seconds": 0.765101761004189,
+        "peakRssKiB": 109800,
+        "sourceSha256": "29eb1de5b49940b0fd0fb92d3f645c1a428a3bb997e205c201e3847858bc1078",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/fixed-star/input.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/fixed-star/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/fixed-star/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-cics-09",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.8152967000060016,
+        "peakRssKiB": 142552,
+        "sourceSha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-cics-09/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-cics-09/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-cics-09/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-cics-09-control",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.8151864699902944,
+        "peakRssKiB": 145088,
+        "sourceSha256": "16998d864497eb6b401b7bfc7fac4d119bbb8c65ecfa5d924a2a8ecdf40b95fb",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-cics-09-control/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-cics-09-control/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-cics-09-control/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-cics-16",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.865260168997338,
+        "peakRssKiB": 143200,
+        "sourceSha256": "ad91b8580f9ec98f357d9885782581fab5aab1a1e993221724e0206de58ed649",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-cics-16/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-cics-16/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-cics-16/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-cics-20",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.8153211349999765,
+        "peakRssKiB": 140840,
+        "sourceSha256": "7a6115b0d1664c71d748d0903c6ca98e1f4e7a8a9a2f59d846466dfe4c62b134",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-cics-20/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-cics-20/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-cics-20/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-escape-08",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7150449740001932,
+        "peakRssKiB": 127876,
+        "sourceSha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-08/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-escape-08/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-escape-08/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-escape-09-control",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7151278639939846,
+        "peakRssKiB": 126916,
+        "sourceSha256": "b8b2693953a3e24e7af22cbce53da10e8a61b36090414107b78fd93a05462c28",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-09-control/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-escape-09-control/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-escape-09-control/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-escape-16",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7150093490054132,
+        "peakRssKiB": 125104,
+        "sourceSha256": "302c3c187b04eba84322a946ed9203af42d38b5798ab41a7e9f8f1de0da5eae1",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-16/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-escape-16/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-escape-16/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-escape-20",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7650564190116711,
+        "peakRssKiB": 123168,
+        "sourceSha256": "f96462bf6407560e830efbb2b21df846ef5c38a45663ac5ca9d13aa5fc8abf10",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-escape-20/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-escape-20/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-escape-20/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-plain-09",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7151694700005464,
+        "peakRssKiB": 130084,
+        "sourceSha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-09/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-plain-09/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-plain-09/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-plain-09-control",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7152628389885649,
+        "peakRssKiB": 128008,
+        "sourceSha256": "dec528142335e5ab831550c5a39f8de3e84ba39b74ff85cb3c8e46b26e9b333b",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-09-control/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-plain-09-control/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-plain-09-control/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-plain-16",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.715149163006572,
+        "peakRssKiB": 126528,
+        "sourceSha256": "e4917084b5d3016a860d961104c28f77b401f224e3aa736c98496d0db6902b9c",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-16/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-plain-16/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-plain-16/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      },
+      {
+        "id": "context-plain-20",
+        "exit": 0,
+        "passed": true,
+        "seconds": 0.7152447959961137,
+        "peakRssKiB": 127124,
+        "sourceSha256": "c4ace72add2226c880efc495ec2b47937830a06746238f390a559f968e0ca928",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms32m",
+          "-Xmx4096m",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/resource-stress/context-plain-20/CTXBOOM.cbl",
+          "--output",
+          "benchmark/results/suffix-original20-final-20261008/context-plain-20/dependencies.json",
+          "--metrics",
+          "benchmark/results/suffix-original20-final-20261008/context-plain-20/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ]
+      }
+    ]
+  },
+  "carddemo": {
+    "summary": {
+      "sources": 73,
+      "processed": 73,
+      "equal": 815,
+      "missing": 0,
+      "additional": 0,
+      "seconds": 119.16687870107125,
+      "peakRssKiB": 475236,
+      "baselineReused": "/home/gustavo/workspace/teste-e2e/artefatos-e2e/carddemo-scanner-discovery-20261003/results.json"
+    },
+    "byteIdentical": 73,
+    "sameExit": 73,
+    "exitCounts": {
+      "0": 26,
+      "1": 47
+    },
+    "results": [
+      {
+        "id": "4affdc7a0fa00605",
+        "sourceSha256": "b5bb7d6ccad022e0fc91b4dd1e971f49d184adf89b56abdce14eccff35b39396",
+        "outputSha256": "955747bca6e7da7c48b43b00b4dea34ff20fc93b30964420a50c6bcd0e3fadf7",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "4157c234cff53544",
+        "sourceSha256": "e944b2b469cf737296489e87158801cfe1a174e2965b5bb9ad5006fc65a2b176",
+        "outputSha256": "60c2bbb1552c54d22aea944e4f3309c770135ab961ede13ae1d857ea578e897d",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "6b6e7ba3fb8b02e7",
+        "sourceSha256": "916a5fe2279ad626147990d8f86fac1e4b296f827889485b020cc310b5323601",
+        "outputSha256": "83e07fdfd0509c33823bfca9719f239f86c1c1c2f61106c1e39c032afa31f98d",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "fdb6a11aa23211a4",
+        "sourceSha256": "7ab6dadad6d9d738f6a0cb402f394c25ccda5f7fef26ad644feeb76c11065254",
+        "outputSha256": "39e75ba71684c3cb8f4f5692002fc6cc731f9bc86178c3a0c10e11acfaf4adc4",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "84d813ff30351b47",
+        "sourceSha256": "d6a9210ad3062bd657881fc3f0d2a7368db3ff4869594e0d6a878d8f410d87b6",
+        "outputSha256": "65f80b710240c825994b27f673633d0aeb3278090eb3f43291a69b4b38d826cf",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "296678f011e781e5",
+        "sourceSha256": "d6a9210ad3062bd657881fc3f0d2a7368db3ff4869594e0d6a878d8f410d87b6",
+        "outputSha256": "d0de6375051a7e6c39885006d624cd7416ea385988c541690109b8151e1ba265",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "7f1a0501d082b5dd",
+        "sourceSha256": "c245cf383a4a3f721773a13ca231eb76bd5ae75c1830d58c7aba898a554a0de9",
+        "outputSha256": "b86c964df8cf2cb792c8dd168826a131b355897754f5976e551d1e0bb27b922b",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "1ff5d16035ba70ac",
+        "sourceSha256": "3ffeeb3d3c53e64e632bde36771dbbcf080e92ed4168d30d90c21e4dc198e6ef",
+        "outputSha256": "8ee1a7a778414341f93afee659f29abe0aed14094edc9c8a4f616c7f52ba4ca2",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "d2bed9bd0c9b2662",
+        "sourceSha256": "51479f131b4fb300008403f0c4f9fdbde56f22a7fb341c782492da29f0d23bbe",
+        "outputSha256": "24c55e979f7d583c86c7d14e2d3597f9bb5bb2404e124864fdb33d7bc41e81f5",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "0332bc7dce75ea7c",
+        "sourceSha256": "51479f131b4fb300008403f0c4f9fdbde56f22a7fb341c782492da29f0d23bbe",
+        "outputSha256": "3a3aeb13795bd42e478cae36651b794c063a87d878424b1c74d5139719b529a2",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "b72618dbeb8d4654",
+        "sourceSha256": "831433c6ec8306038c85cb86a8307f91dca48c26ef33a997f402187cbd9f4e04",
+        "outputSha256": "089d5c70f1435caa6cad8e0df2a9198925fa030b84ee17b482f3ce3b2ab450c5",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "6df5138a4c6d9daa",
+        "sourceSha256": "831433c6ec8306038c85cb86a8307f91dca48c26ef33a997f402187cbd9f4e04",
+        "outputSha256": "f26efbb395bf7f204eecdc1e9b69e169c6d9051140db89a0a4d34a4945e76199",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "54eaa77fe6501981",
+        "sourceSha256": "c16e40c391c0ad2d3e797a0e01144ef5b78d3b0db0a1771411a95a9d08b01f67",
+        "outputSha256": "89b85105e251c2ad64900ba68e1d02401d65b7e02fa5c8573afc1be0e5594d79",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "fb675863f8d09c36",
+        "sourceSha256": "dc33b4c797a98d2732070a223f43cc78992c2846681163a032e376630742b1ed",
+        "outputSha256": "f8c7f168d492be24b3c6a318f20d40af1cccbd939d4f320901c561f64c508dc7",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "a82318348427f821",
+        "sourceSha256": "dc33b4c797a98d2732070a223f43cc78992c2846681163a032e376630742b1ed",
+        "outputSha256": "de77d4d8821bc9a216b951109935fe19163455e38d2b547a5331d24d477aabf8",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "f966744c71354a80",
+        "sourceSha256": "5084bb8b0c9a0f0199f737487ae1863f12e43cabbdc459a62b6b67bedc683cc4",
+        "outputSha256": "d160504c850e8e3d60a3ee239a9cfadfcb0d6e553cf151bfb3adc68c621ca7a5",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "70f27939c3f2618e",
+        "sourceSha256": "76dea08b410b653ee2fa967c564e9f2e992b7c09f52b2d1fbb5a212149aefbce",
+        "outputSha256": "d160504c850e8e3d60a3ee239a9cfadfcb0d6e553cf151bfb3adc68c621ca7a5",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "2fe17320f9cffe07",
+        "sourceSha256": "708f3cadc555acab63f11e2f3238f5372ac7180e6b01197bf960d96bf0d2e83f",
+        "outputSha256": "74703b4361f479e3c6d126e7ff331a0720332871fba779921cba1475ef9e57b1",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "f0bab7303f51e786",
+        "sourceSha256": "136ab808a10d01814269a4a29bd6c249b1b86952d0abded98419458db43f2aef",
+        "outputSha256": "74703b4361f479e3c6d126e7ff331a0720332871fba779921cba1475ef9e57b1",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "313a2941cb8f9f59",
+        "sourceSha256": "8691e625502b7efcfd7ba4ae61797132e7b68f3fd5fedcdcc7dd6488f6871eef",
+        "outputSha256": "054d0b674f869dcfbe6b76d18b80f2434990c7cd5d31d18cf28aab1716024d2c",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "7557c459401603a2",
+        "sourceSha256": "c9c5428073cbe19c1cd19fc066ed99972560c209a80b4aea3bae3cc5e20a3536",
+        "outputSha256": "054d0b674f869dcfbe6b76d18b80f2434990c7cd5d31d18cf28aab1716024d2c",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "d0c029a3108572a7",
+        "sourceSha256": "224856ce6ef1b7417aefcec033a36a9315c0005decf9f11d21d11e9240e3f8fa",
+        "outputSha256": "7fc1ba294529dec21785a72bb8457ad9c954b455751248beab3fde74440e83b5",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "33feae00b4be6a55",
+        "sourceSha256": "23c8753b6b4e0c24d4560c83861fe8162626bab195faec0fe88cf80b8bf432b5",
+        "outputSha256": "7dfdebc75e6578ca9ddb4abd82fcccdfe991827870dc372f7d78083cea5bfcab",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "a367f4acd2bec18b",
+        "sourceSha256": "382c4131561a7843704fb84212c5d15b69ed5fa7b69101ee999680880a1d8879",
+        "outputSha256": "9e0c214c5b63943f582511ec009377b421cf28246dfe49f97ab4ebc4df139a37",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "85931700529ae9bd",
+        "sourceSha256": "0b06bd5d4f38f17871de8985c439dfce7ed30d28e02b6ffeb8459e0cd8db4fc2",
+        "outputSha256": "7e45cf2db795130d459d3eb1aded97afcf95510c75ab771d32c5463f624b3766",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "1344f55da698ca45",
+        "sourceSha256": "0b06bd5d4f38f17871de8985c439dfce7ed30d28e02b6ffeb8459e0cd8db4fc2",
+        "outputSha256": "84d21633e37605bfe9043d9d2259c4cd9b80a26fc4b1372cf0cfbf1ea2e1c661",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "069938f27c5c9d1c",
+        "sourceSha256": "92776ed2801da1148839a9ed98b6537de4b41e0c7f050c8dcaae0d4e4ea543b5",
+        "outputSha256": "4e1c74212fe8168a4106c9a889665e9c27e3f82d475ef981236b41120b70f750",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "270d89141e57ffe5",
+        "sourceSha256": "b5c46039eb8fd2f7ed7d3ca379172e56fa87385a369023bef706b04986fe1cfb",
+        "outputSha256": "938808acd267c8b07ba9e9a5238ea74c018fdcc63978eb043cdb327413e546e1",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "b7bb370b3171956f",
+        "sourceSha256": "b5c46039eb8fd2f7ed7d3ca379172e56fa87385a369023bef706b04986fe1cfb",
+        "outputSha256": "c45cec843207b0ec2fe1ff0198f4f0e9ebfaeb15959a1b0ea696de1150b18563",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "da1614ca80f46ff2",
+        "sourceSha256": "598e3c9055b96b79266910e080bc24048eb308ee61afc828c06dbade9f501d38",
+        "outputSha256": "e17a1ee04285c44fe37f6fe210b4170609f7e1e99bd50f21013797b7d5876c85",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "0e4fd74fc651750a",
+        "sourceSha256": "4f1e55176f69edfb55b7af7a161aceb8c3bc3bd1b2924a704a76256e0e751b54",
+        "outputSha256": "874501a7fae70efaaf6ddf03aa226afc5cfd2a45a6516c3e8bbb41fb56e0c82f",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "f3c66a2033a66a2b",
+        "sourceSha256": "4f1e55176f69edfb55b7af7a161aceb8c3bc3bd1b2924a704a76256e0e751b54",
+        "outputSha256": "4b77a09c364b109ef1ed6d60d4612236d80d41371d2537a2e70df4098a772859",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "8e0bfbb0bb8f4acd",
+        "sourceSha256": "27a969cbee69426fa1056053e676041430e99399912f0e27ee1f1a454093c21e",
+        "outputSha256": "45933167d0880678af04a57cb89cd3fc808c6aaeab9653685ab8b85e8f32206c",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "4b5ec43c105bb64f",
+        "sourceSha256": "d5af307fb4b1a155f03df9eea14b402d866a332360e14a1e37dbefe59b73363b",
+        "outputSha256": "4ec057d91ee91150d2f64475dd32c78f7024f20c79a0a037a5e84b22d2241d89",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "287d36f735ecab42",
+        "sourceSha256": "d5af307fb4b1a155f03df9eea14b402d866a332360e14a1e37dbefe59b73363b",
+        "outputSha256": "9638bf347e62e1961297a99f1b068ba97cbda6ee0b305e7c6297b390b382e2ee",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "1dac7e501ccb2956",
+        "sourceSha256": "55c2aebd59528aa42b28878ba5ca4d17a00b3548fc25e4ce1529710d366fd576",
+        "outputSha256": "b63abc833276337b7eb154ccae9acea3de6dd6251dc0f6b3dd3abf16ab41ec29",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "a3874978fb9d76a2",
+        "sourceSha256": "18cebdd95bff49b5316c271204fb20f59d2dd72615bc1715498c9cc8a50187f7",
+        "outputSha256": "b63abc833276337b7eb154ccae9acea3de6dd6251dc0f6b3dd3abf16ab41ec29",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "405c1833bbe66f51",
+        "sourceSha256": "97fcba3faa272c98778eb7ef50ef87faec7290168e24a9b1714996453d660ddb",
+        "outputSha256": "390e74c3a189a4e02060144537f02c218fd8e51ac396dd2a556259b0f6a12ff2",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "c8bd92491fae8f50",
+        "sourceSha256": "f8eb6e3a561ff96a1889a8f777a8998850a11dddae221da2c5018067d7b95551",
+        "outputSha256": "fb31eda8f66486e46e197a0d96e39a2a70b2001f882d9319cbd51e5741ee0439",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "f55d741512b8cc47",
+        "sourceSha256": "85d36699cbd3079320e689576ea8406d07ad78901f4f3a68a129b869359b46ca",
+        "outputSha256": "c008de540cf39104d0d2be52f12037aa3c3245c5ff4ad32f1f9f317443895cfc",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "5e3ce0f6b5e6b3e7",
+        "sourceSha256": "85d36699cbd3079320e689576ea8406d07ad78901f4f3a68a129b869359b46ca",
+        "outputSha256": "0f8ad5d6738f489eb5634bb649208a5f4f0df3c4b9319e571e0995a90c70d48d",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "e4602df7a0ed5f88",
+        "sourceSha256": "0eccb28695cb3a8ea6f6ea7da26d1b48a4529787f6130b2c98bead33bc661967",
+        "outputSha256": "7bfe74bfb7abe7409e7615cb235b5923063648aa4fb6ded40640047dfb689e9c",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "03c557ca5d9ae101",
+        "sourceSha256": "bcd68f08c145b3b9b9c809a7082834e9519d78b6f363a0d1c5ff9d9576dcf888",
+        "outputSha256": "2cbf5c5f78feaac7826fc3d80572ddb49309c596c5ed69ddc14d801edb2dd1f4",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "9401561db503964f",
+        "sourceSha256": "bcd68f08c145b3b9b9c809a7082834e9519d78b6f363a0d1c5ff9d9576dcf888",
+        "outputSha256": "87975972c87171739f32212c6e7970bcdf168f7e533f83f96fc3210fe9ae1efe",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "c5a1c856e8d5db78",
+        "sourceSha256": "aa131b1e3382dc6d101b42f1c97d4fb0c2fdd706819ed9f9a0187c82b30f3019",
+        "outputSha256": "39acc435f7408b8f648f90526ef66a166566aadc6db0fa2d89b738f54da9800d",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "686f858db2f86601",
+        "sourceSha256": "aa131b1e3382dc6d101b42f1c97d4fb0c2fdd706819ed9f9a0187c82b30f3019",
+        "outputSha256": "14752096009e428ef5a9f8ae54a3d3f25053eb77b5ce60ad5b82f15b6803111d",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "792f46d55ee54e05",
+        "sourceSha256": "309468a5c4745f92c6dcf6ed28b396334b2f131ced78eb43eda962a63d2b174e",
+        "outputSha256": "f7fac768b577ddf949eeb8137d80efaeedb9ef0f7039467e90a6b5b4462ace10",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "5eb47d950101cbe6",
+        "sourceSha256": "fc24ff879ac6ae12bc6817554cb756f14c5e86e0ca2dd0037af49599887f03c0",
+        "outputSha256": "e24ee383d7b467da85ee40177c49cdca3a1566ef99d0972b2d46b6c64910ea90",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "90f81d7b685a1abd",
+        "sourceSha256": "fc24ff879ac6ae12bc6817554cb756f14c5e86e0ca2dd0037af49599887f03c0",
+        "outputSha256": "08641b36b3de6516537e7d2049a75ed8fcdd2bc08b9e1464d461aa56a2933d33",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "90096622fff47265",
+        "sourceSha256": "c77747b4caaf00b45177a6449562b7f59ec336db832937595edef8b32fdce6fa",
+        "outputSha256": "2f241658593f0b9e1187574c0a6241a9b533780aaa0c80fecc107bb92e41087a",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "1490e5fb7f36ac22",
+        "sourceSha256": "ad5e376ac9221b21b8ce47597a5ca17fc1f39dc913793c814c6675e9b046fc09",
+        "outputSha256": "5ea64187ee3e3b5dc9b6d0588f465b08ed92e439f3632dff57e581f6ff5aec38",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "385b562b6298cf72",
+        "sourceSha256": "4e49afda5f685f3ebeb95ed04a93cf88df93d39c66d8d7f9ba2b9a3e00a1f690",
+        "outputSha256": "8f7721a9454f097119f70755f69e50dcfed9966b2afc8e7c7cb6fe7edb887fbf",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "143ef5a6f9d7c943",
+        "sourceSha256": "69842c4dd419ed70365682d65423d2744173f3eec695b25b5ed27bd29289608d",
+        "outputSha256": "116300f6285b3638a48ce611eea03b23ff7674da1ac7b9ab03b4ab6c8407e4c5",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "9d80faee8c58d8de",
+        "sourceSha256": "4f901ae6b113eebae60ae1d94b30f8cb9906d031a4419770bf56980bdf97e377",
+        "outputSha256": "18179a95ee6dc4d779a83a666bec9ff20600413219e8b9e248a87de245783d8d",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "89f1427bafb2e03e",
+        "sourceSha256": "4f901ae6b113eebae60ae1d94b30f8cb9906d031a4419770bf56980bdf97e377",
+        "outputSha256": "7928142af7ebe057ab05ad6f01a05a9e49ae7fb791f7b89547655fcdc08bcbc2",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "07d08e0b43a895bc",
+        "sourceSha256": "5694a2ed8a12dd4dc82717b401c655866a0e1f9abb0acf395151ead2b0cb31a7",
+        "outputSha256": "bd5b87cf547d4e0f983620a2155c2000dd5df36fa3cda2a5995fe0e53847284d",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "6dc77bb7e613059f",
+        "sourceSha256": "426cf9bd190b777104bb964e9d5a2929197ed7621f8b334f229ef12e60e63966",
+        "outputSha256": "8c555de22f9d92358a3bda454176877af3801f1c2d1e619790de9d2488e7f16b",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "29be9b929ed1cbd3",
+        "sourceSha256": "0213fd5718c6aadd3fba6bbfb1818456d75d10843181bff63aca9ff57d39e87c",
+        "outputSha256": "08dc2f866a0dc244c56212c8445281958b29733ddedd7efc03b31f0e93aec1ac",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "c4ff728a15e2c448",
+        "sourceSha256": "ee1019bc3ef7bc4e0f807b6e9b7167c9386ee7c2f647c63dfddc6fc464487855",
+        "outputSha256": "0b47155254a4a697d309b2afdc1ef2ede923f60a3166fb0e26bc048b3924d78c",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "dc79e9c1c875df01",
+        "sourceSha256": "233dbc3bc33a3b9ac555922085a92be56e88d16316bff624b5723c4c36c99714",
+        "outputSha256": "c696b3c59b9e70fa1ee4c3aee307417d7ebf1f90d029bf51ebd02e53623b687a",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "c6a3a68f36e5247b",
+        "sourceSha256": "d290cbbbec1e25859847d9dfe6b28040cd6b09c3b71747e39de7b4713d838e76",
+        "outputSha256": "98c0c4937b47a233c90f532d44cdb0520e863f685412f256d7ca98d5e473acde",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "2c5dba9b88f1c2c8",
+        "sourceSha256": "2e16c29ee12fd20eec4500278f49d1430fe6aec4dd0a0963188ed62ccce9e171",
+        "outputSha256": "0b47155254a4a697d309b2afdc1ef2ede923f60a3166fb0e26bc048b3924d78c",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "d35fa32d3a27149f",
+        "sourceSha256": "494b1ca4ab8a4334eef77d2b87cc7df266f80cbeab2a3f191e9c776d4437d497",
+        "outputSha256": "c696b3c59b9e70fa1ee4c3aee307417d7ebf1f90d029bf51ebd02e53623b687a",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "4299fd5b5337cd99",
+        "sourceSha256": "f81506881aec5d44d340d8b125efe67e2b355343c8893ab6bc95e2cb72c292b7",
+        "outputSha256": "98c0c4937b47a233c90f532d44cdb0520e863f685412f256d7ca98d5e473acde",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "52c234a1ef052153",
+        "sourceSha256": "13c409d1b14b52c4d334c9297aaa7dafa209901569f809127f3831d780722e33",
+        "outputSha256": "23513b6aba908a987d6b299fbf5dce5399ef7ebed426f0efc15956090a898971",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "db90a0cbde11bd30",
+        "sourceSha256": "cf174417cd833193fec178a782fa8d7cabb95da9a8c2ca709af598c45f485625",
+        "outputSha256": "29fcaf447e13351949b3ea4a22eada8d5df0dcfe38a1ed9e483954c1e6e4b4a9",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "a6340eefcff72047",
+        "sourceSha256": "ac004f7f40dcb3f2a14dfb83a743f83fed9383675bc93452f3424c40cb6475a7",
+        "outputSha256": "00b46ba0bbb523a75ce8ea0e3bcd3883f04490beeb563caeed28daa8cc5447d6",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "18b5464e520dbfdd",
+        "sourceSha256": "c183707f0dae0b5e9387373fc3624f0462ad95ccbbb6c8a34167591e206bcbf8",
+        "outputSha256": "3457cf81db9238ec373f570015684e8994edbd310ad84722f14fe194acf3e175",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "8d1308febaf7041d",
+        "sourceSha256": "57232060f8bdaecc679b74e93fcf91d93cffd400326c001bd187ab5fad14789e",
+        "outputSha256": "5f99623daee48c0e82c5da154fc7ea9b9299a1b0ae19c2145b26762661f81ecc",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "8e4db16c1710b40c",
+        "sourceSha256": "05565b6ca61098097391bd6ae14268eb122d41c76570d2336253b0cdb5a961fa",
+        "outputSha256": "2befbe0966bebdc752fadd121bcdb445a019abcb2f09e7fbdf2555fdfd5c67c5",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "6fe2e16e2ce733e4",
+        "sourceSha256": "58c165dcfc3927232c02c152c673e3dee551587b85e7fe56ca67325c980eebb6",
+        "outputSha256": "82c8eeff82b10956233a380c7f358a118901327b53e0478f8bd7628425a8ac78",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 1
+      },
+      {
+        "id": "8e2f1a6e49366d8f",
+        "sourceSha256": "38a8d28235e58509776f5c8c74c113d5848a7ac68fab753c55ab887221c3b43a",
+        "outputSha256": "12aa661e79a7c9fce9ed271f080ac2e1082064a5d739dbb393a6956bb63200d7",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      },
+      {
+        "id": "a866a57778cd77af",
+        "sourceSha256": "d01b013e55ef4f7b76044ef98fa30fa077ec8d0a6847efab7f2c466087264027",
+        "outputSha256": "0d1dd95b6d78ac829ebe170c477c25ecb907f7ef09a83f859d766797fbe1fc62",
+        "byteIdentical": true,
+        "sameExit": true,
+        "exit": 0
+      }
+    ]
+  },
+  "rawEvidenceSha256": {
+    "benchmark/results/suffix-before-20261008/results.json": "0c4811a18a86c0742825619ab3f7231aa7e14c7ab846a8277f6e8f7d56fa58c2",
+    "benchmark/results/suffix-after-final-20261008/results.json": "83e2e9c876ab5a3983795ec0e348b3216b9068883bbdc17d613bb25a228467ac",
+    "benchmark/results/suffix-final-fresh-comparison-20261008.json": "6d6231181d214c91999c663519cfc0a4be8f3ddfd33c73231090ce11b00623a9",
+    "benchmark/results/suffix-final-historical-comparison-20261008.json": "2dde06f52d3fe96a55fc00824c012aeca98e423683de3d0bcc76d8742beb30af",
+    "benchmark/results/suffix-guard-parity-20261008.json": "f4d8b17a523a9ee6b0bb6af0dff1f5bae179489639a09dca83b8ef378ec37da4",
+    "benchmark/results/suffix-original20-final-20261008/results.json": "735ab04c83a5a5ec34c4482cc3cd2f30651f87999aa214471b74dc60dc5a242c",
+    "benchmark/results/suffix-carddemo-final-20261008/results.json": "3053b06f252b5370c2f027ca21d0c47698e5055f939084bc9fecec6d999a6736",
+    "benchmark/results/suffix-carddemo-final-20261008/summary.json": "b090cab69738a40c5fc27f24f26b49ff790686430b9acf39b1a80b3412a74fce",
+    ".tmp/suffix-fast-final.log": "cb4705882f4b3ada9545ae00db9a13d355092001e072928afcf194164ba222e6",
+    ".tmp/suffix-package-final.log": "d668cde6c6aca5c6524a1f3cbdfb238dd3c424cc576df30da27a2b378aac0d35",
+    ".tmp/suffix-isolation-final.log": "dfc3ee562883f3b0fd1ce06077a283c5a9de1e9b9e94ffa6e6e7b0455edcf8c9",
+    ".tmp/suffix-comparator-negative.log": "13334e3bbdac1e353b8a3428c7104629606f134736d4ed69edb0054527c978b3"
+  },
+  "limits": [
+    "OR explicit GO TO and handler/escape/history-dependent programs retain the previous solver.",
+    "117000 assignments test does not exercise suffix sharing; corporate source remains unavailable.",
+    "No universal linear bound; distinct inputs, endpoints and relevant facts can grow.",
+    "47 CardDemo sources remain PARTIAL with unchanged dependency JSON and exit codes."
+  ],
+  "eligibilityGuard": {
+    "reason": "Grammar-owned FILE regions are excluded even without file-flow points.",
+    "firstImplementationCommit": "9d53c8ee2b208e7ad3db757bbff759e5180bf610",
+    "firstJarSha256": "c43b564e5fffa5288946d7302ede440eca1813e5185a892d471628f04fb53452",
+    "finalMatrixReexecuted": true,
+    "byteIdenticalToFirstMatrix": 30
+  }
+}
