@@ -1,0 +1,969 @@
+{
+  "sourceSha256": "71408d8c98ae04600f119ad98fd3e16c3066c20babdec8c4ab6ada8632a9c9d3",
+  "qualifiedJarSha256": "b3f266e5a553a120488841d1428f2947434bb52487bb03661728b504885785d4",
+  "finding": "Entry-state memoization multiplies contexts; full projected environment reconstruction dominates live heap. Shared relevance remains bounded in this fixture.",
+  "originalHeap4096": [
+    {
+      "version": "current",
+      "exit": 2,
+      "seconds": 97.98051373100316,
+      "peakRssKiB": 4428996,
+      "metrics": {},
+      "output": null,
+      "productDiagnostics": [],
+      "sourceSha256": "71408d8c98ae04600f119ad98fd3e16c3066c20babdec8c4ab6ada8632a9c9d3",
+      "jarSha256": "b3f266e5a553a120488841d1428f2947434bb52487bb03661728b504885785d4",
+      "heapMiB": 4096,
+      "maxWork": 100000000,
+      "timeoutSeconds": 900,
+      "passed": false,
+      "failure": "OutOfMemoryError: Java heap space",
+      "outputPublished": false
+    },
+    {
+      "version": "baseline",
+      "exit": 2,
+      "seconds": 156.44012317499437,
+      "peakRssKiB": 4426236,
+      "metrics": {},
+      "output": null,
+      "productDiagnostics": [],
+      "sourceSha256": "71408d8c98ae04600f119ad98fd3e16c3066c20babdec8c4ab6ada8632a9c9d3",
+      "jarSha256": "c962031a19228b1e52c13c8262a06e92fb07aeed3aae3660db5f28efa0b2c0b8",
+      "heapMiB": 4096,
+      "maxWork": 100000000,
+      "timeoutSeconds": 900,
+      "passed": false,
+      "failure": "OutOfMemoryError: Java heap space",
+      "outputPublished": false
+    }
+  ],
+  "heap8192Status": "Interrupted without final result; not qualified. No subsequent heap increases.",
+  "unmodifiedJfr": {
+    "events": 21093,
+    "executionSamplesMain": 4025,
+    "cpuCategories": {
+      "summary-input-projection": 2584,
+      "state-join": 1181,
+      "other-dataflow": 181,
+      "frontend-or-other-product": 54,
+      "state-write": 24,
+      "input-relevance": 1
+    },
+    "firstProductMethods": {
+      "com.imd.cobolexplorer.DependencyEnvironment.insert": 1361,
+      "com.imd.cobolexplorer.DependencyEnvironment.get": 1065,
+      "com.imd.cobolexplorer.DependencyValues.hashCode": 409,
+      "com.imd.cobolexplorer.DependencyFlow.subscribe": 246,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1.push": 127,
+      "com.imd.cobolexplorer.DependencyEnvironment.above": 125,
+      "com.imd.cobolexplorer.DependencyFlow$State.lambda$join$0": 121,
+      "com.imd.cobolexplorer.DependencyEnvironment.copyOf": 93,
+      "com.imd.cobolexplorer.DependencyValues.equals": 72,
+      "com.imd.cobolexplorer.DependencyFlow$Exit.equals": 44,
+      "com.imd.cobolexplorer.DependencyFlow$State.get": 42,
+      "com.imd.cobolexplorer.DependencyEnvironment$Node.<init>": 42,
+      "com.imd.cobolexplorer.DependencyEnvironment.same": 36,
+      "com.imd.cobolexplorer.DependencyFlow.enqueue": 32,
+      "com.imd.cobolexplorer.antlr.CobolPreprocessorParser.charDataLine": 25,
+      "com.imd.cobolexplorer.DependencyFlow.<init>": 18,
+      "com.imd.cobolexplorer.DependencyFlow$State.equals": 16,
+      "com.imd.cobolexplorer.DependencyFlow.route": 16,
+      "com.imd.cobolexplorer.DependencyRelevance.propagate": 11,
+      "com.imd.cobolexplorer.DependencyRelevance.lambda$extend$1": 10,
+      "com.imd.cobolexplorer.DependencyEnvironment.with": 9,
+      "com.imd.cobolexplorer.DependencyRelevance.lambda$extend$2": 9,
+      "com.imd.cobolexplorer.DependencyFlow.step": 8,
+      "com.imd.cobolexplorer.DependencyFlow.write": 6,
+      "com.imd.cobolexplorer.DependencyFlow$State.join": 5,
+      "com.imd.cobolexplorer.DirectRecognizer$Memo.slot": 5,
+      "com.imd.cobolexplorer.DependencyRelevance.extend": 4,
+      "com.imd.cobolexplorer.DependencyFlow.filter": 4,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1.next": 4,
+      "com.imd.cobolexplorer.DependencyFlow.normalize": 3,
+      "com.imd.cobolexplorer.DependencyFlow.invoke": 3,
+      "com.imd.cobolexplorer.DependencyFlow.assemble": 3,
+      "com.imd.cobolexplorer.DependencyFlow$State.<init>": 3,
+      "com.imd.cobolexplorer.DependencyFlow$Exit.hashCode": 3,
+      "com.imd.cobolexplorer.DependencyFlow.read": 3,
+      "com.imd.cobolexplorer.DependencyValues.<init>": 3,
+      "com.imd.cobolexplorer.DependencyFlow.writeLocal": 2,
+      "com.imd.cobolexplorer.DependencyValues.map": 2,
+      "com.imd.cobolexplorer.DependencyDeclarations.reads": 2,
+      "com.imd.cobolexplorer.DependencyFlow.initial": 2,
+      "com.imd.cobolexplorer.UnicodeText.<init>": 2,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology.<init>": 2,
+      "com.imd.cobolexplorer.DependencyFlow.transfer": 2,
+      "com.imd.cobolexplorer.DirectLedger.nodes": 2,
+      "com.imd.cobolexplorer.ConditionNameSemantics.analyze": 1,
+      "com.imd.cobolexplorer.DependencyMain.run": 1,
+      "com.imd.cobolexplorer.DependencyFlow.needsNormalization": 1,
+      "com.imd.cobolexplorer.CobolReferenceResolver.indexAst": 1,
+      "com.imd.cobolexplorer.SourceNormalizer$PhysicalLine.<init>": 1,
+      "com.imd.cobolexplorer.DirectGrammar.first": 1,
+      "com.imd.cobolexplorer.CobolReferenceResolver.buildIndexes": 1,
+      "com.imd.cobolexplorer.antlr.CobolLexer.<clinit>": 1,
+      "com.imd.cobolexplorer.antlr.CobolPreprocessorParser.cobolWord": 1,
+      "com.imd.cobolexplorer.Ast.children": 1,
+      "com.imd.cobolexplorer.DependencyFlow.writes": 1,
+      "com.imd.cobolexplorer.DirectAstActions.buildDataHierarchy": 1,
+      "com.imd.cobolexplorer.DirectCobolParser.parse": 1,
+      "com.imd.cobolexplorer.SourceDependencySemantics.maxOriginalEnd": 1,
+      "com.imd.cobolexplorer.ResolutionAnalysisReport.addCollectorGaps": 1,
+      "com.imd.cobolexplorer.DependencyValues.lambda$fit$0": 1,
+      "com.imd.cobolexplorer.DependencyAnalyzer.analyze": 1,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology.refs": 1,
+      "com.imd.cobolexplorer.ReferenceResolution.<init>": 1,
+      "com.imd.cobolexplorer.SymbolTableBuilder.detectDuplicateDeclarations": 1,
+      "com.imd.cobolexplorer.DependencyFlow$State.hashCode": 1,
+      "com.imd.cobolexplorer.DependencyFlow$SummaryKey.hashCode": 1,
+      "com.imd.cobolexplorer.DependencyFlow.truth": 1
+    },
+    "estimatedAllocatedBytesMain": 67071277320,
+    "allocationCategories": {
+      "summary-input-projection": 58492995368,
+      "state-join": 6131485776,
+      "other-dataflow": 976590368,
+      "state-write": 827602968,
+      "frontend-or-other-product": 610407272,
+      "other-or-truncated": 22763688,
+      "input-relevance": 9431880
+    },
+    "allocationClasses": {
+      "com.imd.cobolexplorer.DependencyEnvironment$Node": 47415516728,
+      "java.lang.Integer": 8098445960,
+      "com.imd.cobolexplorer.DependencyEnvironment": 5417349416,
+      "java.util.HashMap$Node": 3595993088,
+      "[Ljava.util.HashMap$Node;": 811151232,
+      "java.util.HashMap": 382203336,
+      "java.util.LinkedHashMap": 230334704,
+      "org.antlr.v4.runtime.atn.ATNConfig": 225785544,
+      "[I": 184589904,
+      "[B": 95407592,
+      "com.imd.cobolexplorer.DependencyValues": 73358320,
+      "java.util.HashMap$KeyIterator": 63269640,
+      "[J": 43257912,
+      "[Ljava.lang.Object;": 39697728,
+      "java.util.LinkedHashMap$Entry": 35433904,
+      "com.imd.cobolexplorer.DependencyEnvironment$Builder": 33776848,
+      "com.imd.cobolexplorer.DependencyFlow$Exit": 29588432,
+      "[Ljava.util.concurrent.ConcurrentHashMap$Node;": 22240256,
+      "java.util.ImmutableCollections$SetN$SetNIterator": 21950576,
+      "java.util.HashSet": 14606344,
+      "java.util.ImmutableCollections$Set12": 14269840,
+      "java.util.BitSet": 13257120,
+      "com.imd.cobolexplorer.DependencyFlow$State": 12575880,
+      "java.util.ImmutableCollections$ListItr": 12571120,
+      "java.util.KeyValueHolder": 10479904,
+      "com.imd.cobolexplorer.DependencyFlow$Location": 10479888,
+      "com.imd.cobolexplorer.DependencyRelevance$$Lambda.0x00007358302b76c0": 9431880,
+      "java.lang.String": 9200872,
+      "org.antlr.v4.runtime.atn.SingletonPredictionContext": 8973912,
+      "[Lorg.antlr.v4.runtime.atn.ATNConfig;": 8391656,
+      "java.util.ArrayList": 7717400,
+      "java.util.HashMap$EntrySet": 6287912,
+      "java.util.ImmutableCollections$MapN$1": 5239960,
+      "com.imd.cobolexplorer.ExplorerMain$Node": 5234464,
+      "java.util.LinkedList$ListItr": 5209384,
+      "com.imd.cobolexplorer.DependencyFlow$SummaryKey": 4479616,
+      "com.imd.cobolexplorer.DependencyFlow$Context": 4191904,
+      "java.util.LinkedList": 4098208,
+      "org.antlr.v4.runtime.misc.FlexibleHashMap$Entry": 3953744,
+      "java.util.LinkedList$Node": 3445792,
+      "[[Lorg.antlr.v4.runtime.atn.ATNConfig;": 3172888,
+      "com.imd.cobolexplorer.DependencyRelevance$Overwrites": 3143960,
+      "java.util.ImmutableCollections$List12": 3143392,
+      "java.math.BigInteger": 3129480,
+      "java.util.ArrayList$Itr": 2664744,
+      "java.util.stream.ReferencePipeline$Head": 2375856,
+      "java.util.Optional": 2259008,
+      "java.util.stream.SortedOps$SizedRefSortingSink": 2095984,
+      "java.util.HashMap$KeySet": 2095984,
+      "com.imd.cobolexplorer.DependencyRelevance$1Visit": 2095984,
+      "java.util.ImmutableCollections$MapN$MapNIterator": 2095984,
+      "com.imd.cobolexplorer.DependencyFlow$ReturnTo": 2095968,
+      "java.util.stream.SortedOps$OfRef": 2095936,
+      "[Ljava.util.LinkedList;": 1688712,
+      "[Ljdk.internal.org.objectweb.asm.SymbolTable$Entry;": 1532368,
+      "org.antlr.v4.runtime.CommonToken": 1521544,
+      "jdk.internal.org.objectweb.asm.SymbolTable$Entry": 1265888,
+      "jdk.internal.org.objectweb.asm.ByteVector": 1208168,
+      "java.util.ArrayList$ArrayListSpliterator": 1142504,
+      "java.util.stream.ReferencePipeline$4": 1138704,
+      "java.lang.invoke.MemberName": 1135960,
+      "java.util.AbstractList$RandomAccessSpliterator": 1056944,
+      "com.imd.cobolexplorer.Ast$SourceSpan": 1052040,
+      "java.util.LinkedHashMap$LinkedKeySet": 1048000,
+      "org.antlr.v4.runtime.atn.LexerATNConfig": 1048000,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007358302a8a88": 1048000,
+      "com.imd.cobolexplorer.DirectToken": 1048000,
+      "java.util.stream.Nodes$FixedNodeBuilder": 1047984,
+      "java.util.ArrayDeque": 1047984,
+      "com.imd.cobolexplorer.DependencyDeclarations$$Lambda.0x000073583028d830": 1047968,
+      "jdk.internal.org.objectweb.asm.MethodWriter": 1047952,
+      "[Ljava.lang.String;": 1047480,
+      "java.util.regex.Pattern$BmpCharPropertyGreedy": 1043368,
+      "com.imd.cobolexplorer.SemanticCoverage$Finding": 1043256,
+      "java.util.stream.MatchOps$1MatchSink": 1043240,
+      "com.imd.cobolexplorer.Ast$ParseTreeOrigin": 1043208,
+      "java.util.regex.Pattern$TreeInfo": 1043208,
+      "java.lang.invoke.MethodType": 1043208,
+      "java.util.stream.ReferencePipeline$3": 1043208,
+      "com.imd.cobolexplorer.DirectTerminal": 1043200,
+      "org.antlr.v4.runtime.misc.Interval": 1043192,
+      "java.util.regex.Pattern": 1043192,
+      "java.util.regex.Pattern$Start": 1043192,
+      "java.util.stream.Nodes$SpinedNodeBuilder": 1043184,
+      "java.util.Collections$UnmodifiableMap": 1043184,
+      "com.imd.cobolexplorer.ReferenceOccurrences$Occurrence": 1043176,
+      "java.util.HashMap$TreeNode": 1023048,
+      "org.antlr.v4.runtime.atn.BasicState": 933496,
+      "java.util.ImmutableCollections$ListN": 805328,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1": 761864,
+      "[C": 625080,
+      "com.imd.cobolexplorer.SourceMap$Segment": 594840,
+      "java.security.SecureClassLoader$1": 488240,
+      "com.imd.cobolexplorer.antlr.CobolPreprocessorParser$LiteralContext": 371008,
+      "com.imd.cobolexplorer.DependencyRelevance$Point": 314008,
+      "java.util.jar.JarFile$JarFileEntry": 287712,
+      "java.util.Spliterators$2Adapter": 286912,
+      "org.antlr.v4.runtime.atn.ATNConfigSet": 286432,
+      "java.lang.invoke.InnerClassLambdaMetafactory": 284584,
+      "sun.util.locale.LocaleObjectCache$CacheEntry": 282520,
+      "java.lang.Class": 249776,
+      "jdk.internal.org.objectweb.asm.FieldWriter": 248280,
+      "java.lang.StringBuilder": 244752,
+      "jdk.internal.org.objectweb.asm.Label": 243296,
+      "com.imd.cobolexplorer.DependencyFlow$State$$Lambda.0x00007358302bd638": 122320,
+      "java.util.concurrent.CopyOnWriteArrayList$COWIterator": 87840,
+      "java.util.stream.ReferencePipeline$2$1": 8984,
+      "java.util.Spliterators$IteratorSpliterator": 8976,
+      "java.util.regex.Matcher": 8920,
+      "com.imd.cobolexplorer.Ast$PictureClause": 8904,
+      "com.imd.cobolexplorer.GrammarCoverageManifest$RuleKey": 7896
+    },
+    "environmentNodeAllocationOrigins": {
+      "summary-input-projection": 47185307968,
+      "state-write": 164202304,
+      "state-join": 65354152,
+      "other-dataflow": 652304
+    },
+    "oldObjectSamplesClasses": {
+      "com.imd.cobolexplorer.DependencyEnvironment$Node": 192,
+      "java.lang.String": 17,
+      "[B": 12,
+      "[Ljava.util.HashMap$Node;": 7,
+      "[Ljava.lang.Object;": 4,
+      "[I": 3,
+      "java.util.ImmutableCollections$List12": 2,
+      "java.util.HashMap$Node": 2,
+      "org.antlr.v4.runtime.CommonToken": 1,
+      "com.imd.cobolexplorer.ExplorerMain$Node": 1,
+      "[Ljava.util.concurrent.ConcurrentHashMap$Node;": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment": 1,
+      "org.antlr.v4.runtime.atn.ATNConfig": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Exit": 1,
+      "org.antlr.v4.runtime.atn.BasicState": 1,
+      "java.lang.Integer": 1,
+      "com.imd.cobolexplorer.Ast$SourceSpan": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Context": 1,
+      "com.imd.cobolexplorer.DependencyFlow$ReturnTo": 1,
+      "java.lang.Class": 1,
+      "[Ljava.nio.ByteBuffer;": 1
+    },
+    "environmentOldObjectOrigins": {
+      "summary-input-projection": 183,
+      "state-join": 6,
+      "state-write": 3
+    }
+  },
+  "instrumentedJfr": {
+    "events": 22747,
+    "executionSamplesMain": 3791,
+    "cpuCategories": {
+      "summary-input-projection": 2327,
+      "state-join": 1189,
+      "other-dataflow": 201,
+      "frontend-or-other-product": 39,
+      "state-write": 31,
+      "input-relevance": 3,
+      "other-or-truncated": 1
+    },
+    "firstProductMethods": {
+      "com.imd.cobolexplorer.DependencyEnvironment.insert": 1180,
+      "com.imd.cobolexplorer.DependencyEnvironment.get": 896,
+      "com.imd.cobolexplorer.DependencyValues.hashCode": 363,
+      "com.imd.cobolexplorer.DependencyFlow.subscribe": 248,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1.push": 242,
+      "com.imd.cobolexplorer.DependencyEnvironment.above": 105,
+      "com.imd.cobolexplorer.DependencyEnvironment.copyOf": 87,
+      "com.imd.cobolexplorer.DependencyValues.equals": 78,
+      "com.imd.cobolexplorer.DependencyFlow$State.lambda$join$0": 75,
+      "com.imd.cobolexplorer.DependencyEnvironment$Builder.put": 62,
+      "com.imd.cobolexplorer.DependencyFlow$Exit.equals": 52,
+      "com.imd.cobolexplorer.DependencyFlow.enqueue": 48,
+      "com.imd.cobolexplorer.DependencyValues.join": 41,
+      "com.imd.cobolexplorer.DependencyEnvironment.same": 39,
+      "com.imd.cobolexplorer.DependencyFlow$State.get": 33,
+      "com.imd.cobolexplorer.DependencyEnvironment$Node.<init>": 32,
+      "com.imd.cobolexplorer.DependencyFlow.<init>": 28,
+      "com.imd.cobolexplorer.DependencyFlow$State.join": 26,
+      "com.imd.cobolexplorer.antlr.CobolPreprocessorParser.charDataLine": 17,
+      "com.imd.cobolexplorer.DependencyFlow.normalize": 13,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1.next": 11,
+      "com.imd.cobolexplorer.DependencyRelevance.propagate": 9,
+      "com.imd.cobolexplorer.DependencyFlow.route": 8,
+      "com.imd.cobolexplorer.DependencyRelevance.lambda$extend$3": 8,
+      "com.imd.cobolexplorer.DependencyValues.<init>": 8,
+      "com.imd.cobolexplorer.DependencyFlow$State.equals": 5,
+      "com.imd.cobolexplorer.DependencyFlow.step": 5,
+      "com.imd.cobolexplorer.DependencyFlow.write": 4,
+      "com.imd.cobolexplorer.DependencyFlow.assemble": 4,
+      "com.imd.cobolexplorer.DirectRecognizer.match": 3,
+      "com.imd.cobolexplorer.DependencyRelevance.lambda$extend$2": 3,
+      "com.imd.cobolexplorer.DependencyAnalyzer.analyze": 3,
+      "com.imd.cobolexplorer.DependencyRelevance.extend": 2,
+      "com.imd.cobolexplorer.DependencyFlow.writeLocal": 2,
+      "com.imd.cobolexplorer.DependencyFlow$Location.hashCode": 2,
+      "com.imd.cobolexplorer.DependencyEnvironment.with": 2,
+      "com.imd.cobolexplorer.DependencyDeclarations.leaves": 2,
+      "com.imd.cobolexplorer.DependencyFlow.writes": 2,
+      "com.imd.cobolexplorer.DependencyValues.lambda$fit$0": 2,
+      "com.imd.cobolexplorer.DependencyFlow.assign": 2,
+      "com.imd.cobolexplorer.DependencyFlow.truth": 2,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology.lambda$new$15": 1,
+      "com.imd.cobolexplorer.ConditionNameSemantics.analyze": 1,
+      "com.imd.cobolexplorer.ResolutionAnalysisReport.validateExternalClassifications": 1,
+      "com.imd.cobolexplorer.DependencyFlow.needsNormalization": 1,
+      "com.imd.cobolexplorer.SymbolTable.lambda$new$3": 1,
+      "com.imd.cobolexplorer.DependencyDeclarations.related": 1,
+      "com.imd.cobolexplorer.DependencyFlow.readDeclaration": 1,
+      "com.imd.cobolexplorer.SourceMap.mapped": 1,
+      "com.imd.cobolexplorer.DependencyRelevance.sameComponent": 1,
+      "com.imd.cobolexplorer.DependencyFlow.profileFlow": 1,
+      "com.imd.cobolexplorer.DependencyValues.map": 1,
+      "com.imd.cobolexplorer.DependencyDeclarations.reads": 1,
+      "com.imd.cobolexplorer.DependencyFlow.initial": 1,
+      "com.imd.cobolexplorer.DependencyFlow.fitField": 1,
+      "com.imd.cobolexplorer.DependencyFlow.invoke": 1,
+      "com.imd.cobolexplorer.DirectGrammar.first": 1,
+      "com.imd.cobolexplorer.DependencyRelevance.needed": 1,
+      "com.imd.cobolexplorer.antlr.CobolLexer.<clinit>": 1,
+      "com.imd.cobolexplorer.DependencyValues.known": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Location.equals": 1,
+      "com.imd.cobolexplorer.DependencyFlow.filter": 1,
+      "com.imd.cobolexplorer.ControlTopologySemantics.build": 1,
+      "com.imd.cobolexplorer.DependencyRelevance$Point.hashCode": 1,
+      "com.imd.cobolexplorer.DependencyFlow$State.<init>": 1,
+      "com.imd.cobolexplorer.SqlWheneverSemantics.analyze": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Exit.hashCode": 1,
+      "no-product-frame": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Exit.of": 1,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology.refs": 1,
+      "com.imd.cobolexplorer.antlr.CobolPreprocessorParser.startRule": 1,
+      "com.imd.cobolexplorer.DependencyFlow$State.hashCode": 1,
+      "com.imd.cobolexplorer.SourceNormalizer.physicalLines": 1,
+      "com.imd.cobolexplorer.SourceMap.allOverlappingExact": 1,
+      "com.imd.cobolexplorer.PreprocessorEngine.processRecursive": 1,
+      "com.imd.cobolexplorer.DirectRecognizer$Memo.slot": 1,
+      "com.imd.cobolexplorer.CicsHandlerSemantics.analyze": 1,
+      "com.imd.cobolexplorer.DependencyFlow$ReturnTo.hashCode": 1
+    },
+    "estimatedAllocatedBytesMain": 70964375024,
+    "allocationCategories": {
+      "summary-input-projection": 61533406568,
+      "state-join": 7483332776,
+      "other-dataflow": 682943928,
+      "state-write": 630270776,
+      "frontend-or-other-product": 612431120,
+      "other-or-truncated": 21989856
+    },
+    "allocationClasses": {
+      "com.imd.cobolexplorer.DependencyEnvironment$Node": 46659501312,
+      "java.lang.Integer": 8748134248,
+      "com.imd.cobolexplorer.DependencyEnvironment": 6600461184,
+      "java.util.HashMap$Node": 3181854232,
+      "java.util.KeyValueHolder": 2894459240,
+      "[Ljava.util.HashMap$Node;": 1460591528,
+      "java.util.HashMap": 225921048,
+      "[Lorg.antlr.v4.runtime.atn.ATNConfig;": 202265432,
+      "org.antlr.v4.runtime.atn.RuleStartState": 197182512,
+      "[B": 114952200,
+      "java.util.ImmutableCollections$SetN$SetNIterator": 52711960,
+      "[J": 47648016,
+      "java.util.ImmutableCollections$Set12": 43374344,
+      "[Ljava.lang.Object;": 40078792,
+      "java.util.LinkedHashMap": 39143120,
+      "java.util.LinkedHashMap$Entry": 36841416,
+      "java.util.HashMap$KeyIterator": 32464712,
+      "com.imd.cobolexplorer.DependencyFlow$Exit": 31226656,
+      "com.imd.cobolexplorer.DependencyFlow$Location": 27520584,
+      "java.util.ArrayDeque": 23053640,
+      "com.imd.cobolexplorer.DependencyFlow$State": 22864088,
+      "[Ljava.util.concurrent.ConcurrentHashMap$Node;": 21838760,
+      "com.imd.cobolexplorer.DependencyValues": 20824984,
+      "java.util.LinkedHashMap$LinkedKeySet": 19527080,
+      "[I": 17573192,
+      "org.antlr.v4.runtime.atn.ATNConfig": 17464240,
+      "java.util.HashSet": 15088592,
+      "java.util.ImmutableCollections$ListItr": 13887768,
+      "com.imd.cobolexplorer.DependencyFlow$SummaryKey": 10479864,
+      "com.imd.cobolexplorer.DependencyEnvironment$Builder": 9865376,
+      "java.util.HashMap$KeySet": 8589888,
+      "java.util.BitSet": 7954360,
+      "org.antlr.v4.runtime.misc.FlexibleHashMap$Entry": 6450312,
+      "java.util.ImmutableCollections$Set12$1": 5635064,
+      "com.imd.cobolexplorer.DependencyRelevance$Point": 5481376,
+      "org.antlr.v4.runtime.atn.SingletonPredictionContext": 5338344,
+      "com.imd.cobolexplorer.DependencyFlow$State$$Lambda.0x000075a2482b4b40": 5239984,
+      "java.util.HashMap$TreeNode": 5239928,
+      "java.lang.String": 4239424,
+      "java.util.AbstractList$RandomAccessSpliterator": 4190144,
+      "com.imd.cobolexplorer.ExplorerMain$Node": 4189440,
+      "java.util.ImmutableCollections$List12": 3282528,
+      "java.util.LinkedList$ListItr": 3237656,
+      "java.util.ArrayDeque$$Lambda.0x000075a248020b40": 3142128,
+      "java.util.ArrayList": 3008648,
+      "java.util.LinkedList$Node": 2958592,
+      "[[Lorg.antlr.v4.runtime.atn.ATNConfig;": 2669784,
+      "java.util.ArrayList$ArrayListSpliterator": 2282600,
+      "com.imd.cobolexplorer.DependencyFlow$Context": 2095992,
+      "java.util.ImmutableCollections$MapN$1": 2095984,
+      "java.util.Collections$UnmodifiableSet": 2094744,
+      "com.imd.cobolexplorer.DependencyRelevance$Overwrites": 2091696,
+      "java.util.stream.Nodes$FixedNodeBuilder": 2034952,
+      "java.math.BigInteger": 1912264,
+      "org.antlr.v4.runtime.CommonToken": 1734104,
+      "java.util.LinkedList": 1708088,
+      "java.util.stream.ReferencePipeline$Head": 1333816,
+      "jdk.internal.org.objectweb.asm.MethodWriter": 1048112,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1": 1048000,
+      "com.imd.cobolexplorer.DirectSyntax$DataNameFrame": 1047992,
+      "java.util.ImmutableCollections$MapN$MapNIterator": 1047992,
+      "java.util.stream.ReferencePipeline$2": 1047976,
+      "com.imd.cobolexplorer.DirectToken": 1047976,
+      "[Lorg.antlr.v4.runtime.dfa.DFAState;": 1047936,
+      "java.util.regex.Pattern": 1047928,
+      "com.imd.cobolexplorer.SemanticCoverage$Finding": 1047520,
+      "java.util.stream.MatchOps$$Lambda.0x000075a2480e7e30": 1047400,
+      "com.imd.cobolexplorer.Ast$ParseTreeOrigin": 1047376,
+      "java.lang.invoke.MethodType": 1047376,
+      "java.util.stream.MatchOps$MatchOp": 1047368,
+      "java.util.ImmutableCollections$ListN": 1047368,
+      "java.util.stream.SortedOps$SizedRefSortingSink": 1047368,
+      "com.imd.cobolexplorer.ScalarMoveSemantics$NodeKey": 1047368,
+      "com.imd.cobolexplorer.Ast$Meta": 1047368,
+      "com.imd.cobolexplorer.ReferenceResolution$Entry": 1047360,
+      "com.imd.cobolexplorer.DirectSyntax$RelationArithmeticComparisonFrame": 1047352,
+      "java.util.regex.Matcher": 1047352,
+      "java.util.TreeMap$Entry": 1047352,
+      "java.lang.invoke.LambdaFormEditor": 1039960,
+      "[Ljava.util.Map$Entry;": 1034048,
+      "[Ljava.util.LinkedList;": 1000512,
+      "com.imd.cobolexplorer.SourceMap$Segment": 980624,
+      "java.lang.Class": 916696,
+      "java.util.zip.ZipFile$ZipFileInputStream": 598016,
+      "com.imd.cobolexplorer.SourceNormalizer$PhysicalLine": 571736,
+      "java.util.stream.ReferencePipeline$4$1": 571712,
+      "com.imd.cobolexplorer.DependencyRelevance$1Visit": 482832,
+      "com.imd.cobolexplorer.DependencyRelevance$Node": 482824,
+      "java.util.zip.ZipFile$ZipFileInflaterInputStream": 438064,
+      "java.lang.StringBuilder": 428496,
+      "com.imd.cobolexplorer.DependencyRelevance$$Lambda.0x000075a24829e6c0": 368864,
+      "[C": 315152,
+      "[Z": 291064,
+      "java.util.concurrent.ConcurrentHashMap$Node": 290944,
+      "org.antlr.v4.runtime.atn.LexerATNConfig": 287640,
+      "java.util.WeakHashMap$Entry": 286408,
+      "java.util.stream.IntPipeline$Head": 285920,
+      "java.util.Spliterators$2Adapter": 285896,
+      "com.imd.cobolexplorer.UnicodeText": 285856,
+      "[Ljdk.internal.org.objectweb.asm.SymbolTable$Entry;": 283312,
+      "sun.util.locale.BaseLocale$Key": 283216,
+      "sun.util.locale.StringTokenIterator": 283208,
+      "com.imd.cobolexplorer.DependencyEnvironment$1": 244656,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000075a24828b238": 241408,
+      "java.io.File": 210840,
+      "java.security.SecureClassLoader$CodeSourceKey": 197024,
+      "[Ljava.lang.String;": 139424,
+      "java.util.ArrayList$Itr": 78616,
+      "java.lang.invoke.MethodHandles$Lookup$ClassDefiner": 69016,
+      "com.imd.cobolexplorer.DependencyFlow$State$$Lambda.0x000075a2482b46d8": 40776,
+      "[Ljava.lang.Class;": 28464
+    },
+    "environmentNodeAllocationOrigins": {
+      "summary-input-projection": 46261082280,
+      "state-join": 310505296,
+      "state-write": 78891400,
+      "other-dataflow": 9022336
+    },
+    "oldObjectSamplesClasses": {
+      "com.imd.cobolexplorer.DependencyEnvironment$Node": 1071,
+      "[B": 48,
+      "[Ljava.util.HashMap$Node;": 34,
+      "[Ljava.lang.Object;": 19,
+      "[I": 18,
+      "java.lang.String": 16,
+      "[J": 14,
+      "java.util.BitSet": 12,
+      "java.util.HashMap$Node": 10,
+      "[Ljava.util.concurrent.ConcurrentHashMap$Node;": 6,
+      "com.imd.cobolexplorer.SemanticCoverage$Finding": 6,
+      "java.util.HashMap": 6,
+      "java.util.ArrayList": 6,
+      "java.util.LinkedHashMap": 6,
+      "org.antlr.v4.runtime.atn.RuleStartState": 6,
+      "java.lang.Class": 6,
+      "com.imd.cobolexplorer.DependencyFlow$Location": 5,
+      "java.util.ImmutableCollections$Set12": 1,
+      "java.util.Collections$UnmodifiableSet": 1,
+      "[Lorg.antlr.v4.runtime.dfa.DFAState;": 1
+    },
+    "environmentOldObjectOrigins": {
+      "summary-input-projection": 1023,
+      "state-write": 25,
+      "state-join": 23
+    }
+  },
+  "lastInstrumentedCounters": {
+    "stage": "new-context",
+    "visits": 804070,
+    "contexts": 120000,
+    "before": 759314,
+    "work": 94173,
+    "queued": 94173,
+    "subscriptions": 120000,
+    "contextInputSlots": 92096888,
+    "unknownInputSlots": 90659128,
+    "entries": 24,
+    "demand": 860,
+    "usedHeap": 4199769200,
+    "relevance": "nodes:18384,slots:768,decoded:24,work:181853"
+  },
+  "lastLiveHistogram": {
+    "totalBytes": 4268189440,
+    "topClasses": [
+      {
+        "class": "com.imd.cobolexplorer.DependencyEnvironment$Node",
+        "instances": 100911670,
+        "bytes": 4036466800
+      },
+      {
+        "class": "java.util.HashMap$Node (java.base@21.0.12.1)",
+        "instances": 1263742,
+        "bytes": 40439744
+      },
+      {
+        "class": "[Ljava.util.HashMap$Node; (java.base@21.0.12.1)",
+        "instances": 151630,
+        "bytes": 23314760
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyFlow$Location",
+        "instances": 827779,
+        "bytes": 19866696
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyEnvironment",
+        "instances": 799971,
+        "bytes": 19199304
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyFlow$State",
+        "instances": 799971,
+        "bytes": 19199304
+      },
+      {
+        "class": "[Ljdk.internal.vm.FillerElement; (java.base@21.0.12.1)",
+        "instances": 170631,
+        "bytes": 16714280
+      },
+      {
+        "class": "java.util.HashMap (java.base@21.0.12.1)",
+        "instances": 274554,
+        "bytes": 13178592
+      },
+      {
+        "class": "[B (java.base@21.0.12.1)",
+        "instances": 191790,
+        "bytes": 7476976
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyValues",
+        "instances": 253806,
+        "bytes": 6091344
+      },
+      {
+        "class": "[J (java.base@21.0.12.1)",
+        "instances": 94377,
+        "bytes": 5656424
+      },
+      {
+        "class": "java.util.ImmutableCollections$Set12 (java.base@21.0.12.1)",
+        "instances": 202267,
+        "bytes": 4854408
+      },
+      {
+        "class": "java.lang.String (java.base@21.0.12.1)",
+        "instances": 190699,
+        "bytes": 4576776
+      },
+      {
+        "class": "com.imd.cobolexplorer.ExplorerMain$Node",
+        "instances": 70297,
+        "bytes": 4499008
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyFlow$ReturnTo",
+        "instances": 127522,
+        "bytes": 4080704
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyFlow$Exit",
+        "instances": 150503,
+        "bytes": 3612072
+      },
+      {
+        "class": "[Ljava.lang.Object; (java.base@21.0.12.1)",
+        "instances": 31626,
+        "bytes": 3399776
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyFlow$SummaryKey",
+        "instances": 127523,
+        "bytes": 3060552
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyFlow$Context",
+        "instances": 127522,
+        "bytes": 3060528
+      },
+      {
+        "class": "java.lang.Integer (java.base@21.0.12.1)",
+        "instances": 162190,
+        "bytes": 2595040
+      }
+    ]
+  },
+  "boundedExperiments": [
+    {
+      "id": "original-bounded",
+      "exit": 2,
+      "seconds": 6.426954509006464,
+      "peakRssKiB": 404752,
+      "heapMiB": 512,
+      "diagnosticContextBound": 2048,
+      "sourceSha256": "71408d8c98ae04600f119ad98fd3e16c3066c20babdec8c4ab6ada8632a9c9d3",
+      "output": null,
+      "intentionallyStopped": true
+    },
+    {
+      "id": "no-conditional-writes",
+      "exit": 0,
+      "seconds": 2.205049487994984,
+      "peakRssKiB": 263356,
+      "heapMiB": 512,
+      "diagnosticContextBound": 2048,
+      "sourceSha256": "577b797bb59e9287b4a56d1071b77354132a2bd8d3823b54286e5396c0eabfa0",
+      "output": {
+        "program": "FIXTURE02",
+        "dependencies": []
+      },
+      "metrics": {
+        "parseNanos": 969143251,
+        "bindingNanos": 184592164,
+        "cfgNanos": 131812733,
+        "dataflowNanos": 603815757,
+        "resolutionNanos": 1582453,
+        "totalNanos": 1896635450,
+        "workItems": 200,
+        "contexts": 25,
+        "trackedDeclarations": 860
+      },
+      "intentionallyStopped": false
+    },
+    {
+      "id": "no-perform",
+      "exit": 0,
+      "seconds": 1.8043520460050786,
+      "peakRssKiB": 257952,
+      "heapMiB": 512,
+      "diagnosticContextBound": 2048,
+      "sourceSha256": "41204d15b52c5193a357242a5c43bc948acc487f85a47d705f449d25db97233f",
+      "output": {
+        "program": "FIXTURE02",
+        "dependencies": [
+          {
+            "type": "program",
+            "name": "PGM003",
+            "at": {
+              "file": "input.cbl",
+              "line": 3607
+            }
+          },
+          {
+            "type": "program",
+            "name": "PGM008",
+            "at": {
+              "file": "input.cbl",
+              "line": 3159
+            }
+          },
+          {
+            "type": "program",
+            "name": "PGM018",
+            "at": {
+              "file": "input.cbl",
+              "line": 3859
+            }
+          },
+          {
+            "type": "program",
+            "name": "PGM024",
+            "at": {
+              "file": "input.cbl",
+              "line": 2165
+            }
+          },
+          {
+            "type": "program",
+            "name": "PGM025",
+            "at": {
+              "file": "input.cbl",
+              "line": 2473
+            }
+          },
+          {
+            "type": "program",
+            "name": "PGM026",
+            "at": {
+              "file": "input.cbl",
+              "line": 2431
+            }
+          },
+          {
+            "type": "program",
+            "name": "PGM031",
+            "at": {
+              "file": "input.cbl",
+              "line": 3523
+            }
+          },
+          {
+            "type": "program",
+            "name": "PGM033",
+            "at": {
+              "file": "input.cbl",
+              "line": 3243
+            }
+          },
+          {
+            "type": "program",
+            "name": "PGM034",
+            "at": {
+              "file": "input.cbl",
+              "line": 2767
+            }
+          },
+          {
+            "type": "program",
+            "name": "PGM041",
+            "at": {
+              "file": "input.cbl",
+              "line": 2025
+            }
+          }
+        ]
+      },
+      "metrics": {
+        "parseNanos": 977233042,
+        "bindingNanos": 192408969,
+        "cfgNanos": 124387250,
+        "dataflowNanos": 160187669,
+        "resolutionNanos": 2575277,
+        "totalNanos": 1462451121,
+        "workItems": 323,
+        "contexts": 9,
+        "trackedDeclarations": 860
+      },
+      "intentionallyStopped": false
+    }
+  ],
+  "boundedOriginalCounters": {
+    "stage": "bounded-stop",
+    "visits": 15282,
+    "contexts": 2048,
+    "before": 13542,
+    "work": 1590,
+    "queued": 1590,
+    "subscriptions": 2048,
+    "contextInputSlots": 1571784,
+    "unknownInputSlots": 1557347,
+    "entries": 16,
+    "demand": 860,
+    "usedHeap": 210726752,
+    "relevance": "nodes:18384,slots:768,decoded:16,work:199762"
+  },
+  "boundedOriginalHistogram": {
+    "totalBytes": 115608912,
+    "topClasses": [
+      {
+        "class": "com.imd.cobolexplorer.DependencyEnvironment$Node",
+        "instances": 1638993,
+        "bytes": 65559720
+      },
+      {
+        "class": "[J (java.base@21.0.12.1)",
+        "instances": 94375,
+        "bytes": 5650496
+      },
+      {
+        "class": "java.util.HashMap$Node (java.base@21.0.12.1)",
+        "instances": 162863,
+        "bytes": 5211616
+      },
+      {
+        "class": "[B (java.base@21.0.12.1)",
+        "instances": 88165,
+        "bytes": 4752584
+      },
+      {
+        "class": "com.imd.cobolexplorer.ExplorerMain$Node",
+        "instances": 70297,
+        "bytes": 4499008
+      },
+      {
+        "class": "[Ljava.util.HashMap$Node; (java.base@21.0.12.1)",
+        "instances": 25104,
+        "bytes": 2890568
+      },
+      {
+        "class": "[Ljava.lang.Object; (java.base@21.0.12.1)",
+        "instances": 31325,
+        "bytes": 2294480
+      },
+      {
+        "class": "java.util.BitSet (java.base@21.0.12.1)",
+        "instances": 91925,
+        "bytes": 2206200
+      },
+      {
+        "class": "java.lang.String (java.base@21.0.12.1)",
+        "instances": 87116,
+        "bytes": 2090784
+      },
+      {
+        "class": "org.antlr.v4.runtime.CommonToken",
+        "instances": 35539,
+        "bytes": 1705872
+      },
+      {
+        "class": "[I (java.base@21.0.12.1)",
+        "instances": 4683,
+        "bytes": 1214280
+      },
+      {
+        "class": "java.util.HashMap (java.base@21.0.12.1)",
+        "instances": 23051,
+        "bytes": 1106448
+      },
+      {
+        "class": "java.util.ImmutableCollections$List12 (java.base@21.0.12.1)",
+        "instances": 36099,
+        "bytes": 866376
+      },
+      {
+        "class": "[Ljdk.internal.vm.FillerElement; (java.base@21.0.12.1)",
+        "instances": 2150,
+        "bytes": 790672
+      },
+      {
+        "class": "com.imd.cobolexplorer.Ast$SourceLocation",
+        "instances": 21518,
+        "bytes": 688576
+      },
+      {
+        "class": "java.util.LinkedHashMap$Entry (java.base@21.0.12.1)",
+        "instances": 16146,
+        "bytes": 645840
+      },
+      {
+        "class": "java.lang.Class (java.base@21.0.12.1)",
+        "instances": 5026,
+        "bytes": 612496
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyFlow$Exit",
+        "instances": 25028,
+        "bytes": 600672
+      },
+      {
+        "class": "java.lang.Integer (java.base@21.0.12.1)",
+        "instances": 35971,
+        "bytes": 575536
+      },
+      {
+        "class": "com.imd.cobolexplorer.DependencyRelevance$Point",
+        "instances": 22996,
+        "bytes": 551904
+      }
+    ]
+  },
+  "counterfactualOracles": {
+    "noConditionalWritesExpected": [],
+    "noPerformReachableParagraphs": [
+      0,
+      53,
+      107,
+      29,
+      10,
+      131,
+      87,
+      81,
+      113,
+      135,
+      32
+    ],
+    "noPerformCycleEntry": 81,
+    "noPerformExpected": [
+      "PGM003",
+      "PGM008",
+      "PGM018",
+      "PGM024",
+      "PGM025",
+      "PGM026",
+      "PGM031",
+      "PGM033",
+      "PGM034",
+      "PGM041"
+    ],
+    "passed": true
+  },
+  "postprocessing": {
+    "method": "Streaming RecordingFile; no full JSON materialization.",
+    "javaHeapMiB": 128,
+    "rssKiB": [
+      113232,
+      127160
+    ]
+  },
+  "notes": [
+    "JFR weights estimate cumulative allocation; histogram bytes are live shallow bytes.",
+    "Instrumented OOM stack confirmed; wrapper timing was interrupted and is not reported as complete.",
+    "Intentional diagnostic stop is not a passing analysis of the original fixture.",
+    "Counterfactuals retain 860 tracked declarations; they are diagnostic variants, not replacements for the original oracle."
+  ],
+  "fractions": {
+    "projectionCpuSamples": 0.6419875776397516,
+    "projectionAllocationEstimated": 0.8721020040952457,
+    "pureUnknownInputSlots": 0.984388614737992,
+    "environmentLiveBytes": 0.9457093825713603
+  },
+  "rawArchive": {
+    "path": "results/fixture02-profiling-20261008.tar.gz",
+    "sha256": "c7d6aec92d85b0f40a8b0426cb655d4cc734422b99d966721cc30e4c443727de",
+    "bytes": 5498402,
+    "files": 108,
+    "manifestSha256": "6ca9b258e0a1143d2dab8dd174ff5339bf0c9352ec048156592af60e57652fde"
+  }
+}

@@ -4,6 +4,7 @@ import java.util.*;
 import java.math.BigDecimal;
 import static com.imd.cobolexplorer.semanticproduct.ControlTopology.*;
 import com.imd.cobolexplorer.semanticproduct.ControlTopology;
+import static com.imd.cobolexplorer.DependencyRelevance.*;
 
 /** Worklist over shared COBOL control and memoized local invocation results.
  * Environments contain only the backward closure of dependency operands and
@@ -40,9 +41,6 @@ final class DependencyFlow {
     record Forward(int context,String endpoint,State input) implements Continuation { }
     record ReturnTo(int context,String binding,String endpoint,State input) implements Continuation { }
     record Entry(String endpoint,State input) implements Continuation { }
-    record Need(Set<Integer> values,Set<String> prerequisites) {
-        Need join(Need other){return new Need(union(values,other.values),union(prerequisites,other.prerequisites));}
-    }
     static final class Context {
         final SummaryKey key;
         final Set<Continuation> callers=new HashSet<>();
@@ -79,12 +77,8 @@ final class DependencyFlow {
     final Map<SummaryKey,Integer> memo=new HashMap<>();
     final Set<String> paragraphEntries=new HashSet<>();
     final Set<String> prerequisites=new HashSet<>();
-    static final class Relevance {
-        final Map<Exit,Need> footprints=new HashMap<>();
-        final Map<Exit,Set<Exit>> predecessors=new HashMap<>();
-        Map<Exit,Integer> components;
-    }
-    final Map<String,Relevance> relevance=new HashMap<>();
+    final DependencyRelevance relevance;
+    final Map<Exit,Effect> accessEffects=new HashMap<>();
     final Map<Location,State> before=new HashMap<>();
     final ArrayDeque<Location> work=new ArrayDeque<>();
     final Set<Location> queued=new HashSet<>();
@@ -183,6 +177,7 @@ final class DependencyFlow {
             while(ancestor!=null) {if(declarations.entries.get(ancestor).clauses().stream().anyMatch(Ast.OccursClause.class::isInstance))dimensions.add(0,declarations.counts.getOrDefault(ancestor,0));ancestor=declarations.parent.get(ancestor);}
             if(!dimensions.contains(0))indexElements(id,dimensions,0,List.of());
         }
+        relevance=new DependencyRelevance(this::inputEffect,maxWork);
         State initial=initial();
         control.regions().stream().filter(r->r.kind()==RegionKind.PROCEDURE).findFirst().ifPresent(r->{
             String endpoint="boundary:"+r.id();
@@ -197,14 +192,13 @@ final class DependencyFlow {
                 for(var caller:List.copyOf(ctx.callers))deliver(caller,location.result(),ctx.results.get(location.result()));
             }else step(location,before.get(location));
         }
-        for(var q:queries) {
-            DependencyValues answer=null;
-            for(var e:before.entrySet())if(e.getKey().node().equals(handle(q.statement()))) {
-                var v=q.literal().map(DependencyValues::known).orElseGet(()->read(q.expression(),e.getValue()));
-                answer=answer==null?v:answer.join(v);
-            }
-            if(answer!=null){answers.put(q,answer);if(answer.unknown())diagnostics.add("DYNAMIC_REMAINDER at "+q.statement().meta().provenance().original().file()+":"+q.statement().meta().provenance().original().startLine());}
+        var queriesAt=new HashMap<String,List<Query>>();
+        for(var q:queries)queriesAt.computeIfAbsent(handle(q.statement()),k->new ArrayList<>()).add(q);
+        for(var e:before.entrySet())for(var q:queriesAt.getOrDefault(e.getKey().node(),List.of())) {
+            var value=q.literal().map(DependencyValues::known).orElseGet(()->read(q.expression(),e.getValue()));
+            answers.merge(q,value,DependencyValues::join);
         }
+        for(var q:queries)if(answers.containsKey(q)&&answers.get(q).unknown())diagnostics.add("DYNAMIC_REMAINDER at "+q.statement().meta().provenance().original().file()+":"+q.statement().meta().provenance().original().startLine());
     }
     static String handle(Ast.Statement s){return "statement:"+s.meta().id();}
     private State initial() {
@@ -431,8 +425,10 @@ final class DependencyFlow {
         value=fitField(id,value);
         Map<Integer,DependencyValues> out=null;
         for(int target:declarations.equivalents.getOrDefault(id,Set.of(id)))if(demand.contains(target)) {
+            // An absent input is not an unwritten result: an explicit UNKNOWN
+            // must mask the caller's previous value when this summary returns.
             var next=weak?state.get(target).join(value).open():value;
-            if(!next.equals(state.get(target))) {if(out==null)out=new DependencyEnvironment.Builder(state.values());out.put(target,next);}
+            if(!next.equals(state.get(target))||!state.values().containsKey(target)) {if(out==null)out=new DependencyEnvironment.Builder(state.values());out.put(target,next);}
         }
         if(weak)for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id)))for(int slot:elementIds.getOrDefault(alias,List.of()))if(!state.get(slot).unknown()) {
             if(out==null)out=new DependencyEnvironment.Builder(state.values());out.put(slot,state.get(slot).open());
@@ -642,11 +638,14 @@ final class DependencyFlow {
     private void subscribe(Continuation caller,Exit entry) {
         String endpoint=caller.endpoint();State state=caller.input();
         entry=normalize(entry);
-        var needed=needed(entry,endpoint);
-        var projected=new HashMap<Integer,DependencyValues>();
-        for(int id:needed.values())if(state.values().containsKey(id))projected.put(id,state.get(id));
-        var facts=new HashSet<>(state.reached());facts.retainAll(needed.prerequisites());
-        var key=new SummaryKey(entry,endpoint,new State(projected,state.handlers(),facts));
+        var needed=relevance.needed(new Point(entry,endpoint));
+        var projected=new HashMap<Integer,DependencyValues>();var handlers=new HashMap<String,Set<String>>();var facts=new HashSet<String>();
+        for(var input:needed) {
+            if(input instanceof Value value&&state.values().containsKey(value.declaration()))projected.put(value.declaration(),state.get(value.declaration()));
+            else if(input instanceof Handler handler&&state.handlers().containsKey(handler.name()))handlers.put(handler.name(),state.handlers().get(handler.name()));
+            else if(input instanceof Fact fact&&state.reached().contains(fact.statement()))facts.add(fact.statement());
+        }
+        var key=new SummaryKey(entry,endpoint,new State(projected,handlers,facts));
         Integer context=memo.get(key);
         if(context==null) {
             context=contexts.size();memo.put(key,context);contexts.add(new Context(key));route(context,entry,key.input());
@@ -657,7 +656,8 @@ final class DependencyFlow {
     }
     private State restore(Continuation caller,State result) {
         var restored=new DependencyEnvironment.Builder(caller.input().values());restored.putAll(result.values());
-        return new State(restored,result.handlers(),union(caller.input().reached(),result.reached()));
+        var handlers=new HashMap<>(caller.input().handlers());handlers.putAll(result.handlers());
+        return new State(restored,handlers,union(caller.input().reached(),result.reached()));
     }
     /** A fallthrough forwards the result unchanged. Only a real invocation owns
      * repeat phases and contextual escapes; an independent entry has no resume. */
@@ -690,98 +690,87 @@ final class DependencyFlow {
         for(int id:new ArrayList<>(needed))needed.addAll(elementIds.getOrDefault(id,List.of()));
         needed.retainAll(demand);return Set.copyOf(needed);
     }
-    /** One backward finite-union closure for every control entry. Handler targets,
-     * source prerequisites and invocation resumes are part of this same graph. */
-    private Need needed(Exit entry,String endpoint) {
-        var index=relevance.computeIfAbsent(endpoint,k->new Relevance());
-        var footprints=index.footprints;var predecessors=index.predecessors;
-        if(footprints.containsKey(entry))return footprints.get(entry);
-        index.components=null;
-        var todo=new ArrayDeque<Exit>();todo.add(entry);
-        var seeds=new HashSet<Exit>();
-        while(!todo.isEmpty()) {
-            var target=normalize(todo.removeFirst());if(footprints.containsKey(target))continue;
-            var local=new HashSet<Integer>();var facts=new HashSet<String>();var successors=new ArrayList<Exit>();
-            switch(target.kind()) {
-                case COMPLETE,ESCAPE -> {
-                    if(!("boundary:"+target.reference()).equals(endpoint))successors.add(Exit.of(boundaries.get(target.reference()).ordinaryDefault()));
-                }
-                case OCCURRENCE -> {
-                    var statement=statements.get(target.reference());
-                    if(statement!=null) {
-                        local.addAll(declarations.reads(statement));local.addAll(writes(statement));
-                        if(StatementEffectSummary.of(statement).filter(e->e.unknownWriteBound()==StatementEffectSummary.Bound.ALL).isPresent()
-                                ||exceptionalEvents.containsKey(target.reference()))local.addAll(demand);
-                        for(var edge:edges.getOrDefault(target.reference(),List.of())) {
-                            successors.add(Exit.of(edge.target()));
-                            if(edge.kind()==OutcomeKind.LOCAL_INVOKE)successors.add(Exit.of(bindings.get(edge.binding()).resume()));
-                        }
-                        for(var p:possibilities.getOrDefault(target.reference(),List.of())) {
-                            facts.addAll(p.prerequisites());successors.add(Exit.of(p.target()));
-                        }
-                        for(var use:ioDeclarations.getOrDefault(target.reference(),List.of()))successors.add(Exit.of(regions.get(use.region()).entry()));
-                        fileSurface(statement).ifPresent(surface->{for(var h:surface.handlers()) {
-                            var r=regions.get("region:"+handle(statement)+"/file/handler-"+h.kind());if(r!=null)successors.add(Exit.of(r.entry()));
-                        }});
-                        for(var event:events.getOrDefault(target.reference(),List.of())) {
-                            successors.add(Exit.of(event.continuation()));
-                            registrations.values().forEach(rs->rs.forEach(r->r.target().forEach(t->successors.add(Exit.of(t)))));
-                        }
-                        if(exceptionalEvents.containsKey(target.reference()))for(String handler:handlerEndpoints.keySet())successors.add(new Exit(TargetKind.OCCURRENCE,handler));
-                    }
-                }
-                case FILE_POINT -> filePoints.get(target.reference()).targets().forEach(t->successors.add(Exit.of(t)));
-                default -> { }
-            }
-            footprints.put(target,new Need(expandNeeded(local),Set.copyOf(facts)));seeds.add(target);
-            for(var successor:successors) {
-                successor=normalize(successor);seeds.add(successor);predecessors.computeIfAbsent(successor,k->new HashSet<>()).add(target);todo.add(successor);
-            }
-        }
-        // Existing successors must also seed newly added predecessors.
-        var pending=new ArrayDeque<>(seeds);var scheduled=new HashSet<>(seeds);
-        while(!pending.isEmpty()) {
-            var key=pending.removeFirst();scheduled.remove(key);var values=footprints.get(key);
-            for(var predecessor:predecessors.getOrDefault(key,Set.of())) {
-                var old=footprints.get(predecessor);var joined=old.join(values);if(joined.equals(old))continue;
-                footprints.put(predecessor,joined);if(scheduled.add(predecessor))pending.addLast(predecessor);
-            }
-        }return footprints.get(entry);
+    private Point inputPoint(Exit exit,String endpoint){return new Point(normalize(exit),endpoint);}
+    private void valueInputs(Set<Input> inputs,Collection<Integer> ids) {
+        for(int id:expandNeeded(new HashSet<>(ids)))inputs.add(new Value(id));
     }
-    /** A summary keeps a strongly connected component in one worklist context.
-     * Splitting a loop by its successive input states would enumerate iterations
-     * instead of joining them at the same BEFORE location. Kosaraju is iterative
-     * so long control chains do not consume the Java call stack. */
-    private boolean sameComponent(Exit a,Exit b,String endpoint) {
-        var index=relevance.get(endpoint);
-        if(index.components==null) {
-            var successors=new HashMap<Exit,Set<Exit>>();
-            index.predecessors.forEach((node,parents)->parents.forEach(parent->
-                successors.computeIfAbsent(parent,k->new HashSet<>()).add(node)));
-            var seen=new HashSet<Exit>();var order=new ArrayList<Exit>();
-            record Visit(Exit node,Iterator<Exit> successors) { }
-            var stack=new ArrayDeque<Visit>();
-            for(var root:index.footprints.keySet())if(seen.add(root)) {
-                stack.push(new Visit(root,successors.getOrDefault(root,Set.of()).iterator()));
-                while(!stack.isEmpty()) {
-                    var top=stack.peek();
-                    if(top.successors().hasNext()) {
-                        var next=top.successors().next();
-                        if(seen.add(next))stack.push(new Visit(next,successors.getOrDefault(next,Set.of()).iterator()));
-                    }else {order.add(top.node());stack.pop();}
-                }
+    /** Own operands, rather than all references nested under a compound AST.
+     * Only scalar full writes with no retained group/table/possible-alias state
+     * prove a kill. All other writes still read their prior logical contents. */
+    private Effect localEffect(Exit exit) {
+        var reads=new HashSet<Input>();var kills=new HashSet<Input>();var s=statements.get(exit.reference());
+        if(s==null)return new Effect(reads,kills,List.of());
+        if(s instanceof Ast.MoveStatement m&&!m.corresponding()) {
+            valueInputs(reads,declarations.reads(m.source()));
+            for(var target:m.targets()) {
+                if(!(target instanceof Ast.DataReference r))continue;
+                Integer id=declarations.references.get(r.meta().id());
+                if(id==null)continue;
+                var aliases=declarations.equivalents.getOrDefault(id,Set.of(id));
+                boolean full=r.referenceModification()==null&&r.subscriptGroups().isEmpty()
+                    &&declarations.children.getOrDefault(id,List.of()).isEmpty()&&!declarations.repeated.contains(id)
+                    &&!declarations.assumed.contains(id)&&declarations.related(id).equals(aliases)
+                    &&textGroups.stream().noneMatch(g->!Collections.disjoint(declarations.leaves(g),aliases));
+                if(full) {
+                    for(int alias:aliases)if(demand.contains(alias))kills.add(new Value(alias));
+                }else valueInputs(reads,declarations.reads(r));
             }
-            var components=new HashMap<Exit,Integer>();var todo=new ArrayDeque<Exit>();int component=0;
-            for(int i=order.size()-1;i>=0;i--) {
-                var root=order.get(i);if(components.containsKey(root))continue;
-                components.put(root,component);todo.add(root);
-                while(!todo.isEmpty())for(var parent:index.predecessors.getOrDefault(todo.removeFirst(),Set.of()))
-                    if(components.putIfAbsent(parent,component)==null)todo.add(parent);
-                component++;
-            }
-            index.components=components;
+        }else if(s instanceof Ast.IfStatement f)valueInputs(reads,declarations.reads(f.condition()));
+        else if(s instanceof Ast.EvaluateStatement e) {
+            for(var x:e.subjects())valueInputs(reads,declarations.reads(x));
+            for(var branch:e.branches())for(var selector:branch.selectors())valueInputs(reads,declarations.reads(selector.expression()));
+        }else if(s instanceof Ast.PerformStatement p)for(var c:p.controls())valueInputs(reads,declarations.reads(c.expression()));
+        else if(s instanceof Ast.GoToStatement g)valueInputs(reads,declarations.reads(g.dependingOn()));
+        else valueInputs(reads,declarations.reads(s));
+        if(StatementEffectSummary.of(s).filter(e->e.unknownWriteBound()==StatementEffectSummary.Bound.ALL).isPresent()
+                ||exceptionalEvents.containsKey(exit.reference()))valueInputs(reads,demand);
+        for(var p:possibilities.getOrDefault(exit.reference(),List.of()))for(String fact:p.prerequisites())reads.add(new Fact(fact));
+        for(var event:events.getOrDefault(exit.reference(),List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
+            reads.add(new Handler(event.condition()));reads.add(new Handler("ERROR"));
         }
-        return Objects.equals(index.components.get(a),index.components.get(b));
+        for(var event:exceptionalEvents.getOrDefault(exit.reference(),List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
+            reads.add(new Handler("ABEND"));
+            if(event.origin()!=EventOrigin.EXPLICIT_ABEND){reads.add(new Handler("PGMIDERR"));reads.add(new Handler("ERROR"));}
+        }
+        var abend=abendRegistrations.get(exit.reference());
+        if(abend!=null) {
+            if(abend.action()==CicsHandlerSemantics.Action.RESET)reads.add(new Handler("ABEND-SAVED"));
+            if(abend.action()!=CicsHandlerSemantics.Action.UNAVAILABLE)kills.add(new Handler("ABEND"));
+            if(abend.action()==CicsHandlerSemantics.Action.ACTIVATE)kills.add(new Handler("ABEND-SAVED"));
+        }
+        for(var registration:registrations.getOrDefault(exit.reference(),List.of()))kills.add(new Handler(registration.condition()));
+        return new Effect(reads,kills,List.of());
+    }
+    private Effect inputEffect(Point point) {
+        var exit=point.exit();var local=accessEffects.computeIfAbsent(exit,this::localEffect);var successors=new ArrayList<Point>();
+        switch(exit.kind()) {
+            case COMPLETE,ESCAPE -> {
+                if(!("boundary:"+exit.reference()).equals(point.endpoint()))successors.add(inputPoint(Exit.of(boundaries.get(exit.reference()).ordinaryDefault()),point.endpoint()));
+            }
+            case OCCURRENCE -> {
+                var statement=statements.get(exit.reference());
+                for(var edge:edges.getOrDefault(exit.reference(),List.of())) {
+                    if(edge.kind()==OutcomeKind.LOCAL_INVOKE) {
+                        var binding=bindings.get(edge.binding());
+                        successors.add(inputPoint(Exit.of(regions.get(binding.region()).entry()),binding.endpoint()));
+                        successors.add(inputPoint(Exit.of(binding.resume()),point.endpoint()));
+                    }else successors.add(inputPoint(Exit.of(edge.target()),point.endpoint()));
+                }
+                for(var p:possibilities.getOrDefault(exit.reference(),List.of()))successors.add(inputPoint(Exit.of(p.target()),point.endpoint()));
+                for(var binding:ioDeclarations.getOrDefault(exit.reference(),List.of()))successors.add(inputPoint(Exit.of(regions.get(binding.region()).entry()),binding.endpoint()));
+                if(statement!=null)fileSurface(statement).ifPresent(surface->{for(var h:surface.handlers()) {
+                    var r=regions.get("region:"+handle(statement)+"/file/handler-"+h.kind());if(r!=null)successors.add(inputPoint(Exit.of(r.entry()),point.endpoint()));
+                }});
+                for(var event:events.getOrDefault(exit.reference(),List.of())) {
+                    successors.add(inputPoint(Exit.of(event.continuation()),point.endpoint()));
+                    registrations.values().forEach(rs->rs.forEach(r->r.target().forEach(t->successors.add(inputPoint(Exit.of(t),point.endpoint())))));
+                }
+                if(exceptionalEvents.containsKey(exit.reference()))for(var handler:handlerEndpoints.entrySet())successors.add(inputPoint(new Exit(TargetKind.OCCURRENCE,handler.getKey()),handler.getValue()));
+            }
+            case FILE_POINT -> filePoints.get(exit.reference()).targets().forEach(t->successors.add(inputPoint(Exit.of(t),point.endpoint())));
+            default -> { }
+        }
+        return new Effect(local.reads(),local.kills(),successors);
     }
     private void queueResult(int context,Exit exit) {
         var location=new Location(context,"",exit);if(queued.add(location))work.addLast(location);
@@ -798,7 +787,7 @@ final class DependencyFlow {
     private void step(Location location,State input) {
         String node=location.node();
         var context=contexts.get(location.context());
-        if(paragraphEntries.contains(node)&&!sameComponent(context.key.entry(),new Exit(TargetKind.OCCURRENCE,node),context.key.endpoint())) {
+        if(paragraphEntries.contains(node)&&!relevance.sameComponent(inputPoint(context.key.entry(),context.key.endpoint()),inputPoint(new Exit(TargetKind.OCCURRENCE,node),context.key.endpoint()))) {
             subscribe(new Forward(location.context(),context.key.endpoint(),input),new Exit(TargetKind.OCCURRENCE,node));return;
         }
         if(node.startsWith("phase/")) {

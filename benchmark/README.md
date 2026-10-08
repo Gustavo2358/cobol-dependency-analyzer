@@ -119,3 +119,18 @@ comparados entre a CLI original e cópias instrumentadas, sem mudanças de
 produção. Isola projeções excessivas, fechamento por endpoint, custos
 quadráticos do frontend e crescimento combinatório real de contextos.
 Inclui a ordem recomendada de correções e evidência bruta local preservada.
+
+## Relevância e índices
+
+[Correção de 8/10/2026](relevance-fix-20261008.md): relevância compartilhada
+com READ/KILL e preservação de caminhos intactos, endpoint próprio do callee,
+consultas indexadas por consumidor e índices do frontend. Um único solver
+permanece canônico. Inclui os contraexemplos corrigidos, os 40 controles de
+discovery, CardDemo 73/73 e matrizes 30/30 e 20/20 com paridade preservada.
+O fechamento grande de relevância passa de 3.912,1 para 506,7 ms; combinações
+realmente observadas ainda mantêm seus 524.288 contextos.
+
+[Profiling da FIXTURE02](fixture02-profiling-20261008.md): OOM confirmado em
+ambas as versões com 4 GiB. JFR, histogramas vivos, contadores e controles
+limitados a 512 MiB localizam multiplicação de contextos e reconstrução dos
+ambientes de entrada. A melhoria de relevância não resolve esse finding.

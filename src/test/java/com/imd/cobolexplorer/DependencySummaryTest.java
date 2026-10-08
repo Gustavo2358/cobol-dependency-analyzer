@@ -169,4 +169,71 @@ class DependencySummaryTest {
         assertTrue(result.metrics().workItems()<40,result.metrics().toString());
     }
 
+    @Test void overwrittenInputsShareSummariesButReadsAndPartialWritesDoNot()throws Exception {
+        for(String body:List.of("MOVE 'PROGA' TO TARGET.","MOVE 'A' TO TARGET(8:1).",
+                "CALL TARGET.\nMOVE 'PROGA' TO TARGET.")) {
+            var procedure=new StringBuilder("MAIN.\n");var expected=new TreeSet<String>();
+            for(int i=0;i<12;i++) {
+                String incoming=String.format("F%06dX",i);
+                procedure.append("MOVE '").append(incoming).append("' TO TARGET.\nPERFORM BODY.\nCALL TARGET.\n");
+                if(body.contains("(8:1)"))expected.add(incoming.substring(0,7)+"A");
+                else {expected.add("PROGA");if(body.startsWith("CALL"))expected.add(incoming);}
+            }
+            procedure.append("GOBACK.\nBODY.\n").append(body).append("\nEXIT.");
+            var result=check("01 TARGET PIC X(8).",procedure.toString(),expected.toArray(String[]::new));
+            assertEquals(body.equals("MOVE 'PROGA' TO TARGET.")?2:13,result.metrics().contexts());
+        }
+    }
+    @Test void predicateReadAfterAFullWriteDoesNotDistinguishInputs()throws Exception {
+        var procedure=new StringBuilder("MAIN.\n");
+        for(int i=0;i<12;i++)procedure.append("MOVE '").append(i).append("' TO FLAG.\nPERFORM BODY.\n");
+        procedure.append("GOBACK.\nBODY.\nMOVE 'Y' TO FLAG.\nIF FLAG = 'Y'\nCALL 'GOOD'\nELSE\nCALL 'BAD'\nEND-IF.\nEXIT.");
+        var result=check("01 FLAG PIC X(8).",procedure.toString(),"GOOD");
+        assertEquals(2,result.metrics().contexts());
+    }
+    @Test void unrelatedParagraphPlacementDoesNotPolluteNestedInputs()throws Exception {
+        for(boolean after:List.of(false,true)) {
+            var main=new StringBuilder("MAIN.\nMOVE 'PROGA' TO TARGET.\n");
+            for(int i=0;i<12;i++)main.append("MOVE '").append(i).append("' TO FLAG.\nPERFORM OUTER.\n");
+            main.append("CALL TARGET.\nGOBACK.\nOUTER.\nPERFORM INNER.\nEXIT.\n");
+            String inner="INNER.\nMOVE 'PROGA' TO TARGET.\nEXIT.\n";
+            String tail="TAIL.\nIF FLAG = '0' CALL 'BAD-A' ELSE CALL 'BAD-B' END-IF.\nEXIT.\n";
+            var result=check("01 TARGET PIC X(8).\n01 FLAG PIC X(8).",main+(after?inner+tail:tail+inner),"PROGA");
+            assertEquals(3,result.metrics().contexts(),"placement must not change the nested invocation input");
+        }
+    }
+    @Test void unusedHandlersShareSummariesAndAreRestoredForCallerEvents()throws Exception {
+        var procedure=new StringBuilder("MAIN.\n");
+        for(int i=0;i<12;i++)procedure.append("EXEC CICS HANDLE CONDITION ERROR(H-").append(i)
+            .append(") END-EXEC.\nPERFORM BODY.\n");
+        procedure.append("EXEC CICS LINK PROGRAM('TARGET') END-EXEC.\nGOBACK.\nBODY.\nCONTINUE.\nEXIT.\n");
+        for(int i=0;i<12;i++)procedure.append("H-").append(i).append(".\nCALL 'HAND-").append(i).append("'.\nGOBACK.\n");
+        var result=check("",procedure.toString(),"TARGET","HAND-11");
+        assertEquals(3,result.metrics().contexts()); // Root, shared BODY and the reached handler.
+    }
+    @Test void sharedQueryIndexKeepsCallerValueCorrelation()throws Exception {
+        check("01 FLAG PIC X.\n01 TARGET PIC X(8).","MAIN.\nMOVE '0' TO FLAG.\nPERFORM BODY.\nCALL TARGET.\n"
+            +"MOVE '1' TO FLAG.\nPERFORM BODY.\nGOBACK.\nBODY.\nIF FLAG = '0'\nMOVE 'ONLY' TO TARGET\n"
+            +"ELSE\nMOVE 'UNOBS' TO TARGET\nEND-IF.\nEXIT.","ONLY");
+    }
+
+    @Test void fullUnknownWriteMasksTheCallersPreviousValue()throws Exception {
+        var result=check("01 TARGET PIC X(8).\n01 SOURCE-VALUE PIC X(8).", "MAIN.\nMOVE 'OLD' TO TARGET.\n"
+            +"PERFORM BODY.\nCALL TARGET.\nGOBACK.\nBODY.\nMOVE SOURCE-VALUE TO TARGET.\nEXIT.");
+        assertTrue(result.diagnostics().stream().anyMatch(d->d.contains("DYNAMIC_REMAINDER")));
+    }
+    @Test void conditionalWritesPreserveTheIdentityReturnPath()throws Exception {
+        for(boolean nested:List.of(false,true)) {
+            check("01 TARGET PIC X(8).\n01 FLAG PIC X.","MAIN.\nMOVE 'OLD' TO TARGET.\nPERFORM BODY.\nCALL TARGET.\n"
+                +"GOBACK.\nBODY.\nIF FLAG = 'Y'\n"+(nested?"PERFORM HELPER":"MOVE 'NEW' TO TARGET")
+                +"\nELSE\n"+"CONTINUE\n".repeat(12)+"END-IF.\nEXIT.\nHELPER.\nMOVE 'NEW' TO TARGET.\nEXIT.","OLD","NEW");
+        }
+    }
+    @Test void conditionalRegistrationPreservesThePreviousHandlerOnTheOtherPath()throws Exception {
+        check("01 FLAG PIC X.","MAIN.\nEXEC CICS HANDLE CONDITION ERROR(FIRST-HANDLER) END-EXEC.\nPERFORM BODY.\n"
+            +"EXEC CICS LINK PROGRAM('TARGET') END-EXEC.\nGOBACK.\nBODY.\nIF FLAG = 'Y'\n"
+            +"EXEC CICS HANDLE CONDITION ERROR(SECOND-HANDLER) END-EXEC\nELSE\n"+"CONTINUE\n".repeat(12)+"END-IF.\nEXIT.\n"
+            +"FIRST-HANDLER.\nCALL 'FIRST'.\nGOBACK.\nSECOND-HANDLER.\nCALL 'SECOND'.\nGOBACK.","FIRST","SECOND","TARGET");
+    }
+
 }

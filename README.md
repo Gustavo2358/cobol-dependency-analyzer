@@ -34,10 +34,23 @@ PERFORM ou handlers compartilham esse mesmo mecanismo. Componentes fortemente
 conexos são identificados por Kosaraju iterativo: um ciclo permanece na mesma
 worklist para juntar seus estados, e trechos entre componentes podem compartilhar
 resumos. Isso evita transformar iterações em uma sequência de novas entradas.
-O estado contém valores
-lógicos, handlers ativos/salvos e os fatos de alcance necessários às continuações.
-O índice de relevância usa uma única propagação retrógrada de conjuntos, ampliada
-sob demanda; não percorre o programa inteiro para cada PERFORM inline.
+O estado contém valores lógicos, handlers ativos/salvos e os fatos de alcance
+necessários às continuações. A chave retém as entradas que podem ser lidas antes
+de uma sobrescrita completa ou conservadas em algum caminho de retorno. Escritas parciais,
+leituras anteriores e aliases que conservam texto continuam exigindo a entrada.
+Handlers omitidos da chave são restaurados a partir do estado de cada chamador.
+
+A relevância usa um índice compartilhado de pontos `(posição, endpoint)`, ampliado
+sob demanda. Uma chamada entra no endpoint próprio do callee; seu retorno é
+analisado no escopo do chamador. Para cada ponto, a necessidade é a união das
+leituras locais com a necessidade dos sucessores, retirando as entradas que a
+instrução certamente sobrescreve. Uma análise de sobrescritas possíveis e
+garantidas também conserva a entrada quando uma escrita condicional deixa um
+caminho intacto. Escritas de UNKNOWN ficam explícitas no resultado para substituir
+o valor anterior do chamador. Conjuntos são bitsets com índices densos.
+Sucessores são processados antes dos predecessores; ciclos usam worklist até o
+ponto fixo. Efeitos locais e componentes já fechados são reutilizados. O endpoint
+continua presente porque altera a regra de retorno.
 
 O resultado de um resumo conserva o tipo de saída: conclusão, escape ou término
 do programa. A continuação aplica a regra correspondente: seguir o trecho,
@@ -49,13 +62,21 @@ passam pela worklist, evitando desempilhar recursivamente caudas longas.
 Consultar uma dependência continua usando o estado anterior à instrução. Grupos
 conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam
 declarações e textos logicamente. O analisador não simula memória física.
+As consultas são indexadas pelo consumidor: cada estado BEFORE é avaliado
+separadamente, e só os valores resultantes são unidos. Isso preserva a correlação
+entre valores de um chamador e evita varrer todos os estados para cada consulta.
+A construção e validação do frontend também usam índices de membros e posições,
+em lugar de buscas lineares repetidas. O contrato dos intervalos THRU é preservado.
 UPPER-CASE, LOWER-CASE e TRIM usam expressões tipadas do frontend.
 
 Compartilhar resumos elimina a repetição quando diferentes intervalos chegam ao
 mesmo trecho com o mesmo estado relevante e endpoint. Entradas, endpoints ou
 handlers diferentes podem exigir resumos diferentes: a solução geral não implica
 um limite linear para todo programa COBOL. O orçamento explícito continua sendo
-aplicado sem descartar candidatos para obter sucesso.
+aplicado sem descartar candidatos para obter sucesso. Combinações de entradas
+realmente observadas ainda podem criar exponencialmente muitos contextos. A
+relevância conserva aproximações seguras: não compõe kills de um callee com a
+continuação do chamador e não presume sobrescrita completa de grupos ou tabelas.
 
 O JAR executa sozinho: não requer AIR, lowering, outros repositórios, serviços
 externos ou produtos intermediários serializados.
@@ -120,7 +141,7 @@ ponto fixo, podendo sobreaproximar alvos que dependem da contagem exata.
 Não há garantia de paridade universal de COBOL; a paridade medida refere-se
 aos insumos e oráculos documentados.
 
-`--max-work N` limita visitas, estados, resumos e produtos de candidatos (padrão 1000000).
+`--max-work N` limita visitas, estados, resumos, trabalho de relevância e produtos de candidatos (padrão 1000000).
 Ultrapassar o orçamento falha explicitamente; não corta candidatos para obter
 sucesso. `--metrics arquivo.jsonl` grava tempos e contadores fora do JSON de
 produto. Heap é configurado pelo Java, por exemplo `-Xmx768m`.
@@ -165,6 +186,13 @@ Em OR1216, o trabalho caiu de 1.485.530 para 18.040 itens e o tempo de
 9.98 s para 4.12 s na comparação nova. Transferências,
 escapes e handlers usam o mesmo solver. O relatório registra também o overhead
 nos casos já otimizados e os limites de crescimento restantes.
+
+A [correção de relevância e índices](benchmark/relevance-fix-20261008.md) registra
+os resultados sobre os 40 fixtures do discovery e as regressões do produto.
+O FAST inclui as suítes do solver canônico, além dos contratos do frontend.
+O [profiling da FIXTURE02](benchmark/fixture02-profiling-20261008.md) registra
+um OOM posterior: resumos por estados distintos e reconstrução dos ambientes
+ainda provocam explosão. Os casos anteriores não garantem robustez universal.
 
 ```sh
 python3 -B scripts/harness/lean.py fast

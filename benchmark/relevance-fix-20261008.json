@@ -1,0 +1,2967 @@
+{
+  "baseCommit": "a1ddc8f4e20179425d7037df86ef4e5854a7a113",
+  "baseJarSha256": "c962031a19228b1e52c13c8262a06e92fb07aeed3aae3660db5f28efa0b2c0b8",
+  "jarSha256": "b3f266e5a553a120488841d1428f2947434bb52487bb03661728b504885785d4",
+  "heapMiB": 4096,
+  "maxWork": 100000000,
+  "timeoutSeconds": 900,
+  "compared": 40,
+  "passed": 40,
+  "byteIdentical": 40,
+  "sameDiagnostics": 40,
+  "sourceHashes": {
+    "src/main/java/com/imd/cobolexplorer/DependencyFlow.java": "b7adf2dfe3640b0fde23aadfc1a4d8d579cbc85e7f0ebf45299b030df7e0e243",
+    "src/main/java/com/imd/cobolexplorer/DependencyRelevance.java": "7e92ceb8316d5c73b508eaa95d807042801947cc43ce0f81e082c206fedf6b67",
+    "src/main/java/com/imd/cobolexplorer/ControlTopologySemantics.java": "5a14c44005d5c6b51ab79140e90cf1b3bd727cee02ee40133bec12d36c901787",
+    "src/main/java/com/imd/cobolexplorer/semanticproduct/ControlTopology.java": "78f64efde1d518858fe0b42c83cd1cea83ad7df0be9e85cb4ed3e0ae327f375a",
+    "src/test/java/com/imd/cobolexplorer/DependencySummaryTest.java": "3731fa47bc51c2f444fc0f2b052e51502294459e6a3dd7d0a21a8e1cc7180af4",
+    "scripts/harness/lean_project.py": "37101cfd82341bd8a25132cba466d945002034f56b78d45107640d03d6f1afca"
+  },
+  "java": "Temurin 21.0.12+1.1",
+  "observationsPerFixture": 1,
+  "results": [
+    {
+      "id": "nested-tail-after-1",
+      "sourceSha256": "c2b1c5ce549c2b5f28632ad054ce1724f61f4fa167f88c68e5d34b01d99334f3",
+      "exit": 0,
+      "seconds": 0.7657850710093044,
+      "peakRssKiB": 134380,
+      "metrics": {
+        "parseNanos": 412836653,
+        "bindingNanos": 41573557,
+        "cfgNanos": 31181730,
+        "dataflowNanos": 29639169,
+        "resolutionNanos": 922626,
+        "totalNanos": 519513838,
+        "workItems": 11,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 436561433,
+        "bindingNanos": 44174437,
+        "cfgNanos": 29751052,
+        "dataflowNanos": 25387538,
+        "resolutionNanos": 1139119,
+        "totalNanos": 544491662,
+        "workItems": 11,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 0.8152466449973872,
+      "passed": true
+    },
+    {
+      "id": "nested-tail-before-1",
+      "sourceSha256": "6dd3d19f045ac28d0d6baa5a9b8934553ad4b9d627969f9902319b7b0e60c817",
+      "exit": 0,
+      "seconds": 0.7657147730060387,
+      "peakRssKiB": 142548,
+      "metrics": {
+        "parseNanos": 404952852,
+        "bindingNanos": 43903930,
+        "cfgNanos": 28497545,
+        "dataflowNanos": 33036189,
+        "resolutionNanos": 1148716,
+        "totalNanos": 519459249,
+        "workItems": 11,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 451133088,
+        "bindingNanos": 45178070,
+        "cfgNanos": 35883500,
+        "dataflowNanos": 30541969,
+        "resolutionNanos": 1228341,
+        "totalNanos": 568131105,
+        "workItems": 11,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 0.8152056609978899,
+      "passed": true
+    },
+    {
+      "id": "nested-tail-after-8",
+      "sourceSha256": "bab94ae9368ca478470f4b27fcf82894256aafe19499d51452ac4f3a103d4f77",
+      "exit": 0,
+      "seconds": 0.8199093559960602,
+      "peakRssKiB": 151032,
+      "metrics": {
+        "parseNanos": 412371108,
+        "bindingNanos": 46218504,
+        "cfgNanos": 29420902,
+        "dataflowNanos": 32809888,
+        "resolutionNanos": 955796,
+        "totalNanos": 524935096,
+        "workItems": 35,
+        "contexts": 4,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 445249792,
+        "bindingNanos": 50846024,
+        "cfgNanos": 33806508,
+        "dataflowNanos": 25920385,
+        "resolutionNanos": 1081233,
+        "totalNanos": 560097303,
+        "workItems": 55,
+        "contexts": 11,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 0.8151811760035343,
+      "passed": true
+    },
+    {
+      "id": "nested-tail-before-8",
+      "sourceSha256": "99697e1fc1fcbc82b5cd079e1965311f92f98a25abaa879e98904ff1b6709b3d",
+      "exit": 0,
+      "seconds": 0.7656602439965354,
+      "peakRssKiB": 145772,
+      "metrics": {
+        "parseNanos": 421794174,
+        "bindingNanos": 44470149,
+        "cfgNanos": 28373159,
+        "dataflowNanos": 27797674,
+        "resolutionNanos": 901448,
+        "totalNanos": 526490581,
+        "workItems": 35,
+        "contexts": 4,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 455375693,
+        "bindingNanos": 53847085,
+        "cfgNanos": 34776369,
+        "dataflowNanos": 27127518,
+        "resolutionNanos": 1038927,
+        "totalNanos": 575391871,
+        "workItems": 37,
+        "contexts": 5,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 0.8152458730037324,
+      "passed": true
+    },
+    {
+      "id": "nested-tail-after-64",
+      "sourceSha256": "6792c39fa29181ee8e4ff8f437994d3f06d618b205c5c1554cf542271bc922a4",
+      "exit": 0,
+      "seconds": 0.8657814710022649,
+      "peakRssKiB": 157360,
+      "metrics": {
+        "parseNanos": 456799840,
+        "bindingNanos": 51078282,
+        "cfgNanos": 43460885,
+        "dataflowNanos": 48110802,
+        "resolutionNanos": 1063512,
+        "totalNanos": 603908738,
+        "workItems": 203,
+        "contexts": 4,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 496744695,
+        "bindingNanos": 54647728,
+        "cfgNanos": 55245925,
+        "dataflowNanos": 51252002,
+        "resolutionNanos": 1117360,
+        "totalNanos": 662430777,
+        "workItems": 391,
+        "contexts": 67,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 0.9153471030003857,
+      "passed": true
+    },
+    {
+      "id": "nested-tail-before-64",
+      "sourceSha256": "b0b2caf929240f1c096e6fcdbb4c9ba904b00d337a7b3c79d1dfef693c635a9d",
+      "exit": 0,
+      "seconds": 0.8658400069980416,
+      "peakRssKiB": 158264,
+      "metrics": {
+        "parseNanos": 465522645,
+        "bindingNanos": 52967103,
+        "cfgNanos": 43556710,
+        "dataflowNanos": 47861649,
+        "resolutionNanos": 1126386,
+        "totalNanos": 614328556,
+        "workItems": 203,
+        "contexts": 4,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 474940355,
+        "bindingNanos": 52053287,
+        "cfgNanos": 49042899,
+        "dataflowNanos": 47639601,
+        "resolutionNanos": 1424046,
+        "totalNanos": 628730943,
+        "workItems": 205,
+        "contexts": 5,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 0.8654073150100885,
+      "passed": true
+    },
+    {
+      "id": "nested-tail-after-400",
+      "sourceSha256": "bc1eff7025892c3d5ccb670f1e9f01875b630b3ea73121461e936f2c2f95bfff",
+      "exit": 0,
+      "seconds": 1.1663613139971858,
+      "peakRssKiB": 168684,
+      "metrics": {
+        "parseNanos": 570304648,
+        "bindingNanos": 89568789,
+        "cfgNanos": 84038623,
+        "dataflowNanos": 164275330,
+        "resolutionNanos": 1280486,
+        "totalNanos": 913282806,
+        "workItems": 1211,
+        "contexts": 4,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 606408692,
+        "bindingNanos": 87574679,
+        "cfgNanos": 105417284,
+        "dataflowNanos": 161810584,
+        "resolutionNanos": 1271108,
+        "totalNanos": 966501567,
+        "workItems": 2407,
+        "contexts": 403,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 1.215912075000233,
+      "passed": true
+    },
+    {
+      "id": "nested-tail-before-400",
+      "sourceSha256": "2b4225f61f3dfcfc6be280911e53837881602f43f4dbd9b7cc5ba3791566a4bc",
+      "exit": 0,
+      "seconds": 1.3678838119958527,
+      "peakRssKiB": 172412,
+      "metrics": {
+        "parseNanos": 653503546,
+        "bindingNanos": 107330662,
+        "cfgNanos": 101756527,
+        "dataflowNanos": 226796037,
+        "resolutionNanos": 1382171,
+        "totalNanos": 1094937285,
+        "workItems": 1211,
+        "contexts": 4,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 587988919,
+        "bindingNanos": 90179941,
+        "cfgNanos": 104560778,
+        "dataflowNanos": 161538870,
+        "resolutionNanos": 1707812,
+        "totalNanos": 949802899,
+        "workItems": 1213,
+        "contexts": 5,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 1.2159211020043585,
+      "passed": true
+    },
+    {
+      "id": "nested-no-tail-400",
+      "sourceSha256": "b91f00610e5899aa38fdede64d342ac41133b185b074e08513227dba4cd59ef9",
+      "exit": 0,
+      "seconds": 1.316803947003791,
+      "peakRssKiB": 185976,
+      "metrics": {
+        "parseNanos": 643267402,
+        "bindingNanos": 94173794,
+        "cfgNanos": 89700828,
+        "dataflowNanos": 220080919,
+        "resolutionNanos": 1429166,
+        "totalNanos": 1052765390,
+        "workItems": 1211,
+        "contexts": 4,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 582958343,
+        "bindingNanos": 92496238,
+        "cfgNanos": 109169148,
+        "dataflowNanos": 148033542,
+        "resolutionNanos": 1305291,
+        "totalNanos": 937771389,
+        "workItems": 1213,
+        "contexts": 5,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 1.2159533999947598,
+      "passed": true
+    },
+    {
+      "id": "direct-tail-after-400",
+      "sourceSha256": "8ab9f66a40a8731a8e8c70028c1f1b462757a584291826fe86574e2188a46d3c",
+      "exit": 0,
+      "seconds": 1.1665584110014606,
+      "peakRssKiB": 172028,
+      "metrics": {
+        "parseNanos": 574175799,
+        "bindingNanos": 86355051,
+        "cfgNanos": 78173961,
+        "dataflowNanos": 167631707,
+        "resolutionNanos": 1262322,
+        "totalNanos": 911490429,
+        "workItems": 1205,
+        "contexts": 2,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 562172943,
+        "bindingNanos": 87466853,
+        "cfgNanos": 107667782,
+        "dataflowNanos": 160722037,
+        "resolutionNanos": 1309588,
+        "totalNanos": 922937788,
+        "workItems": 1207,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 1.1658317319961498,
+      "passed": true
+    },
+    {
+      "id": "nested-tail-reachable-400",
+      "sourceSha256": "1670214639caa183ed770ed0ead1343d30d29e882bc5bbb03df62e989bd7c107",
+      "exit": 0,
+      "seconds": 1.2164729890064336,
+      "peakRssKiB": 174192,
+      "metrics": {
+        "parseNanos": 597637858,
+        "bindingNanos": 100106169,
+        "cfgNanos": 93082962,
+        "dataflowNanos": 208004633,
+        "resolutionNanos": 1444675,
+        "totalNanos": 1004240938,
+        "workItems": 6005,
+        "contexts": 1202,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 639613397,
+        "bindingNanos": 101983678,
+        "cfgNanos": 98787443,
+        "dataflowNanos": 221632599,
+        "resolutionNanos": 2036458,
+        "totalNanos": 1068356161,
+        "workItems": 6007,
+        "contexts": 1203,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 1.3161463160067797,
+      "passed": true
+    },
+    {
+      "id": "projection-full-write-400",
+      "sourceSha256": "84039a24e70f6ce20997c327cf86b18dc3067a7564ad6791aad7e15951d9e2d5",
+      "exit": 0,
+      "seconds": 1.2238772489945404,
+      "peakRssKiB": 183016,
+      "metrics": {
+        "parseNanos": 596507154,
+        "bindingNanos": 97659144,
+        "cfgNanos": 97646561,
+        "dataflowNanos": 179645179,
+        "resolutionNanos": 2835972,
+        "totalNanos": 978284880,
+        "workItems": 1604,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 610035931,
+        "bindingNanos": 106708619,
+        "cfgNanos": 125630785,
+        "dataflowNanos": 145498658,
+        "resolutionNanos": 3179414,
+        "totalNanos": 995372181,
+        "workItems": 2402,
+        "contexts": 401,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 1.2661403679958312,
+      "passed": true
+    },
+    {
+      "id": "projection-partial-write-400",
+      "sourceSha256": "e99f0e18dbdd2f0787205ab2a8f53b569321f51afd2de5d9b227c8852436751f",
+      "exit": 0,
+      "seconds": 1.1672723590017995,
+      "peakRssKiB": 183580,
+      "metrics": {
+        "parseNanos": 579347364,
+        "bindingNanos": 96892091,
+        "cfgNanos": 109837887,
+        "dataflowNanos": 104488109,
+        "resolutionNanos": 2349718,
+        "totalNanos": 897010588,
+        "workItems": 2402,
+        "contexts": 401,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 639219933,
+        "bindingNanos": 99821812,
+        "cfgNanos": 130703337,
+        "dataflowNanos": 145749394,
+        "resolutionNanos": 2493258,
+        "totalNanos": 1022238815,
+        "workItems": 2402,
+        "contexts": 401,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 1.2660395040002186,
+      "passed": true
+    },
+    {
+      "id": "projection-read-first-400",
+      "sourceSha256": "479f9cc0dcb93a3480bf71f6c8e052dd913a449cd9a6ae15b97a30cd85b42bf2",
+      "exit": 0,
+      "seconds": 1.2172287319990573,
+      "peakRssKiB": 190044,
+      "metrics": {
+        "parseNanos": 579457012,
+        "bindingNanos": 99250755,
+        "cfgNanos": 98451153,
+        "dataflowNanos": 159027718,
+        "resolutionNanos": 2451954,
+        "totalNanos": 942524972,
+        "workItems": 1604,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 638619803,
+        "bindingNanos": 101682281,
+        "cfgNanos": 124811437,
+        "dataflowNanos": 185760029,
+        "resolutionNanos": 2827314,
+        "totalNanos": 1057878592,
+        "workItems": 1604,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 1.316052676003892,
+      "passed": true
+    },
+    {
+      "id": "projection-killed-predicate-400",
+      "sourceSha256": "d314ced2df8fa5260f57cd61d5d01db8a9cb2fbc572235669a7ea38bc8722440",
+      "exit": 0,
+      "seconds": 1.166504813998472,
+      "peakRssKiB": 181044,
+      "metrics": {
+        "parseNanos": 563495079,
+        "bindingNanos": 91266052,
+        "cfgNanos": 93726340,
+        "dataflowNanos": 179252085,
+        "resolutionNanos": 1398901,
+        "totalNanos": 933363632,
+        "workItems": 1206,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 552287901,
+        "bindingNanos": 93848834,
+        "cfgNanos": 125897599,
+        "dataflowNanos": 96426586,
+        "resolutionNanos": 2076060,
+        "totalNanos": 876547116,
+        "workItems": 2802,
+        "contexts": 401,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 1.1658787469932577,
+      "passed": true
+    },
+    {
+      "id": "caller-correlation",
+      "sourceSha256": "f87d91863b4b2815229e4bbd6217278ea9c56d43c2039f37203d205fb8f45ecf",
+      "exit": 0,
+      "seconds": 0.7656267540005501,
+      "peakRssKiB": 137568,
+      "metrics": {
+        "parseNanos": 405031234,
+        "bindingNanos": 43264658,
+        "cfgNanos": 27640588,
+        "dataflowNanos": 31264250,
+        "resolutionNanos": 948654,
+        "totalNanos": 511480736,
+        "workItems": 15,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 418857069,
+        "bindingNanos": 42889414,
+        "cfgNanos": 30248586,
+        "dataflowNanos": 29580993,
+        "resolutionNanos": 1059715,
+        "totalNanos": 525824058,
+        "workItems": 15,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 0.7650916459970176,
+      "passed": true
+    },
+    {
+      "id": "frontend-large-block-5000",
+      "sourceSha256": "cbb61721351f10d206c50f38ea72c614daf7be9d211531f34079061da54c08a9",
+      "exit": 0,
+      "seconds": 1.8177146629896015,
+      "peakRssKiB": 359440,
+      "metrics": {
+        "parseNanos": 963198225,
+        "bindingNanos": 224211562,
+        "cfgNanos": 191281166,
+        "dataflowNanos": 171430698,
+        "resolutionNanos": 2901260,
+        "totalNanos": 1559613061,
+        "workItems": 5003,
+        "contexts": 1,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 917419987,
+        "bindingNanos": 225861088,
+        "cfgNanos": 228143815,
+        "dataflowNanos": 164414091,
+        "resolutionNanos": 2801949,
+        "totalNanos": 1545756374,
+        "workItems": 5003,
+        "contexts": 1,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 1.8169961870007683,
+      "passed": true
+    },
+    {
+      "id": "frontend-large-block-10000",
+      "sourceSha256": "3b76c397a5776def01806f2a0b7fb0794c752b7869853fca80cf468c73eac596",
+      "exit": 0,
+      "seconds": 2.4689207159972284,
+      "peakRssKiB": 439556,
+      "metrics": {
+        "parseNanos": 1352393764,
+        "bindingNanos": 320908839,
+        "cfgNanos": 281913165,
+        "dataflowNanos": 256494603,
+        "resolutionNanos": 4472434,
+        "totalNanos": 2228061373,
+        "workItems": 10003,
+        "contexts": 1,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 1355896659,
+        "bindingNanos": 335327797,
+        "cfgNanos": 413787563,
+        "dataflowNanos": 236073656,
+        "resolutionNanos": 4794538,
+        "totalNanos": 2357704859,
+        "workItems": 10003,
+        "contexts": 1,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 2.6183769089984708,
+      "passed": true
+    },
+    {
+      "id": "frontend-large-block-20000",
+      "sourceSha256": "ed6bd71ef8c27e70e3008727ba65579186a027c97319730984e3dae8063ec1d8",
+      "exit": 0,
+      "seconds": 3.6711889729922405,
+      "peakRssKiB": 693120,
+      "metrics": {
+        "parseNanos": 2048174175,
+        "bindingNanos": 458482107,
+        "cfgNanos": 442004646,
+        "dataflowNanos": 417261881,
+        "resolutionNanos": 7362614,
+        "totalNanos": 3386874766,
+        "workItems": 20003,
+        "contexts": 1,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 2098793055,
+        "bindingNanos": 470225553,
+        "cfgNanos": 1260285705,
+        "dataflowNanos": 471544638,
+        "resolutionNanos": 10791289,
+        "totalNanos": 4328830379,
+        "workItems": 20003,
+        "contexts": 1,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 4.671981253995909,
+      "passed": true
+    },
+    {
+      "id": "frontend-paragraphs-512",
+      "sourceSha256": "022cad0bbdc8110066278d65a63eaaeb628a27e71d26bc9ee659fe0eb0c6ec45",
+      "exit": 0,
+      "seconds": 0.9159236720006447,
+      "peakRssKiB": 146708,
+      "metrics": {
+        "parseNanos": 479400874,
+        "bindingNanos": 56203742,
+        "cfgNanos": 82940739,
+        "dataflowNanos": 22972629,
+        "resolutionNanos": 1503941,
+        "totalNanos": 646807613,
+        "workItems": 3,
+        "contexts": 1,
+        "trackedDeclarations": 0
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 476875040,
+        "bindingNanos": 61200740,
+        "cfgNanos": 100331488,
+        "dataflowNanos": 21189383,
+        "resolutionNanos": 1066347,
+        "totalNanos": 664413789,
+        "workItems": 3,
+        "contexts": 1,
+        "trackedDeclarations": 0
+      },
+      "beforeSeconds": 0.9154830589977792,
+      "passed": true
+    },
+    {
+      "id": "frontend-paragraphs-1024",
+      "sourceSha256": "9a09ff102e80bd12a27b841c769685ef73abcb7395cbfdf0b9883de369d06d13",
+      "exit": 0,
+      "seconds": 1.0667654009885155,
+      "peakRssKiB": 152084,
+      "metrics": {
+        "parseNanos": 588246839,
+        "bindingNanos": 60364980,
+        "cfgNanos": 119388866,
+        "dataflowNanos": 26505396,
+        "resolutionNanos": 1177058,
+        "totalNanos": 799570080,
+        "workItems": 3,
+        "contexts": 1,
+        "trackedDeclarations": 0
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 528130187,
+        "bindingNanos": 64759293,
+        "cfgNanos": 143340719,
+        "dataflowNanos": 24203828,
+        "resolutionNanos": 1121407,
+        "totalNanos": 765242069,
+        "workItems": 3,
+        "contexts": 1,
+        "trackedDeclarations": 0
+      },
+      "beforeSeconds": 1.0156503689941019,
+      "passed": true
+    },
+    {
+      "id": "frontend-paragraphs-2048",
+      "sourceSha256": "ead9abd6d6d500856861f7794e865f0f1637f41b9d01df9952827d0a48ef8660",
+      "exit": 0,
+      "seconds": 1.1664407280040905,
+      "peakRssKiB": 174324,
+      "metrics": {
+        "parseNanos": 609669653,
+        "bindingNanos": 94058394,
+        "cfgNanos": 156811593,
+        "dataflowNanos": 34151134,
+        "resolutionNanos": 1319817,
+        "totalNanos": 901617145,
+        "workItems": 3,
+        "contexts": 1,
+        "trackedDeclarations": 0
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 624588840,
+        "bindingNanos": 94322374,
+        "cfgNanos": 224023501,
+        "dataflowNanos": 34349234,
+        "resolutionNanos": 1386979,
+        "totalNanos": 984028328,
+        "workItems": 3,
+        "contexts": 1,
+        "trackedDeclarations": 0
+      },
+      "beforeSeconds": 1.2159685679944232,
+      "passed": true
+    },
+    {
+      "id": "frontend-overlap-128",
+      "sourceSha256": "e61b802a05e1b7b3af0bccae0c627b33dd72d776cde24fd8e5be263612c1fb3e",
+      "exit": 0,
+      "seconds": 0.9661265940085286,
+      "peakRssKiB": 168432,
+      "metrics": {
+        "parseNanos": 519746411,
+        "bindingNanos": 64089897,
+        "cfgNanos": 60472857,
+        "dataflowNanos": 56528753,
+        "resolutionNanos": 1110758,
+        "totalNanos": 706227287,
+        "workItems": 641,
+        "contexts": 129,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 506227067,
+        "bindingNanos": 64535677,
+        "cfgNanos": 65697687,
+        "dataflowNanos": 45075113,
+        "resolutionNanos": 1456996,
+        "totalNanos": 686710213,
+        "workItems": 641,
+        "contexts": 129,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 0.915340509993257,
+      "passed": true
+    },
+    {
+      "id": "frontend-overlap-256",
+      "sourceSha256": "ef623c78edb9829a1923af3bb66bc05cfe2dc586bb0b8886c3b2513aca872209",
+      "exit": 0,
+      "seconds": 1.0161126919992967,
+      "peakRssKiB": 164504,
+      "metrics": {
+        "parseNanos": 555921942,
+        "bindingNanos": 73515589,
+        "cfgNanos": 84325424,
+        "dataflowNanos": 67693092,
+        "resolutionNanos": 1198747,
+        "totalNanos": 792201245,
+        "workItems": 1281,
+        "contexts": 257,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 554269189,
+        "bindingNanos": 78369270,
+        "cfgNanos": 109622592,
+        "dataflowNanos": 70163608,
+        "resolutionNanos": 1247706,
+        "totalNanos": 822685124,
+        "workItems": 1281,
+        "contexts": 257,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 1.0656337770051323,
+      "passed": true
+    },
+    {
+      "id": "frontend-overlap-512",
+      "sourceSha256": "2f20d305457225a065da7fe56e6d0068773a4e065d0b80d003f8bd8e1cd10ea3",
+      "exit": 0,
+      "seconds": 1.2165733319998253,
+      "peakRssKiB": 190988,
+      "metrics": {
+        "parseNanos": 625839485,
+        "bindingNanos": 120801011,
+        "cfgNanos": 136553655,
+        "dataflowNanos": 88092597,
+        "resolutionNanos": 1412065,
+        "totalNanos": 977217049,
+        "workItems": 2561,
+        "contexts": 513,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 617493223,
+        "bindingNanos": 113562346,
+        "cfgNanos": 168709964,
+        "dataflowNanos": 102203688,
+        "resolutionNanos": 1395364,
+        "totalNanos": 1007721549,
+        "workItems": 2561,
+        "contexts": 513,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 1.2660677560052136,
+      "passed": true
+    },
+    {
+      "id": "relevance-move-e16-w64",
+      "sourceSha256": "b03cb2bf7f3ef2ff845aa912bd29131255827090d46e5bd19112a753bb79a3ca",
+      "exit": 0,
+      "seconds": 1.0463486539956648,
+      "peakRssKiB": 159664,
+      "metrics": {
+        "parseNanos": 543240577,
+        "bindingNanos": 68413390,
+        "cfgNanos": 60739902,
+        "dataflowNanos": 85287392,
+        "resolutionNanos": 1117279,
+        "totalNanos": 763119079,
+        "workItems": 132,
+        "contexts": 17,
+        "trackedDeclarations": 65
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 563029489,
+        "bindingNanos": 77015071,
+        "cfgNanos": 61360961,
+        "dataflowNanos": 281186147,
+        "resolutionNanos": 1477283,
+        "totalNanos": 988069838,
+        "workItems": 132,
+        "contexts": 17,
+        "trackedDeclarations": 65
+      },
+      "beforeSeconds": 1.2660883539938368,
+      "passed": true
+    },
+    {
+      "id": "relevance-move-e32-w64",
+      "sourceSha256": "a5bd153a30ed79ecf55dc4d426e0e2f4674f2e99626058eb2e6a5800c903d283",
+      "exit": 0,
+      "seconds": 1.0662311000050977,
+      "peakRssKiB": 162080,
+      "metrics": {
+        "parseNanos": 517903793,
+        "bindingNanos": 66106380,
+        "cfgNanos": 56010771,
+        "dataflowNanos": 163043633,
+        "resolutionNanos": 1079080,
+        "totalNanos": 808154263,
+        "workItems": 196,
+        "contexts": 33,
+        "trackedDeclarations": 65
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 544747226,
+        "bindingNanos": 73066199,
+        "cfgNanos": 72388719,
+        "dataflowNanos": 408543479,
+        "resolutionNanos": 1781956,
+        "totalNanos": 1104378453,
+        "workItems": 196,
+        "contexts": 33,
+        "trackedDeclarations": 65
+      },
+      "beforeSeconds": 1.36671429600392,
+      "passed": true
+    },
+    {
+      "id": "relevance-move-e64-w64",
+      "sourceSha256": "d7929e1b202a7a80a0c9e04193b4b01aa592a973349e6250bb8d1db7f4d8f4ff",
+      "exit": 0,
+      "seconds": 1.2166518039884977,
+      "peakRssKiB": 180112,
+      "metrics": {
+        "parseNanos": 574083522,
+        "bindingNanos": 81376588,
+        "cfgNanos": 66076856,
+        "dataflowNanos": 237836021,
+        "resolutionNanos": 1101661,
+        "totalNanos": 964333988,
+        "workItems": 324,
+        "contexts": 65,
+        "trackedDeclarations": 65
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 553392306,
+        "bindingNanos": 82886184,
+        "cfgNanos": 96236320,
+        "dataflowNanos": 735699525,
+        "resolutionNanos": 1530579,
+        "totalNanos": 1473564071,
+        "workItems": 324,
+        "contexts": 65,
+        "trackedDeclarations": 65
+      },
+      "beforeSeconds": 1.7167829450045247,
+      "passed": true
+    },
+    {
+      "id": "relevance-move-e64-w128",
+      "sourceSha256": "5aba401f5e3f32f50e3b2ec54c2f2d9999e5b3bae9464d44c797d829dda80c20",
+      "exit": 0,
+      "seconds": 1.6675438239908544,
+      "peakRssKiB": 209288,
+      "metrics": {
+        "parseNanos": 653447493,
+        "bindingNanos": 119353080,
+        "cfgNanos": 102371875,
+        "dataflowNanos": 506696586,
+        "resolutionNanos": 2218129,
+        "totalNanos": 1388543118,
+        "workItems": 388,
+        "contexts": 65,
+        "trackedDeclarations": 129
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 606648929,
+        "bindingNanos": 104564715,
+        "cfgNanos": 110633237,
+        "dataflowNanos": 3912136097,
+        "resolutionNanos": 1512988,
+        "totalNanos": 4739674967,
+        "workItems": 388,
+        "contexts": 65,
+        "trackedDeclarations": 129
+      },
+      "beforeSeconds": 5.022467021000921,
+      "passed": true
+    },
+    {
+      "id": "context-growth-10",
+      "sourceSha256": "00a1900ecad8a6bd3a101488e8ae672e212036a866d812f03cdaf638547f6b95",
+      "exit": 0,
+      "seconds": 1.016282600001432,
+      "peakRssKiB": 172680,
+      "metrics": {
+        "parseNanos": 429324342,
+        "bindingNanos": 57960403,
+        "cfgNanos": 39976666,
+        "dataflowNanos": 243094553,
+        "resolutionNanos": 1405373,
+        "totalNanos": 774878579,
+        "workItems": 28679,
+        "contexts": 2048,
+        "trackedDeclarations": 10
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 422598094,
+        "bindingNanos": 54910236,
+        "cfgNanos": 37536452,
+        "dataflowNanos": 281952500,
+        "resolutionNanos": 1244330,
+        "totalNanos": 801388316,
+        "workItems": 28679,
+        "contexts": 2048,
+        "trackedDeclarations": 10
+      },
+      "beforeSeconds": 1.065751039001043,
+      "passed": true
+    },
+    {
+      "id": "context-growth-12",
+      "sourceSha256": "5408a3278a74b00185f36c562090080ade8375cf8c90a0c945723bd54751b637",
+      "exit": 0,
+      "seconds": 1.5171828390011797,
+      "peakRssKiB": 218820,
+      "metrics": {
+        "parseNanos": 433497312,
+        "bindingNanos": 55431179,
+        "cfgNanos": 40246686,
+        "dataflowNanos": 712399007,
+        "resolutionNanos": 1318525,
+        "totalNanos": 1246232807,
+        "workItems": 131081,
+        "contexts": 8192,
+        "trackedDeclarations": 12
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 492079983,
+        "bindingNanos": 84606789,
+        "cfgNanos": 65923597,
+        "dataflowNanos": 1327528037,
+        "resolutionNanos": 1349641,
+        "totalNanos": 1976346542,
+        "workItems": 131081,
+        "contexts": 8192,
+        "trackedDeclarations": 12
+      },
+      "beforeSeconds": 2.2713883049873402,
+      "passed": true
+    },
+    {
+      "id": "nested-initialized-after-400",
+      "sourceSha256": "24405dba14a8c8d7a6c3eb5e068cd9be55047e0c806d1a2a571a12a86a847d3c",
+      "exit": 0,
+      "seconds": 1.1161934650008334,
+      "peakRssKiB": 174916,
+      "metrics": {
+        "parseNanos": 557744724,
+        "bindingNanos": 89389974,
+        "cfgNanos": 81565922,
+        "dataflowNanos": 165505135,
+        "resolutionNanos": 1245683,
+        "totalNanos": 899165683,
+        "workItems": 1209,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 651664935,
+        "bindingNanos": 104984708,
+        "cfgNanos": 119168418,
+        "dataflowNanos": 207029217,
+        "resolutionNanos": 1636302,
+        "totalNanos": 1088876910,
+        "workItems": 2406,
+        "contexts": 402,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 1.3664730669988785,
+      "passed": true
+    },
+    {
+      "id": "nested-initialized-before-400",
+      "sourceSha256": "986e2590aaf8f6a8163c7c51d384d150013e26c2b4da52eb3b65ff0c6dbeee6a",
+      "exit": 0,
+      "seconds": 1.16644274200371,
+      "peakRssKiB": 166736,
+      "metrics": {
+        "parseNanos": 583904522,
+        "bindingNanos": 84929391,
+        "cfgNanos": 83239972,
+        "dataflowNanos": 154695359,
+        "resolutionNanos": 1203837,
+        "totalNanos": 911851476,
+        "workItems": 1209,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 676167475,
+        "bindingNanos": 106246851,
+        "cfgNanos": 115629892,
+        "dataflowNanos": 157878813,
+        "resolutionNanos": 1264186,
+        "totalNanos": 1061129185,
+        "workItems": 1209,
+        "contexts": 3,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 1.3162601129879477,
+      "passed": true
+    },
+    {
+      "id": "projection-read-before-write-400",
+      "sourceSha256": "7ccdc5157e7017a3d27dc0e14aa9da6a16ec924f7e403834230b6a937250c084",
+      "exit": 0,
+      "seconds": 1.1666362329997355,
+      "peakRssKiB": 180096,
+      "metrics": {
+        "parseNanos": 567627996,
+        "bindingNanos": 96369221,
+        "cfgNanos": 110940860,
+        "dataflowNanos": 104778987,
+        "resolutionNanos": 8606072,
+        "totalNanos": 892354380,
+        "workItems": 2802,
+        "contexts": 401,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 683123589,
+        "bindingNanos": 125762324,
+        "cfgNanos": 159043908,
+        "dataflowNanos": 211599468,
+        "resolutionNanos": 5227914,
+        "totalNanos": 1189641814,
+        "workItems": 2802,
+        "contexts": 401,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 1.5170761969930027,
+      "passed": true
+    },
+    {
+      "id": "handler-irrelevant-same-16",
+      "sourceSha256": "79ccaa3bbafafc3d32a353a81620cccb2068b32b0a03d19ae0c2a09852b0dfc0",
+      "exit": 0,
+      "seconds": 0.8157729920058046,
+      "peakRssKiB": 150048,
+      "metrics": {
+        "parseNanos": 436943753,
+        "bindingNanos": 47007648,
+        "cfgNanos": 46620344,
+        "dataflowNanos": 35432772,
+        "resolutionNanos": 1019522,
+        "totalNanos": 570330765,
+        "workItems": 54,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 442419944,
+        "bindingNanos": 48949754,
+        "cfgNanos": 47293626,
+        "dataflowNanos": 27287440,
+        "resolutionNanos": 1189280,
+        "totalNanos": 570493003,
+        "workItems": 54,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 0.8653013809962431,
+      "passed": true
+    },
+    {
+      "id": "handler-irrelevant-vary-16",
+      "sourceSha256": "8992d6aac98712453254d5f97552cc4749d3a6ce13b473f7ca7a3cbb607de2ce",
+      "exit": 0,
+      "seconds": 0.8659191409969935,
+      "peakRssKiB": 152088,
+      "metrics": {
+        "parseNanos": 482568849,
+        "bindingNanos": 48100122,
+        "cfgNanos": 43055259,
+        "dataflowNanos": 33778187,
+        "resolutionNanos": 969691,
+        "totalNanos": 611706904,
+        "workItems": 54,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 443770977,
+        "bindingNanos": 50897290,
+        "cfgNanos": 47456071,
+        "dataflowNanos": 28557808,
+        "resolutionNanos": 1063462,
+        "totalNanos": 574968361,
+        "workItems": 84,
+        "contexts": 17,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 0.8151564369909465,
+      "passed": true
+    },
+    {
+      "id": "handler-irrelevant-same-64",
+      "sourceSha256": "873ea395052c540dfaf9b3f2a2924878bd53faa8833ab7ef25f63b9594dd96a4",
+      "exit": 0,
+      "seconds": 0.9161165230034385,
+      "peakRssKiB": 155796,
+      "metrics": {
+        "parseNanos": 490403761,
+        "bindingNanos": 56330032,
+        "cfgNanos": 63149930,
+        "dataflowNanos": 48547085,
+        "resolutionNanos": 1049406,
+        "totalNanos": 665007462,
+        "workItems": 198,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 501112854,
+        "bindingNanos": 62378804,
+        "cfgNanos": 72791436,
+        "dataflowNanos": 42900316,
+        "resolutionNanos": 1048795,
+        "totalNanos": 683948324,
+        "workItems": 198,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 0.915406874002656,
+      "passed": true
+    },
+    {
+      "id": "handler-irrelevant-vary-64",
+      "sourceSha256": "7d41ac40f2ddb458af5b27579f30f2a7a38f4e6e98352926f66f5500f10b7b20",
+      "exit": 0,
+      "seconds": 0.9662101160065504,
+      "peakRssKiB": 167520,
+      "metrics": {
+        "parseNanos": 499422883,
+        "bindingNanos": 62090916,
+        "cfgNanos": 62107496,
+        "dataflowNanos": 53274371,
+        "resolutionNanos": 1034219,
+        "totalNanos": 681768307,
+        "workItems": 198,
+        "contexts": 2,
+        "trackedDeclarations": 1
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 527833704,
+        "bindingNanos": 65519768,
+        "cfgNanos": 75601900,
+        "dataflowNanos": 36081121,
+        "resolutionNanos": 1181896,
+        "totalNanos": 709920024,
+        "workItems": 324,
+        "contexts": 65,
+        "trackedDeclarations": 1
+      },
+      "beforeSeconds": 0.9653958549897652,
+      "passed": true
+    },
+    {
+      "id": "handler-relevant",
+      "sourceSha256": "a33ef0c275c87ef2706c295432a3d0f7cdfb8c573d22053191e8e7a24d3afb19",
+      "exit": 0,
+      "seconds": 0.7656832159991609,
+      "peakRssKiB": 138492,
+      "metrics": {
+        "parseNanos": 403383532,
+        "bindingNanos": 35428204,
+        "cfgNanos": 37071560,
+        "dataflowNanos": 31303873,
+        "resolutionNanos": 937453,
+        "totalNanos": 511288337,
+        "workItems": 23,
+        "contexts": 5,
+        "trackedDeclarations": 0
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 428166557,
+        "bindingNanos": 37525264,
+        "cfgNanos": 43066017,
+        "dataflowNanos": 35830385,
+        "resolutionNanos": 1147093,
+        "totalNanos": 549347278,
+        "workItems": 23,
+        "contexts": 5,
+        "trackedDeclarations": 0
+      },
+      "beforeSeconds": 0.8156509550026385,
+      "passed": true
+    },
+    {
+      "id": "nested-explicit-transfer",
+      "sourceSha256": "70bb603c3ef59baf8b58540be2480602004dafbd3ed1cf685a45ec5074b71087",
+      "exit": 0,
+      "seconds": 0.8658919610024896,
+      "peakRssKiB": 147600,
+      "metrics": {
+        "parseNanos": 449082523,
+        "bindingNanos": 54684873,
+        "cfgNanos": 42776803,
+        "dataflowNanos": 52641061,
+        "resolutionNanos": 1320068,
+        "totalNanos": 603810170,
+        "workItems": 583,
+        "contexts": 130,
+        "trackedDeclarations": 2
+      },
+      "byteIdentical": true,
+      "sameDiagnostics": true,
+      "beforeMetrics": {
+        "parseNanos": 502361391,
+        "bindingNanos": 64398572,
+        "cfgNanos": 47495963,
+        "dataflowNanos": 55350228,
+        "resolutionNanos": 1074171,
+        "totalNanos": 674192114,
+        "workItems": 583,
+        "contexts": 130,
+        "trackedDeclarations": 2
+      },
+      "beforeSeconds": 0.96555686800275,
+      "passed": true
+    }
+  ],
+  "gates": {
+    "java": {
+      "tests": 1743,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "skippedSuites": [
+        "com.imd.cobolexplorer.SemanticConditionContextDiscoveryTest"
+      ],
+      "jarSha256": "b3f266e5a553a120488841d1428f2947434bb52487bb03661728b504885785d4"
+    },
+    "fast": {
+      "tests": 1035,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "standalone": {
+      "passed": true
+    }
+  },
+  "qualification": {
+    "carddemo": {
+      "cases": 73,
+      "passed": 73,
+      "byteIdentical": 73,
+      "sameDiagnostics": 73,
+      "exitCounts": {
+        "0": 26,
+        "1": 47
+      },
+      "seconds": 120.88500243605813,
+      "peakRssKiB": 746716,
+      "results": [
+        {
+          "id": "4affdc7a0fa00605",
+          "sourceSha256": "b5bb7d6ccad022e0fc91b4dd1e971f49d184adf89b56abdce14eccff35b39396",
+          "exit": 1,
+          "seconds": 5.87400216399692,
+          "peakRssKiB": 746716
+        },
+        {
+          "id": "4157c234cff53544",
+          "sourceSha256": "e944b2b469cf737296489e87158801cfe1a174e2965b5bb9ad5006fc65a2b176",
+          "exit": 1,
+          "seconds": 5.8240845010004705,
+          "peakRssKiB": 689444
+        },
+        {
+          "id": "6b6e7ba3fb8b02e7",
+          "sourceSha256": "916a5fe2279ad626147990d8f86fac1e4b296f827889485b020cc310b5323601",
+          "exit": 1,
+          "seconds": 7.476342348003527,
+          "peakRssKiB": 515748
+        },
+        {
+          "id": "fdb6a11aa23211a4",
+          "sourceSha256": "7ab6dadad6d9d738f6a0cb402f394c25ccda5f7fef26ad644feeb76c11065254",
+          "exit": 1,
+          "seconds": 2.5184119249897776,
+          "peakRssKiB": 328560
+        },
+        {
+          "id": "84d813ff30351b47",
+          "sourceSha256": "d6a9210ad3062bd657881fc3f0d2a7368db3ff4869594e0d6a878d8f410d87b6",
+          "exit": 1,
+          "seconds": 2.4682029819960007,
+          "peakRssKiB": 345668
+        },
+        {
+          "id": "296678f011e781e5",
+          "sourceSha256": "d6a9210ad3062bd657881fc3f0d2a7368db3ff4869594e0d6a878d8f410d87b6",
+          "exit": 1,
+          "seconds": 2.367907659994671,
+          "peakRssKiB": 326156
+        },
+        {
+          "id": "7f1a0501d082b5dd",
+          "sourceSha256": "c245cf383a4a3f721773a13ca231eb76bd5ae75c1830d58c7aba898a554a0de9",
+          "exit": 1,
+          "seconds": 1.7168728079996072,
+          "peakRssKiB": 241524
+        },
+        {
+          "id": "1ff5d16035ba70ac",
+          "sourceSha256": "3ffeeb3d3c53e64e632bde36771dbbcf080e92ed4168d30d90c21e4dc198e6ef",
+          "exit": 1,
+          "seconds": 1.716814241008251,
+          "peakRssKiB": 236788
+        },
+        {
+          "id": "d2bed9bd0c9b2662",
+          "sourceSha256": "51479f131b4fb300008403f0c4f9fdbde56f22a7fb341c782492da29f0d23bbe",
+          "exit": 1,
+          "seconds": 2.0173533400084125,
+          "peakRssKiB": 306284
+        },
+        {
+          "id": "0332bc7dce75ea7c",
+          "sourceSha256": "51479f131b4fb300008403f0c4f9fdbde56f22a7fb341c782492da29f0d23bbe",
+          "exit": 1,
+          "seconds": 2.117551777002518,
+          "peakRssKiB": 305868
+        },
+        {
+          "id": "b72618dbeb8d4654",
+          "sourceSha256": "831433c6ec8306038c85cb86a8307f91dca48c26ef33a997f402187cbd9f4e04",
+          "exit": 1,
+          "seconds": 1.9171667150076246,
+          "peakRssKiB": 297612
+        },
+        {
+          "id": "6df5138a4c6d9daa",
+          "sourceSha256": "831433c6ec8306038c85cb86a8307f91dca48c26ef33a997f402187cbd9f4e04",
+          "exit": 1,
+          "seconds": 1.9171861790091498,
+          "peakRssKiB": 306068
+        },
+        {
+          "id": "54eaa77fe6501981",
+          "sourceSha256": "c16e40c391c0ad2d3e797a0e01144ef5b78d3b0db0a1771411a95a9d08b01f67",
+          "exit": 1,
+          "seconds": 1.816937843002961,
+          "peakRssKiB": 271212
+        },
+        {
+          "id": "fb675863f8d09c36",
+          "sourceSha256": "dc33b4c797a98d2732070a223f43cc78992c2846681163a032e376630742b1ed",
+          "exit": 1,
+          "seconds": 1.416286885010777,
+          "peakRssKiB": 212224
+        },
+        {
+          "id": "a82318348427f821",
+          "sourceSha256": "dc33b4c797a98d2732070a223f43cc78992c2846681163a032e376630742b1ed",
+          "exit": 1,
+          "seconds": 1.4163225490046898,
+          "peakRssKiB": 219400
+        },
+        {
+          "id": "f966744c71354a80",
+          "sourceSha256": "5084bb8b0c9a0f0199f737487ae1863f12e43cabbdc459a62b6b67bedc683cc4",
+          "exit": 0,
+          "seconds": 1.065696450008545,
+          "peakRssKiB": 180772
+        },
+        {
+          "id": "70f27939c3f2618e",
+          "sourceSha256": "76dea08b410b653ee2fa967c564e9f2e992b7c09f52b2d1fbb5a212149aefbce",
+          "exit": 0,
+          "seconds": 1.0656479120079894,
+          "peakRssKiB": 173488
+        },
+        {
+          "id": "2fe17320f9cffe07",
+          "sourceSha256": "708f3cadc555acab63f11e2f3238f5372ac7180e6b01197bf960d96bf0d2e83f",
+          "exit": 0,
+          "seconds": 1.0657233879901469,
+          "peakRssKiB": 176984
+        },
+        {
+          "id": "f0bab7303f51e786",
+          "sourceSha256": "136ab808a10d01814269a4a29bd6c249b1b86952d0abded98419458db43f2aef",
+          "exit": 0,
+          "seconds": 1.065691150011844,
+          "peakRssKiB": 181900
+        },
+        {
+          "id": "313a2941cb8f9f59",
+          "sourceSha256": "8691e625502b7efcfd7ba4ae61797132e7b68f3fd5fedcdcc7dd6488f6871eef",
+          "exit": 0,
+          "seconds": 1.0656177359924186,
+          "peakRssKiB": 178868
+        },
+        {
+          "id": "7557c459401603a2",
+          "sourceSha256": "c9c5428073cbe19c1cd19fc066ed99972560c209a80b4aea3bae3cc5e20a3536",
+          "exit": 0,
+          "seconds": 1.065787804996944,
+          "peakRssKiB": 184868
+        },
+        {
+          "id": "d0c029a3108572a7",
+          "sourceSha256": "224856ce6ef1b7417aefcec033a36a9315c0005decf9f11d21d11e9240e3f8fa",
+          "exit": 1,
+          "seconds": 1.616692723997403,
+          "peakRssKiB": 229668
+        },
+        {
+          "id": "33feae00b4be6a55",
+          "sourceSha256": "23c8753b6b4e0c24d4560c83861fe8162626bab195faec0fe88cf80b8bf432b5",
+          "exit": 1,
+          "seconds": 3.770558454009006,
+          "peakRssKiB": 565388
+        },
+        {
+          "id": "a367f4acd2bec18b",
+          "sourceSha256": "382c4131561a7843704fb84212c5d15b69ed5fa7b69101ee999680880a1d8879",
+          "exit": 1,
+          "seconds": 3.920877744007157,
+          "peakRssKiB": 517620
+        },
+        {
+          "id": "85931700529ae9bd",
+          "sourceSha256": "0b06bd5d4f38f17871de8985c439dfce7ed30d28e02b6ffeb8459e0cd8db4fc2",
+          "exit": 1,
+          "seconds": 2.2177008540020324,
+          "peakRssKiB": 228108
+        },
+        {
+          "id": "1344f55da698ca45",
+          "sourceSha256": "0b06bd5d4f38f17871de8985c439dfce7ed30d28e02b6ffeb8459e0cd8db4fc2",
+          "exit": 1,
+          "seconds": 2.3180908389913384,
+          "peakRssKiB": 223628
+        },
+        {
+          "id": "069938f27c5c9d1c",
+          "sourceSha256": "92776ed2801da1148839a9ed98b6537de4b41e0c7f050c8dcaae0d4e4ea543b5",
+          "exit": 1,
+          "seconds": 1.7669166309933644,
+          "peakRssKiB": 217664
+        },
+        {
+          "id": "270d89141e57ffe5",
+          "sourceSha256": "b5c46039eb8fd2f7ed7d3ca379172e56fa87385a369023bef706b04986fe1cfb",
+          "exit": 1,
+          "seconds": 1.566850698000053,
+          "peakRssKiB": 192736
+        },
+        {
+          "id": "b7bb370b3171956f",
+          "sourceSha256": "b5c46039eb8fd2f7ed7d3ca379172e56fa87385a369023bef706b04986fe1cfb",
+          "exit": 1,
+          "seconds": 1.667588023992721,
+          "peakRssKiB": 197084
+        },
+        {
+          "id": "da1614ca80f46ff2",
+          "sourceSha256": "598e3c9055b96b79266910e080bc24048eb308ee61afc828c06dbade9f501d38",
+          "exit": 0,
+          "seconds": 1.3164100519934436,
+          "peakRssKiB": 171936
+        },
+        {
+          "id": "0e4fd74fc651750a",
+          "sourceSha256": "4f1e55176f69edfb55b7af7a161aceb8c3bc3bd1b2924a704a76256e0e751b54",
+          "exit": 1,
+          "seconds": 1.9683234189869836,
+          "peakRssKiB": 216616
+        },
+        {
+          "id": "f3c66a2033a66a2b",
+          "sourceSha256": "4f1e55176f69edfb55b7af7a161aceb8c3bc3bd1b2924a704a76256e0e751b54",
+          "exit": 1,
+          "seconds": 1.9184500859992113,
+          "peakRssKiB": 212632
+        },
+        {
+          "id": "8e0bfbb0bb8f4acd",
+          "sourceSha256": "27a969cbee69426fa1056053e676041430e99399912f0e27ee1f1a454093c21e",
+          "exit": 1,
+          "seconds": 1.6175169219932286,
+          "peakRssKiB": 192604
+        },
+        {
+          "id": "4b5ec43c105bb64f",
+          "sourceSha256": "d5af307fb4b1a155f03df9eea14b402d866a332360e14a1e37dbefe59b73363b",
+          "exit": 1,
+          "seconds": 1.5682374669995625,
+          "peakRssKiB": 194396
+        },
+        {
+          "id": "287d36f735ecab42",
+          "sourceSha256": "d5af307fb4b1a155f03df9eea14b402d866a332360e14a1e37dbefe59b73363b",
+          "exit": 1,
+          "seconds": 1.616752483008895,
+          "peakRssKiB": 195724
+        },
+        {
+          "id": "1dac7e501ccb2956",
+          "sourceSha256": "55c2aebd59528aa42b28878ba5ca4d17a00b3548fc25e4ce1529710d366fd576",
+          "exit": 0,
+          "seconds": 1.1158455230033724,
+          "peakRssKiB": 174568
+        },
+        {
+          "id": "a3874978fb9d76a2",
+          "sourceSha256": "18cebdd95bff49b5316c271204fb20f59d2dd72615bc1715498c9cc8a50187f7",
+          "exit": 0,
+          "seconds": 1.1158234129979974,
+          "peakRssKiB": 176292
+        },
+        {
+          "id": "405c1833bbe66f51",
+          "sourceSha256": "97fcba3faa272c98778eb7ef50ef87faec7290168e24a9b1714996453d660ddb",
+          "exit": 1,
+          "seconds": 1.6668442130030598,
+          "peakRssKiB": 221216
+        },
+        {
+          "id": "c8bd92491fae8f50",
+          "sourceSha256": "f8eb6e3a561ff96a1889a8f777a8998850a11dddae221da2c5018067d7b95551",
+          "exit": 0,
+          "seconds": 1.0656977320031729,
+          "peakRssKiB": 177680
+        },
+        {
+          "id": "f55d741512b8cc47",
+          "sourceSha256": "85d36699cbd3079320e689576ea8406d07ad78901f4f3a68a129b869359b46ca",
+          "exit": 1,
+          "seconds": 1.4696440150000853,
+          "peakRssKiB": 190668
+        },
+        {
+          "id": "5e3ce0f6b5e6b3e7",
+          "sourceSha256": "85d36699cbd3079320e689576ea8406d07ad78901f4f3a68a129b869359b46ca",
+          "exit": 1,
+          "seconds": 1.3662638800014975,
+          "peakRssKiB": 189564
+        },
+        {
+          "id": "e4602df7a0ed5f88",
+          "sourceSha256": "0eccb28695cb3a8ea6f6ea7da26d1b48a4529787f6130b2c98bead33bc661967",
+          "exit": 0,
+          "seconds": 1.1158386809984222,
+          "peakRssKiB": 171192
+        },
+        {
+          "id": "03c557ca5d9ae101",
+          "sourceSha256": "bcd68f08c145b3b9b9c809a7082834e9519d78b6f363a0d1c5ff9d9576dcf888",
+          "exit": 1,
+          "seconds": 1.2661565080052242,
+          "peakRssKiB": 183560
+        },
+        {
+          "id": "9401561db503964f",
+          "sourceSha256": "bcd68f08c145b3b9b9c809a7082834e9519d78b6f363a0d1c5ff9d9576dcf888",
+          "exit": 1,
+          "seconds": 1.2660352080129087,
+          "peakRssKiB": 183304
+        },
+        {
+          "id": "c5a1c856e8d5db78",
+          "sourceSha256": "aa131b1e3382dc6d101b42f1c97d4fb0c2fdd706819ed9f9a0187c82b30f3019",
+          "exit": 1,
+          "seconds": 1.2160025049961405,
+          "peakRssKiB": 176664
+        },
+        {
+          "id": "686f858db2f86601",
+          "sourceSha256": "aa131b1e3382dc6d101b42f1c97d4fb0c2fdd706819ed9f9a0187c82b30f3019",
+          "exit": 1,
+          "seconds": 1.266151809002622,
+          "peakRssKiB": 179580
+        },
+        {
+          "id": "792f46d55ee54e05",
+          "sourceSha256": "309468a5c4745f92c6dcf6ed28b396334b2f131ced78eb43eda962a63d2b174e",
+          "exit": 0,
+          "seconds": 0.9665733559959335,
+          "peakRssKiB": 141672
+        },
+        {
+          "id": "5eb47d950101cbe6",
+          "sourceSha256": "fc24ff879ac6ae12bc6817554cb756f14c5e86e0ca2dd0037af49599887f03c0",
+          "exit": 1,
+          "seconds": 1.36627604100795,
+          "peakRssKiB": 190612
+        },
+        {
+          "id": "90f81d7b685a1abd",
+          "sourceSha256": "fc24ff879ac6ae12bc6817554cb756f14c5e86e0ca2dd0037af49599887f03c0",
+          "exit": 1,
+          "seconds": 1.366337362997001,
+          "peakRssKiB": 184900
+        },
+        {
+          "id": "90096622fff47265",
+          "sourceSha256": "c77747b4caaf00b45177a6449562b7f59ec336db832937595edef8b32fdce6fa",
+          "exit": 1,
+          "seconds": 1.3162128039984964,
+          "peakRssKiB": 188436
+        },
+        {
+          "id": "1490e5fb7f36ac22",
+          "sourceSha256": "ad5e376ac9221b21b8ce47597a5ca17fc1f39dc913793c814c6675e9b046fc09",
+          "exit": 1,
+          "seconds": 1.3662490020069527,
+          "peakRssKiB": 187088
+        },
+        {
+          "id": "385b562b6298cf72",
+          "sourceSha256": "4e49afda5f685f3ebeb95ed04a93cf88df93d39c66d8d7f9ba2b9a3e00a1f690",
+          "exit": 1,
+          "seconds": 1.366265613003634,
+          "peakRssKiB": 189300
+        },
+        {
+          "id": "143ef5a6f9d7c943",
+          "sourceSha256": "69842c4dd419ed70365682d65423d2744173f3eec695b25b5ed27bd29289608d",
+          "exit": 1,
+          "seconds": 1.2661776559980353,
+          "peakRssKiB": 188612
+        },
+        {
+          "id": "9d80faee8c58d8de",
+          "sourceSha256": "4f901ae6b113eebae60ae1d94b30f8cb9906d031a4419770bf56980bdf97e377",
+          "exit": 1,
+          "seconds": 1.2172524259949569,
+          "peakRssKiB": 171752
+        },
+        {
+          "id": "89f1427bafb2e03e",
+          "sourceSha256": "4f901ae6b113eebae60ae1d94b30f8cb9906d031a4419770bf56980bdf97e377",
+          "exit": 1,
+          "seconds": 1.1659128489991417,
+          "peakRssKiB": 169752
+        },
+        {
+          "id": "07d08e0b43a895bc",
+          "sourceSha256": "5694a2ed8a12dd4dc82717b401c655866a0e1f9abb0acf395151ead2b0cb31a7",
+          "exit": 0,
+          "seconds": 1.1659159940027166,
+          "peakRssKiB": 176376
+        },
+        {
+          "id": "6dc77bb7e613059f",
+          "sourceSha256": "426cf9bd190b777104bb964e9d5a2929197ed7621f8b334f229ef12e60e63966",
+          "exit": 0,
+          "seconds": 1.0157038390025264,
+          "peakRssKiB": 171148
+        },
+        {
+          "id": "29be9b929ed1cbd3",
+          "sourceSha256": "0213fd5718c6aadd3fba6bbfb1818456d75d10843181bff63aca9ff57d39e87c",
+          "exit": 1,
+          "seconds": 0.9154206289967988,
+          "peakRssKiB": 144808
+        },
+        {
+          "id": "c4ff728a15e2c448",
+          "sourceSha256": "ee1019bc3ef7bc4e0f807b6e9b7167c9386ee7c2f647c63dfddc6fc464487855",
+          "exit": 0,
+          "seconds": 1.0156761490070494,
+          "peakRssKiB": 163884
+        },
+        {
+          "id": "dc79e9c1c875df01",
+          "sourceSha256": "233dbc3bc33a3b9ac555922085a92be56e88d16316bff624b5723c4c36c99714",
+          "exit": 0,
+          "seconds": 1.0156002620060463,
+          "peakRssKiB": 167260
+        },
+        {
+          "id": "c6a3a68f36e5247b",
+          "sourceSha256": "d290cbbbec1e25859847d9dfe6b28040cd6b09c3b71747e39de7b4713d838e76",
+          "exit": 0,
+          "seconds": 0.9655653549998533,
+          "peakRssKiB": 158900
+        },
+        {
+          "id": "2c5dba9b88f1c2c8",
+          "sourceSha256": "2e16c29ee12fd20eec4500278f49d1430fe6aec4dd0a0963188ed62ccce9e171",
+          "exit": 0,
+          "seconds": 0.9655632310023066,
+          "peakRssKiB": 150816
+        },
+        {
+          "id": "d35fa32d3a27149f",
+          "sourceSha256": "494b1ca4ab8a4334eef77d2b87cc7df266f80cbeab2a3f191e9c776d4437d497",
+          "exit": 0,
+          "seconds": 0.9654971010022564,
+          "peakRssKiB": 166368
+        },
+        {
+          "id": "4299fd5b5337cd99",
+          "sourceSha256": "f81506881aec5d44d340d8b125efe67e2b355343c8893ab6bc95e2cb72c292b7",
+          "exit": 0,
+          "seconds": 0.9654998359910678,
+          "peakRssKiB": 161076
+        },
+        {
+          "id": "52c234a1ef052153",
+          "sourceSha256": "13c409d1b14b52c4d334c9297aaa7dafa209901569f809127f3831d780722e33",
+          "exit": 0,
+          "seconds": 1.1658834150002804,
+          "peakRssKiB": 168092
+        },
+        {
+          "id": "db90a0cbde11bd30",
+          "sourceSha256": "cf174417cd833193fec178a782fa8d7cabb95da9a8c2ca709af598c45f485625",
+          "exit": 0,
+          "seconds": 1.065760245997808,
+          "peakRssKiB": 167932
+        },
+        {
+          "id": "a6340eefcff72047",
+          "sourceSha256": "ac004f7f40dcb3f2a14dfb83a743f83fed9383675bc93452f3424c40cb6475a7",
+          "exit": 0,
+          "seconds": 0.9154914669925347,
+          "peakRssKiB": 138972
+        },
+        {
+          "id": "18b5464e520dbfdd",
+          "sourceSha256": "c183707f0dae0b5e9387373fc3624f0462ad95ccbbb6c8a34167591e206bcbf8",
+          "exit": 0,
+          "seconds": 0.915418465010589,
+          "peakRssKiB": 136388
+        },
+        {
+          "id": "8d1308febaf7041d",
+          "sourceSha256": "57232060f8bdaecc679b74e93fcf91d93cffd400326c001bd187ab5fad14789e",
+          "exit": 1,
+          "seconds": 1.0662295279907994,
+          "peakRssKiB": 153872
+        },
+        {
+          "id": "8e4db16c1710b40c",
+          "sourceSha256": "05565b6ca61098097391bd6ae14268eb122d41c76570d2336253b0cdb5a961fa",
+          "exit": 1,
+          "seconds": 1.0657593340001768,
+          "peakRssKiB": 157716
+        },
+        {
+          "id": "6fe2e16e2ce733e4",
+          "sourceSha256": "58c165dcfc3927232c02c152c673e3dee551587b85e7fe56ca67325c980eebb6",
+          "exit": 1,
+          "seconds": 0.965522807004163,
+          "peakRssKiB": 163436
+        },
+        {
+          "id": "8e2f1a6e49366d8f",
+          "sourceSha256": "38a8d28235e58509776f5c8c74c113d5848a7ac68fab753c55ab887221c3b43a",
+          "exit": 0,
+          "seconds": 0.8653002670034766,
+          "peakRssKiB": 139972
+        },
+        {
+          "id": "a866a57778cd77af",
+          "sourceSha256": "d01b013e55ef4f7b76044ef98fa30fa077ec8d0a6847efab7f2c466087264027",
+          "exit": 0,
+          "seconds": 0.715059159003431,
+          "peakRssKiB": 109108
+        }
+      ],
+      "relations": 815
+    },
+    "stress30": {
+      "cases": 30,
+      "passed": 30,
+      "byteIdentical": 30,
+      "sameDiagnostics": 30,
+      "exitCounts": {
+        "0": 30
+      },
+      "seconds": 71.29482377100794,
+      "peakRssKiB": 1694876,
+      "results": [
+        {
+          "id": "plain-original-oom09",
+          "sourceSha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 0.7651919039926725,
+          "peakRssKiB": 124672,
+          "expected": [],
+          "actual": [],
+          "metrics": {
+            "parseNanos": 439255833,
+            "bindingNanos": 55021685,
+            "cfgNanos": 0,
+            "dataflowNanos": 0,
+            "resolutionNanos": 3773725,
+            "totalNanos": 502003231,
+            "workItems": 0,
+            "contexts": 0,
+            "trackedDeclarations": 0
+          }
+        },
+        {
+          "id": "escape-original-oom08",
+          "sourceSha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 0.7653414950036677,
+          "peakRssKiB": 128032,
+          "expected": [],
+          "actual": [],
+          "metrics": {
+            "parseNanos": 435888185,
+            "bindingNanos": 49708343,
+            "cfgNanos": 0,
+            "dataflowNanos": 0,
+            "resolutionNanos": 4387410,
+            "totalNanos": 494207751,
+            "workItems": 0,
+            "contexts": 0,
+            "trackedDeclarations": 0
+          }
+        },
+        {
+          "id": "cics-original-oom09",
+          "sourceSha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 0.8654213770059869,
+          "peakRssKiB": 147228,
+          "expected": [
+            "DUMMY"
+          ],
+          "actual": [
+            "DUMMY"
+          ],
+          "metrics": {
+            "parseNanos": 470970321,
+            "bindingNanos": 57091354,
+            "cfgNanos": 41862342,
+            "dataflowNanos": 36387646,
+            "resolutionNanos": 903832,
+            "totalNanos": 610626170,
+            "workItems": 35,
+            "contexts": 4,
+            "trackedDeclarations": 2
+          }
+        },
+        {
+          "id": "empty-paragraphs10000",
+          "sourceSha256": "2dcb236b112a5e749231642f8a45467ad93f0dbc20e26a31b37d2c959698cc98",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.6668343050114345,
+          "peakRssKiB": 260576,
+          "expected": [
+            "AFTER",
+            "BODY"
+          ],
+          "actual": [
+            "AFTER",
+            "BODY"
+          ],
+          "metrics": {
+            "parseNanos": 833339050,
+            "bindingNanos": 150360965,
+            "cfgNanos": 294414043,
+            "dataflowNanos": 109550875,
+            "resolutionNanos": 1673310,
+            "totalNanos": 1394701966,
+            "workItems": 6,
+            "contexts": 2,
+            "trackedDeclarations": 0
+          }
+        },
+        {
+          "id": "inline-original20",
+          "sourceSha256": "451518a55dc65d29f9b1ca55a0abaee269804f392cb058c5e11572dcd5fe80f8",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 0.8152530980005395,
+          "peakRssKiB": 126544,
+          "expected": [],
+          "actual": [],
+          "metrics": {
+            "parseNanos": 473741003,
+            "bindingNanos": 55772448,
+            "cfgNanos": 0,
+            "dataflowNanos": 0,
+            "resolutionNanos": 3969721,
+            "totalNanos": 536981788,
+            "workItems": 0,
+            "contexts": 0,
+            "trackedDeclarations": 0
+          }
+        },
+        {
+          "id": "and-control76",
+          "sourceSha256": "167c35f4d6930c4186b17f2a974baad3a22d419a6a66e1fb1e90527f5691857a",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 0.9656276369933039,
+          "peakRssKiB": 165476,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 506594370,
+            "bindingNanos": 70429323,
+            "cfgNanos": 74349343,
+            "dataflowNanos": 60773543,
+            "resolutionNanos": 1124542,
+            "totalNanos": 717311550,
+            "workItems": 436,
+            "contexts": 79,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "overlap-compact900",
+          "sourceSha256": "70fdc458aeb463aa7c4320731184369a11da758f257833e7f07084a7fd593850",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.766907674013055,
+          "peakRssKiB": 321528,
+          "expected": [],
+          "actual": [],
+          "metrics": {
+            "parseNanos": 1182780729,
+            "bindingNanos": 298615154,
+            "cfgNanos": 0,
+            "dataflowNanos": 0,
+            "resolutionNanos": 21731074,
+            "totalNanos": 1511827481,
+            "workItems": 0,
+            "contexts": 0,
+            "trackedDeclarations": 0
+          }
+        },
+        {
+          "id": "plain-dynamic09",
+          "sourceSha256": "6f8877dbc3b81c7861085328704029d87410ddde04693453a769538234f224a4",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 0.8654499089898309,
+          "peakRssKiB": 140932,
+          "expected": [
+            "A"
+          ],
+          "actual": [
+            "A"
+          ],
+          "metrics": {
+            "parseNanos": 447155693,
+            "bindingNanos": 49634670,
+            "cfgNanos": 38193467,
+            "dataflowNanos": 33953345,
+            "resolutionNanos": 1009925,
+            "totalNanos": 573874673,
+            "workItems": 32,
+            "contexts": 3,
+            "trackedDeclarations": 3
+          }
+        },
+        {
+          "id": "escape-dynamic08",
+          "sourceSha256": "cbae6ee0913d954a6cc02e15f69cadb187e875610ec49dcee245469485318fe6",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 0.8654322270012926,
+          "peakRssKiB": 136236,
+          "expected": [
+            "A"
+          ],
+          "actual": [
+            "A"
+          ],
+          "metrics": {
+            "parseNanos": 442974007,
+            "bindingNanos": 57881490,
+            "cfgNanos": 41020612,
+            "dataflowNanos": 33328219,
+            "resolutionNanos": 1023099,
+            "totalNanos": 579754664,
+            "workItems": 39,
+            "contexts": 4,
+            "trackedDeclarations": 3
+          }
+        },
+        {
+          "id": "escape-dynamic20",
+          "sourceSha256": "f42d89acddc4761e14557495586e4dd757fd8653453f3aca9920bf500d8d1771",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 0.8654221580072772,
+          "peakRssKiB": 138824,
+          "expected": [
+            "A"
+          ],
+          "actual": [
+            "A"
+          ],
+          "metrics": {
+            "parseNanos": 445271920,
+            "bindingNanos": 61908965,
+            "cfgNanos": 41933641,
+            "dataflowNanos": 42672563,
+            "resolutionNanos": 1012309,
+            "totalNanos": 597398433,
+            "workItems": 63,
+            "contexts": 4,
+            "trackedDeclarations": 3
+          }
+        },
+        {
+          "id": "inline-observed20",
+          "sourceSha256": "513cf06766c8a451fed5ec675a0d832657ea37d7773e5df4e2f79a2a308dae13",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 0.9154079450090649,
+          "peakRssKiB": 150240,
+          "expected": [
+            "INLINEOK"
+          ],
+          "actual": [
+            "INLINEOK"
+          ],
+          "metrics": {
+            "parseNanos": 482803315,
+            "bindingNanos": 56943266,
+            "cfgNanos": 45826603,
+            "dataflowNanos": 68222033,
+            "resolutionNanos": 1027737,
+            "totalNanos": 658279902,
+            "workItems": 1409,
+            "contexts": 22,
+            "trackedDeclarations": 2
+          }
+        },
+        {
+          "id": "and76",
+          "sourceSha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.015667483996367,
+          "peakRssKiB": 166864,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 508392307,
+            "bindingNanos": 71655590,
+            "cfgNanos": 79502683,
+            "dataflowNanos": 62860193,
+            "resolutionNanos": 1151121,
+            "totalNanos": 727979549,
+            "workItems": 586,
+            "contexts": 79,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "and152",
+          "sourceSha256": "dfd957ede4669d4037e104b69dc0571de5d73498157a57e8844e4152e370339f",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.1658691599877784,
+          "peakRssKiB": 168928,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 589001690,
+            "bindingNanos": 98476359,
+            "cfgNanos": 103116908,
+            "dataflowNanos": 118794956,
+            "resolutionNanos": 1304861,
+            "totalNanos": 915456193,
+            "workItems": 1270,
+            "contexts": 155,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "and304",
+          "sourceSha256": "ffa42d82a47fdca5688c9a1c8562c6fea71ffde5eaa0dcf649dc35d0da220e57",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.5165558389999205,
+          "peakRssKiB": 217152,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 661849926,
+            "bindingNanos": 126088495,
+            "cfgNanos": 155053490,
+            "dataflowNanos": 281744619,
+            "resolutionNanos": 1677537,
+            "totalNanos": 1231449403,
+            "workItems": 2638,
+            "contexts": 307,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "and608",
+          "sourceSha256": "41d5999adfb7a7c98ff8283bb642ff1f42e09c81ffb767da24fb6f4a83c8b67c",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 2.0174388449959224,
+          "peakRssKiB": 297912,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 806650522,
+            "bindingNanos": 185662860,
+            "cfgNanos": 297556932,
+            "dataflowNanos": 411277521,
+            "resolutionNanos": 1800821,
+            "totalNanos": 1709506607,
+            "workItems": 5374,
+            "contexts": 611,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "and1216",
+          "sourceSha256": "0d2ba89ca1729f17fca4917966245a57d566be08cb78713d52656e1c410c93c4",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 3.3705077069898834,
+          "peakRssKiB": 442624,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 1092105901,
+            "bindingNanos": 312575733,
+            "cfgNanos": 538287220,
+            "dataflowNanos": 1124822690,
+            "resolutionNanos": 2844357,
+            "totalNanos": 3078326740,
+            "workItems": 10846,
+            "contexts": 1219,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "or76",
+          "sourceSha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.015686047001509,
+          "peakRssKiB": 152460,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 517495793,
+            "bindingNanos": 86132587,
+            "cfgNanos": 71377565,
+            "dataflowNanos": 65136629,
+            "resolutionNanos": 1388081,
+            "totalNanos": 746306649,
+            "workItems": 940,
+            "contexts": 130,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "or152",
+          "sourceSha256": "1f2bf3672a1c6b831958cf5439a563a47f1a239c51bcbadaf4f2ea8db23ae2f8",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.1659102340054233,
+          "peakRssKiB": 159896,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 583028581,
+            "bindingNanos": 99796286,
+            "cfgNanos": 128031194,
+            "dataflowNanos": 97705529,
+            "resolutionNanos": 1655978,
+            "totalNanos": 914165569,
+            "workItems": 2080,
+            "contexts": 282,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "or304",
+          "sourceSha256": "63536fb6957fc5f1642a1fb869ff4a85a54e1fc93ceb38d265577de99e11384e",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.4664250380010344,
+          "peakRssKiB": 208656,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 683564510,
+            "bindingNanos": 134585740,
+            "cfgNanos": 196766238,
+            "dataflowNanos": 185387430,
+            "resolutionNanos": 1989804,
+            "totalNanos": 1207692570,
+            "workItems": 4360,
+            "contexts": 586,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "or608",
+          "sourceSha256": "71a8de317ff49e17a28c09f4214b60916ef2bee116c0acc0c2570ae1509e90dc",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 2.117689758000779,
+          "peakRssKiB": 328464,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 885850295,
+            "bindingNanos": 188918964,
+            "cfgNanos": 354404764,
+            "dataflowNanos": 405795413,
+            "resolutionNanos": 1936628,
+            "totalNanos": 1841977466,
+            "workItems": 8920,
+            "contexts": 1194,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "or1216",
+          "sourceSha256": "1fba314d25d5f266322b120fd7b3076bc9a653c199e55b51804748f736ea63c3",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 3.0693331139918882,
+          "peakRssKiB": 476136,
+          "expected": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "actual": [
+            "SYNROOT",
+            "SYNTGTA",
+            "SYNTGTB"
+          ],
+          "metrics": {
+            "parseNanos": 1132615595,
+            "bindingNanos": 293398548,
+            "cfgNanos": 544394142,
+            "dataflowNanos": 801872402,
+            "resolutionNanos": 4092724,
+            "totalNanos": 2783913799,
+            "workItems": 18040,
+            "contexts": 2410,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "overlap-dynamic400",
+          "sourceSha256": "f3f9eff1be048c77d731cdfb043f2569b53d08020ba7159240ca9ebec6d43a02",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.7169589240074856,
+          "peakRssKiB": 265128,
+          "expected": [
+            "H"
+          ],
+          "actual": [
+            "H"
+          ],
+          "metrics": {
+            "parseNanos": 854017732,
+            "bindingNanos": 199744949,
+            "cfgNanos": 207515765,
+            "dataflowNanos": 187365363,
+            "resolutionNanos": 2124249,
+            "totalNanos": 1458173119,
+            "workItems": 4084,
+            "contexts": 402,
+            "trackedDeclarations": 2
+          }
+        },
+        {
+          "id": "overlap-dynamic900",
+          "sourceSha256": "b77567bb9a670445834824fb7796bfe164d5603bbd72847001ebaf1d6c2bba9d",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 2.3680883969936986,
+          "peakRssKiB": 341460,
+          "expected": [
+            "H"
+          ],
+          "actual": [
+            "H"
+          ],
+          "metrics": {
+            "parseNanos": 1190413173,
+            "bindingNanos": 273406994,
+            "cfgNanos": 330513796,
+            "dataflowNanos": 299577412,
+            "resolutionNanos": 3592817,
+            "totalNanos": 2105762241,
+            "workItems": 9084,
+            "contexts": 902,
+            "trackedDeclarations": 2
+          }
+        },
+        {
+          "id": "overlap-dynamic1800",
+          "sourceSha256": "818ead3bf482dd732fc200a874581e538c5d0d00c494246b65021b71a3857c0f",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 3.5201655340060825,
+          "peakRssKiB": 583596,
+          "expected": [
+            "H"
+          ],
+          "actual": [
+            "H"
+          ],
+          "metrics": {
+            "parseNanos": 1670031643,
+            "bindingNanos": 426281996,
+            "cfgNanos": 632295923,
+            "dataflowNanos": 485755597,
+            "resolutionNanos": 6524391,
+            "totalNanos": 3231542912,
+            "workItems": 18084,
+            "contexts": 1802,
+            "trackedDeclarations": 2
+          }
+        },
+        {
+          "id": "dead-callers800",
+          "sourceSha256": "91ef27103dfa86b376c8deab75c05214d39924ccf6c1c05b8bf7f4210212c005",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 1.1158575849985937,
+          "peakRssKiB": 149544,
+          "expected": [
+            "SYNPROG"
+          ],
+          "actual": [
+            "SYNPROG"
+          ],
+          "metrics": {
+            "parseNanos": 602577941,
+            "bindingNanos": 89432281,
+            "cfgNanos": 124704221,
+            "dataflowNanos": 26546561,
+            "resolutionNanos": 1353298,
+            "totalNanos": 848957390,
+            "workItems": 3,
+            "contexts": 1,
+            "trackedDeclarations": 0
+          }
+        },
+        {
+          "id": "dead-callers6400",
+          "sourceSha256": "24d7ead117984d2ceb44b7a0d8002c8084949ac753e0607877a8e7b414ae6bae",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 2.3681752560078166,
+          "peakRssKiB": 338512,
+          "expected": [
+            "SYNPROG"
+          ],
+          "actual": [
+            "SYNPROG"
+          ],
+          "metrics": {
+            "parseNanos": 1185273477,
+            "bindingNanos": 275583848,
+            "cfgNanos": 529969581,
+            "dataflowNanos": 65576216,
+            "resolutionNanos": 3300716,
+            "totalNanos": 2071639980,
+            "workItems": 3,
+            "contexts": 1,
+            "trackedDeclarations": 0
+          }
+        },
+        {
+          "id": "linear-statements16000",
+          "sourceSha256": "d626d694a2e2731e248d6292b04168efe764a6d3a01c7e4cefc736c4c2affef3",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 3.772422630005167,
+          "peakRssKiB": 595136,
+          "expected": [
+            "PROGA"
+          ],
+          "actual": [
+            "PROGA"
+          ],
+          "metrics": {
+            "parseNanos": 1976114541,
+            "bindingNanos": 467099169,
+            "cfgNanos": 476011929,
+            "dataflowNanos": 521998521,
+            "resolutionNanos": 7309206,
+            "totalNanos": 3463002811,
+            "workItems": 16003,
+            "contexts": 1,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "linear-statements32000",
+          "sourceSha256": "3a5818f9e2dd8e493a76915ce46ebad6703eb5e9c28052e65806875ba06aed6e",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 5.172816085003433,
+          "peakRssKiB": 988928,
+          "expected": [
+            "PROGA"
+          ],
+          "actual": [
+            "PROGA"
+          ],
+          "metrics": {
+            "parseNanos": 2976382542,
+            "bindingNanos": 603279315,
+            "cfgNanos": 634347740,
+            "dataflowNanos": 637018171,
+            "resolutionNanos": 5571681,
+            "totalNanos": 4873982214,
+            "workItems": 32003,
+            "contexts": 1,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "linear-statements64000",
+          "sourceSha256": "aa00b1ca57b8ccee2ff57655f4eb0c26e9e5315516fbd7def1840e43e3ccc0fc",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 8.578537035995396,
+          "peakRssKiB": 1469916,
+          "expected": [
+            "PROGA"
+          ],
+          "actual": [
+            "PROGA"
+          ],
+          "metrics": {
+            "parseNanos": 4999320627,
+            "bindingNanos": 1049696867,
+            "cfgNanos": 1136823619,
+            "dataflowNanos": 1011780232,
+            "resolutionNanos": 19848103,
+            "totalNanos": 8243794578,
+            "workItems": 64003,
+            "contexts": 1,
+            "trackedDeclarations": 1
+          }
+        },
+        {
+          "id": "linear-statements117000",
+          "sourceSha256": "79fa75b81e30bcacef5de348e55e271b177e6c3183e8cedade3f8a0e77c09f8b",
+          "status": "PASS",
+          "exit": 0,
+          "seconds": 13.638429368991638,
+          "peakRssKiB": 1694876,
+          "expected": [
+            "PROGA"
+          ],
+          "actual": [
+            "PROGA"
+          ],
+          "metrics": {
+            "parseNanos": 8218049182,
+            "bindingNanos": 1660112515,
+            "cfgNanos": 1820751049,
+            "dataflowNanos": 1541233786,
+            "resolutionNanos": 12996067,
+            "totalNanos": 13300183567,
+            "workItems": 117003,
+            "contexts": 1,
+            "trackedDeclarations": 1
+          }
+        }
+      ]
+    },
+    "original20": {
+      "cases": 20,
+      "passed": 20,
+      "byteIdentical": 20,
+      "sameDiagnostics": 20,
+      "exitCounts": {
+        "0": 18,
+        "2": 2
+      },
+      "seconds": 15.856132015032927,
+      "peakRssKiB": 347492,
+      "results": [
+        {
+          "id": "lower-CTXBOOM-07",
+          "exit": 0,
+          "seconds": 0.7150865090079606,
+          "peakRssKiB": 125920,
+          "sourceSha256": "fedd3e527ca536926135d6f0884943240d85ecad8fea55f6d12d06a3dab6cbac"
+        },
+        {
+          "id": "lower-CTXBOOM-08",
+          "exit": 0,
+          "seconds": 0.71519450499909,
+          "peakRssKiB": 132004,
+          "sourceSha256": "4020ef361b9ccec22428ead5d4ac4892b4e8981262e3a68a052c711f08fabab7"
+        },
+        {
+          "id": "lower-CTXBOOM-CONTROL-08",
+          "exit": 0,
+          "seconds": 0.7152159440011019,
+          "peakRssKiB": 129896,
+          "sourceSha256": "a395f8bdd2cde387a45af2594eec9093f22c2b8a736967991b918e97f795b9c0"
+        },
+        {
+          "id": "and76",
+          "exit": 0,
+          "seconds": 0.9155494920123601,
+          "peakRssKiB": 160340,
+          "sourceSha256": "acc19cbaeebe1ae6a2f4b746aa1a8744e16df4e8a46c668ca5acdc65f0c795f4"
+        },
+        {
+          "id": "or76",
+          "exit": 0,
+          "seconds": 0.9156757020100486,
+          "peakRssKiB": 161112,
+          "sourceSha256": "6587abd2a8e55f3ef96c4bdb85794a448d1728eb511a164e930928e7d9c5fda8"
+        },
+        {
+          "id": "overlap900",
+          "exit": 0,
+          "seconds": 1.616756791001535,
+          "peakRssKiB": 347492,
+          "sourceSha256": "c6a5e046700cda53e5651b0293798acac0e4fd187a795919923c7d7f3ef6c469"
+        },
+        {
+          "id": "fixed-pasted",
+          "exit": 2,
+          "seconds": 0.7150470979977399,
+          "peakRssKiB": 112628,
+          "sourceSha256": "dfebd5ad5d75c1718ec58fdeba2b311819b7e0593fd6a6cd0b010e19be2ded64"
+        },
+        {
+          "id": "fixed-star",
+          "exit": 2,
+          "seconds": 0.7150966879999032,
+          "peakRssKiB": 110140,
+          "sourceSha256": "29eb1de5b49940b0fd0fb92d3f645c1a428a3bb997e205c201e3847858bc1078"
+        },
+        {
+          "id": "context-cics-09",
+          "exit": 0,
+          "seconds": 0.7651737300038803,
+          "peakRssKiB": 141768,
+          "sourceSha256": "97c76410390cb6f3050967d7e078eb344573b3b500df20e7f5291b512f59d799"
+        },
+        {
+          "id": "context-cics-09-control",
+          "exit": 0,
+          "seconds": 0.7652909940079553,
+          "peakRssKiB": 148116,
+          "sourceSha256": "16998d864497eb6b401b7bfc7fac4d119bbb8c65ecfa5d924a2a8ecdf40b95fb"
+        },
+        {
+          "id": "context-cics-16",
+          "exit": 0,
+          "seconds": 0.8152492609951878,
+          "peakRssKiB": 141208,
+          "sourceSha256": "ad91b8580f9ec98f357d9885782581fab5aab1a1e993221724e0206de58ed649"
+        },
+        {
+          "id": "context-cics-20",
+          "exit": 0,
+          "seconds": 0.815361977001885,
+          "peakRssKiB": 141680,
+          "sourceSha256": "7a6115b0d1664c71d748d0903c6ca98e1f4e7a8a9a2f59d846466dfe4c62b134"
+        },
+        {
+          "id": "context-escape-08",
+          "exit": 0,
+          "seconds": 0.7152172459900612,
+          "peakRssKiB": 134276,
+          "sourceSha256": "c17acd4d8c8f6b41be2a44feec839d967060556430b99402d2abdf7890b825de"
+        },
+        {
+          "id": "context-escape-09-control",
+          "exit": 0,
+          "seconds": 0.7151750199991511,
+          "peakRssKiB": 126312,
+          "sourceSha256": "b8b2693953a3e24e7af22cbce53da10e8a61b36090414107b78fd93a05462c28"
+        },
+        {
+          "id": "context-escape-16",
+          "exit": 0,
+          "seconds": 0.7151239170052577,
+          "peakRssKiB": 128056,
+          "sourceSha256": "302c3c187b04eba84322a946ed9203af42d38b5798ab41a7e9f8f1de0da5eae1"
+        },
+        {
+          "id": "context-escape-20",
+          "exit": 0,
+          "seconds": 0.7151992430008249,
+          "peakRssKiB": 127280,
+          "sourceSha256": "f96462bf6407560e830efbb2b21df846ef5c38a45663ac5ca9d13aa5fc8abf10"
+        },
+        {
+          "id": "context-plain-09",
+          "exit": 0,
+          "seconds": 0.7152684100001352,
+          "peakRssKiB": 124972,
+          "sourceSha256": "eb198fbe54ce09a8ed1bf79712833a35d0ad12082bea29d2d9a5f897fec4c0dc"
+        },
+        {
+          "id": "context-plain-09-control",
+          "exit": 0,
+          "seconds": 0.6651946019992465,
+          "peakRssKiB": 126960,
+          "sourceSha256": "dec528142335e5ab831550c5a39f8de3e84ba39b74ff85cb3c8e46b26e9b333b"
+        },
+        {
+          "id": "context-plain-16",
+          "exit": 0,
+          "seconds": 0.7151144490053412,
+          "peakRssKiB": 124704,
+          "sourceSha256": "e4917084b5d3016a860d961104c28f77b401f224e3aa736c98496d0db6902b9c"
+        },
+        {
+          "id": "context-plain-20",
+          "exit": 0,
+          "seconds": 0.7151404369942611,
+          "peakRssKiB": 123988,
+          "sourceSha256": "c4ace72add2226c880efc495ec2b47937830a06746238f390a559f968e0ca928"
+        }
+      ]
+    },
+    "contextGrowth18": {
+      "exit": 0,
+      "seconds": 532.625510531987,
+      "peakRssKiB": 3208724,
+      "sourceSha256": "b44a7e69d9a3a7c60b92825ea5d66a6597ba68491f59d7ccdfe29977d6563074",
+      "metrics": {
+        "parseNanos": 437061907,
+        "bindingNanos": 59339297,
+        "cfgNanos": 48852298,
+        "dataflowNanos": 531627400354,
+        "resolutionNanos": 1736334,
+        "totalNanos": 532178054638,
+        "workItems": 11534351,
+        "contexts": 524288,
+        "trackedDeclarations": 18
+      },
+      "expected": [
+        "ONE00000",
+        "ONE00001",
+        "ONE00002",
+        "ONE00003",
+        "ONE00004",
+        "ONE00005",
+        "ONE00006",
+        "ONE00007",
+        "ONE00008",
+        "ONE00009",
+        "ONE00010",
+        "ONE00011",
+        "ONE00012",
+        "ONE00013",
+        "ONE00014",
+        "ONE00015",
+        "ONE00016",
+        "ONE00017",
+        "ZERO0000",
+        "ZERO0001",
+        "ZERO0002",
+        "ZERO0003",
+        "ZERO0004",
+        "ZERO0005",
+        "ZERO0006",
+        "ZERO0007",
+        "ZERO0008",
+        "ZERO0009",
+        "ZERO0010",
+        "ZERO0011",
+        "ZERO0012",
+        "ZERO0013",
+        "ZERO0014",
+        "ZERO0015",
+        "ZERO0016",
+        "ZERO0017"
+      ],
+      "actual": [
+        "ONE00000",
+        "ONE00001",
+        "ONE00002",
+        "ONE00003",
+        "ONE00004",
+        "ONE00005",
+        "ONE00006",
+        "ONE00007",
+        "ONE00008",
+        "ONE00009",
+        "ONE00010",
+        "ONE00011",
+        "ONE00012",
+        "ONE00013",
+        "ONE00014",
+        "ONE00015",
+        "ONE00016",
+        "ONE00017",
+        "ZERO0000",
+        "ZERO0001",
+        "ZERO0002",
+        "ZERO0003",
+        "ZERO0004",
+        "ZERO0005",
+        "ZERO0006",
+        "ZERO0007",
+        "ZERO0008",
+        "ZERO0009",
+        "ZERO0010",
+        "ZERO0011",
+        "ZERO0012",
+        "ZERO0013",
+        "ZERO0014",
+        "ZERO0015",
+        "ZERO0016",
+        "ZERO0017"
+      ],
+      "byteIdentical": true,
+      "productDiagnostics": [],
+      "jarSha256": "b3f266e5a553a120488841d1428f2947434bb52487bb03661728b504885785d4",
+      "heapMiB": 4096,
+      "maxWork": 100000000,
+      "timeoutSeconds": 900,
+      "passed": true,
+      "beforeSeconds": 748.680050038005,
+      "beforePeakRssKiB": 3236744,
+      "beforeMetrics": {
+        "parseNanos": 442995321,
+        "bindingNanos": 59914617,
+        "cfgNanos": 49968509,
+        "dataflowNanos": 747606418062,
+        "resolutionNanos": 1697752,
+        "totalNanos": 748164472808,
+        "workItems": 11534351,
+        "contexts": 524288,
+        "trackedDeclarations": 18
+      },
+      "beforeEvidence": "Historical run reused with identical source and baseline JAR; not freshly timed."
+    }
+  },
+  "newFinding": {
+    "report": "fixture02-profiling-20261008.json",
+    "id": "fixture02-video-reconstructed",
+    "status": "FAIL_OOM_BOTH_VERSIONS_HEAP4096",
+    "publishedOutput": false,
+    "note": "Shared relevance optimization does not resolve combinatorial input contexts and environment projection in this fixture."
+  },
+  "rawArchive": {
+    "path": "results/relevance-fix-20261008.tar.gz",
+    "sha256": "5355a91c828b88fe259375a48ba3eb4b306730849fa43c79514ee2a63c0cd3cf",
+    "files": 2028,
+    "bytes": 998142
+  }
+}
