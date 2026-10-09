@@ -1,7 +1,6 @@
 package com.imd.cobolexplorer;
 
 import java.util.*;
-import java.lang.ref.WeakReference;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import static com.imd.cobolexplorer.DependencyGraph.Ints;
@@ -29,7 +28,7 @@ final class DependencyRelevance {
     private final Map<Integer,Set<Input>> decoded=new HashMap<>();
     // Stored facts are immutable. Weak interning shares equal demand across
     // obligations without keeping obsolete iterations alive as a global cache.
-    private final WeakHashMap<BitSet,WeakReference<BitSet>> facts=new WeakHashMap<>();
+    private final DependencyFlyweight<BitSet> facts=new DependencyFlyweight<>();
     private final BitSet empty=new BitSet();
 
     DependencyRelevance(DependencyGraph graph,Function<Point,Effect> effects,long maxWork){this.graph=graph;this.effects=effects;this.maxWork=maxWork;}
@@ -43,8 +42,7 @@ final class DependencyRelevance {
     }
     private BitSet retain(BitSet bits) {
         if(bits.isEmpty())return empty;
-        var reference=facts.get(bits);var existing=reference==null?null:reference.get();if(existing!=null)return existing;
-        facts.put(bits,new WeakReference<>(bits));return bits;
+        return facts.retain(bits);
     }
     private void tick(){if(++work>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: input relevance exceeded --max-work="+maxWork);}
     private void capacity(int id) {

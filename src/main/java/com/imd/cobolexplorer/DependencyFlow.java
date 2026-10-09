@@ -232,7 +232,8 @@ final class DependencyFlow {
         }
         return established;
     }
-    private Term leafOperation(Operation operation,State input) {
+    private Term leafOperation(Operation operation,State originalInput) {
+        var input=states.retain(originalInput);
         if(input.values().values().contains(EMPTY.value()))return operation.kind().equals("test")||operation.kind().equals("dispatch")||operation.kind().startsWith("count-")?NO:EMPTY;
         if(operation.kind().equals("test")) {
             var known=established(operation.condition(),input);if(known!=null)return known?YES:NO;
@@ -260,7 +261,7 @@ final class DependencyFlow {
             var filtered=filterConcrete(operation.condition(),operation.wanted(),input);return filtered==null?EMPTY:new Constant(filtered.get(operation.declaration()));
         }
         if(input.parameters().isEmpty()) {
-            var result=instantiated.computeIfAbsent(new Computation(operation.node(),input),key->{instantiationEvaluations++;return transfer(statements.get(operation.node()),input);});
+            var result=instantiated.computeIfAbsent(new Computation(operation.node(),input),key->{instantiationEvaluations++;return states.retain(transfer(statements.get(operation.node()),input));});
             if(instantiated.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many instantiated calculations");
             return new Constant(result.get(operation.declaration()));
         }
@@ -497,6 +498,10 @@ final class DependencyFlow {
     record Phase(String binding,String phase,Patch patch) implements Action { }
     record Enter(Exit entry,String endpoint,Patch patch) implements Action { }
     final Map<Exit,Effect> accessEffects=new HashMap<>();
+    // State payloads may be equal across different positions and callers. Only
+    // their immutable content is shared; Location and Continuation identities
+    // still distinguish those obligations and preserve return correlations.
+    final DependencyFlyweight<State> states=new DependencyFlyweight<>();
     final Map<Location,State> before=new HashMap<>();
     // Reverse postorder coalesces incoming branch states before visiting their
     // successors, avoiding a wave of transient decision DAGs through every suffix.
@@ -682,7 +687,7 @@ final class DependencyFlow {
         }while(changed);
         specialized.retainAll(demand);
         relevance=new DependencyRelevance(controlSummary.graph,this::inputEffect,maxWork);
-        State initial=initial();
+        State initial=states.retain(initial());
         for(var root:roots)subscribe(new Entry(root.endpoint(),initial),root.exit());
         while(!work.isEmpty()) {
             if(++visits>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: dataflow did not complete within --max-work="+maxWork);
@@ -1185,7 +1190,7 @@ final class DependencyFlow {
     private void enqueue(int context,String node,State state) {
         if(state.reach().equals(NO))return;
         var key=new Location(context,node);var old=before.get(key);var joined=old==null?state:join(old,state);
-        if(!joined.equals(old)){before.put(key,joined);if(queued.add(key))schedule(key);}
+        if(!joined.equals(old)){before.put(key,states.retain(joined));if(queued.add(key))schedule(key);}
         if(before.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many states");
     }
     private Exit normalize(Exit target) {
@@ -1317,7 +1322,7 @@ final class DependencyFlow {
         }
     }
     private void invoke(int caller,Binding binding,State state) {
-        subscribe(new ReturnTo(caller,binding.id(),binding.endpoint(),state),Exit.of(regions.get(binding.region()).entry()));
+        subscribe(new ReturnTo(caller,binding.id(),binding.endpoint(),states.retain(state)),Exit.of(regions.get(binding.region()).entry()));
     }
     private void subscribe(Continuation caller,Exit entry) {
         String endpoint=caller.endpoint();State state=caller.input();
@@ -1328,7 +1333,7 @@ final class DependencyFlow {
         var selection=projections.computeIfAbsent(point,key->Selection.of(relevance.needed(key)));
         var input=selection.apply(state);var values=new DependencyEnvironment.Builder<>(input.values());var parameters=new HashMap<Integer,Term>();
         for(int id:input.values().keySet())if(!specialized.contains(id)){values.put(id,DependencyValues.UNKNOWN);parameters.put(id,new Parameter(id));}
-        var key=new SummaryKey(entry,endpoint,scope,new State(values,input.handlers(),input.reached(),parameters,YES,input.controls()));
+        var key=new SummaryKey(entry,endpoint,scope,states.retain(new State(values,input.handlers(),input.reached(),parameters,YES,input.controls())));
         Integer context=memo.get(key);
         if(context==null) {
             context=contexts.size();memo.put(key,context);contexts.add(new Context(key));route(context,entry,key.input());
@@ -1573,7 +1578,7 @@ final class DependencyFlow {
         if(exit.kind()==TargetKind.PROGRAM_RETURN||exit.kind()==TargetKind.PROGRAM_HALT)
             state=new State(Map.of(),Map.of(),Set.of(),Map.of(),state.reach());
         var ctx=contexts.get(context);var old=ctx.results.get(exit);var joined=old==null?state:join(old,state);
-        if(joined.equals(old))return;ctx.results.put(exit,joined);for(var caller:ctx.callers)queueResult(context,exit,caller);
+        if(joined.equals(old))return;ctx.results.put(exit,states.retain(joined));for(var caller:ctx.callers)queueResult(context,exit,caller);
     }
     private void phase(int caller,Binding binding,String phase,State state) {
         if(phase.equals("BODY")){invoke(caller,binding,state);return;}
@@ -1584,10 +1589,10 @@ final class DependencyFlow {
         String node=location.node();
         var context=contexts.get(location.context());
         if(paragraphEntries.contains(node)&&!relevance.sameComponent(inputPoint(context.key.entry(),context.key),inputPoint(new Exit(TargetKind.OCCURRENCE,node),context.key))) {
-            subscribe(new Forward(location.context(),context.key.endpoint(),input),new Exit(TargetKind.OCCURRENCE,node));return;
+            subscribe(new Forward(location.context(),context.key.endpoint(),states.retain(input)),new Exit(TargetKind.OCCURRENCE,node));return;
         }
         var selection=operands.computeIfAbsent(node,this::operands);
-        var key=new Computation(node,selection.apply(input).withReach(YES));
+        var key=new Computation(node,states.retain(selection.apply(input).withReach(YES)));
         var actions=computations.get(key);
         if(actions==null) {
             evaluations++;actions=compute(node,key.input());computations.put(key,actions);
@@ -1596,7 +1601,7 @@ final class DependencyFlow {
             var state=action.patch().apply(input,this);
             if(action instanceof Advance advance)route(location.context(),advance.target(),state);
             else if(action instanceof Phase phase)phase(location.context(),bindings.get(phase.binding()),phase.phase(),state);
-            else if(action instanceof Enter enter)subscribe(new Entry(location.context(),enter.endpoint(),state),enter.entry());
+            else if(action instanceof Enter enter)subscribe(new Entry(location.context(),enter.endpoint(),states.retain(state)),enter.entry());
         }
     }
     private Selection operands(String node) {
@@ -1653,12 +1658,15 @@ final class DependencyFlow {
                 if(term instanceof Constant c){values.put(id,c.value());parameters.remove(id);}
                 else {values.put(id,DependencyValues.UNKNOWN);parameters.put(id,term);}
             }
-            var patch=Patch.of(input,new State(values,result.handlers(),result.reached(),parameters,result.reach(),result.controls()));
+            var patch=patch(input,new State(values,result.handlers(),result.reached(),parameters,result.reach(),result.controls()));
             if(action instanceof Advance a)lifted.add(new Advance(a.target(),patch));
             else if(action instanceof Phase a)lifted.add(new Phase(a.binding(),a.phase(),patch));
             else if(action instanceof Enter a)lifted.add(new Enter(a.entry(),a.endpoint(),patch));
         }
         return List.copyOf(lifted);
+    }
+    private Patch patch(State input,State result) {
+        var patch=Patch.of(input,result);return new Patch(states.retain(patch.result()),patch.removed());
     }
     private Set<Integer> potentialWrites(Ast.Statement statement) {
         return StatementEffectSummary.of(statement).filter(e->e.unknownWriteBound()==StatementEffectSummary.Bound.ALL).isPresent()?Set.copyOf(demand):writes(statement);
@@ -1695,7 +1703,7 @@ final class DependencyFlow {
             }
             for(var edge:p.edges()) {
                 State branch=edge.role().equals("next")||decision==null?state:guard(state,decision,edge.role().equals("true"));
-                if(branch!=null)actions.add(new Phase(b.id(),edge.target(),Patch.of(input,branch)));
+                if(branch!=null)actions.add(new Phase(b.id(),edge.target(),patch(input,branch)));
             }
             return List.copyOf(actions);
         }
@@ -1735,28 +1743,28 @@ final class DependencyFlow {
                 if(requiresDecision(selected)||testTruth(test,state)!=3)branch=guard(branch,lift(test,selected),true);
             }
             if(branch==null)continue;
-            if(e.kind()==OutcomeKind.LOCAL_INVOKE)actions.add(new Phase(e.binding(),bindings.get(e.binding()).entryPhase(),Patch.of(input,branch)));
-            else actions.add(new Advance(Exit.of(e.target()),Patch.of(input,branch)));
+            if(e.kind()==OutcomeKind.LOCAL_INVOKE)actions.add(new Phase(e.binding(),bindings.get(e.binding()).entryPhase(),patch(input,branch)));
+            else actions.add(new Advance(Exit.of(e.target()),patch(input,branch)));
         }
         // Inventory the source-qualified continuations with uncertainty. Their
         // prerequisites must have been reached in this invocation.
         for(var p:possibilities.getOrDefault(node,List.of())) {
             Term eligible=YES;for(var fact:p.prerequisites())eligible=choose(eligible,state.control(new Fact(fact)),NO);
-            var branch=guard(state,eligible,true);if(branch!=null)actions.add(new Advance(Exit.of(p.target()),Patch.of(input,branch)));
+            var branch=guard(state,eligible,true);if(branch!=null)actions.add(new Advance(Exit.of(p.target()),patch(input,branch)));
         }
         // File handler bodies already have grammar-owned entries/completions.
         var surface=fileSurface(s);
         if(surface.isPresent())for(var h:surface.get().handlers()) {
-            var r=regions.get("region:"+node+"/file/handler-"+h.kind());if(r!=null)actions.add(new Advance(Exit.of(r.entry()),Patch.of(input,state)));
+            var r=regions.get("region:"+node+"/file/handler-"+h.kind());if(r!=null)actions.add(new Advance(Exit.of(r.entry()),patch(input,state)));
         }
-        for(var use:ioDeclarations.getOrDefault(node,List.of()))actions.add(new Phase(use.id(),use.entryPhase(),Patch.of(input,state)));
+        for(var use:ioDeclarations.getOrDefault(node,List.of()))actions.add(new Phase(use.id(),use.entryPhase(),patch(input,state)));
         for(var event:events.getOrDefault(node,List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
             var field=state.handlers().containsKey(event.condition())||state.controls().containsKey(new Handler(event.condition()))?new Handler(event.condition()):new Handler("ERROR");
             var dispositions=state.control(field);
             for(String handler:controlCandidates(dispositions)) {
                 var branch=guard(state,controlMatch(dispositions,handler),true);if(branch==null)continue;
-                if(handler.equals("IGNORE"))actions.add(new Advance(Exit.of(event.continuation()),Patch.of(input,branch)));
-                else if(regions.containsKey(handler))actions.add(new Advance(Exit.of(regions.get(handler).entry()),Patch.of(input,branch)));
+                if(handler.equals("IGNORE"))actions.add(new Advance(Exit.of(event.continuation()),patch(input,branch)));
+                else if(regions.containsKey(handler))actions.add(new Advance(Exit.of(regions.get(handler).entry()),patch(input,branch)));
             }
         }
         for(var event:exceptionalEvents.getOrDefault(node,List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
@@ -1768,7 +1776,7 @@ final class DependencyFlow {
                 var branch=guard(eligible,controlMatch(abend,handler),true);if(branch==null)continue;
                 var h=new HashMap<>(branch.handlers());h.put("ABEND",Set.of("CANCEL"));
                 State ingress=withHandlers(branch,h,Set.of("ABEND"));String endpoint=handlerEndpoints.get(handler);
-                actions.add(new Enter(new Exit(TargetKind.OCCURRENCE,handler),endpoint,Patch.of(input,ingress)));
+                actions.add(new Enter(new Exit(TargetKind.OCCURRENCE,handler),endpoint,patch(input,ingress)));
             }
         }
         return List.copyOf(actions);
