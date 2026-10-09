@@ -1,0 +1,4104 @@
+{
+  "date": "2026-10-09",
+  "baseCommit": "87255b08d38456efbc3caf3bd6082f03dee82362",
+  "baselineSourceCommit": "bb0e60a7ce865188d0be2e86080c418384951839",
+  "checkpoints": [
+    {
+      "commit": "313cd8e",
+      "name": "canonical compact typed graph and cached scheduling rank"
+    },
+    {
+      "commit": "b82ec51",
+      "name": "shared physical topology and exact correlated return obligations"
+    }
+  ],
+  "finalProductionCommit": "b82ec517a9c94fe3bd5e5bbbd60bde981effdc0e",
+  "jdk": "Temurin 21.0.12+1.1",
+  "resources": {
+    "parallelAnalysisJvms": 1,
+    "systemReserveMiB": 2048,
+    "maxWork": 100000000,
+    "newHeapMiB": [
+      256,
+      1024
+    ],
+    "historicalHeap1536Reused": true
+  },
+  "jarHashes": {
+    "stage1": "79af9d948a36fdb42fab2dd0a52298cbc5026cb078d822586646e276d888d6cb",
+    "stage2": "17d6b803e0d2f2dfbfb690f19d11583f24f9045219db5c57db0ead4389e71ac5",
+    "final": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41"
+  },
+  "metricsCompatibility": {
+    "stage1AllCountersPreservedAtN48": true,
+    "stage2SyntheticEntryRemoved": 1,
+    "controlWorkItemsUnit": "physical discovery batches and exit/obligation columns plus delivered call batches; not comparable to old logical-point batches",
+    "newPhysicalMetrics": "last demand pass per program unit"
+  },
+  "matrices": [
+    {
+      "version": "baseline",
+      "heapMiB": 256,
+      "boxesPerHub": 48,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 5.861828302993672,
+      "peakRssKiB": 428536,
+      "minimumSampledHostAvailableKiB": 4185404,
+      "sourceSha256": "b1206861a5d349d9b241f6229cebc32758dd2acc7bf29d81655f72533788a4eb",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 48,
+      "actualProgramCount": 48,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 541815467,
+        "bindingNanos": 82349993,
+        "cfgNanos": 75631107,
+        "dataflowNanos": 4664403146,
+        "resolutionNanos": 2909596,
+        "totalNanos": 5371011648,
+        "workItems": 75567,
+        "contexts": 195,
+        "trackedDeclarations": 3,
+        "evaluations": 586,
+        "reusedEvaluations": 56160,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 9312,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 131631,
+        "controlWorkItems": 279666,
+        "controlResultPairs": 18625,
+        "controlResultFacts": 261041,
+        "resultDeliveries": 18723,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap256/results.json"
+    },
+    {
+      "version": "baseline",
+      "heapMiB": 256,
+      "boxesPerHub": 64,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 2,
+      "guard": null,
+      "passed": false,
+      "seconds": 6.064915956987534,
+      "peakRssKiB": 417812,
+      "minimumSampledHostAvailableKiB": 4186812,
+      "sourceSha256": "38e1be7ac48fe40d3d97e4e6e55975656bdb857c06175b38cebc8833b3e63090",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 64,
+      "actualProgramCount": null,
+      "failure": "ANALYSIS_FAILED: OutOfMemoryError: Java heap space",
+      "metrics": null,
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap256/results.json"
+    },
+    {
+      "version": "baseline",
+      "heapMiB": 256,
+      "boxesPerHub": 96,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 2,
+      "guard": null,
+      "passed": false,
+      "seconds": 3.1362508299935143,
+      "peakRssKiB": 406416,
+      "minimumSampledHostAvailableKiB": 4199556,
+      "sourceSha256": "93e4b5d02b45bf890ee83d05089ce1c2d9a50e754e309fba20b3e0c035f0cf79",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 96,
+      "actualProgramCount": null,
+      "failure": "ANALYSIS_FAILED: OutOfMemoryError: Java heap space",
+      "metrics": null,
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap256/results.json"
+    },
+    {
+      "version": "baseline",
+      "heapMiB": 1024,
+      "boxesPerHub": 64,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 10.204890715976944,
+      "peakRssKiB": 723280,
+      "minimumSampledHostAvailableKiB": 3935160,
+      "sourceSha256": "38e1be7ac48fe40d3d97e4e6e55975656bdb857c06175b38cebc8833b3e63090",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 64,
+      "actualProgramCount": 64,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 578924564,
+        "bindingNanos": 85549359,
+        "cfgNanos": 105713094,
+        "dataflowNanos": 8870991251,
+        "resolutionNanos": 2115955,
+        "totalNanos": 9647472395,
+        "workItems": 133519,
+        "contexts": 259,
+        "trackedDeclarations": 3,
+        "evaluations": 778,
+        "reusedEvaluations": 99456,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 16512,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 232847,
+        "controlWorkItems": 495762,
+        "controlResultPairs": 33025,
+        "controlResultFacts": 462737,
+        "resultDeliveries": 33155,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap1024/results.json"
+    },
+    {
+      "version": "baseline",
+      "heapMiB": 1024,
+      "boxesPerHub": 96,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 26.473591969988775,
+      "peakRssKiB": 1278248,
+      "minimumSampledHostAvailableKiB": 3316000,
+      "sourceSha256": "93e4b5d02b45bf890ee83d05089ce1c2d9a50e754e309fba20b3e0c035f0cf79",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 96,
+      "actualProgramCount": 96,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 636160903,
+        "bindingNanos": 112736344,
+        "cfgNanos": 121414631,
+        "dataflowNanos": 25020126054,
+        "resolutionNanos": 2290943,
+        "totalNanos": 25897091991,
+        "workItems": 298575,
+        "contexts": 387,
+        "trackedDeclarations": 3,
+        "evaluations": 1162,
+        "reusedEvaluations": 222912,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 37056,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 521295,
+        "controlWorkItems": 1112274,
+        "controlResultPairs": 74113,
+        "controlResultFacts": 1038161,
+        "resultDeliveries": 74307,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap1024/results.json"
+    },
+    {
+      "version": "baseline",
+      "heapMiB": 1024,
+      "boxesPerHub": 128,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 2,
+      "guard": null,
+      "passed": false,
+      "seconds": 16.9753322720062,
+      "peakRssKiB": 1238100,
+      "minimumSampledHostAvailableKiB": 2650228,
+      "sourceSha256": "88613bf87629c855daf84bc1497c471bbeca331330f9d30d738a14b11ee3ccdd",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 128,
+      "actualProgramCount": null,
+      "failure": "ANALYSIS_FAILED: OutOfMemoryError: Java heap space",
+      "metrics": null,
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap1024/results.json"
+    },
+    {
+      "version": "baseline",
+      "heapMiB": 1024,
+      "boxesPerHub": 192,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 2,
+      "guard": null,
+      "passed": false,
+      "seconds": 9.95426271299948,
+      "peakRssKiB": 1235896,
+      "minimumSampledHostAvailableKiB": 3371588,
+      "sourceSha256": "2e6fa9eacc07ca7c2d8d32328ca50a8a2c2af1b9dd79cb91a6c36accb75b9be8",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 192,
+      "actualProgramCount": null,
+      "failure": "ANALYSIS_FAILED: OutOfMemoryError: Java heap space",
+      "metrics": null,
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap1024/results.json"
+    },
+    {
+      "version": "baseline",
+      "heapMiB": 1536,
+      "boxesPerHub": 128,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 96.9563588189776,
+      "peakRssKiB": 1870028,
+      "minimumSampledHostAvailableKiB": 2743668,
+      "sourceSha256": "88613bf87629c855daf84bc1497c471bbeca331330f9d30d738a14b11ee3ccdd",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 128,
+      "actualProgramCount": 128,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 676396244,
+        "bindingNanos": 151084647,
+        "cfgNanos": 196023343,
+        "dataflowNanos": 95338159157,
+        "resolutionNanos": 3424241,
+        "totalNanos": 96374001547,
+        "workItems": 529167,
+        "contexts": 515,
+        "trackedDeclarations": 3,
+        "evaluations": 1546,
+        "reusedEvaluations": 395520,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 65792,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 924431,
+        "controlWorkItems": 1974546,
+        "controlResultPairs": 131585,
+        "controlResultFacts": 1842961,
+        "resultDeliveries": 131843,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap1536/results.json"
+    },
+    {
+      "version": "baseline",
+      "heapMiB": 1536,
+      "boxesPerHub": 192,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 2,
+      "guard": null,
+      "passed": false,
+      "seconds": 12.755838050012244,
+      "peakRssKiB": 1789872,
+      "minimumSampledHostAvailableKiB": 2817292,
+      "sourceSha256": "2e6fa9eacc07ca7c2d8d32328ca50a8a2c2af1b9dd79cb91a6c36accb75b9be8",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 192,
+      "actualProgramCount": null,
+      "failure": "ANALYSIS_FAILED: OutOfMemoryError: Java heap space",
+      "metrics": null,
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap1536/results.json"
+    },
+    {
+      "version": "baseline",
+      "heapMiB": 1536,
+      "boxesPerHub": 254,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 2,
+      "guard": null,
+      "passed": false,
+      "seconds": 14.10659908899106,
+      "peakRssKiB": 1796324,
+      "minimumSampledHostAvailableKiB": 2783320,
+      "sourceSha256": "062f095088a82dcfc77d6c246b55d869f762ca2f1cb06d11c5b3bc23534f78c8",
+      "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+      "expectedProgramCount": 254,
+      "actualProgramCount": null,
+      "failure": "ANALYSIS_FAILED: OutOfMemoryError: Java heap space",
+      "metrics": null,
+      "rawResults": "benchmark/results/shared-continuation-scale-20261009/heap1536/results.json"
+    },
+    {
+      "version": "stage1",
+      "heapMiB": 256,
+      "boxesPerHub": 48,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 2.782056569994893,
+      "peakRssKiB": 351836,
+      "minimumSampledHostAvailableKiB": 4269064,
+      "sourceSha256": "b1206861a5d349d9b241f6229cebc32758dd2acc7bf29d81655f72533788a4eb",
+      "jarSha256": "79af9d948a36fdb42fab2dd0a52298cbc5026cb078d822586646e276d888d6cb",
+      "expectedProgramCount": 48,
+      "actualProgramCount": 48,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 646078051,
+        "bindingNanos": 105883349,
+        "cfgNanos": 102987219,
+        "dataflowNanos": 1326170549,
+        "resolutionNanos": 1937960,
+        "totalNanos": 2187866612,
+        "workItems": 75567,
+        "contexts": 195,
+        "trackedDeclarations": 3,
+        "evaluations": 586,
+        "reusedEvaluations": 56160,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 9312,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 131631,
+        "controlWorkItems": 279666,
+        "controlResultPairs": 18625,
+        "controlResultFacts": 261041,
+        "resultDeliveries": 18723,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage1/heap256/results.json"
+    },
+    {
+      "version": "stage1",
+      "heapMiB": 256,
+      "boxesPerHub": 64,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 3.133596800995292,
+      "peakRssKiB": 444312,
+      "minimumSampledHostAvailableKiB": 4286668,
+      "sourceSha256": "38e1be7ac48fe40d3d97e4e6e55975656bdb857c06175b38cebc8833b3e63090",
+      "jarSha256": "79af9d948a36fdb42fab2dd0a52298cbc5026cb078d822586646e276d888d6cb",
+      "expectedProgramCount": 64,
+      "actualProgramCount": 64,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 577218836,
+        "bindingNanos": 92109222,
+        "cfgNanos": 89024189,
+        "dataflowNanos": 1862961988,
+        "resolutionNanos": 2099463,
+        "totalNanos": 2632755024,
+        "workItems": 133519,
+        "contexts": 259,
+        "trackedDeclarations": 3,
+        "evaluations": 778,
+        "reusedEvaluations": 99456,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 16512,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 232847,
+        "controlWorkItems": 495762,
+        "controlResultPairs": 33025,
+        "controlResultFacts": 462737,
+        "resultDeliveries": 33155,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage1/heap256/results.json"
+    },
+    {
+      "version": "stage1",
+      "heapMiB": 256,
+      "boxesPerHub": 96,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 2,
+      "guard": null,
+      "passed": false,
+      "seconds": 3.4371732670115307,
+      "peakRssKiB": 413156,
+      "minimumSampledHostAvailableKiB": 4314724,
+      "sourceSha256": "93e4b5d02b45bf890ee83d05089ce1c2d9a50e754e309fba20b3e0c035f0cf79",
+      "jarSha256": "79af9d948a36fdb42fab2dd0a52298cbc5026cb078d822586646e276d888d6cb",
+      "expectedProgramCount": 96,
+      "actualProgramCount": null,
+      "failure": "ANALYSIS_FAILED: OutOfMemoryError: Java heap space",
+      "metrics": null,
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage1/heap256/results.json"
+    },
+    {
+      "version": "stage1",
+      "heapMiB": 1024,
+      "boxesPerHub": 128,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 7.780029166984605,
+      "peakRssKiB": 1234684,
+      "minimumSampledHostAvailableKiB": 3498600,
+      "sourceSha256": "88613bf87629c855daf84bc1497c471bbeca331330f9d30d738a14b11ee3ccdd",
+      "jarSha256": "79af9d948a36fdb42fab2dd0a52298cbc5026cb078d822586646e276d888d6cb",
+      "expectedProgramCount": 128,
+      "actualProgramCount": 128,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 680382715,
+        "bindingNanos": 147841605,
+        "cfgNanos": 137510732,
+        "dataflowNanos": 6230627078,
+        "resolutionNanos": 2461521,
+        "totalNanos": 7204543970,
+        "workItems": 529167,
+        "contexts": 515,
+        "trackedDeclarations": 3,
+        "evaluations": 1546,
+        "reusedEvaluations": 395520,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 65792,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 924431,
+        "controlWorkItems": 1974546,
+        "controlResultPairs": 131585,
+        "controlResultFacts": 1842961,
+        "resultDeliveries": 131843,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/results.json"
+    },
+    {
+      "version": "stage2",
+      "heapMiB": 256,
+      "boxesPerHub": 48,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 2.528564053005539,
+      "peakRssKiB": 243936,
+      "minimumSampledHostAvailableKiB": 3420828,
+      "sourceSha256": "b1206861a5d349d9b241f6229cebc32758dd2acc7bf29d81655f72533788a4eb",
+      "jarSha256": "17d6b803e0d2f2dfbfb690f19d11583f24f9045219db5c57db0ead4389e71ac5",
+      "expectedProgramCount": 48,
+      "actualProgramCount": 48,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 590890868,
+        "bindingNanos": 110179028,
+        "cfgNanos": 84499978,
+        "dataflowNanos": 1129766362,
+        "resolutionNanos": 1959660,
+        "totalNanos": 1921626193,
+        "workItems": 75567,
+        "contexts": 195,
+        "trackedDeclarations": 3,
+        "evaluations": 586,
+        "reusedEvaluations": 56160,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 9312,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 131630,
+        "physicalControlNodes": 1358,
+        "physicalControlEdges": 1743,
+        "controlObligations": 97,
+        "controlResultColumns": 193,
+        "controlWorkItems": 10886,
+        "controlResultPairs": 18624,
+        "controlResultFacts": 261041,
+        "resultDeliveries": 18723,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage2/heap256/results.json"
+    },
+    {
+      "version": "stage2",
+      "heapMiB": 256,
+      "boxesPerHub": 64,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 3.0831707949982956,
+      "peakRssKiB": 282084,
+      "minimumSampledHostAvailableKiB": 3305528,
+      "sourceSha256": "38e1be7ac48fe40d3d97e4e6e55975656bdb857c06175b38cebc8833b3e63090",
+      "jarSha256": "17d6b803e0d2f2dfbfb690f19d11583f24f9045219db5c57db0ead4389e71ac5",
+      "expectedProgramCount": 64,
+      "actualProgramCount": 64,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 599252919,
+        "bindingNanos": 92428701,
+        "cfgNanos": 108068324,
+        "dataflowNanos": 1760570349,
+        "resolutionNanos": 2281224,
+        "totalNanos": 2567172331,
+        "workItems": 133519,
+        "contexts": 259,
+        "trackedDeclarations": 3,
+        "evaluations": 778,
+        "reusedEvaluations": 99456,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 16512,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 232846,
+        "physicalControlNodes": 1806,
+        "physicalControlEdges": 2319,
+        "controlObligations": 129,
+        "controlResultColumns": 257,
+        "controlWorkItems": 14502,
+        "controlResultPairs": 33024,
+        "controlResultFacts": 462737,
+        "resultDeliveries": 33155,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage2/heap256/results.json"
+    },
+    {
+      "version": "stage2",
+      "heapMiB": 256,
+      "boxesPerHub": 96,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 4.498567250004271,
+      "peakRssKiB": 329248,
+      "minimumSampledHostAvailableKiB": 3235152,
+      "sourceSha256": "93e4b5d02b45bf890ee83d05089ce1c2d9a50e754e309fba20b3e0c035f0cf79",
+      "jarSha256": "17d6b803e0d2f2dfbfb690f19d11583f24f9045219db5c57db0ead4389e71ac5",
+      "expectedProgramCount": 96,
+      "actualProgramCount": 96,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 673958985,
+        "bindingNanos": 115318424,
+        "cfgNanos": 137131271,
+        "dataflowNanos": 3037410264,
+        "resolutionNanos": 2976507,
+        "totalNanos": 3971752366,
+        "workItems": 298575,
+        "contexts": 387,
+        "trackedDeclarations": 3,
+        "evaluations": 1162,
+        "reusedEvaluations": 222912,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 37056,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 521294,
+        "physicalControlNodes": 2702,
+        "physicalControlEdges": 3471,
+        "controlObligations": 193,
+        "controlResultColumns": 385,
+        "controlWorkItems": 21734,
+        "controlResultPairs": 74112,
+        "controlResultFacts": 1038161,
+        "resultDeliveries": 74307,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage2/heap256/results.json"
+    },
+    {
+      "version": "stage2",
+      "heapMiB": 256,
+      "boxesPerHub": 128,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 6.772807041998021,
+      "peakRssKiB": 435612,
+      "minimumSampledHostAvailableKiB": 3168076,
+      "sourceSha256": "88613bf87629c855daf84bc1497c471bbeca331330f9d30d738a14b11ee3ccdd",
+      "jarSha256": "17d6b803e0d2f2dfbfb690f19d11583f24f9045219db5c57db0ead4389e71ac5",
+      "expectedProgramCount": 128,
+      "actualProgramCount": 128,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 716818516,
+        "bindingNanos": 138943794,
+        "cfgNanos": 159404804,
+        "dataflowNanos": 5209550115,
+        "resolutionNanos": 2998868,
+        "totalNanos": 6232365634,
+        "workItems": 529167,
+        "contexts": 515,
+        "trackedDeclarations": 3,
+        "evaluations": 1546,
+        "reusedEvaluations": 395520,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 65792,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 924430,
+        "physicalControlNodes": 3598,
+        "physicalControlEdges": 4623,
+        "controlObligations": 257,
+        "controlResultColumns": 513,
+        "controlWorkItems": 28966,
+        "controlResultPairs": 131584,
+        "controlResultFacts": 1842961,
+        "resultDeliveries": 131843,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage2/heap256/results.json"
+    },
+    {
+      "version": "stage2",
+      "heapMiB": 1024,
+      "boxesPerHub": 128,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 6.720402340986766,
+      "peakRssKiB": 539108,
+      "minimumSampledHostAvailableKiB": 2991616,
+      "sourceSha256": "88613bf87629c855daf84bc1497c471bbeca331330f9d30d738a14b11ee3ccdd",
+      "jarSha256": "17d6b803e0d2f2dfbfb690f19d11583f24f9045219db5c57db0ead4389e71ac5",
+      "expectedProgramCount": 128,
+      "actualProgramCount": 128,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 694798473,
+        "bindingNanos": 161452835,
+        "cfgNanos": 159770448,
+        "dataflowNanos": 5196923687,
+        "resolutionNanos": 2332487,
+        "totalNanos": 6229042777,
+        "workItems": 529167,
+        "contexts": 515,
+        "trackedDeclarations": 3,
+        "evaluations": 1546,
+        "reusedEvaluations": 395520,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 65792,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 924430,
+        "physicalControlNodes": 3598,
+        "physicalControlEdges": 4623,
+        "controlObligations": 257,
+        "controlResultColumns": 513,
+        "controlWorkItems": 28966,
+        "controlResultPairs": 131584,
+        "controlResultFacts": 1842961,
+        "resultDeliveries": 131843,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/results.json"
+    },
+    {
+      "version": "stage2",
+      "heapMiB": 1024,
+      "boxesPerHub": 192,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 14.245669627998723,
+      "peakRssKiB": 644228,
+      "minimumSampledHostAvailableKiB": 2867728,
+      "sourceSha256": "2e6fa9eacc07ca7c2d8d32328ca50a8a2c2af1b9dd79cb91a6c36accb75b9be8",
+      "jarSha256": "17d6b803e0d2f2dfbfb690f19d11583f24f9045219db5c57db0ead4389e71ac5",
+      "expectedProgramCount": 192,
+      "actualProgramCount": 192,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 790659029,
+        "bindingNanos": 179630878,
+        "cfgNanos": 189785206,
+        "dataflowNanos": 12493975094,
+        "resolutionNanos": 3950447,
+        "totalNanos": 13664519836,
+        "workItems": 1186959,
+        "contexts": 771,
+        "trackedDeclarations": 3,
+        "evaluations": 2314,
+        "reusedEvaluations": 888192,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 147840,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 2074766,
+        "physicalControlNodes": 5390,
+        "physicalControlEdges": 6927,
+        "controlObligations": 385,
+        "controlResultColumns": 769,
+        "controlWorkItems": 43430,
+        "controlResultPairs": 295680,
+        "controlResultFacts": 4140689,
+        "resultDeliveries": 296067,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/results.json"
+    },
+    {
+      "version": "stage2",
+      "heapMiB": 1024,
+      "boxesPerHub": 254,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 24.86000029501156,
+      "peakRssKiB": 1036944,
+      "minimumSampledHostAvailableKiB": 2711856,
+      "sourceSha256": "062f095088a82dcfc77d6c246b55d869f762ca2f1cb06d11c5b3bc23534f78c8",
+      "jarSha256": "17d6b803e0d2f2dfbfb690f19d11583f24f9045219db5c57db0ead4389e71ac5",
+      "expectedProgramCount": 254,
+      "actualProgramCount": 254,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 937805354,
+        "bindingNanos": 215510930,
+        "cfgNanos": 227322548,
+        "dataflowNanos": 22812473994,
+        "resolutionNanos": 4031925,
+        "totalNanos": 24212157846,
+        "workItems": 2074179,
+        "contexts": 1019,
+        "trackedDeclarations": 3,
+        "evaluations": 3058,
+        "reusedEvaluations": 1552956,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 258572,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 3626626,
+        "physicalControlNodes": 7126,
+        "physicalControlEdges": 9159,
+        "controlObligations": 509,
+        "controlResultColumns": 1017,
+        "controlWorkItems": 57442,
+        "controlResultPairs": 517144,
+        "controlResultFacts": 7241557,
+        "resultDeliveries": 517655,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/results.json"
+    },
+    {
+      "version": "final",
+      "heapMiB": 256,
+      "boxesPerHub": 128,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 7.640061049023643,
+      "peakRssKiB": 436324,
+      "minimumSampledHostAvailableKiB": 3044096,
+      "sourceSha256": "88613bf87629c855daf84bc1497c471bbeca331330f9d30d738a14b11ee3ccdd",
+      "jarSha256": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41",
+      "expectedProgramCount": 128,
+      "actualProgramCount": 128,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 697292594,
+        "bindingNanos": 147154019,
+        "cfgNanos": 152029456,
+        "dataflowNanos": 6082333326,
+        "resolutionNanos": 2855037,
+        "totalNanos": 7088433478,
+        "workItems": 529167,
+        "contexts": 515,
+        "trackedDeclarations": 3,
+        "evaluations": 1546,
+        "reusedEvaluations": 395520,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 65792,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 924430,
+        "physicalControlNodes": 3598,
+        "physicalControlEdges": 4623,
+        "controlObligations": 257,
+        "controlResultColumns": 513,
+        "controlWorkItems": 28966,
+        "controlResultPairs": 131584,
+        "controlResultFacts": 1842961,
+        "resultDeliveries": 131843,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/final-heap256/results.json"
+    },
+    {
+      "version": "final",
+      "heapMiB": 1024,
+      "boxesPerHub": 254,
+      "hubs": 2,
+      "mode": "return-fanout",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 24.50258316998952,
+      "peakRssKiB": 1040328,
+      "minimumSampledHostAvailableKiB": 2540976,
+      "sourceSha256": "062f095088a82dcfc77d6c246b55d869f762ca2f1cb06d11c5b3bc23534f78c8",
+      "jarSha256": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41",
+      "expectedProgramCount": 254,
+      "actualProgramCount": 254,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 828180483,
+        "bindingNanos": 192023472,
+        "cfgNanos": 226837196,
+        "dataflowNanos": 22655237299,
+        "resolutionNanos": 3697658,
+        "totalNanos": 23912066321,
+        "workItems": 2074179,
+        "contexts": 1019,
+        "trackedDeclarations": 3,
+        "evaluations": 3058,
+        "reusedEvaluations": 1552956,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 258572,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 3626626,
+        "physicalControlNodes": 7126,
+        "physicalControlEdges": 9159,
+        "controlObligations": 509,
+        "controlResultColumns": 1017,
+        "controlWorkItems": 57442,
+        "controlResultPairs": 517144,
+        "controlResultFacts": 7241557,
+        "resultDeliveries": 517655,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/final-heap1024/results.json"
+    },
+    {
+      "version": "final",
+      "heapMiB": 256,
+      "boxesPerHub": 32,
+      "hubs": 2,
+      "mode": "return-fanout-fixed",
+      "exit": 0,
+      "guard": null,
+      "passed": true,
+      "seconds": 1.3138240530097391,
+      "peakRssKiB": 168060,
+      "minimumSampledHostAvailableKiB": 3462796,
+      "sourceSha256": "bf1f1b56424ee30114ff2364fb527f988397225a6a8669e8665d9abe92aec9c1",
+      "jarSha256": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41",
+      "expectedProgramCount": 32,
+      "actualProgramCount": 32,
+      "failure": null,
+      "metrics": {
+        "parseNanos": 529684637,
+        "bindingNanos": 72927314,
+        "cfgNanos": 85039038,
+        "dataflowNanos": 363171830,
+        "resolutionNanos": 2549652,
+        "totalNanos": 1057351008,
+        "workItems": 270,
+        "contexts": 3,
+        "trackedDeclarations": 3,
+        "evaluations": 265,
+        "reusedEvaluations": 0,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 64,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 3,
+        "controlSummaries": 58957,
+        "physicalControlNodes": 909,
+        "physicalControlEdges": 1166,
+        "controlObligations": 65,
+        "controlResultColumns": 129,
+        "controlWorkItems": 7071,
+        "controlResultPairs": 8320,
+        "controlResultFacts": 116432,
+        "resultDeliveries": 3,
+        "decisionNodes": 0,
+        "predicateInputs": 0,
+        "decisionOperations": 0,
+        "liftedOperations": 0,
+        "materializedTableElements": 0,
+        "tableDemandPasses": 1
+      },
+      "rawResults": "benchmark/results/compact-factor-control-20261009/final-fixed/results.json"
+    }
+  ],
+  "fast": {
+    "tests": 1088,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": 141
+  },
+  "carddemo": {
+    "sources": 73,
+    "passed": 73,
+    "equal": 815,
+    "missing": 0,
+    "additional": 0,
+    "partial": 47,
+    "seconds": 125.4231564659276,
+    "peakRssKiB": 328956,
+    "heapMiB": 256,
+    "rssGuardMiB": 512,
+    "systemReserveMiB": 2048,
+    "timeoutSeconds": 45,
+    "maxWork": 100000000,
+    "jarSha256": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41",
+    "inputHashesSha256": "752e15fbabdb6d0a24913036fc01ad35810a4c0f6ed66a7f1e779afecade7f96",
+    "frozenInputHashesSha256": "752e15fbabdb6d0a24913036fc01ad35810a4c0f6ed66a7f1e779afecade7f96"
+  },
+  "standalone": [
+    {
+      "id": "fixture02",
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.769554069993319,
+      "peakRssKiB": 248996,
+      "passed": true,
+      "sourceSha256": "71408d8c98ae04600f119ad98fd3e16c3066c20babdec8c4ab6ada8632a9c9d3",
+      "outputSha256": "f39dcac16a8fa205aad93a6272ad95c9c512824950ce8a8b94fc80c6f4212bc3",
+      "programDependencies": []
+    },
+    {
+      "id": "escape-sentinel",
+      "exit": 0,
+      "guard": null,
+      "seconds": 0.8081861200043932,
+      "peakRssKiB": 137280,
+      "passed": true,
+      "sourceSha256": "fb537c66af17c380f77216e25232cb4a5601d56ba0bade16eceeea346d0dfc9a",
+      "outputSha256": "a1f2e9b7dce83c9fef1c04b6e228760e2f9dc84d22edcfa216ff7e573d73f69c",
+      "programDependencies": [
+        "AFTER",
+        "ESCAPED"
+      ]
+    },
+    {
+      "id": "hub-255",
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.2123478650173638,
+      "peakRssKiB": 170772,
+      "passed": true,
+      "sourceSha256": "765efcf97db1ae75e4482a50f46c3dc67c6e2efb81c3efc14b2cba91d94ef50a",
+      "outputSha256": "bbd8ecdf230f6b1c5a8f8efa6ce6280d45f83737ab5941b1f0603e2374baa7ec",
+      "programDependencies": [
+        "PGM00000",
+        "PGM00001",
+        "PGM00002",
+        "PGM00003",
+        "PGM00004",
+        "PGM00005",
+        "PGM00006",
+        "PGM00007",
+        "PGM00008",
+        "PGM00009",
+        "PGM00010",
+        "PGM00011",
+        "PGM00012",
+        "PGM00013",
+        "PGM00014",
+        "PGM00015",
+        "PGM00016",
+        "PGM00017",
+        "PGM00018",
+        "PGM00019",
+        "PGM00020",
+        "PGM00021",
+        "PGM00022",
+        "PGM00023",
+        "PGM00024",
+        "PGM00025",
+        "PGM00026",
+        "PGM00027",
+        "PGM00028",
+        "PGM00029",
+        "PGM00030",
+        "PGM00031",
+        "PGM00032",
+        "PGM00033",
+        "PGM00034",
+        "PGM00035",
+        "PGM00036",
+        "PGM00037",
+        "PGM00038",
+        "PGM00039",
+        "PGM00040",
+        "PGM00041",
+        "PGM00042",
+        "PGM00043",
+        "PGM00044",
+        "PGM00045",
+        "PGM00046",
+        "PGM00047",
+        "PGM00048",
+        "PGM00049",
+        "PGM00050",
+        "PGM00051",
+        "PGM00052",
+        "PGM00053",
+        "PGM00054",
+        "PGM00055",
+        "PGM00056",
+        "PGM00057",
+        "PGM00058",
+        "PGM00059",
+        "PGM00060",
+        "PGM00061",
+        "PGM00062",
+        "PGM00063",
+        "PGM00064",
+        "PGM00065",
+        "PGM00066",
+        "PGM00067",
+        "PGM00068",
+        "PGM00069",
+        "PGM00070",
+        "PGM00071",
+        "PGM00072",
+        "PGM00073",
+        "PGM00074",
+        "PGM00075",
+        "PGM00076",
+        "PGM00077",
+        "PGM00078",
+        "PGM00079",
+        "PGM00080",
+        "PGM00081",
+        "PGM00082",
+        "PGM00083",
+        "PGM00084",
+        "PGM00085",
+        "PGM00086",
+        "PGM00087",
+        "PGM00088",
+        "PGM00089",
+        "PGM00090",
+        "PGM00091",
+        "PGM00092",
+        "PGM00093",
+        "PGM00094",
+        "PGM00095",
+        "PGM00096",
+        "PGM00097",
+        "PGM00098",
+        "PGM00099",
+        "PGM00100",
+        "PGM00101",
+        "PGM00102",
+        "PGM00103",
+        "PGM00104",
+        "PGM00105",
+        "PGM00106",
+        "PGM00107",
+        "PGM00108",
+        "PGM00109",
+        "PGM00110",
+        "PGM00111",
+        "PGM00112",
+        "PGM00113",
+        "PGM00114",
+        "PGM00115",
+        "PGM00116",
+        "PGM00117",
+        "PGM00118",
+        "PGM00119",
+        "PGM00120",
+        "PGM00121",
+        "PGM00122",
+        "PGM00123",
+        "PGM00124",
+        "PGM00125",
+        "PGM00126",
+        "PGM00127",
+        "PGM00128",
+        "PGM00129",
+        "PGM00130",
+        "PGM00131",
+        "PGM00132",
+        "PGM00133",
+        "PGM00134",
+        "PGM00135",
+        "PGM00136",
+        "PGM00137",
+        "PGM00138",
+        "PGM00139",
+        "PGM00140",
+        "PGM00141",
+        "PGM00142",
+        "PGM00143",
+        "PGM00144",
+        "PGM00145",
+        "PGM00146",
+        "PGM00147",
+        "PGM00148",
+        "PGM00149",
+        "PGM00150",
+        "PGM00151",
+        "PGM00152",
+        "PGM00153",
+        "PGM00154",
+        "PGM00155",
+        "PGM00156",
+        "PGM00157",
+        "PGM00158",
+        "PGM00159",
+        "PGM00160",
+        "PGM00161",
+        "PGM00162",
+        "PGM00163",
+        "PGM00164",
+        "PGM00165",
+        "PGM00166",
+        "PGM00167",
+        "PGM00168",
+        "PGM00169",
+        "PGM00170",
+        "PGM00171",
+        "PGM00172",
+        "PGM00173",
+        "PGM00174",
+        "PGM00175",
+        "PGM00176",
+        "PGM00177",
+        "PGM00178",
+        "PGM00179",
+        "PGM00180",
+        "PGM00181",
+        "PGM00182",
+        "PGM00183",
+        "PGM00184",
+        "PGM00185",
+        "PGM00186",
+        "PGM00187",
+        "PGM00188",
+        "PGM00189",
+        "PGM00190",
+        "PGM00191",
+        "PGM00192",
+        "PGM00193",
+        "PGM00194",
+        "PGM00195",
+        "PGM00196",
+        "PGM00197",
+        "PGM00198",
+        "PGM00199",
+        "PGM00200",
+        "PGM00201",
+        "PGM00202",
+        "PGM00203",
+        "PGM00204",
+        "PGM00205",
+        "PGM00206",
+        "PGM00207",
+        "PGM00208",
+        "PGM00209",
+        "PGM00210",
+        "PGM00211",
+        "PGM00212",
+        "PGM00213",
+        "PGM00214",
+        "PGM00215",
+        "PGM00216",
+        "PGM00217",
+        "PGM00218",
+        "PGM00219",
+        "PGM00220",
+        "PGM00221",
+        "PGM00222",
+        "PGM00223",
+        "PGM00224",
+        "PGM00225",
+        "PGM00226",
+        "PGM00227",
+        "PGM00228",
+        "PGM00229",
+        "PGM00230",
+        "PGM00231",
+        "PGM00232",
+        "PGM00233",
+        "PGM00234",
+        "PGM00235",
+        "PGM00236",
+        "PGM00237",
+        "PGM00238",
+        "PGM00239",
+        "PGM00240",
+        "PGM00241",
+        "PGM00242",
+        "PGM00243",
+        "PGM00244",
+        "PGM00245",
+        "PGM00246",
+        "PGM00247",
+        "PGM00248",
+        "PGM00249",
+        "PGM00250",
+        "PGM00251",
+        "PGM00252",
+        "PGM00253"
+      ]
+    }
+  ],
+  "profileN254": {
+    "events": 7522,
+    "executionSamplesMain": 1320,
+    "cpuCategories": {
+      "control-summary": 689,
+      "input-relevance": 386,
+      "query-resolution": 82,
+      "enqueue-and-join": 64,
+      "other-dataflow": 54,
+      "frontend-or-other-product": 25,
+      "local-step": 18,
+      "summary-input-projection": 2
+    },
+    "firstProductMethods": {
+      "com.imd.cobolexplorer.DependencyGraph.find": 822,
+      "com.imd.cobolexplorer.DependencyFlow$Location.equals": 52,
+      "com.imd.cobolexplorer.DependencyFlow$ResolutionKey.equals": 45,
+      "com.imd.cobolexplorer.DependencyRelevance.lambda$extend$3": 40,
+      "com.imd.cobolexplorer.DependencyValues.equals": 31,
+      "com.imd.cobolexplorer.DependencyFlow.<init>": 25,
+      "com.imd.cobolexplorer.DependencyControl$Construction.existing": 21,
+      "com.imd.cobolexplorer.DependencyControl$Construction.solve": 20,
+      "com.imd.cobolexplorer.DependencyFlow.inputEffect": 18,
+      "com.imd.cobolexplorer.DependencyRelevance.lambda$extend$2": 17,
+      "com.imd.cobolexplorer.DependencyRelevance.propagate": 15,
+      "com.imd.cobolexplorer.DependencyControl.<init>": 14,
+      "com.imd.cobolexplorer.DependencyFlow.enqueue": 12,
+      "com.imd.cobolexplorer.DependencyGraph.close": 10,
+      "com.imd.cobolexplorer.DependencyControl$Construction.publish": 9,
+      "com.imd.cobolexplorer.antlr.CobolPreprocessorParser.charDataLine": 9,
+      "com.imd.cobolexplorer.DependencyGraph$Ints.add": 9,
+      "com.imd.cobolexplorer.DependencyRelevance.retain": 8,
+      "com.imd.cobolexplorer.DependencyGraph$Scope.equals": 8,
+      "com.imd.cobolexplorer.DependencyGraph.target": 7,
+      "com.imd.cobolexplorer.DependencyFlow.route": 7,
+      "com.imd.cobolexplorer.DependencyControl.cyclicNodes": 7,
+      "com.imd.cobolexplorer.DependencyFlow.resolve": 6,
+      "com.imd.cobolexplorer.DependencyControl$Construction.ensure": 6,
+      "com.imd.cobolexplorer.DependencyFlow.hasUnsupportedPredicate": 5,
+      "com.imd.cobolexplorer.DependencyGraph.indexCell": 5,
+      "com.imd.cobolexplorer.DependencyRelevance.extend": 4,
+      "com.imd.cobolexplorer.DependencyFlow.restore": 4,
+      "com.imd.cobolexplorer.Ast.children": 4,
+      "com.imd.cobolexplorer.DependencyFlow.lambda$new$37": 4,
+      "com.imd.cobolexplorer.Ast$SourceSpan.hashCode": 3,
+      "com.imd.cobolexplorer.DependencyGraph.scopeId": 3,
+      "com.imd.cobolexplorer.DependencyFlow$State.equals": 3,
+      "com.imd.cobolexplorer.DependencyFlow.step": 3,
+      "com.imd.cobolexplorer.DependencyFlow.schedule": 3,
+      "com.imd.cobolexplorer.DependencyFlow$ReturnTo.hashCode": 3,
+      "com.imd.cobolexplorer.DependencyFlow.observe": 2,
+      "com.imd.cobolexplorer.DependencyFlow.normalize": 2,
+      "com.imd.cobolexplorer.DependencyGraph.incoming": 2,
+      "com.imd.cobolexplorer.DependencyFlow.subscribe": 2,
+      "com.imd.cobolexplorer.DependencyRelevance.encode": 2,
+      "com.imd.cobolexplorer.DependencyControl$Construction.offer": 2,
+      "com.imd.cobolexplorer.DependencyGraph.physicalId": 2,
+      "com.imd.cobolexplorer.DependencyGraph.id": 2,
+      "com.imd.cobolexplorer.DependencyGraph.physicalOutNext": 2,
+      "com.imd.cobolexplorer.DependencyFlow.finish": 2,
+      "com.imd.cobolexplorer.DependencyGraph.active": 2,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2c6020.apply": 2,
+      "com.imd.cobolexplorer.DependencyFlow$Selection.apply": 2,
+      "com.imd.cobolexplorer.DependencyDeclarations.valueChildren": 2,
+      "com.imd.cobolexplorer.ConditionNameSemantics.analyze": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Location.hashCode": 1,
+      "com.imd.cobolexplorer.DependencyGraph.physicalSource": 1,
+      "com.imd.cobolexplorer.SourceMap.mapped": 1,
+      "com.imd.cobolexplorer.DependencyFlow.ground": 1,
+      "com.imd.cobolexplorer.DirectRecognizer.match": 1,
+      "com.imd.cobolexplorer.DependencyValues.hashCode": 1,
+      "com.imd.cobolexplorer.Ast$SourceProvenance.hashCode": 1,
+      "com.imd.cobolexplorer.DependencyControl$Construction.deliver": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment$Projection.apply": 1,
+      "com.imd.cobolexplorer.DependencyControl$Construction.capacity": 1,
+      "com.imd.cobolexplorer.DependencyFlow.exitsScope": 1,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology.<init>": 1,
+      "com.imd.cobolexplorer.DependencyFlow$State.<init>": 1,
+      "com.imd.cobolexplorer.DependencyFlow.deliver": 1,
+      "com.imd.cobolexplorer.SemanticCoverage$Finding.<init>": 1,
+      "com.imd.cobolexplorer.DependencyAnalyzer.analyze": 1,
+      "com.imd.cobolexplorer.DirectRecognizer$Memo.put": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment.get": 1,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology.refs": 1,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$$Lambda.0x000072b29d2c21b8.accept": 1,
+      "com.imd.cobolexplorer.ResolutionContracts$ProgramUnitId.toString": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment$Projection.retain": 1,
+      "com.imd.cobolexplorer.antlr.CobolPreprocessorParser.startRule": 1,
+      "com.imd.cobolexplorer.SourceNormalizer.physicalLines": 1,
+      "com.imd.cobolexplorer.ControlTopologySemantics.<init>": 1,
+      "com.imd.cobolexplorer.DirectRecognizer$Memo.slot": 1,
+      "com.imd.cobolexplorer.DirectLedger.nodes": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment.insert": 1,
+      "com.imd.cobolexplorer.Ast$ParseTreeOrigin.hashCode": 1
+    },
+    "estimatedAllocatedBytesMain": 8302826176,
+    "allocationCategories": {
+      "control-summary": 2092660600,
+      "local-step": 1804616176,
+      "other-dataflow": 1616760632,
+      "input-relevance": 1592207584,
+      "enqueue-and-join": 381027376,
+      "frontend-or-other-product": 379758208,
+      "summary-input-projection": 258188432,
+      "query-resolution": 153803504,
+      "other-or-truncated": 22756280,
+      "state-write": 1047384
+    },
+    "allocationClasses": {
+      "[Ljava.lang.Object;": 1341760608,
+      "java.util.HashMap": 931122512,
+      "[J": 611078304,
+      "[I": 428763736,
+      "java.util.ImmutableCollections$List12": 392311472,
+      "[Ljava.util.HashMap$Node;": 388785688,
+      "java.util.BitSet": 326508440,
+      "java.util.ImmutableCollections$ListItr": 292617840,
+      "java.util.ImmutableCollections$SetN$SetNIterator": 288282064,
+      "com.imd.cobolexplorer.DependencyControl$Construction$$Lambda.0x000072b29d2ccfa0": 260477936,
+      "com.imd.cobolexplorer.DependencyFlow$State": 218892920,
+      "com.imd.cobolexplorer.DependencyRelevance$Point": 207908520,
+      "[B": 207150520,
+      "[Ljava.util.BitSet;": 202632432,
+      "java.util.HashMap$Node": 198960712,
+      "java.lang.Integer": 153216400,
+      "com.imd.cobolexplorer.DependencyFlow$Exit": 149974776,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2d0248": 142312376,
+      "com.imd.cobolexplorer.DependencyEnvironment": 120707600,
+      "java.util.HashMap$TreeNode": 105261968,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1": 98971616,
+      "java.util.HashMap$KeySet": 97788992,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2dcb38": 91121728,
+      "java.util.ArrayDeque": 88112696,
+      "com.imd.cobolexplorer.DependencyEnvironment$Builder": 86927552,
+      "java.util.HashMap$EntryIterator": 78554440,
+      "com.imd.cobolexplorer.DependencyFlow$Location": 71879928,
+      "java.util.HashSet": 62842760,
+      "com.imd.cobolexplorer.DependencyGraph$Scope": 62058312,
+      "java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject": 36659168,
+      "java.util.HashMap$KeyIterator": 35039120,
+      "com.imd.cobolexplorer.DependencyFlow$Selection$$Lambda.0x000072b29d2d1438": 32469368,
+      "com.imd.cobolexplorer.DependencyFlow$Scheduled": 31421952,
+      "com.imd.cobolexplorer.DependencyEnvironment$1": 23566640,
+      "[Ljava.util.concurrent.ConcurrentHashMap$Node;": 22313848,
+      "com.imd.cobolexplorer.DependencyGraph$$Lambda.0x000072b29d2c7b78": 21995616,
+      "java.util.HashMap$EntrySet": 21995264,
+      "[Ljava.util.WeakHashMap$Entry;": 21471752,
+      "[Lorg.antlr.v4.runtime.atn.ATNConfig;": 19902576,
+      "com.imd.cobolexplorer.DependencyControl$Construction$$Lambda.0x000072b29d2ccb20": 18329720,
+      "java.lang.String": 17205264,
+      "java.util.WeakHashMap": 16755536,
+      "java.util.ImmutableCollections$Set12$1": 14579320,
+      "java.util.ArrayList": 14386632,
+      "java.util.ArrayList$Itr": 14095672,
+      "java.util.ImmutableCollections$MapN$MapNIterator": 13616336,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2d2318": 13616320,
+      "com.imd.cobolexplorer.DependencyFlow$Computation": 12568848,
+      "java.util.stream.ReferencePipeline$Head": 9650256,
+      "java.util.ImmutableCollections$MapN$1": 8902920,
+      "java.util.IdentityHashMap": 8902760,
+      "com.imd.cobolexplorer.DependencyFlow$Selection": 7855416,
+      "com.imd.cobolexplorer.DependencyEnvironment$Node": 7315640,
+      "java.util.AbstractMap$1$1": 6284392,
+      "com.imd.cobolexplorer.DependencyFlow$ResolutionKey": 6284296,
+      "java.util.TreeMap": 6284280,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2cdf38": 5760632,
+      "java.util.concurrent.locks.ReentrantLock$NonfairSync": 5236968,
+      "java.util.ArrayDeque$$Lambda.0x000072b29d020720": 5094688,
+      "com.imd.cobolexplorer.DependencyFlow$DeliveryKey": 4713304,
+      "java.util.LinkedHashMap$Entry": 4680800,
+      "com.imd.cobolexplorer.DependencyRelevance$$Lambda.0x000072b29d2d08e8": 4606456,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2dcd70": 4189632,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2dd428": 4189608,
+      "com.imd.cobolexplorer.DependencyEnvironment$Projection": 4189560,
+      "com.imd.cobolexplorer.ExplorerMain$Node": 3665984,
+      "com.imd.cobolexplorer.DependencyValues": 3665944,
+      "com.imd.cobolexplorer.DependencyFlow$SummaryKey": 3665912,
+      "java.lang.ref.ReferenceQueue": 3665880,
+      "java.util.KeyValueHolder": 3665856,
+      "java.util.stream.SortedOps$OfRef": 3665840,
+      "java.util.AbstractList$RandomAccessSpliterator": 3142200,
+      "org.antlr.v4.runtime.atn.ATNConfig": 2740912,
+      "com.imd.cobolexplorer.DependencyFlow$ReturnTo": 2618504,
+      "java.util.Optional": 2214944,
+      "java.util.TreeSet": 2094840,
+      "com.imd.cobolexplorer.DependencyControl$Call": 2094832,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2d0000": 2094816,
+      "java.util.ImmutableCollections$Set12": 2094808,
+      "java.util.stream.SortedOps$SizedRefSortingSink": 2094808,
+      "java.util.LinkedHashMap": 2094800,
+      "jdk.internal.org.objectweb.asm.SymbolTable$Entry": 1936120,
+      "org.antlr.v4.runtime.CommonToken": 1811280,
+      "com.imd.cobolexplorer.DependencyFlow$4Visit": 1571112,
+      "java.util.regex.Pattern": 1569880,
+      "org.antlr.v4.runtime.atn.SingletonPredictionContext": 1523368,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2cc210": 1244120,
+      "java.util.Comparator$$Lambda.0x000072b29d264780": 1047440,
+      "java.util.stream.ReferencePipeline$3": 1047400,
+      "org.antlr.v4.runtime.atn.LexerATNConfig": 1045048,
+      "jdk.internal.org.objectweb.asm.MethodWriter": 1041336,
+      "jdk.internal.org.objectweb.asm.ClassWriter": 823928,
+      "[Ljdk.internal.org.objectweb.asm.SymbolTable$Entry;": 823360,
+      "java.util.jar.JarFile$JarFileEntry": 815312,
+      "com.imd.cobolexplorer.SourceMap$Segment": 797784,
+      "com.imd.cobolexplorer.semanticproduct.CobolSemanticProduct$Location": 701960,
+      "jdk.internal.ref.CleanerImpl$PhantomCleanableRef": 647896,
+      "java.util.LinkedList": 608032,
+      "java.util.ArrayList$ArrayListSpliterator": 578088,
+      "java.lang.invoke.MethodType": 556144,
+      "java.util.LinkedList$ListItr": 551024,
+      "[Ljava.util.regex.Pattern$GroupHead;": 525560,
+      "com.imd.cobolexplorer.Ast$SourceSpan": 525408,
+      "java.util.stream.Nodes$FixedNodeBuilder": 523712,
+      "com.imd.cobolexplorer.DirectSyntax$ConditionFrame": 523712,
+      "com.imd.cobolexplorer.Ast$SourceLocation": 523712,
+      "com.imd.cobolexplorer.DirectSyntax$IdentifierFrame": 523712,
+      "com.imd.cobolexplorer.DirectSyntax$IfStatementFrame": 523712,
+      "com.imd.cobolexplorer.DependencyRelevance$Value": 523712,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2cea50": 523712,
+      "java.util.concurrent.locks.ReentrantLock": 523712,
+      "com.imd.cobolexplorer.DependencyFlow$Constant": 523704,
+      "com.imd.cobolexplorer.CicsProgramControlAnalyzer$Key": 523704,
+      "com.imd.cobolexplorer.DependencyGraph$$Lambda.0x000072b29d2cc8d8": 523704,
+      "com.imd.cobolexplorer.DirectAstActions$CompletionRegion": 523704,
+      "com.imd.cobolexplorer.ControlTopologySemantics$$Lambda.0x000072b29d2b2a68": 523704,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$Proof": 523704,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$$Lambda.0x000072b29d2c1d28": 523704,
+      "com.imd.cobolexplorer.SymbolTable$GlobalKey": 523704,
+      "java.util.stream.Nodes$SpinedNodeBuilder": 523704,
+      "com.imd.cobolexplorer.DependencyFlow$PredicateForm": 523704,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$Region": 523696,
+      "java.lang.Long": 523696,
+      "java.util.ImmutableCollections$ListN": 523696,
+      "com.imd.cobolexplorer.DirectSyntax$BasisFrame": 523696,
+      "java.lang.invoke.BoundMethodHandle$Species_LLL": 523696,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x000072b29d2ca5f0": 523696,
+      "java.util.TreeMap$Entry": 523696,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$Outcome": 523696,
+      "java.util.stream.ReferencePipeline$3$1": 523696,
+      "com.imd.cobolexplorer.Ast$SourceProvenance": 523696,
+      "java.util.stream.ReferencePipeline$2": 523688,
+      "org.antlr.v4.runtime.atn.BasicState": 523680,
+      "com.imd.cobolexplorer.SemanticCoverage$Finding": 523672,
+      "java.util.regex.Pattern$Start": 523560,
+      "java.util.Spliterators$ArraySpliterator": 522504,
+      "org.antlr.v4.runtime.misc.FlexibleHashMap$Entry": 493440,
+      "java.util.Locale": 364000,
+      "jdk.internal.loader.URLClassPath$JarLoader$2": 330928,
+      "[Ljava.util.LinkedList;": 328792,
+      "[[Lorg.antlr.v4.runtime.atn.ATNConfig;": 328792,
+      "java.util.stream.IntPipeline$Head": 302248,
+      "com.imd.cobolexplorer.SourceNormalizer$NormalizedLine": 302224,
+      "java.util.stream.ReferencePipeline$4$1": 277304,
+      "java.lang.Class": 254504,
+      "java.lang.StringLatin1$CharsSpliterator": 247792,
+      "java.util.stream.Nodes$IntFixedNodeBuilder": 247784,
+      "java.util.stream.ReferencePipeline$4": 247768,
+      "java.util.Collections$UnmodifiableMap": 223448,
+      "java.util.LinkedList$Node": 222368,
+      "[Ljava.time.temporal.IsoFields$Field;": 146312,
+      "java.util.concurrent.ConcurrentHashMap$Node": 143352,
+      "ch.qos.logback.core.status.InfoStatus": 143264,
+      "[C": 123216,
+      "java.lang.reflect.Method": 122784,
+      "sun.util.locale.ParseStatus": 121336,
+      "sun.util.locale.InternalLocaleBuilder": 121336,
+      "[[Ljava.lang.Object;": 119984,
+      "java.lang.invoke.InnerClassLambdaMetafactory": 101536,
+      "java.lang.invoke.LambdaFormEditor$Transform": 37648,
+      "java.math.BigInteger": 1792,
+      "org.antlr.v4.runtime.misc.Interval": 1776,
+      "org.antlr.v4.runtime.atn.RuleStopState": 1760
+    },
+    "environmentNodeAllocationOrigins": {
+      "other-dataflow": 7315640
+    },
+    "oldObjectSamplesClasses": {
+      "java.util.HashMap$TreeNode": 67,
+      "[B": 12,
+      "com.imd.cobolexplorer.DependencyFlow$Location": 12,
+      "[I": 11,
+      "[Ljava.util.HashMap$Node;": 8,
+      "[Ljava.lang.Object;": 6,
+      "java.util.HashMap$Node": 6,
+      "[Ljava.util.BitSet;": 5,
+      "[J": 4,
+      "[Ljava.util.concurrent.ConcurrentHashMap$Node;": 3,
+      "java.lang.String": 3,
+      "com.imd.cobolexplorer.DependencyFlow$ReturnTo": 2,
+      "com.imd.cobolexplorer.semanticproduct.CobolSemanticProduct$Location": 2,
+      "java.lang.Class": 2,
+      "com.imd.cobolexplorer.DependencyFlow$Constant": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment$Projection": 1,
+      "java.util.concurrent.ConcurrentHashMap$Node": 1,
+      "[C": 1,
+      "java.util.HashMap": 1,
+      "org.antlr.v4.runtime.atn.BasicState": 1,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$Proof": 1,
+      "java.lang.Integer": 1,
+      "[Ljava.time.temporal.IsoFields$Field;": 1,
+      "com.imd.cobolexplorer.SymbolTable$GlobalKey": 1,
+      "java.lang.reflect.Method": 1,
+      "org.antlr.v4.runtime.CommonToken": 1,
+      "com.imd.cobolexplorer.ExplorerMain$Node": 1,
+      "com.imd.cobolexplorer.SemanticCoverage$Finding": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Exit": 1,
+      "java.util.ImmutableCollections$ListN": 1,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$Outcome": 1,
+      "java.util.Collections$UnmodifiableMap": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Selection": 1,
+      "java.util.ImmutableCollections$List12": 1,
+      "java.util.LinkedHashMap$Entry": 1,
+      "com.imd.cobolexplorer.Ast$SourceSpan": 1,
+      "[Lcom.fasterxml.jackson.databind.cfg.CoercionAction;": 1,
+      "com.imd.cobolexplorer.SourceMap$Segment": 1,
+      "java.util.TreeMap": 1,
+      "com.imd.cobolexplorer.DependencyFlow$DeliveryKey": 1,
+      "java.lang.Object": 1,
+      "com.imd.cobolexplorer.Ast$SourceProvenance": 1
+    },
+    "environmentOldObjectOrigins": {},
+    "gcPauseEvents": 109,
+    "gcPauseMilliseconds": 626.449,
+    "samplingQualification": "Sample counts are main-thread observations, not exact CPU duration; allocation weights are estimates, not retained/RSS bytes"
+  },
+  "formulaScope": "Observed dynamic two-hub return-fanout family; not a universal complexity bound",
+  "formulas": {
+    "physicalPositions": "28N+14",
+    "physicalEdges": "36N+15",
+    "returnObligations": "2N+1",
+    "resultColumns": "4N+1",
+    "logicalCells": "56N^2+54N+14",
+    "resultFacts": "112N^2+62N+17"
+  },
+  "rawArtifacts": [
+    {
+      "path": "benchmark/results/shared-continuation-scale-20261009/heap256/results.json",
+      "sha256": "4e7a46a87d07b9341cc4c46732051dc5c4a969752ec90309d13129dffc4a13a8"
+    },
+    {
+      "path": "benchmark/results/shared-continuation-scale-20261009/heap1024/results.json",
+      "sha256": "92621f9819562536e63323d2cdeac1d016b2f5f70d55ed27a604e6f2a7823dcf"
+    },
+    {
+      "path": "benchmark/results/shared-continuation-scale-20261009/heap1536/results.json",
+      "sha256": "a7b2ef10f741a8dd11c687e819af85746f9f90f6956a9dafcc2a212360654e7a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/results.json",
+      "sha256": "7986301ff658b16ec5e884a814173bb2111c002cb81a20a5dcbd1cbd9866aa2a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/results.json",
+      "sha256": "66c1bf22950f66d770b67a97fc05f34854cc7cc9c95a42d47d17117f9c1f6d0f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/results.json",
+      "sha256": "fbb88ca95e8f96d832b3d21f8c288c1cceb98eab335a95149f967f24b625a553"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/results.json",
+      "sha256": "3c0442f6ee87791b02a388070213971041fb1a9fd882c59be0911e32fd29e0be"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap256/results.json",
+      "sha256": "605ff417f677af96345423c17c126232ec6065aee9cd505543f68e3e66e4d0df"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap1024/results.json",
+      "sha256": "98e753f990ade0e2d10cf2a8a0d6f4464c859078459221a5c5721a24f81db3f6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-fixed/results.json",
+      "sha256": "ba946c4c3aae1f92e56d66373481656601d69548a17e1f229ff4ca845deb7273"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0332bc7dce75ea7c/dependencies.json",
+      "sha256": "3a3aeb13795bd42e478cae36651b794c063a87d878424b1c74d5139719b529a2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0332bc7dce75ea7c/metrics.jsonl",
+      "sha256": "1f9d18b7490efdf220f73eeac3a8a9b2ced5ce9a4c88aaabe9f6bc440d87dbb7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0332bc7dce75ea7c/stderr.log",
+      "sha256": "ca56d525f24fc68ec5e7f73dd3b6a94ea39ef830f54f80e54e9e36ff3c543b7b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0332bc7dce75ea7c/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0332bc7dce75ea7c/telemetry.jsonl",
+      "sha256": "255ef68535ddb1a61ab9b2b646dfad0632cc987a9f5b7b53ba0b383edf0cfee9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0332bc7dce75ea7c/time.txt",
+      "sha256": "1747c3d20c52dd3f01795ece8d09e81c64d5b75404b4d31b0993cb0947570ee2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/03c557ca5d9ae101/dependencies.json",
+      "sha256": "2cbf5c5f78feaac7826fc3d80572ddb49309c596c5ed69ddc14d801edb2dd1f4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/03c557ca5d9ae101/metrics.jsonl",
+      "sha256": "741afb52f2f65e58eb231f368ae70caaa19cd4447837f27a0120e0042dec730e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/03c557ca5d9ae101/stderr.log",
+      "sha256": "e707133ff24e1d76f67899157fa730bd752e5221bd7f874ebdd48b17d6bc9efe"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/03c557ca5d9ae101/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/03c557ca5d9ae101/telemetry.jsonl",
+      "sha256": "5e90b55899fd3926cfe6dbd5186877e764a7e43a7bf6372bfd24ff9e8eebefb7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/03c557ca5d9ae101/time.txt",
+      "sha256": "f923a43729c33d748f424a6d5ae035b2f637ba50e3cfe289bc2060221fa2cb36"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/069938f27c5c9d1c/dependencies.json",
+      "sha256": "4e1c74212fe8168a4106c9a889665e9c27e3f82d475ef981236b41120b70f750"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/069938f27c5c9d1c/metrics.jsonl",
+      "sha256": "c4b23ac16f6e9d9606fec21863081d5cbf02b50d835d015f65a4002b5af2628f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/069938f27c5c9d1c/stderr.log",
+      "sha256": "4f9591335e3427a1a5424a8bdb1bf158f41dadb36eefd45644ce1b09b4a76c4e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/069938f27c5c9d1c/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/069938f27c5c9d1c/telemetry.jsonl",
+      "sha256": "5d56ff873471a49fc17c276491e5c20e0230dc62ce8f0949c18d9022c1d1e0bc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/069938f27c5c9d1c/time.txt",
+      "sha256": "aaf5cb09853425f447e28ee530248e929c043e722b540db7e87308f6e64ac836"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/07d08e0b43a895bc/dependencies.json",
+      "sha256": "bd5b87cf547d4e0f983620a2155c2000dd5df36fa3cda2a5995fe0e53847284d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/07d08e0b43a895bc/metrics.jsonl",
+      "sha256": "5f8267836ea1524a3c404c1816c1968fcdb48843abf31f2c6812fe6606ec537f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/07d08e0b43a895bc/stderr.log",
+      "sha256": "f1575b405e775005e4fe2e7fb5e031a3ba15710fa4b9c8d8d7496b37a62a268b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/07d08e0b43a895bc/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/07d08e0b43a895bc/telemetry.jsonl",
+      "sha256": "35a1fc807698228867308c0e470e30f01ddb5041f103c736f498e5720fb33cd5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/07d08e0b43a895bc/time.txt",
+      "sha256": "906cd3a422cdbf85de14e864b783d61198b6b4a4e06151b83ab5d213e37c30cd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0e4fd74fc651750a/dependencies.json",
+      "sha256": "874501a7fae70efaaf6ddf03aa226afc5cfd2a45a6516c3e8bbb41fb56e0c82f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0e4fd74fc651750a/metrics.jsonl",
+      "sha256": "1585e592e67ac089e5301231695329f288542ae01cf82ec76644a4f60280670a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0e4fd74fc651750a/stderr.log",
+      "sha256": "c40005013d8d5f886a5ab9b44f4d26f299597470788d8234a03a385b13689c74"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0e4fd74fc651750a/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0e4fd74fc651750a/telemetry.jsonl",
+      "sha256": "d6afb3eb36277dcfda68231fc7c07d8c6355b49d70585010f4a13e7105bd951b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/0e4fd74fc651750a/time.txt",
+      "sha256": "38f69250d4117707005b1987f4f3146a600357a5d6b56dc5bf24e8a0fd0a7a9e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1344f55da698ca45/dependencies.json",
+      "sha256": "84d21633e37605bfe9043d9d2259c4cd9b80a26fc4b1372cf0cfbf1ea2e1c661"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1344f55da698ca45/metrics.jsonl",
+      "sha256": "7ed911e9cf97896cdee6216abdc36a0609724835d5c4758e242b0d6851d04909"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1344f55da698ca45/stderr.log",
+      "sha256": "bcadfb2969e2712837799e08318e62812b177a7d71df41ed43231d5031f5fb65"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1344f55da698ca45/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1344f55da698ca45/telemetry.jsonl",
+      "sha256": "a30eb57e0677945006808398f92287b28c8677d98f386019a1967bd000ef9bc9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1344f55da698ca45/time.txt",
+      "sha256": "f0b338f43a4530053485b4071c94fa4aedcc34fa77703c96140eecd55e9b9d4c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/143ef5a6f9d7c943/dependencies.json",
+      "sha256": "116300f6285b3638a48ce611eea03b23ff7674da1ac7b9ab03b4ab6c8407e4c5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/143ef5a6f9d7c943/metrics.jsonl",
+      "sha256": "220c80cb0e52f03874acbeb2261be8444a1e98c8bc2c68b93e6672c177ba9853"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/143ef5a6f9d7c943/stderr.log",
+      "sha256": "870ea7da80080ed3f6470122bdcaf6886476aab97d4019e451614aaae6115c2d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/143ef5a6f9d7c943/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/143ef5a6f9d7c943/telemetry.jsonl",
+      "sha256": "f89598a15520391926e7c917bbc657d089a7a6c93ff1696aaafab4ee1c71683d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/143ef5a6f9d7c943/time.txt",
+      "sha256": "ebdea66299267b3d2d530be59fbd0e512897ef972c43d230d3af76d974723021"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1490e5fb7f36ac22/dependencies.json",
+      "sha256": "5ea64187ee3e3b5dc9b6d0588f465b08ed92e439f3632dff57e581f6ff5aec38"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1490e5fb7f36ac22/metrics.jsonl",
+      "sha256": "383772742142b6175d501e9e5cbea926013dc1cd40dfea27c1291d1ce1b4fd77"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1490e5fb7f36ac22/stderr.log",
+      "sha256": "c78a8b4d7ef806b2d5d4d5e4b01509fea787038c5a6babefa1281ad2e4f73905"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1490e5fb7f36ac22/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1490e5fb7f36ac22/telemetry.jsonl",
+      "sha256": "40f28cc339ac1d26bb1c852881f941fd57058b18973799375b9c52aec6ea19b9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1490e5fb7f36ac22/time.txt",
+      "sha256": "cde9ce1f403026d2ff38a12469f766ffa2639a00110e8df12a1bed0da03c1bb8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/18b5464e520dbfdd/dependencies.json",
+      "sha256": "3457cf81db9238ec373f570015684e8994edbd310ad84722f14fe194acf3e175"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/18b5464e520dbfdd/metrics.jsonl",
+      "sha256": "b91b03264d874906fe6f595243e91f848910e0f0139bd92bd59cf543bd05a640"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/18b5464e520dbfdd/stderr.log",
+      "sha256": "cb2380c404fe5dbad490ac48834063c7ffbcadf6ed5b2537a24e8cc2c8b1d5d3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/18b5464e520dbfdd/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/18b5464e520dbfdd/telemetry.jsonl",
+      "sha256": "d5d4b0faa08e6e39d379f44bf3b93b8c29412caf706c4f6591e5279ff3fe1f31"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/18b5464e520dbfdd/time.txt",
+      "sha256": "15468a2243cacd7c665fb6492515a8b95ad76d9aad1ddf02009ed135cf153ccd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1dac7e501ccb2956/dependencies.json",
+      "sha256": "b63abc833276337b7eb154ccae9acea3de6dd6251dc0f6b3dd3abf16ab41ec29"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1dac7e501ccb2956/metrics.jsonl",
+      "sha256": "21b34f0e05514b125fba86d55b2552227ff191e2368b563e60095d0b5f11d343"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1dac7e501ccb2956/stderr.log",
+      "sha256": "f487234c834d07eb2404901cabfbdda603c57b4f608d4f7d1c2e743f7e78596b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1dac7e501ccb2956/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1dac7e501ccb2956/telemetry.jsonl",
+      "sha256": "9ee9dee7cdc1c9af1b90db46682bd328833c1cbe2a19157c1c4fdea14eaca3f3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1dac7e501ccb2956/time.txt",
+      "sha256": "99348f3fe8e8d258533a1ecb1e1f44c99334a9addf1298a43982a3eb41d90d8e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1ff5d16035ba70ac/dependencies.json",
+      "sha256": "8ee1a7a778414341f93afee659f29abe0aed14094edc9c8a4f616c7f52ba4ca2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1ff5d16035ba70ac/metrics.jsonl",
+      "sha256": "7f9b6559bf222cce10db0ec651ed806d3d43b2c6c9df48f230ba602e7522658f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1ff5d16035ba70ac/stderr.log",
+      "sha256": "64bf2338c90ad0b79b7ae5498f06f44f117a1337f9a95b5cd00b326d3ebbe63b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1ff5d16035ba70ac/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1ff5d16035ba70ac/telemetry.jsonl",
+      "sha256": "5aba26093525fd3dc794ee2c109533b2100398c77ea164e0d605a3b6f5e898ef"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/1ff5d16035ba70ac/time.txt",
+      "sha256": "fb82c24cccc6d11fa85668a38862dfeb4cf61f15773ebb8915eb50e3cf00d6a8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/270d89141e57ffe5/dependencies.json",
+      "sha256": "938808acd267c8b07ba9e9a5238ea74c018fdcc63978eb043cdb327413e546e1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/270d89141e57ffe5/metrics.jsonl",
+      "sha256": "3944996ea5d498d2831f1c9717826b9a7bb41200fd86e4d8812f517fbd712855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/270d89141e57ffe5/stderr.log",
+      "sha256": "647cca65c327e08aab2e490210b362f0774fb51523f423a7475b8953e464e8ee"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/270d89141e57ffe5/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/270d89141e57ffe5/telemetry.jsonl",
+      "sha256": "a069e838f1341d732b03c48f16e9dd2fb2081dc80b79696c1710777dcef3697f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/270d89141e57ffe5/time.txt",
+      "sha256": "c15c673539bd8676183e4dd20e5b9591fd58a5aede21c8b5e89d69553da5587e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/287d36f735ecab42/dependencies.json",
+      "sha256": "9638bf347e62e1961297a99f1b068ba97cbda6ee0b305e7c6297b390b382e2ee"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/287d36f735ecab42/metrics.jsonl",
+      "sha256": "c4134d5218ab3e550ed55cbe5fff9d08f604cedf3dc31713895a155071463a44"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/287d36f735ecab42/stderr.log",
+      "sha256": "6e37bd42d8e70aa0543b155b26d89f93e55f588c1a3c06d2c7a7fb18e68684b3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/287d36f735ecab42/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/287d36f735ecab42/telemetry.jsonl",
+      "sha256": "24bf8fde02c4c3fa6b4c24e24a09d1f6149cbce68eb8c38a2c7403748d5b8735"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/287d36f735ecab42/time.txt",
+      "sha256": "1da72637a024673cabcd84cc4219fb243c72995253226153c868d8617c31c56d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/296678f011e781e5/dependencies.json",
+      "sha256": "d0de6375051a7e6c39885006d624cd7416ea385988c541690109b8151e1ba265"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/296678f011e781e5/metrics.jsonl",
+      "sha256": "f60e712c074a54f4817a9fbd717e8682b6d7fc35b24ba1946b6bd58b4808bbce"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/296678f011e781e5/stderr.log",
+      "sha256": "11508cf7d80b9cc9afe1b9845e3fbb100f6c0ad70775696a8ac8ef3558913f73"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/296678f011e781e5/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/296678f011e781e5/telemetry.jsonl",
+      "sha256": "0ffdec111519a259451035f42eaa58b5b4a90134113397fee08fc3840ff99c76"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/296678f011e781e5/time.txt",
+      "sha256": "165da4114f5729132b7e841159c69883c648279a9dcc35c6380cfc4e2628ffab"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/29be9b929ed1cbd3/dependencies.json",
+      "sha256": "08dc2f866a0dc244c56212c8445281958b29733ddedd7efc03b31f0e93aec1ac"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/29be9b929ed1cbd3/metrics.jsonl",
+      "sha256": "9695567f51cb49bff05c2260042039496b8cd08c2b09c4eb618b81f386c87e05"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/29be9b929ed1cbd3/stderr.log",
+      "sha256": "1ea4b4aae4a806d6c5ade6769b449821c9f26888a9e8e73b035f8ae795d8bf77"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/29be9b929ed1cbd3/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/29be9b929ed1cbd3/telemetry.jsonl",
+      "sha256": "1604ab22a6af83f780bd2e0ec4f4b61e4d92295f0608c8de06fb7848cf2a88cd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/29be9b929ed1cbd3/time.txt",
+      "sha256": "7bad2803a105585a3d41168834beeed5bc41b61c118add0a9e8f0b35e27e3d13"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2c5dba9b88f1c2c8/dependencies.json",
+      "sha256": "0b47155254a4a697d309b2afdc1ef2ede923f60a3166fb0e26bc048b3924d78c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2c5dba9b88f1c2c8/metrics.jsonl",
+      "sha256": "45dafa0650b8f899ac3c3ce3666a707efc79f0829a3f5f81453662828767d256"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2c5dba9b88f1c2c8/stderr.log",
+      "sha256": "83011400d425a35fa90326104a419a45daabbf4b949ff081068fb14ac43e04c5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2c5dba9b88f1c2c8/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2c5dba9b88f1c2c8/telemetry.jsonl",
+      "sha256": "d6b58870873a80c096a1b8a13934ae4656634d6eabc8f4061171676cf6aa5670"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2c5dba9b88f1c2c8/time.txt",
+      "sha256": "a77048de763ba6850de602b7ae83d57ec6d057ff2dd7ae43ee4d916c22421f65"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2fe17320f9cffe07/dependencies.json",
+      "sha256": "74703b4361f479e3c6d126e7ff331a0720332871fba779921cba1475ef9e57b1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2fe17320f9cffe07/metrics.jsonl",
+      "sha256": "d70dd76ee60731326d87a0ba151a335baf8d3d9ff40163f701fc2fa813d1bd19"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2fe17320f9cffe07/stderr.log",
+      "sha256": "196ace4e96265c02a8748e6699ebd4cdbf016490bee1d1f1f7ca541973e295fa"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2fe17320f9cffe07/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2fe17320f9cffe07/telemetry.jsonl",
+      "sha256": "1164f4b0cf4192e66c15df9f1bd8597d13b8cf179ff1ebcb53778637e5b096b3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/2fe17320f9cffe07/time.txt",
+      "sha256": "c30ef79df2a0e3fa822f16d634d692cc66ec4e82464bd4ec08a66319929f35dc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/313a2941cb8f9f59/dependencies.json",
+      "sha256": "054d0b674f869dcfbe6b76d18b80f2434990c7cd5d31d18cf28aab1716024d2c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/313a2941cb8f9f59/metrics.jsonl",
+      "sha256": "25aa55a96ae184452c7afe90e62a184a49e357a73931a541bbda5ea1338d0459"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/313a2941cb8f9f59/stderr.log",
+      "sha256": "5e2fe7ac72fbc75a3e2bdf26f11afc07e6a6bc985af4e868fa7ce835e2d9e5d5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/313a2941cb8f9f59/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/313a2941cb8f9f59/telemetry.jsonl",
+      "sha256": "ea2304576a843636a4da87497bdb787ee18de1bb95ab561e6c7cf05237dca466"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/313a2941cb8f9f59/time.txt",
+      "sha256": "0b4607a9a8527dd900164f9f37e7e0f6a08f446b9eaed14ea199886aec5df50c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/33feae00b4be6a55/dependencies.json",
+      "sha256": "7dfdebc75e6578ca9ddb4abd82fcccdfe991827870dc372f7d78083cea5bfcab"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/33feae00b4be6a55/metrics.jsonl",
+      "sha256": "0d66e81dec8ea37d8b58187beb2c91f1ad3b3405452753a5d0362f988349ea15"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/33feae00b4be6a55/stderr.log",
+      "sha256": "209d2363eb11119df297af918c2fd4ea3f3b716f4fe8c61cbfe68f81f9a4fbfd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/33feae00b4be6a55/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/33feae00b4be6a55/telemetry.jsonl",
+      "sha256": "4ac9b78e11b5b557237da11c1e670f134c140087511880cf600987a8291e9082"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/33feae00b4be6a55/time.txt",
+      "sha256": "03eac86acdab42db2afe3d77e97f426c38eda3cec1cff532a700a03625c9ed7d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/385b562b6298cf72/dependencies.json",
+      "sha256": "8f7721a9454f097119f70755f69e50dcfed9966b2afc8e7c7cb6fe7edb887fbf"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/385b562b6298cf72/metrics.jsonl",
+      "sha256": "e9e435bb43cc397822847440a7c61834618074bc15b5a08ea9e9918408488fe8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/385b562b6298cf72/stderr.log",
+      "sha256": "f354d8cce7947c42bd4401bec29e81d93e43db89f225b329f0f0d3c343681a0a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/385b562b6298cf72/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/385b562b6298cf72/telemetry.jsonl",
+      "sha256": "af2faa9875b834d9eebf905a9ffb37fdaf9ca8746b42b5d335b7c582988605b2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/385b562b6298cf72/time.txt",
+      "sha256": "d95d90eef9f7ae2abef19992a86d12513aad761d67c13be481e0f801def0c148"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/405c1833bbe66f51/dependencies.json",
+      "sha256": "390e74c3a189a4e02060144537f02c218fd8e51ac396dd2a556259b0f6a12ff2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/405c1833bbe66f51/metrics.jsonl",
+      "sha256": "9e5be3f7d2002889045f641f1259486ce122f6a2bebe5ed6d0491d857f789937"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/405c1833bbe66f51/stderr.log",
+      "sha256": "605ae9401baef1ef86ec25a28b795a62a64dc4ef4a1ec53424d91e1b428b1bd5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/405c1833bbe66f51/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/405c1833bbe66f51/telemetry.jsonl",
+      "sha256": "53620179bf75751b7cbe0a30c12b80e4b92c5fb40d75eacf5dcc545a2c87a101"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/405c1833bbe66f51/time.txt",
+      "sha256": "13ba4fe0c0e042bc18c49a4af378ac168ca96f44844c374dcd961affbd741d62"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4157c234cff53544/dependencies.json",
+      "sha256": "60c2bbb1552c54d22aea944e4f3309c770135ab961ede13ae1d857ea578e897d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4157c234cff53544/metrics.jsonl",
+      "sha256": "1a55b27c95843454a84c51636afacea19ff1e2e8f65bd30647167fce890d522d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4157c234cff53544/stderr.log",
+      "sha256": "b1a03871c7c65600917dc19fd4bb9b31ced8fc0a8ab184638e10c3674c755a48"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4157c234cff53544/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4157c234cff53544/telemetry.jsonl",
+      "sha256": "8b2cc5213239c438643fc15cea18270a020e633dd837ad163bc62640f1a05e72"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4157c234cff53544/time.txt",
+      "sha256": "cb0f982617e8c6fdd221cc70499731a9de8f743aa352c46a06d068f5959c77fb"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4299fd5b5337cd99/dependencies.json",
+      "sha256": "98c0c4937b47a233c90f532d44cdb0520e863f685412f256d7ca98d5e473acde"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4299fd5b5337cd99/metrics.jsonl",
+      "sha256": "9b4a4bd8cd6cc697d92c9234279b803e6dd9f0672fc89239f6c14a33f02c48b8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4299fd5b5337cd99/stderr.log",
+      "sha256": "5411b6afad5252175761cfadb1c711a520230758100cb3cc1634693dfedf2d95"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4299fd5b5337cd99/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4299fd5b5337cd99/telemetry.jsonl",
+      "sha256": "eddcc7c7cc33cf3a1229aee0447f09342524266dfd052e87021c49a76ec7088b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4299fd5b5337cd99/time.txt",
+      "sha256": "5cb1112e54c7d95e18e3e66037ed22f858048053fc24098ba483962942b9d800"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4affdc7a0fa00605/dependencies.json",
+      "sha256": "955747bca6e7da7c48b43b00b4dea34ff20fc93b30964420a50c6bcd0e3fadf7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4affdc7a0fa00605/metrics.jsonl",
+      "sha256": "e713c6a102cb67559b19c2e064c6ac8ac7a587eb85f8a9962d1f774ff67c4e38"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4affdc7a0fa00605/stderr.log",
+      "sha256": "c9b7c43a91464c31a560fb9cc8d57de8dc6a49c3c2a3990e1f01409ea3172f2d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4affdc7a0fa00605/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4affdc7a0fa00605/telemetry.jsonl",
+      "sha256": "994e4c3a6647bfbe53c0286f9461f40153ea52f29c0394335bfeea0f26ee3f05"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4affdc7a0fa00605/time.txt",
+      "sha256": "685671edd6869dc317b54173b141258c30044161bb8447e93171cc222973de7e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4b5ec43c105bb64f/dependencies.json",
+      "sha256": "4ec057d91ee91150d2f64475dd32c78f7024f20c79a0a037a5e84b22d2241d89"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4b5ec43c105bb64f/metrics.jsonl",
+      "sha256": "ee365fb271e544c478fffc3de1b4040d5f4b231ce3c67389f480092cc40ae204"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4b5ec43c105bb64f/stderr.log",
+      "sha256": "49f4b5a119e3d06111f46c410a56d0ba4a6a84f7fe233617af79154491122795"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4b5ec43c105bb64f/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4b5ec43c105bb64f/telemetry.jsonl",
+      "sha256": "51a2d9ae154ae5bd0734f6582c5478342320f505a2a70e8d5460124bcb4e7cb5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/4b5ec43c105bb64f/time.txt",
+      "sha256": "a9bf3d6010f1f7b11c494ba91e3256b4e64e6015963e077f55be5662510df55b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/52c234a1ef052153/dependencies.json",
+      "sha256": "23513b6aba908a987d6b299fbf5dce5399ef7ebed426f0efc15956090a898971"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/52c234a1ef052153/metrics.jsonl",
+      "sha256": "3039fafc1136a7a1b97a1e9c431db580692fd1d40eeb84206fe3fa6a0e96781d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/52c234a1ef052153/stderr.log",
+      "sha256": "9e6ce65a53d79cb75604a133e2e5c46dc01a1c2d3f5fff577e3caa83ad380cab"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/52c234a1ef052153/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/52c234a1ef052153/telemetry.jsonl",
+      "sha256": "abfac69631e75af59e1a0005dd3077d3ce491af9cf095ab4110dd306ba2a30b6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/52c234a1ef052153/time.txt",
+      "sha256": "4eae37ee374e3c5d12afb0610cbc20047e5af04a2290d82684a45e3d1822c022"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/54eaa77fe6501981/dependencies.json",
+      "sha256": "89b85105e251c2ad64900ba68e1d02401d65b7e02fa5c8573afc1be0e5594d79"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/54eaa77fe6501981/metrics.jsonl",
+      "sha256": "41f0cdf74f1d1c5637a01f2cfada9a8777e865a34a1d199b3f1aa0c724acee7e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/54eaa77fe6501981/stderr.log",
+      "sha256": "89d679b4dd8a3658a1e09127d84ef9b98ef11ccde44ed792dac1a54759e4d644"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/54eaa77fe6501981/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/54eaa77fe6501981/telemetry.jsonl",
+      "sha256": "3cbd9668dbc52bf02ca55950bdfbd99744a19f6e54ae4fd8dd9106f424666f87"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/54eaa77fe6501981/time.txt",
+      "sha256": "2dd95c4640af8fa69197f37179b932c5f1099591e35703f62e2d4720bde133b0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5e3ce0f6b5e6b3e7/dependencies.json",
+      "sha256": "0f8ad5d6738f489eb5634bb649208a5f4f0df3c4b9319e571e0995a90c70d48d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5e3ce0f6b5e6b3e7/metrics.jsonl",
+      "sha256": "ee16afab4c38e52c56585506d43840fad517a6c933e88bc1a607a937693ec257"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5e3ce0f6b5e6b3e7/stderr.log",
+      "sha256": "d9fc7c23e8efcec0d74c896d54df0ee063598bb64258f8db5eb547fcc29c9752"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5e3ce0f6b5e6b3e7/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5e3ce0f6b5e6b3e7/telemetry.jsonl",
+      "sha256": "dec7169f464b483e6e5ef3a1427418cebc363ad66f255b714cd2f964a53a49fc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5e3ce0f6b5e6b3e7/time.txt",
+      "sha256": "9219d373c3d4f01fd15e2f17f48556926a83531e1cc9100115f0708c906c2c84"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5eb47d950101cbe6/dependencies.json",
+      "sha256": "e24ee383d7b467da85ee40177c49cdca3a1566ef99d0972b2d46b6c64910ea90"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5eb47d950101cbe6/metrics.jsonl",
+      "sha256": "6be1be23912c583e830530befe9bc5304119b8042b0c1cb7f46ef7b300e72bfd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5eb47d950101cbe6/stderr.log",
+      "sha256": "9b6b3fec8b8eb3bd7b562412e4a7462e9b3053aefea6031e97c9d8b19444135c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5eb47d950101cbe6/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5eb47d950101cbe6/telemetry.jsonl",
+      "sha256": "bf60d467b01eff546b4d6f111d8058fb9e1ae6d70f67b30a2628c295075b03b6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/5eb47d950101cbe6/time.txt",
+      "sha256": "8ec0bfa304471b56b0f2b8c3f5a3c830f1258b43797a4d22362684c718c777d4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/686f858db2f86601/dependencies.json",
+      "sha256": "14752096009e428ef5a9f8ae54a3d3f25053eb77b5ce60ad5b82f15b6803111d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/686f858db2f86601/metrics.jsonl",
+      "sha256": "a18acb9ab0eac13c9ba841f02351213fc4ee6889385c5680762ff632f87306d6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/686f858db2f86601/stderr.log",
+      "sha256": "9046deb4ecece4a09e2bfc706225802794cb56ba89c74e365d4503181c94ba6c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/686f858db2f86601/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/686f858db2f86601/telemetry.jsonl",
+      "sha256": "ca4b13ebbb5e4885c08b3bfc09e004424e2ecba3b455f63713dbb84eb8e3f1ee"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/686f858db2f86601/time.txt",
+      "sha256": "2e3795a8b12b5ce10978a30d12661d7296e4e2a44b0ee0f4238d7d2181025026"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6b6e7ba3fb8b02e7/dependencies.json",
+      "sha256": "83e07fdfd0509c33823bfca9719f239f86c1c1c2f61106c1e39c032afa31f98d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6b6e7ba3fb8b02e7/metrics.jsonl",
+      "sha256": "5fca8bafff4ac4a2833b693f22ff59eefca56d6c3f13a3fafbb60f88a26a9cd8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6b6e7ba3fb8b02e7/stderr.log",
+      "sha256": "07448c2fed679c6a8b601e0710527df85fde580c76ded6bf21c28fcd14359a5d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6b6e7ba3fb8b02e7/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6b6e7ba3fb8b02e7/telemetry.jsonl",
+      "sha256": "4463f44ce001b881f5ce89f59c32627860e1d9982f0d8079598cbe9c8016a80e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6b6e7ba3fb8b02e7/time.txt",
+      "sha256": "4eac0a4174e8d43f03aef15ebabf2a0e454c6d0db8af8de2c08215916c80fd24"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6dc77bb7e613059f/dependencies.json",
+      "sha256": "8c555de22f9d92358a3bda454176877af3801f1c2d1e619790de9d2488e7f16b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6dc77bb7e613059f/metrics.jsonl",
+      "sha256": "bfa84f28e0f09e054a74025a412f7b89dd46a7ea70314cc6fca5008733c65df6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6dc77bb7e613059f/stderr.log",
+      "sha256": "ef4b27e481207c4de33bb035b0093ac0ae60b096b56ddd771ec8a2fb92921ef5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6dc77bb7e613059f/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6dc77bb7e613059f/telemetry.jsonl",
+      "sha256": "e4233d3b45b1ac509fec33dfc967ec3d5bfb8fb95756362166132a93306344ac"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6dc77bb7e613059f/time.txt",
+      "sha256": "8b09e18a2df112fafb391e17e3722bbe6afd7df69a3fca032b8c6a55237cb44f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6df5138a4c6d9daa/dependencies.json",
+      "sha256": "f26efbb395bf7f204eecdc1e9b69e169c6d9051140db89a0a4d34a4945e76199"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6df5138a4c6d9daa/metrics.jsonl",
+      "sha256": "bad28524d7a8f84398037ad937e05da57211469c34bc97165ed0fe8371d32fa0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6df5138a4c6d9daa/stderr.log",
+      "sha256": "dd89d7f12491c9e02673cee8a11cc2143aa2a3f45b8bd1486789a8d946961ef5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6df5138a4c6d9daa/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6df5138a4c6d9daa/telemetry.jsonl",
+      "sha256": "b6bbe19fa8671544fc75cd90565d9334b4c382229b2edcc12e7d495b20d7b7a2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6df5138a4c6d9daa/time.txt",
+      "sha256": "a6e319899d82b4e735bd5e454988323eaeb8497be10822fe87b357ebac08ea89"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6fe2e16e2ce733e4/dependencies.json",
+      "sha256": "82c8eeff82b10956233a380c7f358a118901327b53e0478f8bd7628425a8ac78"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6fe2e16e2ce733e4/metrics.jsonl",
+      "sha256": "7f849e94375646773ebfbc10d72d6388e20f9d25d9a23bca44babf16bd5ca3e6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6fe2e16e2ce733e4/stderr.log",
+      "sha256": "c625ecdc12bb942dfe6158ef54966a8812dabb4da1f249b4e23b34fe12b5776e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6fe2e16e2ce733e4/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6fe2e16e2ce733e4/telemetry.jsonl",
+      "sha256": "90c4af85f413bb74fdeed4aef8428d541de560786c09a34eb85532194054b6f0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/6fe2e16e2ce733e4/time.txt",
+      "sha256": "5405a2896be8ecf0b9044f10c7145512a3cdb026d679be3c1d11d148d4cca7f0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/70f27939c3f2618e/dependencies.json",
+      "sha256": "d160504c850e8e3d60a3ee239a9cfadfcb0d6e553cf151bfb3adc68c621ca7a5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/70f27939c3f2618e/metrics.jsonl",
+      "sha256": "cf0c6082c9411f5ee72a6e42026432ef5db16a4bec97b6b7584dae573ab6ed11"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/70f27939c3f2618e/stderr.log",
+      "sha256": "bf2ec03ca65fdf5d326a76ca3ca5f8c62ceafb11e73a5b76355822aac3801cf1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/70f27939c3f2618e/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/70f27939c3f2618e/telemetry.jsonl",
+      "sha256": "8190ae66e5e8225a7b61b8b522bb51190353589f0e000c8db506be41d6e2aadb"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/70f27939c3f2618e/time.txt",
+      "sha256": "71cb55c07a82a5f18f3f514a8c7d90a02a5cf2e54e1e4de0e5425a24b1ccbad0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7557c459401603a2/dependencies.json",
+      "sha256": "054d0b674f869dcfbe6b76d18b80f2434990c7cd5d31d18cf28aab1716024d2c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7557c459401603a2/metrics.jsonl",
+      "sha256": "2432903d9a2213b9c15a4e756a1238af092b2dc5d4f28d2e49267b8540bb0154"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7557c459401603a2/stderr.log",
+      "sha256": "af860ea8c1c77dd96613d7ba956c9b927c6dc1b97f48a6becbb45232f50247bb"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7557c459401603a2/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7557c459401603a2/telemetry.jsonl",
+      "sha256": "e64bca19c55c99aae0e6815a59b774fd0e073b6a1e5ec402d043db265afd8c35"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7557c459401603a2/time.txt",
+      "sha256": "413acf44d250f9a7d947c0f2f347116faad829d9626233e1258e9c3eccf0246e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/792f46d55ee54e05/dependencies.json",
+      "sha256": "f7fac768b577ddf949eeb8137d80efaeedb9ef0f7039467e90a6b5b4462ace10"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/792f46d55ee54e05/metrics.jsonl",
+      "sha256": "54f5ea4b7cda65584bee9ffce5cb27a13b52b4a220531d64d328cd89cc8cb6a8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/792f46d55ee54e05/stderr.log",
+      "sha256": "525d076cb0881ba2012cf29b096fefbe2f9bc8e1df1ce8f6ba484d55c39d2144"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/792f46d55ee54e05/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/792f46d55ee54e05/telemetry.jsonl",
+      "sha256": "b5b880469b1966247e53f1597a5d73ba129683c4c15f1afbb4ba54b98309e1ac"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/792f46d55ee54e05/time.txt",
+      "sha256": "90ffe2b2d6e15a0257aafcea0c63b9276c312db67bdf207d8057db268e08b564"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7f1a0501d082b5dd/dependencies.json",
+      "sha256": "b86c964df8cf2cb792c8dd168826a131b355897754f5976e551d1e0bb27b922b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7f1a0501d082b5dd/metrics.jsonl",
+      "sha256": "8bd09fa6861f8d11dd8d1457c315904591e2f06c6c2d80ad2b9d686a82a878d5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7f1a0501d082b5dd/stderr.log",
+      "sha256": "7118e978c1ddb4015eab79b79ad915dae924d4c780a617e1383fcef0a01954ba"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7f1a0501d082b5dd/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7f1a0501d082b5dd/telemetry.jsonl",
+      "sha256": "176a8e78451139a061378d3f0c8b3d614fb80bc1a33621cf8fc60d4b4af62c52"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/7f1a0501d082b5dd/time.txt",
+      "sha256": "45ed9699bc304ffe700b21a7efe73ea326433c91b432ac0c380da4cf10543727"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/84d813ff30351b47/dependencies.json",
+      "sha256": "65f80b710240c825994b27f673633d0aeb3278090eb3f43291a69b4b38d826cf"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/84d813ff30351b47/metrics.jsonl",
+      "sha256": "0f439616fa2b882d80ef3dc42ad528889ead806996386c2210fc0a28d696d572"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/84d813ff30351b47/stderr.log",
+      "sha256": "295c4baa1fedbfc2d4f3d96b081e82877f21942edf94468f369ef62bca38f965"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/84d813ff30351b47/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/84d813ff30351b47/telemetry.jsonl",
+      "sha256": "72568e221e28e5edb0a314fc653ae0e16accfc5b8fbb851df0175ef9213eb936"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/84d813ff30351b47/time.txt",
+      "sha256": "ae0a3f3f428c88ec27a778e6f2603d032372c926b5c06c2f6780c942d5ecff20"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/85931700529ae9bd/dependencies.json",
+      "sha256": "7e45cf2db795130d459d3eb1aded97afcf95510c75ab771d32c5463f624b3766"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/85931700529ae9bd/metrics.jsonl",
+      "sha256": "249aafbaa26723fd841eae076b30d49164f0bd50564ac39aa823949595c49f4b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/85931700529ae9bd/stderr.log",
+      "sha256": "21474954ccdc544cc4a9c539a529ee1e4d1c34e8e3ea8de092f5e54c80068477"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/85931700529ae9bd/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/85931700529ae9bd/telemetry.jsonl",
+      "sha256": "5605fa522496d64677dfc603c98b9954db8ac04369703ba852440318b662982d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/85931700529ae9bd/time.txt",
+      "sha256": "da676c92dedda07d6da9a7a491a88825169a0158f1e116205fb18edcf62091fa"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/89f1427bafb2e03e/dependencies.json",
+      "sha256": "7928142af7ebe057ab05ad6f01a05a9e49ae7fb791f7b89547655fcdc08bcbc2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/89f1427bafb2e03e/metrics.jsonl",
+      "sha256": "e76011e0fcc4e2b183c5781f5ee608cb7c688cc35fa2a90481f851610272d065"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/89f1427bafb2e03e/stderr.log",
+      "sha256": "20663c9cfb01be8e850b50314d7a3a7d9ec5f5be03350e5ba334e05a65f9d8fe"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/89f1427bafb2e03e/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/89f1427bafb2e03e/telemetry.jsonl",
+      "sha256": "41dd4d5c30403d3c5565f2b5fde46d5d23d6b75eecf2ab03f8e0480f9bf89c59"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/89f1427bafb2e03e/time.txt",
+      "sha256": "cfbfa88c337b411329f135fad23969a980c430d72e3fa049973397d0e0f0d70b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8d1308febaf7041d/dependencies.json",
+      "sha256": "5f99623daee48c0e82c5da154fc7ea9b9299a1b0ae19c2145b26762661f81ecc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8d1308febaf7041d/metrics.jsonl",
+      "sha256": "26cdce08767732f7e5a5ef14cef18cf09856e7a65c33359374af67def19b7162"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8d1308febaf7041d/stderr.log",
+      "sha256": "55bab99f489e620de91dc9dda2e4878ea6d9af41a1b977b10aea311e68a96ba6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8d1308febaf7041d/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8d1308febaf7041d/telemetry.jsonl",
+      "sha256": "bdffed1efc04e16a5a631626b83ab2cdce5ba86f6fd20244658e05da43b79c2e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8d1308febaf7041d/time.txt",
+      "sha256": "dc164df7a271ae5b24e05ce05becbd2f97c579655ccf09129006b399eef7f7ac"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e0bfbb0bb8f4acd/dependencies.json",
+      "sha256": "45933167d0880678af04a57cb89cd3fc808c6aaeab9653685ab8b85e8f32206c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e0bfbb0bb8f4acd/metrics.jsonl",
+      "sha256": "c7b6d052cb2134f8e25966fbbd80be10c3bbe39c1e49ff9243b5fde68b5fef1d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e0bfbb0bb8f4acd/stderr.log",
+      "sha256": "dc1b693e010461efc3af7c4b00ae2a9c3df70cfc0283b7fed9d050f14ca72992"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e0bfbb0bb8f4acd/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e0bfbb0bb8f4acd/telemetry.jsonl",
+      "sha256": "a20f3dc3d4d173a639866c410258ef7377417af397aa94389c8efe3e4ee30592"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e0bfbb0bb8f4acd/time.txt",
+      "sha256": "852e2ba35e55d0ebb9e06115a2dc1038c609f66cf6fbbcd6fd93e361a0d7b7ff"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e2f1a6e49366d8f/dependencies.json",
+      "sha256": "12aa661e79a7c9fce9ed271f080ac2e1082064a5d739dbb393a6956bb63200d7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e2f1a6e49366d8f/metrics.jsonl",
+      "sha256": "6009bd53674495a4f5499624ddb289f6a9125595b1de05797e2aa5dc732bda1e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e2f1a6e49366d8f/stderr.log",
+      "sha256": "1dac047675d6a1b3ecc4c0385446e87a585876898f3c6cb11c0d1c0d41558dec"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e2f1a6e49366d8f/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e2f1a6e49366d8f/telemetry.jsonl",
+      "sha256": "26ac6b40439c52aaee8b7127247ac5aab0f9073b6d94f4b5fde84926e6656349"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e2f1a6e49366d8f/time.txt",
+      "sha256": "d979bacc131555f99a04ed0be3cfe22d9abfe116fbb3edbbc1bfd36a74a21077"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e4db16c1710b40c/dependencies.json",
+      "sha256": "2befbe0966bebdc752fadd121bcdb445a019abcb2f09e7fbdf2555fdfd5c67c5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e4db16c1710b40c/metrics.jsonl",
+      "sha256": "97011ad730faf3cf967428e5ea0c5179cb9ee005d59748953119adda3f8b246d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e4db16c1710b40c/stderr.log",
+      "sha256": "e2014845aee185ff71a80fa2286154bfc4a0346eacbb33aa1305fea3be97e301"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e4db16c1710b40c/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e4db16c1710b40c/telemetry.jsonl",
+      "sha256": "232c06eacbf3978339d76172961618fef0b54fda3c3e56473a8f2c9797f2aac4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/8e4db16c1710b40c/time.txt",
+      "sha256": "a6847de25d2d156e4a66d4ab4cc9c720a8a2f2a4d087e6773bb52f391e1258ba"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90096622fff47265/dependencies.json",
+      "sha256": "2f241658593f0b9e1187574c0a6241a9b533780aaa0c80fecc107bb92e41087a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90096622fff47265/metrics.jsonl",
+      "sha256": "ec9af2b0c8e271fdffedc18089e162a15f2bcb2118d87eadf1961783f8a8643c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90096622fff47265/stderr.log",
+      "sha256": "3279a7811ab75642e1c836bda13400bded6d143d940e7cea0ea01e2ef89e3082"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90096622fff47265/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90096622fff47265/telemetry.jsonl",
+      "sha256": "2f8c82852d429feabd7e8368f5196183bb60cb2b6c7cec9db4decd4639ca65b4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90096622fff47265/time.txt",
+      "sha256": "7e2bb0e2e351fb104a0e2124a47356ca1a0e94446637fd16ced4f1d4a57dedcd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90f81d7b685a1abd/dependencies.json",
+      "sha256": "08641b36b3de6516537e7d2049a75ed8fcdd2bc08b9e1464d461aa56a2933d33"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90f81d7b685a1abd/metrics.jsonl",
+      "sha256": "3269ea603786ca4480615907b6ab1b0429493bd97ae2991a9e7097e00676c724"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90f81d7b685a1abd/stderr.log",
+      "sha256": "fc678b5e1ce492d5777943c00fd2a0918b3a8d7bd4675f15fb5a4e9b2911de13"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90f81d7b685a1abd/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90f81d7b685a1abd/telemetry.jsonl",
+      "sha256": "02b541a9968c821a9d5e734f3a622838a01dea18c5c82b53e39693fa8251aa88"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/90f81d7b685a1abd/time.txt",
+      "sha256": "17e05130dcf1b5f43c24731cac0363b9e3acb9f4b5b23094b88f45bbe5def5ea"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9401561db503964f/dependencies.json",
+      "sha256": "87975972c87171739f32212c6e7970bcdf168f7e533f83f96fc3210fe9ae1efe"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9401561db503964f/metrics.jsonl",
+      "sha256": "6b538b45f33d2965113a523e13406eb77f178f67ce6c8e87a8f0c0a3578fe15a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9401561db503964f/stderr.log",
+      "sha256": "1e2aece32674d782ddd300469cf556309b58e36d86bc300c9cf62294d490bb4b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9401561db503964f/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9401561db503964f/telemetry.jsonl",
+      "sha256": "6a72f8d499a9d9bf49a50cb52a2ee7925794c7616fcbe91b03cc5cbc4ef026f4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9401561db503964f/time.txt",
+      "sha256": "acd74c9c571078f1ce1c41c9b0b98eb45312bba8b726a2c3a07110421c108e2b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9d80faee8c58d8de/dependencies.json",
+      "sha256": "18179a95ee6dc4d779a83a666bec9ff20600413219e8b9e248a87de245783d8d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9d80faee8c58d8de/metrics.jsonl",
+      "sha256": "42882a442e037364ee305d824987bbfd6ca086c5c4529aca3c236c8e5087f9b9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9d80faee8c58d8de/stderr.log",
+      "sha256": "a252efbab5c8b903459e8acd30a6e3deda2cf8c00133c3c8b2092d365612ffa6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9d80faee8c58d8de/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9d80faee8c58d8de/telemetry.jsonl",
+      "sha256": "17de4ed4c561913f962b20164f6c22a7e7f5b60a5270981e384eb0052be0019f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/9d80faee8c58d8de/time.txt",
+      "sha256": "4f53ad76af70e13f49541461e6fdfe3560042918420fa9b809e575b2d272d6dd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a367f4acd2bec18b/dependencies.json",
+      "sha256": "9e0c214c5b63943f582511ec009377b421cf28246dfe49f97ab4ebc4df139a37"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a367f4acd2bec18b/metrics.jsonl",
+      "sha256": "51128c0dbb2b16fb8047d567af960a4ece145cdbddbfdeca213c5ea4bba42ea2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a367f4acd2bec18b/stderr.log",
+      "sha256": "aee7d4ecae2e068ba699636478081ab46c8f40040b501e31c8688aa5fc6254a3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a367f4acd2bec18b/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a367f4acd2bec18b/telemetry.jsonl",
+      "sha256": "41db91530dca3aa943b31ce08f297f4a650925ecfcb13955993e2a0e31452ec6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a367f4acd2bec18b/time.txt",
+      "sha256": "1b40ecd308c8748c24b8b0aebcd9a1fbc468ee7a4d8b5906ab7b567f6a870e3e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a3874978fb9d76a2/dependencies.json",
+      "sha256": "b63abc833276337b7eb154ccae9acea3de6dd6251dc0f6b3dd3abf16ab41ec29"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a3874978fb9d76a2/metrics.jsonl",
+      "sha256": "c0b8c1f869eae56b4c2828a4ff1c4f254e2b3bb0de6f94fea0577fedc62eee55"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a3874978fb9d76a2/stderr.log",
+      "sha256": "76c11f0d23a921bc0b6487e2c5f5958452312e35df87a52be6cca96d33445134"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a3874978fb9d76a2/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a3874978fb9d76a2/telemetry.jsonl",
+      "sha256": "24f6c65f9cc9a074879e02f9822749e80c49f3b805d494759a6f1b471f46719c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a3874978fb9d76a2/time.txt",
+      "sha256": "efc589992d8a03682ca9aaeda3316c912477faef9dc64564954dcd5d43f0a21c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a6340eefcff72047/dependencies.json",
+      "sha256": "00b46ba0bbb523a75ce8ea0e3bcd3883f04490beeb563caeed28daa8cc5447d6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a6340eefcff72047/metrics.jsonl",
+      "sha256": "d719dda9cfc12ef88ca4fe0e3e02c564fc47ae0850826d27e5c0c209d43e80a1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a6340eefcff72047/stderr.log",
+      "sha256": "2bc6cb8ef67070fc5f05d3893f0c9ce6316ab597ccce6bc5aa5ebc4f316fa4b8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a6340eefcff72047/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a6340eefcff72047/telemetry.jsonl",
+      "sha256": "2547f63101a5111c1ca61cf24492bfdd35f9b5fe09bc85154ba27f7d8fee34d1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a6340eefcff72047/time.txt",
+      "sha256": "888608f268e32816c3ac43cc09377d8f8eda3aa49f4c6dc2123b882629cf3c76"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a82318348427f821/dependencies.json",
+      "sha256": "de77d4d8821bc9a216b951109935fe19163455e38d2b547a5331d24d477aabf8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a82318348427f821/metrics.jsonl",
+      "sha256": "81b9afd56e6b2ef120e0549594703e95e1dbc2fc1a52b3fea3b25c9b983b705d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a82318348427f821/stderr.log",
+      "sha256": "a814410b9d546a8e4e63334400ddba7f4ff3b42afa9d27fedfbcadb6bc7ccb05"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a82318348427f821/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a82318348427f821/telemetry.jsonl",
+      "sha256": "def3af52bfc1e41135e24212a297959b64b8dc4daeb8089f130612e90dc06c42"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a82318348427f821/time.txt",
+      "sha256": "444bc4dc642ea8a1d8289d83f13c28b59465c9488bd92fd3b8d67f0e2c45f15c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a866a57778cd77af/dependencies.json",
+      "sha256": "0d1dd95b6d78ac829ebe170c477c25ecb907f7ef09a83f859d766797fbe1fc62"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a866a57778cd77af/metrics.jsonl",
+      "sha256": "1f6f1b43bb40eea3b4fb00a1e90917d4ca8a660dc68e6d14f4f0dca1aa29c40d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a866a57778cd77af/stderr.log",
+      "sha256": "749a6f3645ce6181e329f665f68222bf0559c92e51b867ebda6fce836ce4495f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a866a57778cd77af/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a866a57778cd77af/telemetry.jsonl",
+      "sha256": "7e80339564d8eb5863bcd650f0635ee45438c051a34609e155b71a74fbb08a15"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/a866a57778cd77af/time.txt",
+      "sha256": "4a66499ac259995b3fc064eb8bda335377c790435ca5502d831a2a633799bdc2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b72618dbeb8d4654/dependencies.json",
+      "sha256": "089d5c70f1435caa6cad8e0df2a9198925fa030b84ee17b482f3ce3b2ab450c5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b72618dbeb8d4654/metrics.jsonl",
+      "sha256": "597b0a6a35f373ee3b35580b105547757f57cbfc69ae1b9cdeb74a9f52dd503b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b72618dbeb8d4654/stderr.log",
+      "sha256": "eee75c940be05d000d500d62e5e6060c5904c1fff3d1ba451b8410c89362bbdc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b72618dbeb8d4654/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b72618dbeb8d4654/telemetry.jsonl",
+      "sha256": "f922eddff39b0c97bb3999cbfcf8eb83c545253ac8b16cc696246b00c4ac424e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b72618dbeb8d4654/time.txt",
+      "sha256": "c0aa6292c3c3cdc24f20c276c429a0452600975c7e4d172067e40809ee311b63"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b7bb370b3171956f/dependencies.json",
+      "sha256": "c45cec843207b0ec2fe1ff0198f4f0e9ebfaeb15959a1b0ea696de1150b18563"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b7bb370b3171956f/metrics.jsonl",
+      "sha256": "c7e3b828be40b1574996f7ba70c9dd189bf863e2be4ab6e0892d99b111b2d563"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b7bb370b3171956f/stderr.log",
+      "sha256": "990c90569b53cb471516ddb8bf2ce314d3e10beff2086ff1147295dac8316408"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b7bb370b3171956f/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b7bb370b3171956f/telemetry.jsonl",
+      "sha256": "11ccc808d9d105a77229fb458654f6cda920c0f3204a80a5eceabdb5c98d1959"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/b7bb370b3171956f/time.txt",
+      "sha256": "6e0b5561c44a5fd36661da3f7257a33446166fc28fb4a726d281bc21f2436fea"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c4ff728a15e2c448/dependencies.json",
+      "sha256": "0b47155254a4a697d309b2afdc1ef2ede923f60a3166fb0e26bc048b3924d78c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c4ff728a15e2c448/metrics.jsonl",
+      "sha256": "6761f082088d7433b6db21fb2a531cbf8348c169d9920ce419aeb6baa754cf5c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c4ff728a15e2c448/stderr.log",
+      "sha256": "acc476a760070c1ac84469f3d69fd5f4f17b4e4c1cb47c723dc42416df06e6d1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c4ff728a15e2c448/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c4ff728a15e2c448/telemetry.jsonl",
+      "sha256": "0e22e4e1e0781f2a5d77cffba3ef3bcaa45347c7ec55cbabd86f82bba3cd1bdd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c4ff728a15e2c448/time.txt",
+      "sha256": "67aa0207eab182ddaf9decb8de2c292684085c1bc060edfc876372b13427c650"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c5a1c856e8d5db78/dependencies.json",
+      "sha256": "39acc435f7408b8f648f90526ef66a166566aadc6db0fa2d89b738f54da9800d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c5a1c856e8d5db78/metrics.jsonl",
+      "sha256": "2ef3444ef856d566626431df208aa7a85a84d1ab6ebad6913520dd11b91533df"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c5a1c856e8d5db78/stderr.log",
+      "sha256": "a8f7ce41a01026f8f91cffe82e29362d1cbb62541641054b1681422a41ce7926"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c5a1c856e8d5db78/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c5a1c856e8d5db78/telemetry.jsonl",
+      "sha256": "accd4f1eaee748907e420b09d1551bc945a1a4beae9af02f243cc46db21078d3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c5a1c856e8d5db78/time.txt",
+      "sha256": "af23705d6acd9505c6cbfeb9d73699acaa33f3c213916bf9a3af2a8083f80397"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c6a3a68f36e5247b/dependencies.json",
+      "sha256": "98c0c4937b47a233c90f532d44cdb0520e863f685412f256d7ca98d5e473acde"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c6a3a68f36e5247b/metrics.jsonl",
+      "sha256": "841c19c595dec384af4d3b54ccb98472634bedaefc2d91626e36cedd36e6d936"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c6a3a68f36e5247b/stderr.log",
+      "sha256": "545c963efc2778bdbe745981d3db9254921ce11accac4810968611f515ad4ec5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c6a3a68f36e5247b/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c6a3a68f36e5247b/telemetry.jsonl",
+      "sha256": "82f1e53fa91b40c9d4c2b1a7b4d2080524ba51a8fc45a88386602049d771f14a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c6a3a68f36e5247b/time.txt",
+      "sha256": "b53e7b0bcd53577f0724c00bd0c9ac56a4ca68e2c959074745bc30aea0507327"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c8bd92491fae8f50/dependencies.json",
+      "sha256": "fb31eda8f66486e46e197a0d96e39a2a70b2001f882d9319cbd51e5741ee0439"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c8bd92491fae8f50/metrics.jsonl",
+      "sha256": "8e24ba520f7a6929da601d43db2137c9c532db41bb08b4364284f12958d2e8e8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c8bd92491fae8f50/stderr.log",
+      "sha256": "0181b81f188f3cc208f703b932a68f0eb2c554d9a1fd041b55368e93479b67ee"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c8bd92491fae8f50/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c8bd92491fae8f50/telemetry.jsonl",
+      "sha256": "1372959209695c256cd485bb15625e543a2dc4ac6be59ac051682dca6ebeca0c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/c8bd92491fae8f50/time.txt",
+      "sha256": "f4a65aaeb805b8ab6664f1812a4b062cc03c7bd84bd5aed41772bb8e88829baf"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d0c029a3108572a7/dependencies.json",
+      "sha256": "7fc1ba294529dec21785a72bb8457ad9c954b455751248beab3fde74440e83b5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d0c029a3108572a7/metrics.jsonl",
+      "sha256": "95e95a0bb0c07b6576ee79f1f3fd7134d3463c7153b6e33a5ef279ce78428ce4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d0c029a3108572a7/stderr.log",
+      "sha256": "c70bccc6df609b5a982214e47cca6042a9643c3aaa365d5076689b9294e0a3af"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d0c029a3108572a7/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d0c029a3108572a7/telemetry.jsonl",
+      "sha256": "0e7b4435a4614ad0bcd25f193682332f36a38606c92a4a6b997d6ae3504d092a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d0c029a3108572a7/time.txt",
+      "sha256": "c86976b82ebbf0fa8a225f1de7b4d0d80be2d45ab7170e5de5d69e12a42e367f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d2bed9bd0c9b2662/dependencies.json",
+      "sha256": "24c55e979f7d583c86c7d14e2d3597f9bb5bb2404e124864fdb33d7bc41e81f5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d2bed9bd0c9b2662/metrics.jsonl",
+      "sha256": "17f17c179bb2bff68f2f5cdafeeb5b2d3f5c507b541c5f4af551df77ab1e8df5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d2bed9bd0c9b2662/stderr.log",
+      "sha256": "8952e64978d19eebad45b21367c76058f3f53f4ef2608ca3fe23858cd6ff3aeb"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d2bed9bd0c9b2662/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d2bed9bd0c9b2662/telemetry.jsonl",
+      "sha256": "9085a4f4a61de012bb2fe738ba7d47876dfc7f1f6e01ec24a00c039e2a75eac7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d2bed9bd0c9b2662/time.txt",
+      "sha256": "bae8949d07e351646459b516c122329d924c88a1475814cd4659c6b416c5788f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d35fa32d3a27149f/dependencies.json",
+      "sha256": "c696b3c59b9e70fa1ee4c3aee307417d7ebf1f90d029bf51ebd02e53623b687a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d35fa32d3a27149f/metrics.jsonl",
+      "sha256": "5cb2ed13ca3866f54748da0de015225aadefc2a645e7a6171aafdbebae4fee0e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d35fa32d3a27149f/stderr.log",
+      "sha256": "17b1cf3f78d047cf252aaf0907fc05b41badbcd70a237fbaa9c1699dad13b55b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d35fa32d3a27149f/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d35fa32d3a27149f/telemetry.jsonl",
+      "sha256": "a618204b07264299da3d75683a9796dc84bb3429810c6b524b2716e143de8561"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/d35fa32d3a27149f/time.txt",
+      "sha256": "a2a2a6122388ab394b743a69f85adaa68a1cb36fd9d563fbd611f6fc73197e6f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/da1614ca80f46ff2/dependencies.json",
+      "sha256": "e17a1ee04285c44fe37f6fe210b4170609f7e1e99bd50f21013797b7d5876c85"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/da1614ca80f46ff2/metrics.jsonl",
+      "sha256": "d91f7a36ab7aa587fb8df2ba0d1d209ff3f68227282af331aea875ddd4e7e356"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/da1614ca80f46ff2/stderr.log",
+      "sha256": "97c8787dec5bdf349c2804fd6f5c20c33da361ce42b5ca886190f06be0277b55"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/da1614ca80f46ff2/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/da1614ca80f46ff2/telemetry.jsonl",
+      "sha256": "4ab06364c844fb0def4987ebd680ee347fad6e370ad59438841d30c0f2f45da4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/da1614ca80f46ff2/time.txt",
+      "sha256": "9d8d11c68a4b67c937774abf3fe64583bb06aff3aee076615e1e09484c324877"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/db90a0cbde11bd30/dependencies.json",
+      "sha256": "29fcaf447e13351949b3ea4a22eada8d5df0dcfe38a1ed9e483954c1e6e4b4a9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/db90a0cbde11bd30/metrics.jsonl",
+      "sha256": "64cb5e7c38fc0a01d4809378eab62db581d15b43d5de43202fa83f2c929727ed"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/db90a0cbde11bd30/stderr.log",
+      "sha256": "3bcb5a677d7dbc6da0a92ef3b2df998181971e52596b56878df946839c785e38"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/db90a0cbde11bd30/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/db90a0cbde11bd30/telemetry.jsonl",
+      "sha256": "d5bd6ae8c87b45c7ff6512edb42bd67dbfe533362153ca1a6947da18b9d1dbe6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/db90a0cbde11bd30/time.txt",
+      "sha256": "dc3c85d5c47c18b63019758ab96fcc084b5f5c5f78f733db069a2a1a5d19c51a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/dc79e9c1c875df01/dependencies.json",
+      "sha256": "c696b3c59b9e70fa1ee4c3aee307417d7ebf1f90d029bf51ebd02e53623b687a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/dc79e9c1c875df01/metrics.jsonl",
+      "sha256": "3a920d82b3925f01686f3185cb48c24202532225b4844e963fcd62599cb61f21"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/dc79e9c1c875df01/stderr.log",
+      "sha256": "018d24f14628bfc65508e804f78a796c350f41161e4a4b10c29c1efdb3e637ef"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/dc79e9c1c875df01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/dc79e9c1c875df01/telemetry.jsonl",
+      "sha256": "41c5d9fec1708c51854d4776643eba6f809b7e9d8eb343ca64d3401f6f80ed41"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/dc79e9c1c875df01/time.txt",
+      "sha256": "2ae0454b0b5d35bc6d1094c4a8c954b283281655bde8951c0f9f4dc4de5805ba"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/e4602df7a0ed5f88/dependencies.json",
+      "sha256": "7bfe74bfb7abe7409e7615cb235b5923063648aa4fb6ded40640047dfb689e9c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/e4602df7a0ed5f88/metrics.jsonl",
+      "sha256": "35aebb36dde1dc20e0cf206f3cd0a1a595314e701e06a506c9aec62c72ac4fb7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/e4602df7a0ed5f88/stderr.log",
+      "sha256": "131c3044f13170e63af8d1d2d6ad839f2eafe41f7f7e515300e301ec24f1fbd1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/e4602df7a0ed5f88/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/e4602df7a0ed5f88/telemetry.jsonl",
+      "sha256": "8dbcf58bd03fd8aab5869e3a9a23f6ec9c6bde4704bdd7c620c61d96141693e5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/e4602df7a0ed5f88/time.txt",
+      "sha256": "7a178907cf1145b84c91b3c4226daeba96c954bc4d1decec9761b04c0665ea6d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f0bab7303f51e786/dependencies.json",
+      "sha256": "74703b4361f479e3c6d126e7ff331a0720332871fba779921cba1475ef9e57b1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f0bab7303f51e786/metrics.jsonl",
+      "sha256": "d298a393df9b137061aec6f1beb697d391b2d08c7ef402eac7e3e49068cfb2b0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f0bab7303f51e786/stderr.log",
+      "sha256": "d6d98bf95ff3e851ac33e322616566960bbb76e0242948a31f5a16cbd03212fb"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f0bab7303f51e786/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f0bab7303f51e786/telemetry.jsonl",
+      "sha256": "4760e6489523b728572a01e46323f5c7480a9f47d3dfc38a5048be2a886b9e9a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f0bab7303f51e786/time.txt",
+      "sha256": "19d7fa2120f4270b104253f6550820d2e52445c1253a6c8e21014ab12d54d614"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f3c66a2033a66a2b/dependencies.json",
+      "sha256": "4b77a09c364b109ef1ed6d60d4612236d80d41371d2537a2e70df4098a772859"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f3c66a2033a66a2b/metrics.jsonl",
+      "sha256": "6988120d4b2cbf389ea5b5ddc0414f9847215f781050dbe43902d3bb5e64e3ea"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f3c66a2033a66a2b/stderr.log",
+      "sha256": "37abbf462e187bbe22ed077a4a1df25e51eae4415933af3fca7b596de0e1fa36"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f3c66a2033a66a2b/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f3c66a2033a66a2b/telemetry.jsonl",
+      "sha256": "c3f8cd3db4e369c0027f218ccf0c2346de2980d15b29b8bb829cd2024b081900"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f3c66a2033a66a2b/time.txt",
+      "sha256": "fbf1b10c50213658c3e9caf818d645f5750ade08a199727e256eb67a79a7e6ca"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f55d741512b8cc47/dependencies.json",
+      "sha256": "c008de540cf39104d0d2be52f12037aa3c3245c5ff4ad32f1f9f317443895cfc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f55d741512b8cc47/metrics.jsonl",
+      "sha256": "f015a0b34075a7639008f8eac0014619b21e45cea834f0e6aa28e3088d2c7668"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f55d741512b8cc47/stderr.log",
+      "sha256": "611516e26fd389a2821a8782a3087b56a87cecf0530a3f138c1fc0bab938a4d4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f55d741512b8cc47/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f55d741512b8cc47/telemetry.jsonl",
+      "sha256": "45dea113c2caa00c68a23fa9d671c6bf156a92091d17bed0ae69ca230c54d041"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f55d741512b8cc47/time.txt",
+      "sha256": "8a23db6b9908d809fd73ca3fc65b27b2f303a84a35f249bac7eae69fc9df69b3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f966744c71354a80/dependencies.json",
+      "sha256": "d160504c850e8e3d60a3ee239a9cfadfcb0d6e553cf151bfb3adc68c621ca7a5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f966744c71354a80/metrics.jsonl",
+      "sha256": "4ef63a21fa5f5c484b5e261365777ba8a29d33092066edae28f0475b9d8349da"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f966744c71354a80/stderr.log",
+      "sha256": "52f239edaf3210fdcc255e6a4473cad24631634485de8ba2a4c84adefc44997d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f966744c71354a80/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f966744c71354a80/telemetry.jsonl",
+      "sha256": "7f1d077e9f414685b8aab9cd6efdad85577e44465cf10974986c27bf006398d0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/f966744c71354a80/time.txt",
+      "sha256": "c16ce6ecde716049e73217ff68c87d25f193bc978f734fbba779e534ab96ddc5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fb675863f8d09c36/dependencies.json",
+      "sha256": "f8c7f168d492be24b3c6a318f20d40af1cccbd939d4f320901c561f64c508dc7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fb675863f8d09c36/metrics.jsonl",
+      "sha256": "761a0027143166198cb5a2bb69abd133edbb6555f6450cc1c8ecf3d0d9c325a7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fb675863f8d09c36/stderr.log",
+      "sha256": "852bf4c3356b73d5365a18c76c5d2b8bf9873aa65f6f17935e393d370a001c03"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fb675863f8d09c36/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fb675863f8d09c36/telemetry.jsonl",
+      "sha256": "16fd00ed23c7f8ae549c457a49c8af166783cf2cbbf73e190cff36102139434a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fb675863f8d09c36/time.txt",
+      "sha256": "4791f288bc8686a0c282f1d606312f3edfc9d9d369fb825de684d7f4780fd055"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fdb6a11aa23211a4/dependencies.json",
+      "sha256": "39e75ba71684c3cb8f4f5692002fc6cc731f9bc86178c3a0c10e11acfaf4adc4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fdb6a11aa23211a4/metrics.jsonl",
+      "sha256": "87ec8ba75373a578b46b974fa049de2fd535e6f810fe1674198142b641b35524"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fdb6a11aa23211a4/stderr.log",
+      "sha256": "74c4b028c5faf57e3c357854c3d43b93556b81af610787cad1197a09cb25c7f3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fdb6a11aa23211a4/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fdb6a11aa23211a4/telemetry.jsonl",
+      "sha256": "f4d4e22ea65db0c689217d68ed387793f71cb515138aec330abe8b143ba81c82"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/fdb6a11aa23211a4/time.txt",
+      "sha256": "1d1afe3438c6cf5864e59265edfc67fe3a9888078f75126548dc9753a614b528"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/input-hashes.json",
+      "sha256": "752e15fbabdb6d0a24913036fc01ad35810a4c0f6ed66a7f1e779afecade7f96"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/results.json",
+      "sha256": "295fa91cd6f8e71d4bfa2c5cba02b87d8c2b57b148d27a286036acb9afbbbeaa"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo/summary.json",
+      "sha256": "28b4b20acd6df3593f7497e43ff6aba9acdf832d1514d1e31194c08587d92881"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/carddemo.log",
+      "sha256": "05bd6d35e6c46c0d062061ef744ae889c2a768a9ff9e3aedb145f7a83dd6d508"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/fast-summary.json",
+      "sha256": "2c552ae9e23dc2e0abce1c4038d7e7419c08503f966fe53658643831baafffe0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/fast.log",
+      "sha256": "2ab150b0fd520180da85f2419d826fef51157c8a5feeaaed23f29130b6912a27"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-fixed/return-fanout-fixed-2h-32b/dependencies.json",
+      "sha256": "c9a74e4031f26310f35e6f8f41fce3ef79d75d44095a5c20dcbc57228cbee473"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-fixed/return-fanout-fixed-2h-32b/metrics.jsonl",
+      "sha256": "e6d34edbef4ba7126b46d0dd2c0a0ad1d7039c120c705d0056efbead58a6f17d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-fixed/return-fanout-fixed-2h-32b/stderr.log",
+      "sha256": "c5ebf911a00b86f08105981f7b12ff9261e33ab40d8a21bdd42e23a4f956cd6b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-fixed/return-fanout-fixed-2h-32b/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-fixed/return-fanout-fixed-2h-32b/telemetry.jsonl",
+      "sha256": "cef98cb5e4da444f8510edba661f1492b2cdd0e58036812906bc934404371ba4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-fixed/return-fanout-fixed-2h-32b/time.txt",
+      "sha256": "d04fb4477f133529fe9ff8ae40754c71ee127d262d483eb40a3721a56160be13"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-fixed.log",
+      "sha256": "4a0fa2fe61a72e6ad96ecfbe3967c4149957c9b1ea522df378b7fa0d7694cb09"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap1024/return-fanout-2h-254b/dependencies.json",
+      "sha256": "d71892e1d369b8e128f0c0fc89be2d40876be916058ee8dcc9ea0370812ed969"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap1024/return-fanout-2h-254b/gc.log",
+      "sha256": "2fb284e1a3e9ef4aabacb12dfb18c64941cc9f2ddcb3d27d2cb92d087597a6d4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap1024/return-fanout-2h-254b/metrics.jsonl",
+      "sha256": "9021d6ea9bbf05313831a8abb90a7a7e0b6a152b06c8b68ae957ffe65cdb6dfc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap1024/return-fanout-2h-254b/profile.jfr",
+      "sha256": "1516fa7440899202931d73b0f0f7eb63bfe8c57fed44123a5c805fb02177ded5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap1024/return-fanout-2h-254b/stderr.log",
+      "sha256": "88bc20256f17e21c45d3de9039b0de1ad7e7e5612ae525962e74bb737bc6c5ef"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap1024/return-fanout-2h-254b/stdout.log",
+      "sha256": "bef3be48bc483a2acbebe82d2f0253dcd4dec9dba46c7b85ce52bb5ce48ca4e6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap1024/return-fanout-2h-254b/telemetry.jsonl",
+      "sha256": "030af9c42dec4da83cbc9c37514d966de5066589a7fa7b48e30030e54aff9ca7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap1024/return-fanout-2h-254b/time.txt",
+      "sha256": "367286ba8da9809eb8a54bd0014891d24ffe3e871e870699f423e2199b210118"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap256/return-fanout-2h-128b/dependencies.json",
+      "sha256": "9e0adf219511cc256fcfba90c255a79c07d88255f95d7665e181e0dcd341c3c3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap256/return-fanout-2h-128b/gc.log",
+      "sha256": "1271f9819a7ec132a8883754c7003fe64183e4eb592ac7b6bb40a862bf5bb41e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap256/return-fanout-2h-128b/metrics.jsonl",
+      "sha256": "5e308074d42731c9e147dd20207a0ba947ed443439028d9e2e60616471a48d72"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap256/return-fanout-2h-128b/profile.jfr",
+      "sha256": "1eeae47cb68faac2e7215c605135689e3702aee27103433d08cd56c16ad43c09"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap256/return-fanout-2h-128b/stderr.log",
+      "sha256": "56cb0b2dc6d414b6f85e6f2494cc86b32bb7af16b8d1cb1688f60e79ae926861"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap256/return-fanout-2h-128b/stdout.log",
+      "sha256": "683005171d2bd753793f2340a6c9f940cb1256438b3d8b5fea75b68203f7d713"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap256/return-fanout-2h-128b/telemetry.jsonl",
+      "sha256": "368e772b870cdbeecbea4c146a334e3ad69f525ac99f40861fe011f8a9fef777"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-heap256/return-fanout-2h-128b/time.txt",
+      "sha256": "6ec4a760e44c7a06e505d3a2a2c8a378478e71e63d5f8871f9c8db91236ab274"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-jfr254.json",
+      "sha256": "d6aa25d35dfd864ec76983b0768281520135c360e8b6aa607f91db0e80678aa3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-matrix1024.log",
+      "sha256": "d9a750567c4a173491bfd27773819a9d8add9070e721ee642d93a9ff05dee531"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final-matrix256.log",
+      "sha256": "730e6f4ed3e442c7df4b108e2189234ec8eb16499159d8f5a70a7bdb059d7d3e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/final.jar",
+      "sha256": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/historical-probe-check.json",
+      "sha256": "4deab1b8deecd0335fb843a71f773dbafe54e9cbce21c53dbed477a3ce1ae3f0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/jar-class-diff.json",
+      "sha256": "b8d75708f698cee07e6a159e2ebbc97c23bb7f8c7aaae68537e331c0cc01f68c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/smoke.log",
+      "sha256": "dfc3ee562883f3b0fd1ce06077a283c5a9de1e9b9e94ffa6e6e7b0455edcf8c9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/control-test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/return-fanout-2h-128b/dependencies.json",
+      "sha256": "9e0adf219511cc256fcfba90c255a79c07d88255f95d7665e181e0dcd341c3c3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/return-fanout-2h-128b/gc.log",
+      "sha256": "147e92626242a3d89aadb475c74754390ce6df6330e2ffe83520b6f330bc04ea"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/return-fanout-2h-128b/metrics.jsonl",
+      "sha256": "7b4bf164743d0ba792e25afa7728fb656537c5b06f50aea379150f1c1230d7cd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/return-fanout-2h-128b/profile.jfr",
+      "sha256": "577b8fef330248a1277008fdaed1aad344b7095c7370b6d388ba6733aadaa1bc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/return-fanout-2h-128b/stderr.log",
+      "sha256": "1e35611ac4cec3d9218c8e87ee99dde9c3744721a1b7e4b5d4292308d9251d68"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/return-fanout-2h-128b/stdout.log",
+      "sha256": "549465a631bc3dd7293784f08a2b2fba3896e333e04be789d5458ec3f19d000a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/return-fanout-2h-128b/telemetry.jsonl",
+      "sha256": "31d09221ffa477771e0f087d2d2fa8bea298b886fd65418f1221218ff7957885"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap1024/return-fanout-2h-128b/time.txt",
+      "sha256": "a9265f10628bb845a0bee362abb9814aa1817951d9f5b8f8258d13a84b6184a9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-48b/dependencies.json",
+      "sha256": "a8b556c28f509b3351c4e24592bbf8fcfe8e5533bb43f27f7e6066e85afca587"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-48b/gc.log",
+      "sha256": "d04facbda2f6b756bb0e0eb3170ecffe8a15a0a0fc76849a1c5a818489262b69"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-48b/metrics.jsonl",
+      "sha256": "d6d3303d91f14a865c2c7a1e7b372f0b7eff9f871ebb14f64cc05030aa12de60"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-48b/profile.jfr",
+      "sha256": "01b6a9437542de0b34b76f8e66b82d16af371eeab597e615a086761dc3c5620c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-48b/stderr.log",
+      "sha256": "12df30f37a791067b930d0d6c34b0d825f9ad55515f0df633a9f2444e1e069a9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-48b/stdout.log",
+      "sha256": "290ce22977794750a7fa4afcc9be43499edc5bafb904ee8f2b4c25ba7c344b7c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-48b/telemetry.jsonl",
+      "sha256": "f1b7a1ed9375e26962df83f88ed0c9f49b164b59076d97d266fbbec3bc2950ac"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-48b/time.txt",
+      "sha256": "f2e42f93da72ec4453f772054989ba30b3107781cc05d2e5b02fe9f5fafe8003"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-64b/dependencies.json",
+      "sha256": "3924266b87ec799cc7537d200e7151ead149f0b3250bebef362d98b404e7d1fe"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-64b/gc.log",
+      "sha256": "6995307af066db83879ee3d71d41d747fd88f43f2228d5f0ef5db464d4ec4e3f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-64b/metrics.jsonl",
+      "sha256": "1c003b745e48a1a9d6ddd12bab19f1b00b3d684fbd555609ce929a15bb40d6a0"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-64b/profile.jfr",
+      "sha256": "895801937825fe59aa576d7b196e9f577c0c6e6f63bbe79eb8821bafbf70c550"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-64b/stderr.log",
+      "sha256": "49362fa27e12b686846fc054d2d7b46c52093881407873aa8f1750cf34e5a4d8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-64b/stdout.log",
+      "sha256": "d0a9940280f248f8a119d4f6707a56c6271766372b72179c6c7e081317042fb7"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-64b/telemetry.jsonl",
+      "sha256": "29500b661d9880d683d577024dda6909bb9d1946fe20465de35f9ded3fc84495"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-64b/time.txt",
+      "sha256": "b1c4657749971a4f29fbe54b85d06f091c6ea3381baa535a9fa5fe363b91b510"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-96b/gc.log",
+      "sha256": "73a0c6110a0c73fb44e84fad603c7dac67763211210547658bbfb1cf95688f17"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-96b/profile.jfr",
+      "sha256": "0e6fa67198e66dcd857433433b4bef1b9b69dc7b2ed2d085d897c5749be20a7c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-96b/stderr.log",
+      "sha256": "5ba5f08351f663fecddb3f4584bb350fe9d062870fcfdd81c0fe4fa83ac29172"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-96b/stdout.log",
+      "sha256": "7176f6e7e0f055151adcca463d4de048e4c48cdf22f3e091f5bc0e9476c5d61f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-96b/telemetry.jsonl",
+      "sha256": "298e146bacfa23cc4da0d0ee0f93c2bebc59915c2c482806058c01e4bb9beb6f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/heap256/return-fanout-2h-96b/time.txt",
+      "sha256": "dee648fd66f6a7ea48dcdb055f69f5ff696555d55f9f669cb4edefbf5f9835af"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/matrix1024.log",
+      "sha256": "7be26c580adc1db195dd72905bc25e3b293f59902e807f3cc91ffaa687075758"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/matrix256.log",
+      "sha256": "e233c526d6c49974f7cb4d583d90fa8cc604b96e92f8abd283e2837e3e8dcfe2"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage1/stage1.jar",
+      "sha256": "79af9d948a36fdb42fab2dd0a52298cbc5026cb078d822586646e276d888d6cb"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/development1.log",
+      "sha256": "5c10d0924e0d4cc12f27d1c92122fc99bec0488f37a9c8c69ffc74c9fd838609"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/development2.log",
+      "sha256": "7101fb6e2bda256edf29d45c0665b2ce08ef3e1bfcc9673518e7fff060e19cbc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/development3.log",
+      "sha256": "a63b34d0601144e6591a4e2e529e45fc59fb1766eac8f8df7e7b44f1369c793d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-128b/dependencies.json",
+      "sha256": "9e0adf219511cc256fcfba90c255a79c07d88255f95d7665e181e0dcd341c3c3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-128b/gc.log",
+      "sha256": "e5f2d2a4eda358a63afcc65d3cc509c2d30b6c1693587ecab87672a9d873271e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-128b/metrics.jsonl",
+      "sha256": "8c2628e17ddce0297e4be7ba11da26ba593ca36193cc6207d06552f5b8e0550f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-128b/profile.jfr",
+      "sha256": "27ab1369e4167c83d873edc31505930473db00ace637af2d6a1b250a7e4ec024"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-128b/stderr.log",
+      "sha256": "9e642b83df62fce1eb520bafc1b8c3cdd4d1aee87b015877dad2d690c8404d47"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-128b/stdout.log",
+      "sha256": "d08e181b2d6b6bdaf8cf64e14b8c14294d504158a9e49d5827dc6f808cd27938"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-128b/telemetry.jsonl",
+      "sha256": "ce475092f5383f7449645496844c863195d8fed40c39fbd7ea4076613285f04a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-128b/time.txt",
+      "sha256": "bbf302066274725d617353dcbba8c1b212893e27cee63ef844a6bcff83dbfcdf"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-192b/dependencies.json",
+      "sha256": "d5db5bd7be114347f709959191ceb520f67fd18a57afc12431212ff587a33c0d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-192b/gc.log",
+      "sha256": "b49a31e7ec830b748d66b5c2a86b632f4e714a6b81325b9d8a8d4758289a189e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-192b/metrics.jsonl",
+      "sha256": "e8bf2f6932cf49e7623fce49d79b7fa82248f5b03f2d1d563707ad4b5500c2a1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-192b/profile.jfr",
+      "sha256": "1a6d34dcb7010f577fdfd7bd95ecf5decfe560defe9c7184f5f1f41e6c194d8c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-192b/stderr.log",
+      "sha256": "9eaf198f146dcdd412e4a125d0d484d251d9b4297f11578dcda66b30735db6a8"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-192b/stdout.log",
+      "sha256": "9db6c2cd3824525a786c6c529ca580c9bbbe4dab61f4f474cfe8cf2fd453eac6"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-192b/telemetry.jsonl",
+      "sha256": "df22b824db58cbafff4607a1a4bb106c538dca0bf901e1113ec9c93c075a533f"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-192b/time.txt",
+      "sha256": "91ef61ce5e55df0e48291143c18e36dfa18f42cbc55962dc7b1927db53222310"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-254b/dependencies.json",
+      "sha256": "d71892e1d369b8e128f0c0fc89be2d40876be916058ee8dcc9ea0370812ed969"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-254b/gc.log",
+      "sha256": "ff742507bb5a8a3af7458e3206b82a887a47e41fa5bbbbfdec6f2dc6cda53d62"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-254b/metrics.jsonl",
+      "sha256": "0567ce857a6952d1375edb785ebf93407786d75699624bbe3a88b2d2f6e51e10"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-254b/profile.jfr",
+      "sha256": "50921918e577b486d37a15e4990ab057bf40c02470ae45d03821c84e110b1566"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-254b/stderr.log",
+      "sha256": "27de06d531dc277bba7419a856d94ce849529ed53cfff3406d9f38659ad79339"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-254b/stdout.log",
+      "sha256": "65011dcff7d8669151f9a330f823f4ca739fc0e149a1a7e91f04ce15733e5aab"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-254b/telemetry.jsonl",
+      "sha256": "b7982b62f214b810f64decc3ea4c3a857db7db3bf2dd877cfaa312cb3cbde8d4"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap1024/return-fanout-2h-254b/time.txt",
+      "sha256": "6b9023ae88cfbd7ce9bb8159ed9b2af2bbdb0524a6999b65052544c014566b46"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-128b/dependencies.json",
+      "sha256": "9e0adf219511cc256fcfba90c255a79c07d88255f95d7665e181e0dcd341c3c3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-128b/gc.log",
+      "sha256": "ee09f99c04a69a0e9d5da5a258f9cba22f3a9c2a36a9c8ff8a73b2c8da280c11"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-128b/metrics.jsonl",
+      "sha256": "627a401d134b4ef30a75a641985edabe435c91d728690b0c4e24a8f6cff29638"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-128b/profile.jfr",
+      "sha256": "016a0269b18af3cb3057ed3af6e584076dfc059eaa180b2145062480ecf29e90"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-128b/stderr.log",
+      "sha256": "58bbe79156793f6f315e36093511b94fd53d2f1d6c27ca1a8212c43b97b59ad9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-128b/stdout.log",
+      "sha256": "526f07413163691cf319a000c578ae8cd7329dd6d962f11e44c90729ccaa7cdb"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-128b/telemetry.jsonl",
+      "sha256": "cd2204c7f0806d34e5dfd9a75cd65b8150f889adfa13070b80943a5d2042f48e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-128b/time.txt",
+      "sha256": "5b189ac1c7faad521a4ede9211e72f9fb7935d4ea4b49fa7ebff69d21469c733"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-48b/dependencies.json",
+      "sha256": "a8b556c28f509b3351c4e24592bbf8fcfe8e5533bb43f27f7e6066e85afca587"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-48b/gc.log",
+      "sha256": "4090f34dbcb2f5a3503acd2be041cdf44bb98451730e9e6307250649684c517c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-48b/metrics.jsonl",
+      "sha256": "b426fad260595cb916d63042c38938cdcee45dc3d1c8f7c73898d27c7c7d1d09"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-48b/profile.jfr",
+      "sha256": "d2cf7697aba45cbe235b14bfaac2aaae6a2de9a4cdf83d07fe170fd75bd3ae12"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-48b/stderr.log",
+      "sha256": "038758621ffca0ce3bb48cb436bd330ce0aba0891cface438b2a76a07b2c37ba"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-48b/stdout.log",
+      "sha256": "4a5047267fc76d52fca5757a1be982088e993496e08e40978e3f87db2b5159bc"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-48b/telemetry.jsonl",
+      "sha256": "8192a7e22cf21a4a0ce61142a15b3c5877d1160eabf51eb37ba285bfb1587d90"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-48b/time.txt",
+      "sha256": "394c3bc2f5a268a22cb5ed61165c4c1edf22277026ec5c9f50d633bbea76d164"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-64b/dependencies.json",
+      "sha256": "3924266b87ec799cc7537d200e7151ead149f0b3250bebef362d98b404e7d1fe"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-64b/gc.log",
+      "sha256": "6b2c4021fa39e107fc83051231787a2c6eebe6c827409ff4d8b11dfb90638ab1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-64b/metrics.jsonl",
+      "sha256": "1d12e857744329afd94a3bbb47d9730c1709e1302117377e33f68b4d6a52eec9"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-64b/profile.jfr",
+      "sha256": "fd948d8804a5854cfc4cd5646675142e62e41e2160dbdb7cc9aaf8ffebf29fad"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-64b/stderr.log",
+      "sha256": "5f32b32587543bf4162989564dd9de1a2b9b7fefb73018a457512fb7f89d61af"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-64b/stdout.log",
+      "sha256": "2447f42a4d071560fa1590011676c8a94a40df5e2818b4f50ef5d68d5b930567"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-64b/telemetry.jsonl",
+      "sha256": "ab84472030a1cfec1cc1b718dc771794acce16dae1e1521879c3e23b34de24bb"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-64b/time.txt",
+      "sha256": "95aad88542af90aca52ad0cd8c4a4206b4e2c52d168dcfcc3b05949bb1d0f951"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-96b/dependencies.json",
+      "sha256": "e62180a3a5405c08c3d71dd81cf495f2b69bd24953adcd65421e59bf248aaf7d"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-96b/gc.log",
+      "sha256": "4e14cb509ddec35bd41310e844ddfb91c27803723999447cdd288c96de8e3617"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-96b/metrics.jsonl",
+      "sha256": "8c3a343fed958bd05013eb58eb770f531efa56288601292f8ba74606efaa708a"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-96b/profile.jfr",
+      "sha256": "e6d78d4d28898adcb05b4853c8efc8f7274d84213125475e8f09405ab0c73415"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-96b/stderr.log",
+      "sha256": "8079398240aa6429f93c1d201175b12e49d8afdd03e7ea631d7362cf774ba182"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-96b/stdout.log",
+      "sha256": "1b5cdbbe918b5ac650308cfde1b3eec984b0a756b2454d59c90bb34689416b94"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-96b/telemetry.jsonl",
+      "sha256": "2716f582086bb823a70d02f267613ace4907e8a8ae966497e1ecac0a58af93cb"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/heap256/return-fanout-2h-96b/time.txt",
+      "sha256": "9be7f2bd27cc6fa60366dd49bee910cea15927f52b0fcab10b361bfad303d71e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/matrix1024.log",
+      "sha256": "a9e77e5720350236e3023119d6d1bd700c83e444d7b9d568b5685cfc0a9758c1"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/matrix256.log",
+      "sha256": "9db0315e0d047c6ca0b1edb35e497c8943c482e9b1f36be0de24aa9e392b8e57"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/stage2/stage2.jar",
+      "sha256": "17d6b803e0d2f2dfbfb690f19d11583f24f9045219db5c57db0ead4389e71ac5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/escape-sentinel/dependencies.json",
+      "sha256": "a1f2e9b7dce83c9fef1c04b6e228760e2f9dc84d22edcfa216ff7e573d73f69c"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/escape-sentinel/metrics.jsonl",
+      "sha256": "c74363870c603a13752d394e94146dcaf379614b0b6216ef1ce2b69fd7d71465"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/escape-sentinel/stderr.log",
+      "sha256": "7bb90614b348f3dfbf6a3cecc411a45aad83d2e2557ff9c9bbd7d7692b330e52"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/escape-sentinel/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/escape-sentinel/telemetry.jsonl",
+      "sha256": "cb479f0ef9cf73015d5937098fd4b79d0d723c2b73ae3a5fa738a806873a457b"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/escape-sentinel/time.txt",
+      "sha256": "7292b592ba13f739c48e32c66c6a2d2cd63e9c84a117158afe833b356692e032"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/fixture02/dependencies.json",
+      "sha256": "f39dcac16a8fa205aad93a6272ad95c9c512824950ce8a8b94fc80c6f4212bc3"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/fixture02/metrics.jsonl",
+      "sha256": "984677d6096b5253aed7043014cde00f18afa932904286654a59a3665093773e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/fixture02/stderr.log",
+      "sha256": "1bfa936805ff1033528fee82230eae305c6b8cf379c8d288603311f407062abd"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/fixture02/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/fixture02/telemetry.jsonl",
+      "sha256": "3ac0dee8c43d176553d022fbfdefbfedf3eb30a9db80b9f3f25869d00dffb518"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/fixture02/time.txt",
+      "sha256": "a72b20bb37565ddc24117c0ecde780c8cc0ee3b094664e2777f0b6d8b3457a8e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/hub-255/dependencies.json",
+      "sha256": "bbd8ecdf230f6b1c5a8f8efa6ce6280d45f83737ab5941b1f0603e2374baa7ec"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/hub-255/metrics.jsonl",
+      "sha256": "382aa21ab02493a263a4786c7441fd0913ecbda5403ad570c3e3b79ac390e960"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/hub-255/stderr.log",
+      "sha256": "81dc51077d60048bc22844671a6672f640b2bddb06e5f12729ca006604a44414"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/hub-255/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/hub-255/telemetry.jsonl",
+      "sha256": "34d2da3d14fe242e580d640f9e873e6e33953fe3132c0a8f90694e8fadf496a5"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/hub-255/time.txt",
+      "sha256": "3dcdf83bc89e10a5820496ad01b2ae333605507d3e96260d24d35cb600617505"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone/results.json",
+      "sha256": "3c365fc4a921c704b02961ee61a5323f4089f5e67c6c959de65a46fd02712e5e"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/standalone.log",
+      "sha256": "4bfa7bf23b5eff223479b09dd8614ab55f0b49d6fe5df94233411b753189bc42"
+    },
+    {
+      "path": "benchmark/results/compact-factor-control-20261009/fast-reports-manifest.json",
+      "sha256": "6016d1242e1828cf8bec9a18a85cce1756b0346f9956c1363cad8c93eaf6461c"
+    }
+  ],
+  "limitations": [
+    "Corporate private source was not run",
+    "Logical cells, SCC/relevance traversal, valid return/result relations and value flow can still grow quadratically",
+    "Single-run times vary with the host; JFR included consistently",
+    "Stage2 matrix predates removal of two unused Ints methods; final replay and class-diff proof preserved",
+    "CardDemo retains 47 historical PARTIAL results"
+  ],
+  "reusedEvidence": [
+    "Baseline scale matrix JAR 6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943 with identical source hashes and JFR mode",
+    "Frozen 185 source/include hashes and 73-source pipeline dependency reference"
+  ],
+  "omittedGates": [
+    "Cross-repo E2E: only monolithic internal representation changed, no AIR/CFG wire, producer pin or pipeline repository modified",
+    "Full suite: final mandatory repository FAST, targeted semantic families, 73-source corpus and relevant CLI adversaries cover the changed frontier"
+  ]
+}

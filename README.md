@@ -43,7 +43,7 @@ leituras anteriores e aliases que conservam texto continuam exigindo a entrada.
 Handlers omitidos da chave são restaurados a partir do estado de cada chamador.
 
 Antes de propagar valores, um índice de controle calcula as saídas possíveis
-de cada `(posição, endpoint)`. A continuação de um PERFORM só fica alcançável
+de cada `(posição, endpoint, escopo de escape)`. A continuação de um PERFORM só fica alcançável
 quando seu corpo produz uma saída compatível. Um ciclo sem saída não inventa
 um retorno. Esse ponto fixo independe dos valores dos chamadores e permite
 descartar leituras que só alimentariam consultas inalcançáveis.
@@ -82,14 +82,29 @@ resumo, sem inventar outra chamada de continuação. Um escape real desenrola um
 invocação por vez e é interpretado no escopo do pai; sua saída não é descartada.
 O solver de controle propaga apenas saídas novas aos predecessores e aos
 chamadores registrados. Chamadores novos também recebem as saídas já conhecidas.
-Resultados e marcas de entrega usam bitsets e são descartados após construir o
-grafo de controle. Há um único caminho de produção para essa análise.
+O grafo canônico guarda posições físicas e arestas tipadas em arrays de IDs,
+com índices nas duas direções. Uma aresta comum conserva a obrigação de retorno;
+uma chamada instala a obrigação do callee. Cada obrigação guarda endpoint e
+política de escape juntos. Nas fronteiras, as obrigações que retornam param,
+enquanto as demais continuam pela mesma topologia. Somente as combinações
+alcançadas recebem IDs lógicos; não há matriz antecipada de todas as posições
+por todas as obrigações, nem uma cópia das arestas por combinação.
 
-Os pontos distintos por endpoint ainda podem crescer e exigir muita memória.
-A [ampliação da família de caixinhas](benchmark/shared-continuation-scale-20261009.md)
-registra OOM em N=128 com heap de 1 GiB e em N=192 com 1,5 GiB, na construção
-e cópia do grafo de controle. A redução das continuações não é uma garantia
-de convergência para qualquer escala de programa.
+As saídas são propagadas em colunas: uma saída e uma obrigação identificam um
+bitset das posições que já produzem esse resultado. Cada ligação física de
+chamada aplica a continuação uma vez por saída, conservando as obrigações dos
+chamadores. Chamadores e arestas descobertos depois recebem os resultados antigos.
+Resultados temporários são descartados antes das fases seguintes. Observação,
+ciclos, ordenação e relevância consomem o mesmo grafo; não há cópia final dos
+planos nem reconstrução de adjacência por fase. Fatos iguais de relevância usam
+compartilhamento imutável com referências fracas, e a fila calcula a prioridade
+uma vez por item. Há um único caminho de produção, sem seletor especial para hubs.
+
+A [medição das duas etapas](benchmark/compact-factor-control-20261009.md) compara
+essa representação com a versão que armazenava pontos e adjacências por endpoint.
+As combinações lógicas, relações de saída e trabalho de valores ainda podem
+crescer quadraticamente. Compartilhar a topologia reduz memória e trabalho
+repetido, mas não estabelece convergência para qualquer programa ou escala.
 
 Consultar uma dependência continua usando o estado anterior à instrução. Grupos
 conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam
@@ -210,12 +225,18 @@ conta visitas que reaproveitam esses resultados; `workItems` conta visitas ao
 fluxo de valores e entregas de resultados. `instantiationEvaluations` conta
 aplicações concretas das expressões; `resolutionWorkItems`, a resolução das
 consultas paramétricas; `controlWorkItems` conta lotes de propagação de saídas
-novas e entregas do solver de controle; `controlSummaries` conta seus pontos.
+novas, descobertas por posição física e entregas do solver de controle;
+`controlSummaries` conta combinações lógicas de posição e obrigação de retorno.
 `controlResultPairs` conta pares distintos de chamada/saída entregues;
 `controlResultFacts`, inserções distintas de ponto/saída. Os três contadores de
 trabalho e resultados de controle somam todas as passagens de demanda. A unidade
-de `controlWorkItems` mudou com a propagação por deltas; não equivale às visitas
-de varredura integral das versões anteriores. O limite de controle em
+de `controlWorkItems` mudou com a propagação por colunas e descobertas agrupadas;
+não equivale às visitas das versões anteriores. `physicalControlNodes` e
+`physicalControlEdges` contam a topologia compartilhada; `controlObligations`
+conta descritores correlacionados de retorno; `controlResultColumns` conta as
+colunas distintas de saída/obrigação, antes de liberar os temporários. Esses
+quatro contadores e `controlSummaries` representam a última passagem de demanda
+por unidade, somados entre unidades. O limite de controle em
 `--max-work` se aplica a esses lotes e à quantidade de pontos, e não é um limite
 de bytes, segundos ou número de dependências. `parametricCalculations`, `specializedDeclarations`
 e `resultDeliveries` tornam visíveis as expressões, entradas especializadas e

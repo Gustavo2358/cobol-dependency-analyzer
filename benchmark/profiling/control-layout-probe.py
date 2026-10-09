@@ -84,12 +84,16 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('output', type=Path)
     p.add_argument('--jar', type=Path, required=True)
+    p.add_argument('--source-ref', default='bb0e60a7ce865188d0be2e86080c418384951839',
+                   help='Historical solver revision matching the baseline JAR; this probe measures the pre-compaction layout')
     p.add_argument('--boxes', type=int, nargs='+', default=[16, 32, 48])
     p.add_argument('--mode', choices=('return-fanout','return-fanout-fixed'), default='return-fanout')
     a = p.parse_args(); a.output = a.output.resolve(); a.jar = a.jar.resolve()
     a.output.mkdir(parents=True, exist_ok=False)
-    original = ROOT/'src/main/java/com/imd/cobolexplorer/DependencyControl.java'
-    source = original.read_text()
+    source_path = 'src/main/java/com/imd/cobolexplorer/DependencyControl.java'
+    source = subprocess.run(['git', '-C', str(ROOT), 'show', a.source_ref+':'+source_path],
+                            capture_output=True, text=True, check=True).stdout
+    original_digest = hashlib.sha256(source.encode()).hexdigest()
     replacements = [
         ('construction.solve(roots);', 'construction.solve(roots);layoutProbe("solved",construction);'),
         ('var pending=new ArrayDeque<>(roots);', 'layoutProbe("frozen",construction);var pending=new ArrayDeque<>(roots);'),
@@ -106,7 +110,7 @@ def main():
     compile_cmd = [str(JDK/'javac'), '-J-Xmx128m', '--release', '17', '-cp', str(a.jar), '-d', str(classes), str(probe_source)]
     compile_result = subprocess.run(compile_cmd, capture_output=True, text=True, timeout=30)
     (a.output/'compile.log').write_text(compile_result.stdout+compile_result.stderr)
-    manifest = dict(originalSourceSha256=sha(original), probeSourceSha256=sha(probe_source),
+    manifest = dict(sourceRef=a.source_ref, originalSourceSha256=original_digest, probeSourceSha256=sha(probe_source),
                     jarSha256=sha(a.jar), command=compile_cmd, exit=compile_result.returncode,
                     timingQualified=False, mode=a.mode, intervention='Counts and live histograms through VM DiagnosticCommand MBean; equations unchanged')
     (a.output/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
