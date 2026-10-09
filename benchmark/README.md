@@ -1,5 +1,9 @@
 # Medições locais
 
+[Caixinhas com heap maior](hub-large-heap-20261009.md): sete execuções com heaps
+de 1 e 1,5 GiB e proteção do host. Separação entre GC sob RSS estável, propagação
+de valores e resolução das consultas; cinco conclusões exatas e dois OOMs.
+
 [Hubs externos e caixinhas](hub-dispatch-20261009.md): seletores renovados,
 GO TOs de 255 destinos e PERFORMs de outros hubs. O testemunho com flags
 acumuladas reproduz contextos exponenciais; profiling separa esse mecanismo

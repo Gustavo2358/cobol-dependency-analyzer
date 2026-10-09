@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sequential diagnostic matrix, fixed 512 MiB heap and 640 MiB tree RSS guard."""
+"""Sequential diagnostic matrix with explicit heap, RSS and host-memory guards."""
 import argparse, hashlib, importlib.util, json, os, shutil
 from pathlib import Path
 spec_gen = importlib.util.spec_from_file_location("hub_generator", Path(__file__).with_name("generate-hub-dispatch.py"))
@@ -17,10 +17,17 @@ def main():
     p.add_argument('--hubs', type=int, default=2)
     p.add_argument('--mode', nargs='+', choices=generator.MODES, default=['literal', 'value', 'flags', 'perform'])
     p.add_argument('--profile', action='store_true')
-    p.add_argument('--heap', type=int, choices=(128, 256, 512), default=512)
+    p.add_argument('--heap', type=int, choices=(128, 256, 512, 768, 1024, 1536), default=512)
+    p.add_argument('--max-work', type=int, default=1000000)
+    p.add_argument('--rss', type=int, default=576)
+    p.add_argument('--system-reserve', type=int, default=0)
+    p.add_argument('--telemetry', action='store_true')
+    p.add_argument('--profile-duration', type=int, default=10)
     p.add_argument('--overlay', type=Path)
     p.add_argument('--timeout', type=int, default=35)
     a = p.parse_args()
+    if a.max_work < 1 or a.timeout < 1 or a.rss < 1 or a.profile_duration < 1 or a.system_reserve < 0:
+        p.error('budgets and durations must be positive; system reserve must be nonnegative')
     a.output = a.output.resolve(); a.output.mkdir(parents=True, exist_ok=False)
     spec = importlib.util.spec_from_file_location('bounded_runner', ROOT/'benchmark/run-sparse-occurs.py')
     runner = importlib.util.module_from_spec(spec); spec.loader.exec_module(runner)
@@ -33,12 +40,13 @@ def main():
                    '-XX:MaxDirectMemorySize=32m']
             if not a.profile: cmd.append('-XX:+ExitOnOutOfMemoryError')
             if a.profile:
-                cmd.extend([f'-XX:StartFlightRecording=settings=profile,duration=10s,maxsize=24m,filename={dest}/profile.jfr',
+                cmd.extend([f'-XX:StartFlightRecording=settings=profile,duration={a.profile_duration}s,maxsize=24m,filename={dest}/profile.jfr',
                             f'-Xlog:gc:file={dest}/gc.log'])
             cmd.extend(['-cp', str(a.overlay.resolve())+os.pathsep+str(jar), 'com.imd.cobolexplorer.DependencyMain'] if a.overlay else ['-jar', str(jar)])
             cmd.extend(['--source', str(source_path), '--output', str(dest/'dependencies.json'),
-                        '--metrics', str(dest/'metrics.jsonl'), '--max-work', '1000000'])
-            row = runner.execute(cmd, dest, timeout=a.timeout, rss_mib=576)
+                        '--metrics', str(dest/'metrics.jsonl'), '--max-work', str(a.max_work)])
+            row = runner.execute(cmd, dest, timeout=a.timeout, rss_mib=a.rss,
+                                 telemetry_period=1 if a.telemetry else None,min_available_mib=a.system_reserve)
             expected = [f'PGM{b:05d}' for b in range(boxes)]
             if mode in ('value', 'hub-perform'): expected.append('BOOT0000')
             if mode in ('flags', 'perform-flags', 'hub-perform-flags'): expected.append('ZERO0000')

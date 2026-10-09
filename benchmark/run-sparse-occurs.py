@@ -4,26 +4,40 @@ import argparse,hashlib,json,os,shutil,signal,subprocess,time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
-def execute(cmd,dest,timeout=45,rss_mib=640):
+def execute(cmd,dest,timeout=45,rss_mib=640,telemetry_period=None,min_available_mib=0):
  dest.mkdir(parents=True,exist_ok=False)
  with (dest/'stdout.log').open('w') as stdout,(dest/'stderr.log').open('w') as stderr:
   proc=subprocess.Popen(['/usr/bin/time','-f','%e %M','-o',str(dest/'time.txt'),*cmd],cwd=ROOT,stdout=stdout,stderr=stderr,start_new_session=True)
-  start=time.monotonic();reason=None;peak=0
+  start=time.monotonic();reason=None;peak=0;series=[];last_sample=-1;clock_ticks=os.sysconf('SC_CLK_TCK');peak_cpu=0
   while proc.poll() is None:
-   pending=[proc.pid];rss=0
+   pending=[proc.pid];rss=0;cpu=0
    while pending:
     pid=pending.pop()
     try:
      pending.extend(map(int,Path(f'/proc/{pid}/task/{pid}/children').read_text().split()))
      fields=[l.split() for l in Path(f'/proc/{pid}/status').read_text().splitlines() if l.startswith('VmRSS:')]
      rss+=int(fields[0][1]) if fields else 0
+     if telemetry_period:
+      stat=Path(f'/proc/{pid}/stat').read_text().rsplit(') ',1)[1].split()
+      cpu+=(int(stat[11])+int(stat[12]))/clock_ticks
     except (FileNotFoundError,ProcessLookupError):pass
    peak=max(peak,rss)
+   peak_cpu=max(peak_cpu,cpu)
+   available=None
+   if telemetry_period or min_available_mib:
+    available=next(int(l.split()[1]) for l in Path('/proc/meminfo').read_text().splitlines() if l.startswith('MemAvailable:'))
+   elapsed=time.monotonic()-start
+   if telemetry_period and elapsed-last_sample>=telemetry_period:
+    sample=dict(seconds=elapsed,rssKiB=rss,cpuSeconds=cpu,availableKiB=available)
+    series.append(sample);last_sample=elapsed
+    with (dest/'telemetry.jsonl').open('a') as log:log.write(json.dumps(sample)+'\n')
+   if available is not None and available<min_available_mib*1024:reason='SYSTEM_MEMORY_GUARD'
    if rss>rss_mib*1024:reason='RSS_GUARD'
    if time.monotonic()-start>timeout:reason='TIME_GUARD'
    if reason:os.killpg(proc.pid,signal.SIGKILL);proc.wait();break
    time.sleep(.05)
- return dict(exit=proc.returncode,guard=reason,seconds=time.monotonic()-start,peakRssKiB=peak,command=cmd)
+ return dict(exit=proc.returncode,guard=reason,seconds=time.monotonic()-start,peakRssKiB=peak,command=cmd,
+             observedCpuSeconds=peak_cpu,telemetry=series,rssGuardMiB=rss_mib,systemReserveMiB=min_available_mib)
 def diagnostics(p):return [s for s in p.read_text().splitlines() if ': ' in s and not s.startswith(('Picked up ','totalMs='))]
 def main():
  parser=argparse.ArgumentParser(description=__doc__)
