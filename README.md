@@ -239,6 +239,10 @@ agora termina com 25 contextos e 200 visitas, em cerca de 1,86 s, usando o mesmo
 heap de 512 MiB. Nela, os CALLs são inalcançáveis porque os PERFORMs anteriores
 entram em ciclos sem retorno; a saída vazia foi conferida. Esse resultado não
 garante custo linear para combinações diferentes de controle ou recorrência.
+O [fixture de combinações de controle](benchmark/control-signatures-20261009.md)
+reproduz esse limite: dez flags geram 2.048 contextos e doze geram 8.192,
+mantendo somente duas dependências. O controle com uso direto dos dados
+fica em 12 e 14 contextos, respectivamente.
 
 ```sh
 python3 -B scripts/harness/lean.py fast

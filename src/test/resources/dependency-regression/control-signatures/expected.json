@@ -4,7 +4,7 @@
     "program": "CTRLFLAGS10",
     "flags": 10,
     "mode": "predicates",
-    "sha256": "2806222c163995c3d8a2b6f626200e5bdef4994f4efbc15788187e0ab7b5f0ed",
+    "sha256": "6c2c4e3d3086ba3f02b989c5b3e9a612c57713c4eba1b530b54afae38e19a37c",
     "names": [
       "ONE00000",
       "ZERO0000"
@@ -15,7 +15,7 @@
     "program": "DATAFLAGS10",
     "flags": 10,
     "mode": "data",
-    "sha256": "38ee2841bd50a77c8cf855d17efe70e324a7b780203f0438c41d8ccb57f0ded1",
+    "sha256": "e372f7329453db5444a742dcf248937212f28baa6bf9498d83dcfdb54a066ff3",
     "names": [
       "ONE00000",
       "ZERO0000"

@@ -24,17 +24,10 @@ de entradas necessárias para determinar branches dentro de BODY.
 Os dois fontes, seus hashes e nomes esperados estão em `expected.json`.
 `DependencySummaryTest` verifica esse oráculo. O teste não fixa a quantidade
 atual de contextos: uma melhoria futura deve poder reduzi-la preservando os
-resultados. O [relatório da medição](../../../../../benchmark/control-signatures-20261009.md)
-registra o crescimento observado nas versões com 4, 6, 8, 10 e 12 flags.
-
-Gerar outra escala, a partir da raiz do produto:
-
-```sh
-python3 -B benchmark/generate-control-signatures.py \
-  --flags 10 --mode predicates --output /tmp/flags-10-predicates.cbl
-python3 -B benchmark/generate-control-signatures.py \
-  --flags 10 --mode data --output /tmp/flags-10-data.cbl
-```
+resultados. O relatório `control-signatures-20261009.md`, no diretório de
+medições do produto, registra o crescimento observado nas versões com 4, 6,
+8, 10 e 12 flags e os comandos para gerar outras escalas. A
+[documentação do produto](../../../../../README.md) contém o link para esse relatório.
 
 Executar o fixture de dez flags:
 

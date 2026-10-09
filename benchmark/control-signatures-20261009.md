@@ -48,14 +48,15 @@ estrutural fica em 309 pontos e 629 itens de trabalho. Portanto, reutilizar
 cálculos locais e controle estrutural não elimina a enumeração das assinaturas
 de predicados nesse caso.
 
-Na versão de doze flags, a análise interna levou 719,48 ms, contra 79,08 ms no
+Na versão de doze flags, a análise interna levou 944,58 ms, contra 72,58 ms no
 controle de dados. São execuções únicas por caso; tempos servem para localizar
 o efeito, não para estabelecer uma estimativa estatística de desempenho.
 O sinal principal é o crescimento determinístico dos contadores.
 
 Todos os dez casos encerraram com código 0 e exatamente duas dependências,
 com posições de origem válidas e sem diagnósticos de incompletude. O maior
-RSS foi **274.408 KiB (268,0 MiB)**. Não houve OOM nem acionamento das guardas.
+RSS da rodada com os arquivos finais foi **252.508 KiB (246,6 MiB)**. A primeira
+rodada chegou a 268,0 MiB. Não houve OOM nem acionamento das guardas.
 
 ## Método e reprodução
 
@@ -71,7 +72,14 @@ Os fontes de dez flags estão versionados em
 [control-signatures](../src/test/resources/dependency-regression/control-signatures/README.md).
 O [gerador](generate-control-signatures.py) permite reproduzir as outras escalas
 e gera o conteúdo dos fontes versionados byte a byte. O README dos fixtures
-contém os comandos de geração e execução com heap 512 MiB.
+contém o comando de execução com heap 512 MiB. Para gerar outra escala:
+
+```sh
+python3 -B benchmark/generate-control-signatures.py \
+  --flags 10 --mode predicates --output /tmp/flags-10-predicates.cbl
+python3 -B benchmark/generate-control-signatures.py \
+  --flags 10 --mode data --output /tmp/flags-10-data.cbl
+```
 
 ## Validação e limites
 
@@ -83,6 +91,10 @@ contém os comandos de geração e execução com heap 512 MiB.
   refere-se à mesma produção; não foi reexecutada nem relabelada nesta etapa.
 - O teste não exige crescimento exponencial para passar: os contadores ficam
   na medição, permitindo uma otimização futura que preserve o oráculo semântico.
+- O gate de nomes barrou referências ao diretório de medições nos comentários
+  e no README dos fixtures. Corrigimos essas referências mantendo o gate intacto,
+  regeneramos hashes e repetimos os testes e dez execuções nos arquivos finais.
+  A falha da CI e os fontes/resultados anteriores permanecem na evidência bruta.
 
 Este fixture confirma uma fonte de crescimento restante. Não mede sua
 frequência em programas reais nem implementa a representação condicional
