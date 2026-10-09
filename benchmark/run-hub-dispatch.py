@@ -17,7 +17,7 @@ def main():
     p.add_argument('--hubs', type=int, default=2)
     p.add_argument('--mode', nargs='+', choices=generator.MODES, default=['literal', 'value', 'flags', 'perform'])
     p.add_argument('--profile', action='store_true')
-    p.add_argument('--heap', type=int, choices=(128, 256, 512, 768, 1024, 1536), default=512)
+    p.add_argument('--heap', type=int, default=512, help='Maximum Java heap in MiB; RSS and host guards remain independent')
     p.add_argument('--max-work', type=int, default=1000000)
     p.add_argument('--rss', type=int, default=576)
     p.add_argument('--system-reserve', type=int, default=0)
@@ -31,7 +31,7 @@ def main():
                    help='Diagnostic BitSet result storage; requires wall-probes overlay')
     p.add_argument('--timeout', type=int, default=35)
     a = p.parse_args()
-    if a.max_work < 1 or a.timeout < 1 or a.rss < 1 or a.profile_duration < 1 or a.system_reserve < 0:
+    if a.heap < 1 or a.max_work < 1 or a.timeout < 1 or a.rss < 1 or a.profile_duration < 1 or a.system_reserve < 0:
         p.error('budgets and durations must be positive; system reserve must be nonnegative')
     if a.noescape and (not a.overlay or not (a.overlay/'com/imd/cobolexplorer/DependencyFlow.class').is_file()):
         p.error('--noescape requires the --flow-phases diagnostic overlay')

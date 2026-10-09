@@ -8,8 +8,8 @@ MODES = ('literal', 'value', 'flags', 'perform', 'perform-flags', 'cross-perform
          'return-fanout-fixed')
 
 def source(boxes, hubs, mode):
-    if not 1 <= boxes <= 254 or hubs < 1:
-        raise ValueError('use 1..254 boxes plus FINAL, and at least one hub')
+    if boxes < 1 or hubs < 1:
+        raise ValueError('use at least one box and one hub')
     if mode not in MODES:
         raise ValueError('unknown mode')
     lines = ['*> External selector is refreshed on every dispatch.',
@@ -17,8 +17,9 @@ def source(boxes, hubs, mode):
              'DATA DIVISION.', 'WORKING-STORAGE SECTION.',
              "01 TARGET-PGM PIC X(8) VALUE 'BOOT0000'.",
              '01 EXTERNAL-FLAG PIC 9 VALUE 0.' if mode == 'return-fanout-fixed' else '01 EXTERNAL-FLAG PIC 9.']
+    selector_digits = max(3, len(str(boxes + 1)))
     for h in range(hubs):
-        lines.append(f'01 INPUT-{h:02d} PIC 9(3).')
+        lines.append(f'01 INPUT-{h:02d} PIC 9({selector_digits}).')
     if mode in ('flags', 'perform-flags', 'hub-perform-flags'):
         for b in range(boxes):
             lines.append(f'01 FLAG-{b:03d} PIC X VALUE SPACE.')

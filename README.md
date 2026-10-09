@@ -104,7 +104,9 @@ A [medição das duas etapas](benchmark/compact-factor-control-20261009.md) comp
 essa representação com a versão que armazenava pontos e adjacências por endpoint.
 As combinações lógicas, relações de saída e trabalho de valores ainda podem
 crescer quadraticamente. Compartilhar a topologia reduz memória e trabalho
-repetido, mas não estabelece convergência para qualquer programa ou escala.
+repetido, mas não estabelece convergência para qualquer programa ou escala. A
+[ampliação com heap de 4 GiB](benchmark/factored-large-heap-scale-20261009.md)
+confirma N=384 e registra N=512 como inconclusivo por proteção do host.
 
 Consultar uma dependência continua usando o estado anterior à instrução. Grupos
 conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam
