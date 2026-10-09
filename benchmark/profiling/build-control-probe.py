@@ -60,10 +60,19 @@ def main():
     p.add_argument('--jdk', type=Path)
     p.add_argument('--flow-phases', action='store_true',
                    help='Include Flow/Relevance phase counters and diagnostic -Dprobe.noescape=true ablation')
+    p.add_argument('--wall-probes', action='store_true',
+                   help='Include cycle subphases and optional diagnostic control-result release')
     p.add_argument('--jar', type=Path, default=ROOT/'target/cobol-dependency-analyzer.jar')
     a = p.parse_args()
+    if a.wall_probes and not a.flow_phases:
+        p.error('--wall-probes requires --flow-phases')
     prod = ROOT/'src/main/java/com/imd/cobolexplorer/DependencyControl.java'
     probe = instrument(prod.read_text())
+    if a.wall_probes:
+        helper = Path(__file__).with_name('wall-probe.py')
+        spec = importlib.util.spec_from_file_location('wall_probe', helper)
+        transforms = importlib.util.module_from_spec(spec); spec.loader.exec_module(transforms)
+        probe = transforms.control(probe)
     a.output = a.output.resolve()
     a.output.mkdir(parents=True, exist_ok=False)
     source = a.output/'DependencyControl.java'; source.write_text(probe)
@@ -84,9 +93,11 @@ def main():
     sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
     manifest = {'productionSourceSha256': sha(prod), 'probeSourceSha256': sha(source),
                 'jarSha256': sha(a.jar), 'command': cmd, 'flowPhases': a.flow_phases,
+                'wallProbes': a.wall_probes,
                 'productionSources': {p.name: sha(p) for p in production},
                 'probeSources': {p.name: sha(p) for p in sources},
                 'diagnosticProperty': 'probe.noescape' if a.flow_phases else None,
+                'diagnosticInterventions': ['probe.releaseControlResults', 'probe.compactControlResults'] if a.wall_probes else [],
                 'ablationMayLoseDependencies': a.flow_phases}
     with (a.output/'compile.log').open('w') as log:
         result = subprocess.run(cmd, stdout=log, stderr=subprocess.STDOUT, timeout=60)

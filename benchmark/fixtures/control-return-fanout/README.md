@@ -36,6 +36,8 @@ Não há OCCURS: os casos concluídos têm uma única passagem de demanda.
 A sentinela e os [experimentos de ablação](../../escape-ablation-20261009.md)
 investigam o trabalho restante. Ela não pertence ao oráculo histórico expected.json;
 seus candidatos originais e sua perda diagnóstica estão no relatório de ablação.
+O [discovery das paredes seguintes](../../wall-discovery-20261009.md) acompanha
+a fixture até a convergência com intervenções diagnósticas no armazenamento.
 
 Este testemunho reproduz o mecanismo de relações e GC observado na evidência
 corporativa, em escala reduzida. Não demonstra que o fonte privado contém EXIT
