@@ -1496,18 +1496,17 @@ final class DependencyFlow {
         State state=restore(caller,result);
         if(state.reach().equals(NO))return;
         if(caller instanceof Forward forward){finish(forward.context(),exit,state);return;}
-        ReturnTo returnTo=caller instanceof ReturnTo r?r:null;
-        String endpoint=returnTo==null?caller.endpoint():contexts.get(returnTo.context()).key.endpoint();
-        String scope=returnTo==null?"":contexts.get(returnTo.context()).key.escapeScope();
-        var plan=controlDelivery(new Point(exit,endpoint,scope),new DependencyControl.Call(new Point(exit,caller.endpoint()),returnTo==null?"":returnTo.binding()),exit);
+        if(!(caller instanceof ReturnTo returnTo))return; // Independent entry has no caller to resume.
+        var parent=contexts.get(returnTo.context()).key;
+        var plan=controlDelivery(new Point(exit,parent.endpoint(),parent.escapeScope()),
+            new DependencyControl.Call(new Point(exit,caller.endpoint()),returnTo.binding()),exit);
         for(var next:plan.next()) {
-            if(returnTo==null)subscribe(new Entry(caller.context(),next.endpoint(),state),controlEntries.get(next.exit().reference()).exit());
-            else if(next.exit().reference().startsWith("phase/")) {
+            if(next.exit().reference().startsWith("phase/")) {
                 String node=next.exit().reference();int split=node.lastIndexOf('/');
                 phase(returnTo.context(),bindings.get(node.substring(6,split)),node.substring(split+1),state);
             }else route(returnTo.context(),next.exit(),state);
         }
-        for(var resultExit:plan.exits())if(returnTo!=null)route(returnTo.context(),resultExit,state);
+        for(var resultExit:plan.exits())route(returnTo.context(),resultExit,state);
     }
 
     private Set<Integer> expandNeeded(Set<Integer> needed) {

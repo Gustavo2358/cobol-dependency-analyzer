@@ -56,7 +56,7 @@ paramétricas sobre o estado BEFORE. Árvores persistentes armazenam tanto
 valores quanto expressões, e um grafo compartilhado evita copiar as operações.
 Substituir a entrada inteira conserva as correlações nas escritas parciais.
 
-A relevância usa um índice compartilhado de pontos `(posição, endpoint)`, ampliado
+A relevância usa um índice compartilhado de pontos `(posição, endpoint, escopo de escape)`, ampliado
 sob demanda. Uma chamada entra no endpoint próprio do callee; seu retorno é
 analisado no escopo do chamador. Para cada ponto, a necessidade é a união das
 leituras locais com a necessidade dos sucessores, retirando as entradas que a
@@ -66,7 +66,9 @@ caminho intacto. Escritas de UNKNOWN ficam explícitas no resultado para substit
 o valor anterior do chamador. Conjuntos são bitsets com índices densos.
 Sucessores são processados antes dos predecessores; ciclos usam worklist até o
 ponto fixo. Efeitos locais e componentes já fechados são reutilizados. O endpoint
-continua presente porque altera a regra de retorno.
+continua presente porque altera a regra de retorno. O escopo de escape identifica
+a cadeia de ancestrais que pode encerrar uma invocação; corpos com a mesma política
+compartilham esse escopo, sem incluir a identidade do chamador.
 
 O resultado de um resumo conserva o tipo de saída: conclusão, escape ou término
 do programa. A continuação aplica a regra correspondente: seguir o trecho,
@@ -74,6 +76,14 @@ retornar/repetir uma invocação ou encerrar uma entrada independente. Essas reg
 representam diferenças da linguagem no mesmo solver. Não há seletor de estratégia,
 modo antigo ou restrição global a programas estruturados. As conclusões também
 passam pela worklist, evitando desempilhar recursivamente caudas longas.
+
+Cruzar uma fronteira alheia ao endpoint e aos ancestrais continua no mesmo
+resumo, sem inventar outra chamada de continuação. Um escape real desenrola uma
+invocação por vez e é interpretado no escopo do pai; sua saída não é descartada.
+O solver de controle propaga apenas saídas novas aos predecessores e aos
+chamadores registrados. Chamadores novos também recebem as saídas já conhecidas.
+Resultados e marcas de entrega usam bitsets e são descartados após construir o
+grafo de controle. Há um único caminho de produção para essa análise.
 
 Consultar uma dependência continua usando o estado anterior à instrução. Grupos
 conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam
@@ -193,8 +203,15 @@ produto. `evaluations` conta transformações locais calculadas e `reusedEvaluat
 conta visitas que reaproveitam esses resultados; `workItems` conta visitas ao
 fluxo de valores e entregas de resultados. `instantiationEvaluations` conta
 aplicações concretas das expressões; `resolutionWorkItems`, a resolução das
-consultas paramétricas; `controlWorkItems` e `controlSummaries`, o índice de
-controle compartilhado. `parametricCalculations`, `specializedDeclarations`
+consultas paramétricas; `controlWorkItems` conta lotes de propagação de saídas
+novas e entregas do solver de controle; `controlSummaries` conta seus pontos.
+`controlResultPairs` conta pares distintos de chamada/saída entregues;
+`controlResultFacts`, inserções distintas de ponto/saída. Os três contadores de
+trabalho e resultados de controle somam todas as passagens de demanda. A unidade
+de `controlWorkItems` mudou com a propagação por deltas; não equivale às visitas
+de varredura integral das versões anteriores. O limite de controle em
+`--max-work` se aplica a esses lotes e à quantidade de pontos, e não é um limite
+de bytes, segundos ou número de dependências. `parametricCalculations`, `specializedDeclarations`
 e `resultDeliveries` tornam visíveis as expressões, entradas especializadas e
 entregas a chamadores. `predicateInputs` conta os predicados internados;
 `decisionNodes` conta cumulativamente os nós criados, inclusive os já coletados.
