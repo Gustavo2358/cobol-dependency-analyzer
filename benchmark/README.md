@@ -1,5 +1,10 @@
 # Medições locais
 
+[Hubs externos e caixinhas](hub-dispatch-20261009.md): seletores renovados,
+GO TOs de 255 destinos e PERFORMs de outros hubs. O testemunho com flags
+acumuladas reproduz contextos exponenciais; profiling separa esse mecanismo
+do crescimento estrutural de fronteiras e do custo da fila de prioridade.
+
 [OCCURS sob demanda](sparse-occurs-20261009.md): posições esparsas e remainder
 compartilhado, com baseline anterior à implementação, oráculos adversariais e
 comparação de tempo, memória e candidatos em heap de 512 MiB.
