@@ -84,4 +84,14 @@ class DependencyControlTest {
             (p,c,e)->{throw new AssertionError();},p->false,10));
         assertTrue(error.getMessage().startsWith("RESOURCE_LIMIT:"));
     }
+    @Test void equalEndpointsDoNotMergeDifferentEscapePolicies() {
+        var exit=new Exit(TargetKind.OCCURRENCE,"body");
+        var a=new Point(exit,"same-endpoint","ancestor-a");var b=new Point(exit,"same-endpoint","ancestor-b");
+        var summary=new DependencyControl(List.of(a,b),p->DependencyControl.Effect.next(
+            new Point(new Exit(TargetKind.PROGRAM_HALT,p.escapeScope()),p.endpoint(),p.escapeScope())),
+            (p,c,e)->{throw new AssertionError();},p->p.exit().reference().equals("ancestor-a"),100);
+        assertNotEquals(summary.graph.find(a),summary.graph.find(b));
+        assertNotEquals(summary.graph.component(summary.graph.find(a)),summary.graph.component(summary.graph.find(b)));
+        assertTrue(summary.reachable("ancestor-a"));assertTrue(summary.reachable("ancestor-b"));assertEquals(4,summary.summaryCount);
+    }
 }

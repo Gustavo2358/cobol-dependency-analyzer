@@ -406,7 +406,6 @@ final class DependencyFlow {
     final List<Query> queries;
     final Set<Integer> demand=new HashSet<>();
     final Set<Integer> specialized=new HashSet<>();
-    final Map<Point,Integer> forwardOrder;
     record CalculationKey(String node,State input,int declaration) { }
     final Map<CalculationKey,Term> calculations=new HashMap<>();
     final Map<Computation,State> instantiated=new HashMap<>();
@@ -503,10 +502,11 @@ final class DependencyFlow {
     final Map<Location,State> before=new HashMap<>();
     // Reverse postorder coalesces incoming branch states before visiting their
     // successors, avoiding a wave of transient decision DAGs through every suffix.
-    final PriorityQueue<Location> work=new PriorityQueue<>(Comparator.comparingInt(this::workRank).thenComparingInt(Location::context).thenComparing(Location::node));
-    private int workRank(Location location) {
-        if(location.result()!=null)return -1;
-        return forwardOrder.getOrDefault(inputPoint(new Exit(TargetKind.OCCURRENCE,location.node()),contexts.get(location.context()).key),Integer.MAX_VALUE);
+    record Scheduled(Location location,int rank) { }
+    final PriorityQueue<Scheduled> work=new PriorityQueue<>(Comparator.comparingInt(Scheduled::rank).thenComparingInt(s->s.location().context()).thenComparing(s->s.location().node()));
+    private void schedule(Location location) {
+        int rank=location.result()!=null?-1:controlSummary.forwardRank(inputPoint(new Exit(TargetKind.OCCURRENCE,location.node()),contexts.get(location.context()).key));
+        work.add(new Scheduled(location,rank));
     }
     final Set<Location> queued=new HashSet<>();
     final Set<String> diagnostics=new TreeSet<>();
@@ -651,7 +651,7 @@ final class DependencyFlow {
             int slot=nextElementId++;elements.put(cell,slot);tableValueIds.get(cell.declaration()).add(slot);demand.add(slot);
         }
         tableDemandExpanded=false;
-        var cyclic=controlSummary.cyclicNodes();forwardOrder=controlSummary.forwardOrder();
+        var cyclic=controlSummary.cyclicNodes();
         for(var statement:statements.values()) {
             if(cyclic.contains(handle(statement))) {
                 specialized.addAll(potentialWrites(statement));
@@ -683,12 +683,12 @@ final class DependencyFlow {
             specialized.addAll(relatedValues(specialized));changed=size!=specialized.size();
         }while(changed);
         specialized.retainAll(demand);
-        relevance=new DependencyRelevance(this::inputEffect,maxWork);
+        relevance=new DependencyRelevance(controlSummary.graph,this::inputEffect,maxWork);
         State initial=initial();
         for(var root:roots)subscribe(new Entry(root.endpoint(),initial),root.exit());
         while(!work.isEmpty()) {
             if(++visits>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: dataflow did not complete within --max-work="+maxWork);
-            var location=work.remove();queued.remove(location);
+            var location=work.remove().location();queued.remove(location);
             if(location.result()!=null) {
                 var ctx=contexts.get(location.context());
                 deliver(location.caller(),location.result(),ctx.results.get(location.result()));
@@ -1187,7 +1187,7 @@ final class DependencyFlow {
     private void enqueue(int context,String node,State state) {
         if(state.reach().equals(NO))return;
         var key=new Location(context,node);var old=before.get(key);var joined=old==null?state:join(old,state);
-        if(!joined.equals(old)){before.put(key,joined);if(queued.add(key))work.add(key);}
+        if(!joined.equals(old)){before.put(key,joined);if(queued.add(key))schedule(key);}
         if(before.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many states");
     }
     private Exit normalize(Exit target) {
@@ -1523,7 +1523,7 @@ final class DependencyFlow {
      * prove a kill. All other writes still read their prior logical contents. */
     private Effect localEffect(Exit exit) {
         var reads=new HashSet<Input>();var kills=new HashSet<Input>();var s=statements.get(exit.reference());
-        if(s==null)return new Effect(reads,kills,List.of());
+        if(s==null)return new Effect(reads,kills);
         if(s instanceof Ast.MoveStatement m&&!m.corresponding()) {
             valueInputs(reads,declarations.reads(m.source()));
             for(var target:m.targets()) {
@@ -1563,7 +1563,7 @@ final class DependencyFlow {
             if(abend.action()==CicsHandlerSemantics.Action.ACTIVATE)kills.add(new Handler("ABEND-SAVED"));
         }
         for(var registration:registrations.getOrDefault(exit.reference(),List.of()))kills.add(new Handler(registration.condition()));
-        return new Effect(reads,kills,List.of());
+        return new Effect(reads,kills);
     }
     private Effect inputEffect(Point point) {
         var exit=point.exit();
@@ -1572,11 +1572,11 @@ final class DependencyFlow {
             exit=new Exit(TargetKind.OCCURRENCE,binding.caller());
         }
         var local=accessEffects.computeIfAbsent(exit,this::localEffect);
-        return new Effect(local.reads(),local.kills(),controlSummary.successors(point));
+        return local;
     }
 
     private void queueResult(int context,Exit exit,Continuation caller) {
-        var location=new Location(context,"",exit,caller);if(queued.add(location))work.add(location);
+        var location=new Location(context,"",exit,caller);if(queued.add(location))schedule(location);
     }
     private void finish(int context,Exit exit,State state) {
         // A terminal program exit propagates only reachability. Its variables,
