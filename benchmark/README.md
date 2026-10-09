@@ -1,5 +1,9 @@
 # Medições locais
 
+[OCCURS sob demanda](sparse-occurs-20261009.md): posições esparsas e remainder
+compartilhado, com baseline anterior à implementação, oráculos adversariais e
+comparação de tempo, memória e candidatos em heap de 512 MiB.
+
 [Fixture de combinações de controle](control-signatures-20261009.md):
 dez flags em IFs provocam 2.048 contextos; doze provocam 8.192, mantendo somente
 duas dependências. O controle com as flags usadas como dados fica em 12 e 14

@@ -329,7 +329,7 @@ final class DependencyFlow {
                     id=declarations.conditions.getOrDefault(id,id);
                     if(textGroups.contains(id)&&input.values().containsKey(id))ids.add(id);
                     else ids.addAll(declarations.leaves(id));
-                    ids.addAll(elementIds.getOrDefault(id,List.of()));
+                    ids.addAll(tableValueIds.getOrDefault(id,List.of()));
                 }
             }
             pending.addAll(DependencyDeclarations.valueChildren(next));
@@ -414,7 +414,23 @@ final class DependencyFlow {
     final Set<Integer> textGroups=new HashSet<>();
     record Element(int declaration,List<Integer> subscripts) { Element {subscripts=List.copyOf(subscripts);} }
     final Map<Element,Integer> elements=new HashMap<>();
-    final Map<Integer,List<Integer>> elementIds=new HashMap<>();
+    /** A remainder value represents every position without a demanded cell. */
+    record Table(List<Integer> dimensions,int remainder) {
+        Table { dimensions=List.copyOf(dimensions); }
+        boolean contains(List<Integer> indexes) {
+            if(indexes.size()!=dimensions.size())return false;
+            for(int i=0;i<indexes.size();i++)if(indexes.get(i)<1||indexes.get(i)>dimensions.get(i))return false;
+            return true;
+        }
+        long cardinality() {
+            long count=1;for(int n:dimensions){if(n==0||count>Long.MAX_VALUE/n)return Long.MAX_VALUE;count*=n;}return count;
+        }
+    }
+    final Map<Integer,Table> tables=new HashMap<>();
+    final Map<Integer,List<Integer>> tableValueIds=new HashMap<>();
+    final Set<Element> requestedElements;
+    boolean tableDemandExpanded;
+    int tableDemandPasses=1;
     int nextElementId;
     final List<Context> contexts=new ArrayList<>();
     final Map<SummaryKey,Integer> memo=new HashMap<>();
@@ -499,9 +515,28 @@ final class DependencyFlow {
     long visits;
     long resultDeliveries;
 
-    DependencyFlow(CompilationUnitModel.ProgramUnit unit,DependencyDeclarations declarations,
+    /** Close the cell demand using the same value solver. Computed indexes may
+     * become known only when a parametric summary is instantiated. Restarting
+     * after a new cell makes all projections and memo keys use one fixed schema;
+     * no answer from an incomplete footprint is published. */
+    static DependencyFlow analyze(CompilationUnitModel.ProgramUnit unit,DependencyDeclarations declarations,
             ControlTopology control,List<Query> queries,long maxWork,CicsProgramControlAnalyzer.Contribution cics,Map<Integer,ConditionNameSemantics.Use> conditions) {
-        this.declarations=declarations;this.queries=queries;this.maxWork=maxWork;
+        var cells=new LinkedHashSet<Element>();
+        long work=0,evaluations=0,reused=0,instantiated=0,resolved=0,delivered=0,decisions=0,operations=0,lifted=0,controlWork=0;
+        int passes=0;
+        while(true) {
+            var flow=new DependencyFlow(unit,declarations,control,queries,maxWork,cics,conditions,cells);passes++;
+            work+=flow.visits;evaluations+=flow.evaluations;reused+=flow.reusedEvaluations;instantiated+=flow.instantiationEvaluations;
+            resolved+=flow.resolutionVisits;delivered+=flow.resultDeliveries;decisions+=flow.decisionNodes;operations+=flow.decisionOperations;lifted+=flow.liftedOperations;controlWork+=flow.controlSummary.visits;
+            if(work>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: table demand closure exceeded --max-work="+maxWork);
+            if(flow.tableDemandExpanded)continue;
+            flow.visits=work;flow.evaluations=evaluations;flow.reusedEvaluations=reused;flow.instantiationEvaluations=instantiated;flow.resolutionVisits=resolved;
+            flow.resultDeliveries=delivered;flow.decisionNodes=decisions;flow.decisionOperations=operations;flow.liftedOperations=lifted;flow.tableDemandPasses=passes;flow.controlSummary.visits=controlWork;return flow;
+        }
+    }
+    private DependencyFlow(CompilationUnitModel.ProgramUnit unit,DependencyDeclarations declarations,
+            ControlTopology control,List<Query> queries,long maxWork,CicsProgramControlAnalyzer.Contribution cics,Map<Integer,ConditionNameSemantics.Use> conditions,Set<Element> requestedElements) {
+        this.declarations=declarations;this.queries=queries;this.maxWork=maxWork;this.requestedElements=requestedElements;
         predicates=new ScalarPredicateSemantics(conditions,declarations.references.keySet());
         var todo=new ArrayDeque<Ast.Node>();todo.add(unit.program());
         while(!todo.isEmpty()){var node=todo.removeFirst();if(node instanceof Ast.Program&&node!=unit.program())continue;
@@ -600,8 +635,22 @@ final class DependencyFlow {
         for(int id:new ArrayList<>(demand))if(declarations.repeated.contains(id)&&declarations.children.getOrDefault(id,List.of()).isEmpty()) {
             var dimensions=new ArrayList<Integer>();Integer ancestor=id;
             while(ancestor!=null) {if(declarations.entries.get(ancestor).clauses().stream().anyMatch(Ast.OccursClause.class::isInstance))dimensions.add(0,declarations.counts.getOrDefault(ancestor,0));ancestor=declarations.parent.get(ancestor);}
-            if(!dimensions.contains(0))indexElements(id,dimensions,0,List.of());
+            int remainder=nextElementId++;tables.put(id,new Table(dimensions,remainder));
+            tableValueIds.put(id,new ArrayList<>(List.of(remainder)));demand.add(remainder);
         }
+        // Literal indexes need no discovery pass. All other indexes are learned
+        // by ordinary transfer/read operations, including caller substitution.
+        var unknownInput=new State(Map.of(),Map.of(),Set.of());
+        for(var expression:expressions.values())if(expression instanceof Ast.DataReference reference&&!reference.subscriptGroups().isEmpty()) {
+            Integer id=declarations.references.get(reference.meta().id());if(id==null)continue;
+            var indexes=reference.subscriptGroups().stream().flatMap(g->g.subscripts().stream()).map(e->integer(e,unknownInput)).toList();
+            requestElement(id,indexes);
+        }
+        for(var cell:requestedElements)if(tables.containsKey(cell.declaration())) {
+            if(elements.size()>=maxWork)throw new IllegalStateException("RESOURCE_LIMIT: demanded logical table elements");
+            int slot=nextElementId++;elements.put(cell,slot);tableValueIds.get(cell.declaration()).add(slot);demand.add(slot);
+        }
+        tableDemandExpanded=false;
         var cyclic=controlSummary.cyclicNodes();forwardOrder=controlSummary.forwardOrder();
         for(var statement:statements.values()) {
             if(cyclic.contains(handle(statement))) {
@@ -671,9 +720,9 @@ final class DependencyFlow {
                         groups.put(d.meta().id(),seed.fit(declarations.widths.getOrDefault(d.meta().id(),0)));state=state.withValues(groups);
                     }
                 }
-                if(!elementIds.getOrDefault(d.meta().id(),List.of()).isEmpty()) {
+                if(!tableValueIds.getOrDefault(d.meta().id(),List.of()).isEmpty()) {
                     var outValues=new DependencyEnvironment.Builder<>(state.values());
-                    for(int slot:elementIds.get(d.meta().id()))outValues.put(slot,state.get(d.meta().id()));state=state.withValues(outValues);
+                    for(int slot:tableValueIds.get(d.meta().id()))outValues.put(slot,state.get(d.meta().id()));state=state.withValues(outValues);
                 }
             }
         }
@@ -693,14 +742,18 @@ final class DependencyFlow {
         }
         return state.withValues(snapshots);
     }
-    private void indexElements(int declaration,List<Integer> dimensions,int level,List<Integer> path) {
-        if(elements.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: logical table elements");
-        if(level==dimensions.size()) {
-            int id=nextElementId++;elements.put(new Element(declaration,path),id);
-            elementIds.computeIfAbsent(declaration,k->new ArrayList<>()).add(id);demand.add(id);return;
+    private void requestElement(int id,List<Integer> indexes) {
+        var table=tables.get(id);if(table==null||!table.contains(indexes))return;
+        for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id))) {
+            var other=tables.get(alias);if(other==null||!other.contains(indexes))continue;
+            if(requestedElements.add(new Element(alias,indexes)))tableDemandExpanded=true;
         }
-        if(dimensions.get(level)>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: logical table dimension");
-        for(int i=1;i<=dimensions.get(level);i++){var next=new ArrayList<>(path);next.add(i);indexElements(declaration,dimensions,level+1,next);}
+    }
+    private DependencyValues tableSummary(int id,State state) {
+        var table=tables.get(id);if(table==null)return state.get(id);
+        var ids=tableValueIds.get(id);
+        DependencyValues value=ids.size()-1<table.cardinality()?state.get(table.remainder()):new DependencyValues(Set.of(),false);
+        for(int slot:ids)if(slot!=table.remainder())value=value.join(state.get(slot));return value;
     }
     private Optional<String> conditionText(Ast.ConditionValue v) {
         return switch(v.kind()){case TEXT,NUMBER->Optional.of(v.value());case SPACES->Optional.of(" ");case ZERO->Optional.of("0");default->Optional.empty();};
@@ -734,7 +787,7 @@ final class DependencyFlow {
             do {
                 int size=written.size();
                 for(int id:new ArrayList<>(written)) {
-                    written.addAll(declarations.equivalents.getOrDefault(id,Set.of(id)));written.addAll(elementIds.getOrDefault(id,List.of()));
+                    written.addAll(declarations.equivalents.getOrDefault(id,Set.of(id)));written.addAll(tableValueIds.getOrDefault(id,List.of()));
                     Integer ancestor=id;
                     while(ancestor!=null) {
                         for(int view:declarations.textualViews.getOrDefault(ancestor,Set.of())){written.add(view);written.addAll(declarations.leaves(view));decoded.addAll(declarations.leaves(view));}
@@ -744,7 +797,7 @@ final class DependencyFlow {
                 changed=size!=written.size();
             }while(changed);
             var aliases=new HashSet<Integer>();
-            for(int id:written)for(int alias:declarations.possibleAliases.getOrDefault(id,Set.of())){aliases.add(alias);aliases.addAll(elementIds.getOrDefault(alias,List.of()));}
+            for(int id:written)for(int alias:declarations.possibleAliases.getOrDefault(id,Set.of())){aliases.add(alias);aliases.addAll(tableValueIds.getOrDefault(alias,List.of()));}
             aliases.removeAll(written);aliases.removeAll(textGroups);aliases.retainAll(demand);
             var affected=new HashSet<>(written);affected.addAll(aliases);
             for(int group:textGroups)if(!Collections.disjoint(affected,declarations.leaves(group)))affected.add(group);
@@ -754,7 +807,7 @@ final class DependencyFlow {
                 var reads=new HashSet<Integer>();reads.add(id);
                 for(int peer:declarations.equivalents.getOrDefault(id,Set.of(id)))if(written.contains(peer))reads.add(peer);
                 widenings.put(id,Set.copyOf(reads));
-                for(int slot:elementIds.getOrDefault(id,List.of()))widenings.put(slot,Set.of(slot));
+                for(int slot:tableValueIds.getOrDefault(id,List.of()))widenings.put(slot,Set.of(slot));
             }
             // A group with unproven text extent cannot decode the incoming
             // value. The canonical write opens its previous leaves instead.
@@ -767,7 +820,7 @@ final class DependencyFlow {
                         for(int peer:declarations.equivalents.getOrDefault(leaf,Set.of(leaf)))if(leaves.contains(peer))reads.add(peer);
                         widenings.put(id,Set.copyOf(reads));
                     }
-                    for(int leaf:leaves)for(int id:elementIds.getOrDefault(leaf,List.of()))if(!decoded.contains(id))widenings.put(id,Set.of(id));
+                    for(int leaf:leaves)for(int id:tableValueIds.getOrDefault(leaf,List.of()))if(!decoded.contains(id))widenings.put(id,Set.of(id));
                 }
             }
             affected.retainAll(demand);return new WriteSupport(Set.copyOf(affected),Map.copyOf(widenings));
@@ -813,8 +866,9 @@ final class DependencyFlow {
         if(r.subscriptGroups().isEmpty())return value;
         var indexes=r.subscriptGroups().stream().flatMap(g->g.subscripts().stream()).map(e->integer(e,state)).toList();
         if(indexes.stream().anyMatch(i->i<=0))return value.open();
+        requestElement(id,indexes);
         Integer slot=elements.get(new Element(id,indexes));
-        return slot==null?DependencyValues.UNKNOWN:state.get(slot);
+        return slot==null?(tables.containsKey(id)&&tables.get(id).contains(indexes)?value.open():DependencyValues.UNKNOWN):state.get(slot);
     }
     private DependencyValues readDeclaration(int id,State state) {
         if(textGroups.contains(id)&&state.values().containsKey(id))return state.get(id);
@@ -850,12 +904,11 @@ final class DependencyFlow {
         for(int group:textGroups)if(!Collections.disjoint(declarations.leaves(group),declarations.related(id)))changedGroups.add(group);
         if(!changedGroups.isEmpty()) {var out=new DependencyEnvironment.Builder<>(state.values());changedGroups.forEach(out::remove);state=state.withValues(out);}
         state=writeLocal(id,value,state,weak);
-        if(!weak&&!declarations.children.getOrDefault(id,List.of()).isEmpty()&&declarations.leaves(id).stream().anyMatch(elementIds::containsKey)) {
+        if(!weak&&!declarations.children.getOrDefault(id,List.of()).isEmpty()&&declarations.leaves(id).stream().anyMatch(tableValueIds::containsKey)) {
             state=decode(id,value.fit(declarations.widths.getOrDefault(id,0)),state,0,false);
             var exact=new DependencyEnvironment.Builder<>(state.values());
-            for(int leaf:declarations.leaves(id))if(elementIds.containsKey(leaf)) {
-                DependencyValues all=null;for(int slot:elementIds.get(leaf))all=all==null?state.get(slot):all.join(state.get(slot));
-                exact.put(leaf,all);
+            for(int leaf:declarations.leaves(id))if(tableValueIds.containsKey(leaf)) {
+                exact.put(leaf,tableSummary(leaf,state));
             }state=state.withValues(exact);
         }
         var ancestors=new LinkedHashSet<Integer>();ancestors.add(id);
@@ -891,10 +944,33 @@ final class DependencyFlow {
         }return null;
     }
     private State decode(int id,DependencyValues text,State state,int offset,boolean weak) {
-        return decode(id,text,state,offset,weak,List.of());
+        // The remainder collects only unmaterialized positions. A full group
+        // write replaces it; an unknown-index write merely widens it.
+        var remainders=new HashMap<Integer,DependencyValues>();
+        state=decode(id,text,state,offset,weak,List.of(),remainders);
+        var out=new DependencyEnvironment.Builder<>(state.values());
+        for(var entry:remainders.entrySet()) {
+            var table=tables.get(entry.getKey());var value=entry.getValue();
+            out.put(table.remainder(),weak?state.get(table.remainder()).join(value).open():value);
+        }
+        state=state.withValues(out);
+        out=new DependencyEnvironment.Builder<>(state.values());
+        for(int leaf:declarations.leaves(id))if(tables.containsKey(leaf))out.put(leaf,tableSummary(leaf,state));
+        return state.withValues(out);
     }
-    private State decode(int id,DependencyValues text,State state,int offset,boolean weak,List<Integer> path) {
+    private State decode(int id,DependencyValues text,State state,int offset,boolean weak,List<Integer> path,Map<Integer,DependencyValues> remainders) {
         int width=declarations.widths.getOrDefault(id,0);if(width==0)return state;
+        if(text.values().isEmpty()) {
+            var out=new DependencyEnvironment.Builder<>(state.values());
+            for(int leaf:declarations.leaves(id)) {
+                if(!demand.contains(leaf))continue;
+                for(int alias:declarations.equivalents.getOrDefault(leaf,Set.of(leaf))) {
+                    out.put(alias,weak?state.get(alias).open():DependencyValues.UNKNOWN);
+                    for(int slot:tableValueIds.getOrDefault(alias,List.of()))out.put(slot,weak?state.get(slot).open():DependencyValues.UNKNOWN);
+                }
+            }
+            return state.withValues(out);
+        }
         int count=declarations.counts.getOrDefault(id,1);var cs=declarations.children.getOrDefault(id,List.of());
         if((long)count*width>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: logical table text");
         for(int i=0;i<count;i++) {
@@ -908,11 +984,12 @@ final class DependencyFlow {
                 for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id))) {
                     Integer slot=elements.get(new Element(alias,current));
                     if(slot!=null)out.put(slot,weak?state.get(slot).join(value).open():value);
+                    else if(tables.containsKey(alias))remainders.merge(alias,value,DependencyValues::join);
                 }
                 state=state.withValues(out);
             }else {int start=base;for(int c:cs) {
                 if(declarations.entries.get(c).clauses().stream().anyMatch(Ast.RedefinesClause.class::isInstance))continue;
-                state=decode(c,text,state,start,weak,current);start+=declarations.widths.getOrDefault(c,0)*declarations.counts.getOrDefault(c,1);
+                state=decode(c,text,state,start,weak,current,remainders);start+=declarations.widths.getOrDefault(c,0)*declarations.counts.getOrDefault(c,1);
             }}
         }
         return state;
@@ -941,12 +1018,12 @@ final class DependencyFlow {
             var next=weak?state.get(target).join(value).open():value;
             if(!next.equals(state.get(target))||!state.values().containsKey(target)) {if(out==null)out=new DependencyEnvironment.Builder<>(state.values());out.put(target,next);}
         }
-        if(weak)for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id)))for(int slot:elementIds.getOrDefault(alias,List.of()))if(!state.get(slot).unknown()) {
+        if(weak)for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id)))for(int slot:tableValueIds.getOrDefault(alias,List.of()))if(!state.get(slot).unknown()) {
             if(out==null)out=new DependencyEnvironment.Builder<>(state.values());out.put(slot,state.get(slot).open());
         }
         for(int alias:declarations.possibleAliases.getOrDefault(id,Set.of()))if(demand.contains(alias)) {
             if(!state.get(alias).unknown()) {if(out==null)out=new DependencyEnvironment.Builder<>(state.values());out.put(alias,state.get(alias).open());}
-            for(int slot:elementIds.getOrDefault(alias,List.of()))if(!state.get(slot).unknown()) {
+            for(int slot:tableValueIds.getOrDefault(alias,List.of()))if(!state.get(slot).unknown()) {
                 if(out==null)out=new DependencyEnvironment.Builder<>(state.values());out.put(slot,state.get(slot).open());
             }
         }
@@ -975,16 +1052,15 @@ final class DependencyFlow {
     private State writeReference(Ast.DataReference r,int id,DependencyValues value,State state) {
         if(!r.subscriptGroups().isEmpty()) {
             var indexes=r.subscriptGroups().stream().flatMap(g->g.subscripts().stream()).map(e->integer(e,state)).toList();
+            requestElement(id,indexes);
             State out=write(id,value,state,true);var changed=new DependencyEnvironment.Builder<>(out.values());
             Integer selected=indexes.stream().allMatch(i->i>0)?elements.get(new Element(id,indexes)):null;
             if(selected!=null) {
                 for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id))) {
                     Integer aliasSlot=elements.get(new Element(alias,indexes));if(aliasSlot==null)continue;
-                    for(int slot:elementIds.get(alias))changed.put(slot,state.get(slot));
+                    for(int slot:tableValueIds.get(alias))changed.put(slot,state.get(slot));
                     changed.put(aliasSlot,fitField(alias,value));
-                    DependencyValues summary=null;
-                    for(int slot:elementIds.get(alias))summary=summary==null?changed.get(slot):summary.join(changed.get(slot));
-                    changed.put(alias,summary);
+                    changed.put(alias,tableSummary(alias,out.withValues(changed)));
                     for(int group:textGroups) {
                         var span=indexedSpan(group,alias,indexes);if(span==null)continue;
                         var prior=state.get(group);var replacement=changed.get(aliasSlot).fit(span[1]);
@@ -996,7 +1072,7 @@ final class DependencyFlow {
                         changed.put(group,next);
                     }
                 }
-            }else for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id)))for(int slot:elementIds.getOrDefault(alias,List.of()))changed.put(slot,out.get(slot).join(fitField(alias,value)).open());
+            }else for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id)))for(int slot:tableValueIds.getOrDefault(alias,List.of()))changed.put(slot,out.get(slot).join(fitField(alias,value)).open());
             State result=out.withValues(changed);
             if(selected!=null)for(int group:textGroups)if(indexedSpan(group,id,indexes)!=null)
                 for(int alias:declarations.textualViews.getOrDefault(group,Set.of()))result=decode(alias,result.get(group),result,0,false);
@@ -1013,7 +1089,8 @@ final class DependencyFlow {
             var current=new ArrayList<>(path);
             if(declarations.entries.get(id).clauses().stream().anyMatch(Ast.OccursClause.class::isInstance))current.add(i);
             if(children.isEmpty()) {
-                int slot=elements.getOrDefault(new Element(id,current),id);var v=state.get(slot);
+                int fallback=tables.containsKey(id)?tables.get(id).remainder():id;
+                int slot=elements.getOrDefault(new Element(id,current),fallback);var v=state.get(slot);
                 if(closed&&v.unknown()||v.values().size()!=1)return Optional.empty();
                 text.append(v.values().iterator().next());
             }else for(int child:children) {
@@ -1102,9 +1179,9 @@ final class DependencyFlow {
         if(width>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: INITIALIZE logical text extent");
         var value=width>0?DependencyValues.known(declarations.numeric.contains(id)?"0".repeat(width):" ".repeat(width)):DependencyValues.UNKNOWN;
         state=write(id,value,state,false);
-        if(elementIds.containsKey(id)) {
+        if(tableValueIds.containsKey(id)) {
             var initialized=new DependencyEnvironment.Builder<>(state.values());initialized.put(id,value);
-            for(int slot:elementIds.get(id))initialized.put(slot,value);state=state.withValues(initialized);
+            for(int slot:tableValueIds.get(id))initialized.put(slot,value);state=state.withValues(initialized);
         }return state;
     }
     private void enqueue(int context,String node,State state) {
@@ -1415,7 +1492,7 @@ final class DependencyFlow {
 
     private Set<Integer> expandNeeded(Set<Integer> needed) {
         for(int group:textGroups)if(!Collections.disjoint(needed,declarations.leaves(group)))needed.add(group);
-        for(int id:new ArrayList<>(needed))needed.addAll(elementIds.getOrDefault(id,List.of()));
+        for(int id:new ArrayList<>(needed))needed.addAll(tableValueIds.getOrDefault(id,List.of()));
         needed.retainAll(demand);return Set.copyOf(needed);
     }
     private Point inputPoint(Exit exit,String endpoint){return new Point(normalize(exit),endpoint);}
@@ -1538,7 +1615,7 @@ final class DependencyFlow {
         var values=new HashSet<>(ids);boolean changed;
         do {
             int size=values.size();
-            for(int id:new ArrayList<>(values)){values.addAll(declarations.related(id));values.addAll(elementIds.getOrDefault(id,List.of()));}
+            for(int id:new ArrayList<>(values)){values.addAll(declarations.related(id));values.addAll(tableValueIds.getOrDefault(id,List.of()));}
             for(int group:textGroups)if(values.contains(group)||!Collections.disjoint(values,declarations.leaves(group))) {
                 values.add(group);values.addAll(declarations.leaves(group));
             }
