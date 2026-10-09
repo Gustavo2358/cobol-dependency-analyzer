@@ -1,0 +1,371 @@
+{
+  "baselineCommit": "52c1b82dc6accbb615818cf5b5298843a85b0f01",
+  "jarSha256": "6bd96f31911976c097c9fb47377587c11bf3ebe6dc60305190104314bc39b036",
+  "branch": "experiment/value-origin-graph",
+  "prototypeVersion": "v10",
+  "sourceHashesMatchMeasuredOverlay": {
+    "ValueOriginExperiment.java": true,
+    "ValueOriginPublication.java": true
+  },
+  "productionSourcesUnchanged": true,
+  "productionQualified": false,
+  "heapMiB": 512,
+  "rssGuardMiB": 768,
+  "hostReserveMiB": 2048,
+  "maxWork": 100000000,
+  "focused": {
+    "cases": 37,
+    "missing": 0,
+    "additional": 82,
+    "fullJsonEqual": 13,
+    "verdicts": {
+      "EXACT": 13,
+      "ADDITIONAL": 24
+    }
+  },
+  "adversarial": {
+    "cases": 4,
+    "missing": 0,
+    "additional": 0,
+    "fullJsonEqual": 4
+  },
+  "carddemo": {
+    "sources": 73,
+    "completed": 73,
+    "incomplete": 0,
+    "sourcesMissingCandidates": 0,
+    "equal": 815,
+    "missing": 0,
+    "additional": 11,
+    "peakRssMiB": 284.2421875,
+    "seconds": 91.82391254592221,
+    "heapMiB": 512,
+    "rssGuardMiB": 768,
+    "hostReserveMiB": 2048,
+    "baselineRun": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/carddemo/results.json",
+    "baselineReused": true,
+    "jarSha256": "6bd96f31911976c097c9fb47377587c11bf3ebe6dc60305190104314bc39b036",
+    "overlayManifestSha256": "0760abc1bd5a5336b1bad351409cbf4ad56973c9ea7f225ff6849ad428277005",
+    "inputHashesUnchanged": 185,
+    "productionQualified": false
+  },
+  "pairedV9": {
+    "dynamic-64": {
+      "baseline": {
+        "medianSeconds": 11.375988323008642,
+        "medianRssMiB": 585.01171875
+      },
+      "origin": {
+        "medianSeconds": 1.2135112440155353,
+        "medianRssMiB": 165.26953125
+      },
+      "prototypeVersion": "v9",
+      "repeats": 3,
+      "fullJsonEqual": true
+    },
+    "fanout-128": {
+      "baseline": {
+        "medianSeconds": 6.364360340987332,
+        "medianRssMiB": 419.29296875
+      },
+      "origin": {
+        "medianSeconds": 1.3137132879928686,
+        "medianRssMiB": 175.34765625
+      },
+      "prototypeVersion": "v9",
+      "repeats": 3,
+      "fullJsonEqual": true
+    }
+  },
+  "scaleV10": [
+    {
+      "case": "dynamic-64",
+      "n": 64,
+      "seconds": 1.263454049010761,
+      "peakRssMiB": 164.203125,
+      "programs": 65,
+      "origin": {
+        "physicalNodes": 2190,
+        "physicalEdges": 2831,
+        "originNodes": 4118,
+        "originEdges": 4629,
+        "components": 4100,
+        "joinComponents": 4100,
+        "operations": 0,
+        "evaluations": 0,
+        "propagations": 5442,
+        "candidateSlots": 770,
+        "tracked": 1,
+        "work": 34706
+      },
+      "publication": {
+        "queries": 256,
+        "distinctSets": 130,
+        "groups": 130,
+        "naivePairs": 8384,
+        "enumeratedPairs": 257
+      },
+      "phaseSeconds": {
+        "parseNanos": 0.685469,
+        "bindingNanos": 0.119124,
+        "cfgNanos": 0.108009,
+        "dataflowNanos": 0.087585,
+        "resolutionNanos": 0.004837,
+        "totalNanos": 1.009481
+      },
+      "oracleMissing": [],
+      "oracleAdditional": [],
+      "inputLoc": 1468,
+      "comparableToBaseline": false
+    },
+    {
+      "case": "dynamic-128",
+      "n": 128,
+      "seconds": 1.7767919159960002,
+      "peakRssMiB": 220.91015625,
+      "programs": 129,
+      "origin": {
+        "physicalNodes": 4366,
+        "physicalEdges": 5647,
+        "originNodes": 8214,
+        "originEdges": 9237,
+        "components": 8196,
+        "joinComponents": 8196,
+        "operations": 0,
+        "evaluations": 0,
+        "propagations": 10882,
+        "candidateSlots": 1538,
+        "tracked": 1,
+        "work": 69266
+      },
+      "publication": {
+        "queries": 512,
+        "distinctSets": 258,
+        "groups": 258,
+        "naivePairs": 33152,
+        "enumeratedPairs": 513
+      },
+      "phaseSeconds": {
+        "parseNanos": 0.903427,
+        "bindingNanos": 0.158025,
+        "cfgNanos": 0.207327,
+        "dataflowNanos": 0.20987,
+        "resolutionNanos": 0.007329,
+        "totalNanos": 1.491242
+      },
+      "oracleMissing": [],
+      "oracleAdditional": [],
+      "inputLoc": 2908,
+      "comparableToBaseline": false
+    },
+    {
+      "case": "dynamic-256",
+      "n": 256,
+      "seconds": 1.9721341530093923,
+      "peakRssMiB": 276.91796875,
+      "programs": 257,
+      "origin": {
+        "physicalNodes": 8718,
+        "physicalEdges": 11279,
+        "originNodes": 16406,
+        "originEdges": 18453,
+        "components": 16388,
+        "joinComponents": 16388,
+        "operations": 0,
+        "evaluations": 0,
+        "propagations": 21762,
+        "candidateSlots": 3074,
+        "tracked": 1,
+        "work": 138386
+      },
+      "publication": {
+        "queries": 1024,
+        "distinctSets": 514,
+        "groups": 514,
+        "naivePairs": 131840,
+        "enumeratedPairs": 1025
+      },
+      "phaseSeconds": {
+        "parseNanos": 0.937758,
+        "bindingNanos": 0.228883,
+        "cfgNanos": 0.302191,
+        "dataflowNanos": 0.204739,
+        "resolutionNanos": 0.011868,
+        "totalNanos": 1.693684
+      },
+      "oracleMissing": [],
+      "oracleAdditional": [],
+      "inputLoc": 5788,
+      "comparableToBaseline": false
+    },
+    {
+      "case": "dynamic-512",
+      "n": 512,
+      "seconds": 2.7805403170059435,
+      "peakRssMiB": 396.2890625,
+      "programs": 513,
+      "origin": {
+        "physicalNodes": 17422,
+        "physicalEdges": 22543,
+        "originNodes": 32790,
+        "originEdges": 36885,
+        "components": 32772,
+        "joinComponents": 32772,
+        "operations": 0,
+        "evaluations": 0,
+        "propagations": 43522,
+        "candidateSlots": 6146,
+        "tracked": 1,
+        "work": 276626
+      },
+      "publication": {
+        "queries": 2048,
+        "distinctSets": 1026,
+        "groups": 1026,
+        "naivePairs": 525824,
+        "enumeratedPairs": 2049
+      },
+      "phaseSeconds": {
+        "parseNanos": 1.262155,
+        "bindingNanos": 0.369223,
+        "cfgNanos": 0.461734,
+        "dataflowNanos": 0.386997,
+        "resolutionNanos": 0.015102,
+        "totalNanos": 2.503423
+      },
+      "oracleMissing": [],
+      "oracleAdditional": [],
+      "inputLoc": 11548,
+      "comparableToBaseline": false
+    },
+    {
+      "case": "dynamic-1024",
+      "n": 1024,
+      "seconds": 4.397458598017693,
+      "peakRssMiB": 461.21875,
+      "programs": 1025,
+      "origin": {
+        "physicalNodes": 34830,
+        "physicalEdges": 45071,
+        "originNodes": 65558,
+        "originEdges": 73749,
+        "components": 65540,
+        "joinComponents": 65540,
+        "operations": 0,
+        "evaluations": 0,
+        "propagations": 87042,
+        "candidateSlots": 12290,
+        "tracked": 1,
+        "work": 553106
+      },
+      "publication": {
+        "queries": 4096,
+        "distinctSets": 2050,
+        "groups": 2050,
+        "naivePairs": 2100224,
+        "enumeratedPairs": 4097
+      },
+      "phaseSeconds": {
+        "parseNanos": 1.846199,
+        "bindingNanos": 0.510246,
+        "cfgNanos": 0.77031,
+        "dataflowNanos": 0.904751,
+        "resolutionNanos": 0.026063,
+        "totalNanos": 4.068373
+      },
+      "oracleMissing": [],
+      "oracleAdditional": [],
+      "inputLoc": 23068,
+      "comparableToBaseline": false
+    },
+    {
+      "case": "dynamic-2048",
+      "n": 2048,
+      "seconds": 8.002921299019363,
+      "peakRssMiB": 713.875,
+      "programs": 2049,
+      "origin": {
+        "physicalNodes": 69646,
+        "physicalEdges": 90127,
+        "originNodes": 131094,
+        "originEdges": 147477,
+        "components": 131076,
+        "joinComponents": 131076,
+        "operations": 0,
+        "evaluations": 0,
+        "propagations": 174082,
+        "candidateSlots": 24578,
+        "tracked": 1,
+        "work": 1106066
+      },
+      "publication": {
+        "queries": 8192,
+        "distinctSets": 4098,
+        "groups": 4098,
+        "naivePairs": 8394752,
+        "enumeratedPairs": 8193
+      },
+      "phaseSeconds": {
+        "parseNanos": 2.825467,
+        "bindingNanos": 0.803495,
+        "cfgNanos": 1.696622,
+        "dataflowNanos": 2.289056,
+        "resolutionNanos": 0.051555,
+        "totalNanos": 7.68455
+      },
+      "oracleMissing": [],
+      "oracleAdditional": [],
+      "inputLoc": 46108,
+      "comparableToBaseline": false
+    },
+    {
+      "case": "fanout-2048",
+      "n": 2048,
+      "seconds": 5.209606535994681,
+      "peakRssMiB": 573.421875,
+      "programs": 2048,
+      "origin": {
+        "physicalNodes": 61454,
+        "physicalEdges": 81935,
+        "originNodes": 0,
+        "originEdges": 0,
+        "components": 0,
+        "joinComponents": 0,
+        "operations": 0,
+        "evaluations": 0,
+        "propagations": 0,
+        "candidateSlots": 0,
+        "tracked": 0,
+        "work": 122908
+      },
+      "publication": {
+        "queries": 4096,
+        "distinctSets": 4096,
+        "groups": 4096,
+        "naivePairs": 4096,
+        "enumeratedPairs": 4096
+      },
+      "phaseSeconds": {
+        "parseNanos": 2.42953,
+        "bindingNanos": 0.73655,
+        "cfgNanos": 1.263769,
+        "dataflowNanos": 0.344224,
+        "resolutionNanos": 0.026723,
+        "totalNanos": 4.817279
+      },
+      "oracleMissing": [],
+      "oracleAdditional": [],
+      "inputLoc": 37916,
+      "comparableToBaseline": false
+    }
+  ],
+  "baselineDynamic128": {
+    "version": "paired-v3",
+    "repeats": 3,
+    "timeoutSeconds": 60,
+    "allTimedOut": true
+  },
+  "rawEvidenceFiles": 4356,
+  "rawManifestSha256": "b8a92ca107115754734b9ab48b399c8acc0ecc22382fafb31b0d65940c07b02d",
+  "rawEvidenceDirectory": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/value-origin-20261009"
+}
