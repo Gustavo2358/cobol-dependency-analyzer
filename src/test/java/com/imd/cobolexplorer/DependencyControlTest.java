@@ -56,6 +56,28 @@ class DependencyControlTest {
         assertEquals(exits,received);assertEquals(150,summary.resultPairs);
         assertEquals(300,summary.resultFacts);assertEquals(2,summary.summaryCount);
     }
+    @Test void aLateCallerReceivesAllExistingExitsExactlyOnce() {
+        var root=point("root");var body=point("body");var query=point("query");
+        var x=new Exit(TargetKind.ESCAPE,"x");var y=new Exit(TargetKind.ESCAPE,"y");
+        var received=new HashMap<String,Set<Exit>>();
+        var summary=new DependencyControl(List.of(root),p->p.equals(root)?call(body,"first")
+            :new DependencyControl.Effect(List.of(),List.of(),List.of(),Set.of(x,y)),(p,c,e)->{
+                assertTrue(received.computeIfAbsent(c.binding(),k->new HashSet<>()).add(e));
+                return c.binding().equals("first")?call(body,"late"):DependencyControl.Effect.next(query);
+            },p->p.equals(query),1000);
+        assertEquals(Map.of("first",Set.of(x,y),"late",Set.of(x,y)),received);
+        assertTrue(summary.reachable("query"));assertEquals(4,summary.resultPairs);
+    }
+    @Test void aLateSuccessorPropagatesResultsThatAlreadyExist() {
+        var root=point("root");var body=point("body");var bridge=point("bridge");var query=point("query");
+        var done=new Exit(TargetKind.COMPLETE,"scope");
+        var summary=new DependencyControl(List.of(root),p->{
+            if(p.equals(root))return call(bridge,"outer");
+            if(p.equals(bridge))return call(body,"discover-edge");
+            return DependencyControl.Effect.exit(done);
+        },(p,c,e)->DependencyControl.Effect.next(c.binding().equals("outer")?query:body),p->p.equals(query),1000);
+        assertTrue(summary.reachable("query"));assertEquals(2,summary.resultPairs);
+    }
     @Test void structuralWorkHonorsTheExplicitBudget() {
         var error=assertThrows(IllegalStateException.class,()->new DependencyControl(List.of(point("0")),
             p->DependencyControl.Effect.next(point(Integer.toString(Integer.parseInt(p.exit().reference())+1))),

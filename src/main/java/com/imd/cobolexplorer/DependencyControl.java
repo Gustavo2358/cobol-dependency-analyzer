@@ -30,7 +30,7 @@ final class DependencyControl {
         summaryCount=construction.plans.size();visits=construction.visits;
         resultPairs=construction.resultPairs;resultFacts=construction.resultFacts;
         construction.plans.forEach((point,plan)->plans.put(point,new Plan(
-            List.copyOf(plan.next),List.copyOf(plan.entries),List.copyOf(plan.calls))));
+            List.copyOf(plan.next),List.copyOf(plan.entries),List.copyOf(plan.calls.keySet()))));
         var pending=new ArrayDeque<>(roots);
         while(!pending.isEmpty()) {
             var point=pending.removeFirst();if(!reachable.add(point))continue;
@@ -105,17 +105,26 @@ final class DependencyControl {
         for(int i=order.size()-1;i>=0;i--)ranks.put(order.get(i),ranks.size());return Map.copyOf(ranks);
     }
 
-    private static final class PendingPlan {
-        final Set<Point> next=new HashSet<>(),entries=new HashSet<>();
-        final Set<Call> calls=new HashSet<>();
-        final BitSet exits=new BitSet(),results=new BitSet();
-        final Map<Call,BitSet> delivered=new HashMap<>();
+    private abstract static sealed class Task permits PendingPlan,Subscription {boolean queued;}
+    private static final class PendingPlan extends Task {
+        final Point point;
+        final Set<Point> next=new HashSet<>(),entries=new HashSet<>(),resultParents=new HashSet<>();
+        final Map<Call,Subscription> calls=new HashMap<>();
+        final List<Subscription> subscribers=new ArrayList<>();
+        final BitSet results=new BitSet(),pending=new BitSet();
+        PendingPlan(Point point){this.point=point;}
+    }
+    private static final class Subscription extends Task {
+        final Point caller;
+        final Call call;
+        final BitSet seen=new BitSet(),pending=new BitSet();
+        Subscription(Point caller,Call call){this.caller=caller;this.call=call;}
     }
     private static final class Construction {
         final Map<Point,PendingPlan> plans=new HashMap<>();
         final Map<Point,Set<Point>> parents=new HashMap<>();
-        final Set<Point> queued=new HashSet<>();
-        final ArrayDeque<Point> work=new ArrayDeque<>();
+        final ArrayDeque<Point> discovery=new ArrayDeque<>();
+        final ArrayDeque<Task> work=new ArrayDeque<>();
         final List<Exit> exitValues=new ArrayList<>();
         final Map<Exit,Integer> exitIds=new HashMap<>();
         final Function<Point,Effect> effects;
@@ -129,50 +138,57 @@ final class DependencyControl {
             return exitIds.computeIfAbsent(exit,e->{int id=exitValues.size();exitValues.add(e);return id;});
         }
         void solve(List<Point> roots) {
-            roots.forEach(this::discover);
-            while(!work.isEmpty()) {
+            roots.forEach(this::ensure);
+            while(!discovery.isEmpty()||!work.isEmpty()) {
+                // Discovery and delivery both stay iterative, including recursion.
+                while(!discovery.isEmpty()){var point=discovery.removeFirst();add(point,effects.apply(point));}
+                if(work.isEmpty())continue;
                 if(++visits>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: control summaries exceeded --max-work="+maxWork);
-                var point=work.removeFirst();queued.remove(point);var plan=plans.get(point);
-                for(var call:List.copyOf(plan.calls)) {
-                    var known=(BitSet)plans.get(call.entry()).results.clone();
-                    var sent=plan.delivered.computeIfAbsent(call,c->new BitSet());known.andNot(sent);
-                    for(int id=known.nextSetBit(0);id>=0;id=known.nextSetBit(id+1)) {
-                        sent.set(id);resultPairs++;add(point,delivery.apply(point,call,exitValues.get(id)));
-                    }
-                }
-                var exits=(BitSet)plan.exits.clone();
-                for(var next:plan.next)exits.or(plans.get(next).results);
-                exits.andNot(plan.results);
-                if(!exits.isEmpty()) {
-                    resultFacts+=exits.cardinality();plan.results.or(exits);
-                    parents.getOrDefault(point,Set.of()).forEach(this::schedule);
-                }
-            }
-        }
-        void schedule(Point point){if(queued.add(point))work.addLast(point);}
-        void discover(Point point) {
-            if(plans.containsKey(point))return;
-            plans.put(point,new PendingPlan());schedule(point);
-            var pending=new ArrayDeque<Point>();pending.add(point);
-            while(!pending.isEmpty()) {
-                var current=pending.removeFirst();var effect=effects.apply(current);var plan=plans.get(current);
-                plan.next.addAll(effect.next());plan.calls.addAll(effect.calls());plan.entries.addAll(effect.entries());
-                effect.exits().forEach(e->plan.exits.set(exitId(e)));
-                var children=new HashSet<>(plan.next);for(var call:plan.calls)children.add(call.entry());children.addAll(plan.entries);
-                for(var child:children) {
-                    parents.computeIfAbsent(child,k->new HashSet<>()).add(current);
-                    if(!plans.containsKey(child)) {
-                        if(plans.size()>=maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many control summaries");
-                        plans.put(child,new PendingPlan());schedule(child);pending.add(child);
+                var task=work.removeFirst();task.queued=false;
+                if(task instanceof PendingPlan plan) {
+                    var delta=drain(plan.pending);
+                    for(var parent:plan.resultParents)publish(plans.get(parent),delta);
+                    for(var subscriber:plan.subscribers)offer(subscriber,delta);
+                }else {
+                    var subscriber=(Subscription)task;var delta=drain(subscriber.pending);
+                    for(int id=delta.nextSetBit(0);id>=0;id=delta.nextSetBit(id+1)) {
+                        resultPairs++;add(subscriber.caller,delivery.apply(subscriber.caller,subscriber.call,exitValues.get(id)));
                     }
                 }
             }
         }
+        BitSet drain(BitSet pending){var delta=(BitSet)pending.clone();pending.clear();return delta;}
+        void schedule(Task task){if(!task.queued){task.queued=true;work.addLast(task);}}
+        PendingPlan ensure(Point point) {
+            var plan=plans.get(point);if(plan!=null)return plan;
+            if(plans.size()>=maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many control summaries");
+            plan=new PendingPlan(point);plans.put(point,plan);discovery.addLast(point);return plan;
+        }
+        void publish(PendingPlan plan,BitSet values) {
+            var delta=(BitSet)values.clone();delta.andNot(plan.results);
+            if(delta.isEmpty())return;
+            resultFacts+=delta.cardinality();plan.results.or(delta);plan.pending.or(delta);schedule(plan);
+        }
+        void offer(Subscription subscriber,BitSet values) {
+            var delta=(BitSet)values.clone();delta.andNot(subscriber.seen);
+            if(delta.isEmpty())return;
+            subscriber.seen.or(delta);subscriber.pending.or(delta);schedule(subscriber);
+        }
+        void parent(Point child,Point parent){parents.computeIfAbsent(child,k->new HashSet<>()).add(parent);}
         void add(Point point,Effect effect) {
-            var plan=plans.get(point);effect.exits().forEach(e->plan.exits.set(exitId(e)));
-            for(var next:effect.next())if(plan.next.add(next)){parents.computeIfAbsent(next,k->new HashSet<>()).add(point);discover(next);}
-            for(var call:effect.calls())if(plan.calls.add(call)){parents.computeIfAbsent(call.entry(),k->new HashSet<>()).add(point);discover(call.entry());}
-            for(var entry:effect.entries())if(plan.entries.add(entry)){parents.computeIfAbsent(entry,k->new HashSet<>()).add(point);discover(entry);}
+            var plan=plans.get(point);var exits=new BitSet();effect.exits().forEach(e->exits.set(exitId(e)));publish(plan,exits);
+            for(var next:effect.next())if(plan.next.add(next)) {
+                var child=ensure(next);parent(next,point);child.resultParents.add(point);
+                // A new edge must receive results that predate its registration.
+                publish(plan,child.results);
+            }
+            for(var call:effect.calls())if(!plan.calls.containsKey(call)) {
+                var child=ensure(call.entry());parent(call.entry(),point);
+                var subscriber=new Subscription(point,call);plan.calls.put(call,subscriber);child.subscribers.add(subscriber);
+                // Symmetric join: new caller receives old exits; old callers receive new exits.
+                offer(subscriber,child.results);
+            }
+            for(var entry:effect.entries())if(plan.entries.add(entry)){ensure(entry);parent(entry,point);}
         }
     }
 }
