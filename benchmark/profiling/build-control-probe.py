@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Build a counter-only overlay of DependencyControl; production stays untouched."""
+"""Build an isolated profiling overlay; production files and JAR stay untouched."""
 import argparse
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import shutil
@@ -57,6 +58,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('output', type=Path)
     p.add_argument('--jdk', type=Path)
+    p.add_argument('--flow-phases', action='store_true',
+                   help='Include Flow/Relevance phase counters and diagnostic -Dprobe.noescape=true ablation')
     p.add_argument('--jar', type=Path, default=ROOT/'target/cobol-dependency-analyzer.jar')
     a = p.parse_args()
     prod = ROOT/'src/main/java/com/imd/cobolexplorer/DependencyControl.java'
@@ -64,14 +67,27 @@ def main():
     a.output = a.output.resolve()
     a.output.mkdir(parents=True, exist_ok=False)
     source = a.output/'DependencyControl.java'; source.write_text(probe)
+    sources = [source]
+    production = [prod]
+    if a.flow_phases:
+        helper = Path(__file__).with_name('flow-phase-probe.py')
+        spec = importlib.util.spec_from_file_location('phase_probe', helper)
+        transforms = importlib.util.module_from_spec(spec); spec.loader.exec_module(transforms)
+        for name, transform in [('DependencyFlow', transforms.flow), ('DependencyRelevance', transforms.relevance)]:
+            original = prod.with_name(name+'.java'); production.append(original)
+            target = a.output/(name+'.java'); target.write_text(transform(original.read_text())); sources.append(target)
     classes = a.output/'classes'; classes.mkdir()
     empty = a.output/'empty'; empty.mkdir()
     javac = str(a.jdk/'bin/javac') if a.jdk else shutil.which('javac')
     cmd = [javac, '-J-Xmx128m', '-implicit:none', '-sourcepath', str(empty), '-cp',
-           str(a.jar.resolve()), '-d', str(classes), str(source)]
+           str(a.jar.resolve()), '-d', str(classes), *map(str, sources)]
     sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
     manifest = {'productionSourceSha256': sha(prod), 'probeSourceSha256': sha(source),
-                'jarSha256': sha(a.jar), 'command': cmd}
+                'jarSha256': sha(a.jar), 'command': cmd, 'flowPhases': a.flow_phases,
+                'productionSources': {p.name: sha(p) for p in production},
+                'probeSources': {p.name: sha(p) for p in sources},
+                'diagnosticProperty': 'probe.noescape' if a.flow_phases else None,
+                'ablationMayLoseDependencies': a.flow_phases}
     with (a.output/'compile.log').open('w') as log:
         result = subprocess.run(cmd, stdout=log, stderr=subprocess.STDOUT, timeout=60)
     manifest['exit'] = result.returncode

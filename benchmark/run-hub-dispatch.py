@@ -24,10 +24,13 @@ def main():
     p.add_argument('--telemetry', action='store_true')
     p.add_argument('--profile-duration', type=int, default=10)
     p.add_argument('--overlay', type=Path)
+    p.add_argument('--noescape', action='store_true', help='Diagnostic ablation; requires Flow overlay and may lose dependencies')
     p.add_argument('--timeout', type=int, default=35)
     a = p.parse_args()
     if a.max_work < 1 or a.timeout < 1 or a.rss < 1 or a.profile_duration < 1 or a.system_reserve < 0:
         p.error('budgets and durations must be positive; system reserve must be nonnegative')
+    if a.noescape and (not a.overlay or not (a.overlay/'com/imd/cobolexplorer/DependencyFlow.class').is_file()):
+        p.error('--noescape requires the --flow-phases diagnostic overlay')
     a.output = a.output.resolve(); a.output.mkdir(parents=True, exist_ok=False)
     spec = importlib.util.spec_from_file_location('bounded_runner', ROOT/'benchmark/run-sparse-occurs.py')
     runner = importlib.util.module_from_spec(spec); spec.loader.exec_module(runner)
@@ -38,6 +41,7 @@ def main():
             source_path = a.output/f'{case}.cbl'; source_path.write_text(source(boxes, a.hubs, mode))
             cmd = [java, '-Xms16m', f'-Xmx{a.heap}m', '-XX:MaxMetaspaceSize=128m',
                    '-XX:MaxDirectMemorySize=32m']
+            if a.noescape: cmd.append('-Dprobe.noescape=true')
             if not a.profile: cmd.append('-XX:+ExitOnOutOfMemoryError')
             if a.profile:
                 cmd.extend([f'-XX:StartFlightRecording=settings=profile,duration={a.profile_duration}s,maxsize=24m,filename={dest}/profile.jfr',
@@ -53,15 +57,22 @@ def main():
             target = dest/'dependencies.json'
             actual = sorted(d['name'] for d in json.loads(target.read_text())['dependencies'] if d['type']=='program') if target.exists() else None
             metrics = [json.loads(s) for s in (dest/'metrics.jsonl').read_text().splitlines()] if (dest/'metrics.jsonl').exists() else []
+            stderr = (dest/'stderr.log').read_text()
+            probes = {prefix: [json.loads(line[len(prefix)+1:]) for line in stderr.splitlines() if line.startswith(prefix+' ')]
+                      for prefix in ('FLOW_PROBE', 'CONTROL_PROBE', 'RELEVANCE_PROBE')}
             row.update(id=case, boxes=boxes, hubs=a.hubs, mode=mode,
                        sourceSha256=hashlib.sha256(source_path.read_bytes()).hexdigest(),
                        jarSha256=hashlib.sha256(jar.read_bytes()).hexdigest(), expected=sorted(expected), actual=actual,
                        passed=row['exit'] in (0, 1) and actual==sorted(expected),
+                       diagnosticAblation=a.noescape, productionQualified=False if a.noescape else row['exit'] in (0, 1) and actual==sorted(expected),
+                       probes=probes, failure=next((line for line in stderr.splitlines() if line.startswith('ANALYSIS_FAILED:')), None),
                        metrics=next((m['metrics'] for m in metrics if 'metrics' in m), None))
             rows.append(row); (a.output/'results.json').write_text(json.dumps(rows, indent=2)+'\n')
-            print(case, row['exit'], row['guard'], 'PASS' if row['passed'] else 'INCOMPLETE/RED',
+            verdict = ('DIAGNOSTIC: candidates match' if row['passed'] else 'DIAGNOSTIC: incomplete/different') if a.noescape else ('PASS' if row['passed'] else 'INCOMPLETE/RED')
+            print(case, row['exit'], row['guard'], verdict,
                   round(row['seconds'], 2), round(row['peakRssKiB']/1024, 1), row['metrics'], flush=True)
+    return 0 if all(row['passed'] for row in rows) else 1
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

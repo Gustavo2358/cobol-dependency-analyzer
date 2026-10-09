@@ -19,6 +19,7 @@ resumos; entregas dessas saídas podem gerar chamadas internas de continuação.
 | fixed-24.cbl | OOM reproduzido no JAR original com heap 256 MiB, durante o solver de controle. |
 | no-exit-12.cbl | Mutação de fixed-12: troca somente EXIT PARAGRAPH por EXIT. |
 | renamed-call-12.cbl | Mutação de fixed-12: troca PGM00000 por OTHER000 nos dois hubs. |
+| escape-ablation-sentinel.cbl | Original encontra AFTER e ESCAPED; desligar a reinvocação perde ESCAPED. |
 
 Em fixed, a flag não é renovada. O MOVE fecha seu valor no início da execução;
 VALUE na declaração, sozinho, conserva remainder no domínio inicial do produto.
@@ -31,6 +32,10 @@ candidatos, verificando que o oráculo não se limita a contagens.
 Todos os fontes têm formato FIXED, até 72 colunas. O número no nome significa
 caixinhas **por hub**; há duas vezes esse número de parágrafos de caixinha.
 Não há OCCURS: os casos concluídos têm uma única passagem de demanda.
+
+A sentinela e os [experimentos de ablação](../../escape-ablation-20261009.md)
+investigam o trabalho restante. Ela não pertence ao oráculo histórico expected.json;
+seus candidatos originais e sua perda diagnóstica estão no relatório de ablação.
 
 Este testemunho reproduz o mecanismo de relações e GC observado na evidência
 corporativa, em escala reduzida. Não demonstra que o fonte privado contém EXIT
