@@ -2,6 +2,7 @@ package com.imd.cobolexplorer;
 
 import java.util.*;
 import java.math.BigDecimal;
+import java.lang.ref.WeakReference;
 import static com.imd.cobolexplorer.semanticproduct.ControlTopology.*;
 import com.imd.cobolexplorer.semanticproduct.ControlTopology;
 import static com.imd.cobolexplorer.DependencyRelevance.*;
@@ -11,16 +12,33 @@ import static com.imd.cobolexplorer.DependencyRelevance.*;
  * control predicates. No call-stack or execution-path enumeration. */
 final class DependencyFlow {
     record Query(Ast.Statement statement,String type,Ast.Expression expression,Optional<String> literal) { }
-    sealed interface Term permits Parameter,Constant,Calculation,Observation,Alternatives { }
+    sealed interface Term permits Parameter,Constant,Calculation,Observation,Alternatives,Decision,Refinement,Widening { }
     record Parameter(int declaration) implements Term { }
     record Constant(DependencyValues value) implements Term { }
     static final class Calculation implements Term {
         final String node;final State input;final int declaration;
         Calculation(String node,State input,int declaration){this.node=node;this.input=input;this.declaration=declaration;}
     }
-    record Observation(Query query,State input) implements Term { }
+    record Observation(Ast.Expression expression,State input) implements Term { }
     record Alternatives(Set<Term> terms) implements Term { Alternatives {terms=Set.copyOf(terms);} }
-    private static Term combine(Term first,Term second) {
+    record Widening(Term input) implements Term { }
+    private Term open(Term root) {
+        record Visit(Term term,boolean expanded) { }
+        var translated=new IdentityHashMap<Term,Term>();var pending=new ArrayDeque<Visit>();pending.push(new Visit(root,false));
+        while(!pending.isEmpty()) {
+            var visit=pending.pop();var term=visit.term();if(translated.containsKey(term))continue;
+            if(term instanceof Constant c){translated.put(term,c.equals(EMPTY)?EMPTY:new Constant(c.value().open()));continue;}
+            if(!(term instanceof Decision)&&!(term instanceof Alternatives)){translated.put(term,term instanceof Widening?term:new Widening(term));continue;}
+            if(!visit.expanded()) {
+                pending.push(new Visit(term,true));
+                if(term instanceof Decision d){pending.push(new Visit(d.high,false));pending.push(new Visit(d.low,false));}
+                else for(var child:((Alternatives)term).terms())pending.push(new Visit(child,false));
+            } else if(term instanceof Decision d)translated.put(term,node(d.test,translated.get(d.high),translated.get(d.low)));
+            else {Term result=EMPTY;for(var child:((Alternatives)term).terms())result=combine(result,translated.get(child));translated.put(term,result);}
+        }
+        return translated.get(root);
+    }
+    private Term combineLeaves(Term first,Term second) {
         if(first.equals(second))return first;
         if(first instanceof Constant a&&second instanceof Constant b)return new Constant(a.value().join(b.value()));
         var terms=new HashSet<Term>();
@@ -30,25 +48,312 @@ final class DependencyFlow {
         if(second instanceof Alternatives a&&a.terms().equals(terms))return second;
         return new Alternatives(terms);
     }
-    record State(Map<Integer,DependencyValues> values,Map<String,Set<String>> handlers,Set<String> reached,Map<Integer,Term> parameters) {
-        State { values=DependencyEnvironment.copyOf(values);handlers=Map.copyOf(handlers);reached=Set.copyOf(reached);parameters=DependencyEnvironment.copyOf(parameters); }
-        State(Map<Integer,DependencyValues> values,Map<String,Set<String>> handlers,Set<String> reached){this(values,handlers,reached,Map.of());}
+    record State(Map<Integer,DependencyValues> values,Map<String,Set<String>> handlers,Set<String> reached,Map<Integer,Term> parameters,Term reach,Map<Input,Term> controls) {
+        State { values=DependencyEnvironment.copyOf(values);handlers=Map.copyOf(handlers);reached=Set.copyOf(reached);parameters=DependencyEnvironment.copyOf(parameters);controls=Map.copyOf(controls); }
+        State(Map<Integer,DependencyValues> values,Map<String,Set<String>> handlers,Set<String> reached){this(values,handlers,reached,Map.of(),YES);}
+        State(Map<Integer,DependencyValues> values,Map<String,Set<String>> handlers,Set<String> reached,Map<Integer,Term> parameters){this(values,handlers,reached,parameters,YES);}
+        State(Map<Integer,DependencyValues> values,Map<String,Set<String>> handlers,Set<String> reached,Map<Integer,Term> parameters,Term reach){this(values,handlers,reached,parameters,reach,Map.of());}
+        Term control(Input input){return controls.getOrDefault(input,input instanceof Handler h?new Constant(new DependencyValues(handlers.getOrDefault(h.name(),Set.of(h.name().startsWith("ABEND")?"UNKNOWN":"DEFAULT")),false)):reached.contains(((Fact)input).statement())?YES:NO);}
+        State withReach(Term reach){return new State(values,handlers,reached,parameters,reach,controls);}
         DependencyValues get(int id){return values.getOrDefault(id,DependencyValues.UNKNOWN);}
         Term term(int id){return parameters.getOrDefault(id,new Constant(get(id)));}
-        State withValues(Map<Integer,DependencyValues> values){return new State(values,handlers,reached,parameters);}
-        State withHandlers(Map<String,Set<String>> handlers){return new State(values,handlers,reached,parameters);}
-        State join(State other) {
-            if(this==other||equals(other))return this;
-            var out=DependencyEnvironment.copyOf(values).join(other.values,DependencyValues::join);
-            var h=new HashMap<>(handlers);other.handlers.forEach((k,v)->h.merge(k,v,(x,y)->union(x,y)));
-            var left=new DependencyEnvironment.Builder<>(parameters);var right=new DependencyEnvironment.Builder<>(other.parameters);
-            if(parameters!=other.parameters)for(int id:union(parameters.keySet(),other.parameters.keySet())) {
-                if(!parameters.containsKey(id)&&values.containsKey(id))left.put(id,term(id));
-                if(!other.parameters.containsKey(id)&&other.values.containsKey(id))right.put(id,other.term(id));
+        State withValues(Map<Integer,DependencyValues> values){return new State(values,handlers,reached,parameters,reach,controls);}
+
+    }
+    // The same value DAG carries branch decisions. Interned ordered decision
+    // nodes share suffixes, and operations align operands on the same test so
+    // correlated fields are never evaluated as a Cartesian product.
+    static final Constant YES=new Constant(DependencyValues.known("true"));
+    static final Constant NO=new Constant(DependencyValues.known("false"));
+    static final Constant EMPTY=new Constant(new DependencyValues(Set.of(),false));
+    record RefinementKey(Ast.Expression condition,boolean wanted,State input,int declaration) { }
+    static final class Refinement implements Term {
+        private final RefinementKey key;
+        Refinement(RefinementKey key){this.key=key;}
+        Ast.Expression condition(){return key.condition();}
+        boolean wanted(){return key.wanted();}
+        State input(){return key.input();}
+        int declaration(){return key.declaration();}
+    }
+    static final class Test {
+        final int order;final State input;final Operation operation;
+        Test(int order,Operation operation,State input){this.order=order;this.operation=operation;this.input=input;}
+    }
+    static final class Decision implements Term {
+        final DecisionKey key;final Test test;final Term high,low;
+        Decision(DecisionKey key){this.key=key;this.test=key.test();this.high=key.high();this.low=key.low();}
+    }
+    record TestKey(Object condition,State input,Test origin) { }
+    record DecisionKey(Test test,Term high,Term low) { }
+    record AlgebraKey(boolean choice,Term a,Term b,Term c) { }
+    record Operation(String kind,String node,Ast.Expression condition,boolean wanted,int declaration) { }
+    record LiftKey(Operation operation,State input) { }
+    final Map<TestKey,Test> tests=new HashMap<>();
+    // Each live node owns its interning key. The table alone never keeps
+    // an obsolete decision graph alive.
+    final Map<DecisionKey,WeakReference<Decision>> decisions=new WeakHashMap<>();
+    long decisionNodes,decisionOperations,liftedOperations;
+    final Map<RefinementKey,Refinement> refinements=new HashMap<>();
+    final IdentityHashMap<Term,Optional<DependencyValues>> groundValues=new IdentityHashMap<>();
+    private Term node(Test test,Term high,Term low) {
+        if(high.equals(low))return high;
+        var key=new DecisionKey(test,high,low);var cached=decisions.get(key);
+        var result=cached==null?null:cached.get();
+        if(result==null){result=new Decision(key);decisions.put(key,new WeakReference<>(result));decisionNodes++;}
+        return result;
+    }
+    private static Test firstTest(Term... terms) {
+        Test first=null;for(var term:terms)if(term instanceof Decision d&&(first==null||d.test.order<first.order))first=d.test;
+        return first;
+    }
+    private static Term cofactor(Term term,Test test,boolean high) {
+        return term instanceof Decision d&&d.test==test?(high?d.high:d.low):term;
+    }
+    private Term choose(Term guard,Term high,Term low){if(guard.equals(YES))return high;if(guard.equals(NO))return low;if(high.equals(low))return high;return algebra(new AlgebraKey(true,guard,high,low));}
+    private Term combine(Term a,Term b){if(a.equals(b)||b.equals(EMPTY))return a;if(a.equals(EMPTY))return b;return algebra(new AlgebraKey(false,a,b,EMPTY));}
+    private Term algebra(AlgebraKey root) {
+        var algebra=new HashMap<AlgebraKey,Term>();
+        record Visit(AlgebraKey key,boolean expanded) { }
+        var pending=new ArrayDeque<Visit>();pending.push(new Visit(root,false));
+        while(!pending.isEmpty()) {
+            var visit=pending.pop();var key=visit.key();if(algebra.containsKey(key))continue;
+            Term simple=null;
+            if(key.choice()) {
+                if(key.a().equals(YES))simple=key.b();else if(key.a().equals(NO))simple=key.c();else if(key.b().equals(key.c()))simple=key.b();
+            }else {
+                if(key.a().equals(key.b())||key.b().equals(EMPTY))simple=key.a();else if(key.a().equals(EMPTY))simple=key.b();
             }
-            var params=DependencyEnvironment.copyOf(left).join(right,DependencyFlow::combine);
-            return new State(out,h,union(reached,other.reached),params);
+            if(simple!=null){algebra.put(key,simple);continue;}
+            var test=firstTest(key.a(),key.b(),key.choice()?key.c():EMPTY);
+            if(test==null) {
+                if(key.choice())throw new IllegalStateException("non-Boolean decision guard");
+                algebra.put(key,combineLeaves(key.a(),key.b()));continue;
+            }
+            var high=new AlgebraKey(key.choice(),cofactor(key.a(),test,true),cofactor(key.b(),test,true),cofactor(key.c(),test,true));
+            var low=new AlgebraKey(key.choice(),cofactor(key.a(),test,false),cofactor(key.b(),test,false),cofactor(key.c(),test,false));
+            if(visit.expanded())algebra.put(key,node(test,algebra.get(high),algebra.get(low)));
+            else {pending.push(new Visit(key,true));if(!algebra.containsKey(low))pending.push(new Visit(low,false));if(!algebra.containsKey(high))pending.push(new Visit(high,false));}
+            if(algebra.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: decision operation exceeded --max-work="+maxWork);
         }
+        decisionOperations+=algebra.size();return algebra.get(root);
+    }
+    private State join(State first,State second) {
+        if(first==second||first.equals(second))return first;
+        if(first.reach().equals(NO))return second;if(second.reach().equals(NO))return first;
+        var values=DependencyEnvironment.copyOf(first.values()).join(second.values(),DependencyValues::join);
+        var reach=choose(first.reach(),YES,second.reach());
+        var overlap=choose(first.reach(),second.reach(),NO);
+        var handlers=new HashMap<>(first.handlers());second.handlers().forEach((k,v)->handlers.merge(k,v,DependencyFlow::union));
+        var parameters=new DependencyEnvironment.Builder<Term>(Map.of());
+        var controls=new HashMap<Input,Term>();
+        var fields=new HashSet<Input>();union(first.handlers().keySet(),second.handlers().keySet()).forEach(name->fields.add(new Handler(name)));union(first.reached(),second.reached()).forEach(name->fields.add(new Fact(name)));fields.addAll(first.controls().keySet());fields.addAll(second.controls().keySet());
+        for(var field:fields) {
+            if(field instanceof Fact)controls.put(field,choose(choose(first.reach(),first.control(field),NO),YES,choose(second.reach(),second.control(field),NO)));
+            else controls.put(field,combine(choose(first.reach(),first.control(field),EMPTY),choose(second.reach(),second.control(field),EMPTY)));
+        }
+        for(int id:values.keySet()) {
+            // Recurrence inputs use the finite value lattice. Branch joins
+            // must not turn those constants back into symbolic expressions.
+            if(specialized.contains(id))continue;
+            var a=first.term(id);var b=second.term(id);
+            // Reachability belongs to the state. Equal payloads need no copy
+            // of that guard; observations and deliveries already apply it.
+            Term term=a.equals(b)?a:overlap.equals(NO)?choose(first.reach(),a,b)
+                :combine(choose(first.reach(),a,EMPTY),choose(second.reach(),b,EMPTY));
+            if(term instanceof Constant constant)values=values.with(id,constant.value());else parameters.put(id,term);
+        }
+        return new State(values,handlers,union(first.reached(),second.reached()),parameters,reach,controls);
+    }
+    private Object expressionKey(Ast.Expression expression) {
+        if(expression==null)return "absent";
+        if(expression instanceof Ast.DataReference r)return List.of("reference",declarations.references.containsKey(r.meta().id())?declarations.references.get(r.meta().id()):List.of("unbound",r.meta().id()),r.subscriptGroups().stream().map(g->g.subscripts().stream().map(this::expressionKey).toList()).toList(),r.referenceModification()==null?List.of():List.of(expressionKey(r.referenceModification().offset()),expressionKey(r.referenceModification().length())));
+        if(expression instanceof Ast.LiteralExpression l)return List.of("literal",l.value(),l.logicalText(),l.numericValue(),l.booleanValue(),l.figurativeText());
+        if(expression instanceof Ast.RelationCondition r&&r.subject()!=null)return List.of("relation",r.operatorKind(),expressionKey(r.subject()),expressionKey(r.object()));
+        if(expression instanceof Ast.ClassCondition c)return List.of("class",c.className(),c.negated(),expressionKey(c.subject()));
+        return List.of(expression.getClass(),expression.meta().id());
+    }
+    record PredicateForm(Ast.Expression condition,boolean positive) { }
+    private PredicateForm predicateForm(Ast.Expression condition) {
+        boolean positive=true;
+        while(true) {
+            if(condition instanceof Ast.GroupedCondition g){condition=g.inner();continue;}
+            if(condition instanceof Ast.NegatedCondition n){condition=n.operand();positive=!positive;continue;}break;
+        }
+        if(condition instanceof Ast.RelationCondition r&&r.subject()!=null) {
+            Ast.RelationOperator base=switch(r.operatorKind()) {
+                case NOT_EQUAL->Ast.RelationOperator.EQUAL;case LESS_EQUAL->Ast.RelationOperator.GREATER;case GREATER_EQUAL->Ast.RelationOperator.LESS;default->r.operatorKind();
+            };
+            if(base!=r.operatorKind()){positive=!positive;condition=new Ast.RelationCondition(r.meta(),r.subject(),"",r.object(),"",base);}
+        }
+        return new PredicateForm(condition,positive);
+    }
+    private Term predicate(Ast.Expression condition,State input) {
+        input=conditionInput(condition,input);
+        var form=predicateForm(condition);
+        if(!form.positive())return choose(predicate(form.condition(),input),NO,YES);
+        condition=form.condition();
+        if(condition instanceof Ast.LogicalCondition l&&!needsNormalization(condition)) {
+            Term result=l.connector()==Ast.LogicalConnector.AND?YES:NO;
+            for(var operand:l.operands()){var next=predicate(operand,input);result=l.connector()==Ast.LogicalConnector.AND?choose(result,next,NO):choose(result,YES,next);}return result;
+        }
+        return lift(new Operation("test","",condition,false,0),input.withReach(YES));
+    }
+    /** Lift a canonical operation over shared decisions. Cofactoring all read
+     * operands together preserves correlations; irrelevant flags are absent
+     * from the selected input. This stack also supports long value chains. */
+    private Term lift(Operation operation,State input) {
+        var lifted=new HashMap<LiftKey,Term>();
+        record Visit(LiftKey key,boolean expanded) { }
+        var root=new LiftKey(operation,input);var pending=new ArrayDeque<Visit>();pending.push(new Visit(root,false));
+        while(!pending.isEmpty()) {
+            var visit=pending.pop();var key=visit.key();if(lifted.containsKey(key))continue;
+            Test test=null;for(var term:key.input().parameters().values()){var next=firstTest(term);if(next!=null&&(test==null||next.order<test.order))test=next;}
+            if(test==null){lifted.put(key,leafOperation(operation,key.input()));continue;}
+            var high=new LiftKey(operation,cofactor(key.input(),test,true));var low=new LiftKey(operation,cofactor(key.input(),test,false));
+            if(visit.expanded())lifted.put(key,choose(node(test,YES,NO),lifted.get(high),lifted.get(low)));
+            else {pending.push(new Visit(key,true));if(!lifted.containsKey(low))pending.push(new Visit(low,false));if(!lifted.containsKey(high))pending.push(new Visit(high,false));}
+            if(lifted.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: lifted decisions exceeded --max-work="+maxWork);
+        }
+        liftedOperations+=lifted.size();return lifted.get(root);
+    }
+    private State cofactor(State input,Test test,boolean high) {
+        var values=new DependencyEnvironment.Builder<>(input.values());var parameters=new DependencyEnvironment.Builder<>(input.parameters());
+        for(var entry:input.parameters().entrySet()) {
+            var term=cofactor(entry.getValue(),test,high);
+            if(term instanceof Constant c){values.put(entry.getKey(),c.value());parameters.remove(entry.getKey());}else parameters.put(entry.getKey(),term);
+        }
+        return new State(values,input.handlers(),input.reached(),parameters,YES,input.controls());
+    }
+    private Boolean established(Ast.Expression condition,State input) {
+        Boolean established=null;
+        for(int id:declarations.reads(condition)) {
+            if(!(input.term(id) instanceof Refinement r)||!expressionKey(r.condition()).equals(expressionKey(condition)))return null;
+            if(established!=null&&established!=r.wanted())return null;established=r.wanted();
+        }
+        return established;
+    }
+    private Term leafOperation(Operation operation,State input) {
+        if(input.values().values().contains(EMPTY.value()))return operation.kind().equals("test")||operation.kind().equals("dispatch")||operation.kind().startsWith("count-")?NO:EMPTY;
+        if(operation.kind().equals("test")) {
+            var known=established(operation.condition(),input);if(known!=null)return known?YES:NO;
+        }
+        if(operation.kind().equals("test")||operation.kind().equals("count-entry")||operation.kind().equals("count-repeat")||operation.kind().equals("dispatch")) {
+            if(input.parameters().isEmpty()) {int truth=testTruth(operation,input);if(truth==1)return YES;if(truth==2)return NO;}
+            var test=tests.computeIfAbsent(new TestKey(List.of(operation.kind(),operation.node(),operation.declaration(),expressionKey(operation.condition())),input,null),k->new Test(tests.size(),operation,input));
+            if(tests.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many predicate inputs");
+            return node(test,YES,NO);
+        }
+        if(operation.kind().equals("read"))return input.parameters().isEmpty()?new Constant(read(operation.condition(),input)):new Observation(operation.condition(),input);
+        if(operation.kind().equals("refine")) {
+            // An input-independent TOP operand makes either outcome admit
+            // every candidate of the other operand. Keep the branch guard,
+            // but do not manufacture a different value for an identity filter.
+            if(identityFilter(operation.condition(),input))return input.term(operation.declaration());
+            var known=established(operation.condition(),input);
+            if(known!=null)return known==operation.wanted()?input.term(operation.declaration()):EMPTY;
+            if(!input.parameters().isEmpty()) {
+                var key=new RefinementKey(operation.condition(),operation.wanted(),input,operation.declaration());
+                var result=refinements.computeIfAbsent(key,Refinement::new);
+                if(refinements.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many parametric refinements");
+                return result;
+            }
+            var filtered=filterConcrete(operation.condition(),operation.wanted(),input);return filtered==null?EMPTY:new Constant(filtered.get(operation.declaration()));
+        }
+        if(input.parameters().isEmpty()) {
+            var result=instantiated.computeIfAbsent(new Computation(operation.node(),input),key->{instantiationEvaluations++;return transfer(statements.get(operation.node()),input);});
+            if(instantiated.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many instantiated calculations");
+            return new Constant(result.get(operation.declaration()));
+        }
+        var key=new CalculationKey(operation.node(),input,operation.declaration());
+        var term=calculations.computeIfAbsent(key,k->new Calculation(k.node(),k.input(),k.declaration()));
+        if(calculations.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many parametric calculations");return term;
+    }
+    private int testTruth(Operation operation,State input) {
+        if(operation.kind().equals("test"))return truth(operation.condition(),input);
+        int number=integer(operation.condition(),input);
+        if(number<0)return 3;
+        if(operation.kind().equals("count-entry"))return number==0?1:2;
+        if(operation.kind().equals("count-repeat"))return number==1?1:3;
+        boolean yes=operation.node().equals("normal")?number==0||number>operation.declaration():operation.node().equals("target-"+(number-1));
+        return yes?1:2;
+    }
+    private State guard(State state,Term condition,boolean wanted) {
+        var reach=choose(state.reach(),wanted?condition:choose(condition,NO,YES),NO);
+        return reach.equals(NO)?null:state.withReach(reach);
+    }
+    private State filter(Ast.Expression condition,boolean wanted,State state) {
+        if(state==null)return null;
+        var form=predicateForm(condition);condition=form.condition();if(!form.positive())wanted=!wanted;
+        var selected=conditionInput(condition,state);
+        // Finite recurrence inputs admit both feasible outcomes without creating
+        // a fresh Boolean identity on each passage.
+        if(!requiresDecision(selected))return filterConcrete(condition,wanted,state);
+        var guard=predicate(condition,selected);if(!wanted)guard=choose(guard,NO,YES);
+        var reach=choose(state.reach(),guard,NO);if(reach.equals(NO))return null;
+        if(guard.equals(YES))return state.withReach(reach);
+        if(state.parameters().isEmpty()) {var result=filterConcrete(condition,wanted,state);return result==null?null:result.withReach(reach);}
+        var values=new DependencyEnvironment.Builder<>(state.values());var parameters=new DependencyEnvironment.Builder<>(state.parameters());
+        var targets=new HashSet<Integer>(expressionInputs(condition,state));
+        for(int id:new ArrayList<>(targets))targets.addAll(declarations.equivalents.getOrDefault(id,Set.of(id)));
+        for(int group:textGroups)if(!Collections.disjoint(targets,declarations.leaves(group)))targets.add(group);
+        var refineInputs=new HashSet<Input>();expressionInputs(condition,state).forEach(id->refineInputs.add(new Value(id)));targets.forEach(id->refineInputs.add(new Value(id)));
+        var refinement=Selection.of(refineInputs).apply(state).withReach(YES);
+        for(int id:targets) {
+            var term=lift(new Operation("refine","",condition,wanted,id),refinement);
+            if(term instanceof Constant c){values.put(id,c.value());parameters.remove(id);}else {values.put(id,DependencyValues.UNKNOWN);parameters.put(id,term);}
+        }
+        return new State(values,state.handlers(),state.reached(),parameters,reach,state.controls());
+    }
+    private boolean identityFilter(Ast.Expression condition,State input) {
+        if(!(condition instanceof Ast.RelationCondition relation)||relation.subject()==null)return false;
+        for(var operand:List.of(relation.subject(),relation.object()))
+            if(expressionInputs(operand,input).isEmpty()&&read(operand,input).equals(DependencyValues.UNKNOWN))return true;
+        return false;
+    }
+    private boolean requiresDecision(State input) {
+        return !input.parameters().isEmpty();
+    }
+    private State conditionInput(Ast.Expression condition,State input) {
+        var selected=new HashSet<Input>();for(int id:expressionInputs(condition,input))selected.add(new Value(id));
+        return Selection.of(selected).apply(input).withReach(YES);
+    }
+    /** Reads consume the already-updated nominal value. Possible write aliases
+     * belong to the write effect, not to every subsequent read or refinement. */
+    private Set<Integer> expressionInputs(Ast.Expression expression,State input) {
+        var ids=new HashSet<Integer>();var pending=new ArrayDeque<Ast.Node>();if(expression!=null)pending.add(expression);
+        while(!pending.isEmpty()) {
+            var next=pending.removeFirst();
+            if(next instanceof Ast.DataReference reference) {
+                Integer id=declarations.references.get(reference.meta().id());
+                if(id!=null) {
+                    id=declarations.conditions.getOrDefault(id,id);
+                    if(textGroups.contains(id)&&input.values().containsKey(id))ids.add(id);
+                    else ids.addAll(declarations.leaves(id));
+                    ids.addAll(elementIds.getOrDefault(id,List.of()));
+                }
+            }
+            pending.addAll(DependencyDeclarations.valueChildren(next));
+        }
+        ids.retainAll(demand);return Set.copyOf(ids);
+    }
+    private DependencyValues ground(Term root) {
+        record Visit(Term term,boolean expanded) { }
+        var pending=new ArrayDeque<Visit>();pending.push(new Visit(root,false));
+        while(!pending.isEmpty()) {
+            var visit=pending.pop();var term=visit.term();if(groundValues.containsKey(term))continue;
+            if(term instanceof Constant c){groundValues.put(term,Optional.of(c.value()));continue;}
+            if(term instanceof Decision d&&d.test.input.parameters().isEmpty()) {
+                if(!visit.expanded()){pending.push(new Visit(term,true));pending.push(new Visit(d.low,false));pending.push(new Visit(d.high,false));continue;}
+                var high=groundValues.get(d.high);var low=groundValues.get(d.low);int truth=testTruth(d.test.operation,d.test.input);
+                groundValues.put(term,high.isPresent()&&low.isPresent()?Optional.of(truth==1?high.get():truth==2?low.get():high.get().join(low.get())):Optional.empty());
+            }else if(term instanceof Alternatives a) {
+                if(!visit.expanded()){pending.push(new Visit(term,true));for(var child:a.terms())pending.push(new Visit(child,false));continue;}
+                DependencyValues value=EMPTY.value();boolean complete=true;
+                for(var child:a.terms()){var v=groundValues.get(child);if(v.isEmpty()){complete=false;break;}value=value.join(v.get());}
+                groundValues.put(term,complete?Optional.of(value):Optional.empty());
+            }else groundValues.put(term,Optional.empty());
+        }
+        return groundValues.get(root).orElse(null);
     }
     private static <T> Set<T> union(Set<T> a,Set<T> b) {
         if(a.containsAll(b))return a;if(b.containsAll(a))return b;
@@ -81,6 +386,7 @@ final class DependencyFlow {
     final Map<Integer,Ast.Expression> expressions=new HashMap<>();
     final IdentityHashMap<Ast.Expression,com.imd.cobolexplorer.semanticproduct.ConditionNames.Tree> normalized=new IdentityHashMap<>();
     final IdentityHashMap<Ast.Expression,Boolean> abbreviated=new IdentityHashMap<>();
+    final IdentityHashMap<Ast.EvaluateBranch,Ast.Expression> evaluateConditions=new IdentityHashMap<>();
     final Map<String,Ast.Statement> statements=new HashMap<>();
     final Map<String,List<Outcome>> edges=new HashMap<>();
     final Map<String,Region> regions=new HashMap<>();
@@ -95,9 +401,12 @@ final class DependencyFlow {
     final Map<String,FilePoint> filePoints=new HashMap<>();
     final Map<String,List<Binding>> ioDeclarations=new HashMap<>();
     final IdentityHashMap<Ast.Statement,Set<Integer>> writeCache=new IdentityHashMap<>();
+    record WriteSupport(Set<Integer> changed,Map<Integer,Set<Integer>> widenings) { }
+    final IdentityHashMap<Ast.Statement,WriteSupport> writeSupports=new IdentityHashMap<>();
     final List<Query> queries;
     final Set<Integer> demand=new HashSet<>();
     final Set<Integer> specialized=new HashSet<>();
+    final Map<Point,Integer> forwardOrder;
     record CalculationKey(String node,State input,int declaration) { }
     final Map<CalculationKey,Term> calculations=new HashMap<>();
     final Map<Computation,State> instantiated=new HashMap<>();
@@ -140,7 +449,10 @@ final class DependencyFlow {
             for(String fact:facts)if(input.reached().contains(fact))selectedFacts.add(fact);
             var selected=values.apply(input.values());var params=new HashMap<Integer,Term>();
             input.parameters().forEach((id,term)->{if(selected.containsKey(id))params.put(id,term);});
-            return new State(selected,selectedHandlers,selectedFacts,params);
+            var controls=new HashMap<Input,Term>();
+            for(String name:handlers){var field=new Handler(name);if(input.controls().containsKey(field))controls.put(field,input.control(field));}
+            for(String name:facts){var field=new Fact(name);if(input.controls().containsKey(field))controls.put(field,input.control(field));}
+            return new State(selected,selectedHandlers,selectedFacts,params,input.reach(),controls);
         }
     }
     record Patch(State result,Set<Integer> removed) {
@@ -154,14 +466,17 @@ final class DependencyFlow {
             }
             result.handlers().forEach((name,value)->{if(!value.equals(input.handlers().get(name)))handlers.put(name,value);});
             var reached=new HashSet<>(result.reached());reached.removeAll(input.reached());
-            return new Patch(new State(values,handlers,reached,params),Set.copyOf(removed));
+            var controls=new HashMap<Input,Term>();
+            for(var field:union(input.controls().keySet(),result.controls().keySet()))if(!input.control(field).equals(result.control(field)))controls.put(field,result.control(field));
+            return new Patch(new State(values,handlers,reached,params,result.reach(),controls),Set.copyOf(removed));
         }
-        State apply(State input) {
-            if(removed.isEmpty()&&result.values().isEmpty()&&result.handlers().isEmpty()&&result.reached().isEmpty())return input;
+        State apply(State input,DependencyFlow flow) {
+            if(result.reach().equals(YES)&&removed.isEmpty()&&result.values().isEmpty()&&result.handlers().isEmpty()&&result.reached().isEmpty()&&result.controls().isEmpty())return input;
             var values=new DependencyEnvironment.Builder<>(input.values());removed.forEach(values::remove);values.putAll(result.values());
             var handlers=new HashMap<>(input.handlers());handlers.putAll(result.handlers());
             var params=new DependencyEnvironment.Builder<>(input.parameters());removed.forEach(params::remove);result.values().keySet().forEach(params::remove);params.putAll(result.parameters());
-            return new State(values,handlers,union(input.reached(),result.reached()),params);
+            var controls=new HashMap<>(input.controls());result.handlers().keySet().forEach(name->controls.remove(new Handler(name)));result.reached().forEach(name->controls.remove(new Fact(name)));controls.putAll(result.controls());
+            return new State(values,handlers,union(input.reached(),result.reached()),params,flow.choose(input.reach(),result.reach(),NO),controls);
         }
     }
     sealed interface Action permits Advance,Phase,Enter { Patch patch(); }
@@ -170,7 +485,13 @@ final class DependencyFlow {
     record Enter(Exit entry,String endpoint,Patch patch) implements Action { }
     final Map<Exit,Effect> accessEffects=new HashMap<>();
     final Map<Location,State> before=new HashMap<>();
-    final ArrayDeque<Location> work=new ArrayDeque<>();
+    // Reverse postorder coalesces incoming branch states before visiting their
+    // successors, avoiding a wave of transient decision DAGs through every suffix.
+    final PriorityQueue<Location> work=new PriorityQueue<>(Comparator.comparingInt(this::workRank).thenComparingInt(Location::context).thenComparing(Location::node));
+    private int workRank(Location location) {
+        if(location.result()!=null)return -1;
+        return forwardOrder.getOrDefault(new Point(new Exit(TargetKind.OCCURRENCE,location.node()),contexts.get(location.context()).key.endpoint()),Integer.MAX_VALUE);
+    }
     final Set<Location> queued=new HashSet<>();
     final Set<String> diagnostics=new TreeSet<>();
     final Map<Query,DependencyValues> answers=new LinkedHashMap<>();
@@ -263,7 +584,7 @@ final class DependencyFlow {
             while(!pending.isEmpty()) {var n=pending.removeFirst();
                 if(n instanceof Ast.DataReference r) {Integer id=declarations.references.get(r.meta().id());
                     if(id!=null&&!declarations.children.getOrDefault(id,List.of()).isEmpty()&&!Collections.disjoint(declarations.leaves(id),demand))textGroups.add(id);
-                }pending.addAll(Ast.children(n));
+                }pending.addAll(DependencyDeclarations.valueChildren(n));
             }
         }
         for(int id:declarations.textualViews.keySet())if(!Collections.disjoint(declarations.leaves(id),demand))textGroups.add(id);
@@ -281,15 +602,35 @@ final class DependencyFlow {
             while(ancestor!=null) {if(declarations.entries.get(ancestor).clauses().stream().anyMatch(Ast.OccursClause.class::isInstance))dimensions.add(0,declarations.counts.getOrDefault(ancestor,0));ancestor=declarations.parent.get(ancestor);}
             if(!dimensions.contains(0))indexElements(id,dimensions,0,List.of());
         }
-        var cyclic=controlSummary.cyclicNodes();
+        var cyclic=controlSummary.cyclicNodes();forwardOrder=controlSummary.forwardOrder();
         for(var statement:statements.values()) {
-            if(controlSummary.observed(handle(statement))&&(statement instanceof Ast.IfStatement||statement instanceof Ast.EvaluateStatement||statement instanceof Ast.PerformStatement||statement instanceof Ast.GoToStatement))
-                for(var operand:localEffect(new Exit(TargetKind.OCCURRENCE,handle(statement))).reads())if(operand instanceof Value value)specialized.add(value.declaration());
-            if(cyclic.contains(handle(statement)))specialized.addAll(potentialWrites(statement));
+            if(cyclic.contains(handle(statement))) {
+                specialized.addAll(potentialWrites(statement));
+                // Repeated refinements are recurrence equations too. Keep their
+                // finite value lattice rather than unroll nested symbolic filters.
+                if(statement instanceof Ast.IfStatement||statement instanceof Ast.EvaluateStatement||statement instanceof Ast.PerformStatement||statement instanceof Ast.GoToStatement)
+                    specialized.addAll(declarations.reads(statement));
+            }
+        }
+        for(var binding:bindings.values())if(binding.phases().stream().anyMatch(p->cyclic.contains("phase/"+binding.id()+"/"+p.id()))) {
+            var statement=statements.get(binding.caller());
+            if(statement instanceof Ast.PerformStatement perform)perform.controls().forEach(c->specialized.addAll(declarations.reads(c.expression())));
         }
         do {
             int size=specialized.size();
-            for(var statement:statements.values())if(!Collections.disjoint(potentialWrites(statement),specialized))specialized.addAll(declarations.reads(statement));
+            for(var statement:statements.values()) {
+                if(!Collections.disjoint(potentialWrites(statement),specialized))specialized.addAll(declarations.reads(statement));
+                // Refinement is an operation on all condition operands. A
+                // finite recurrence operand cannot be refined through a
+                // symbolic peer and re-enter the expression DAG indirectly.
+                if(statement instanceof Ast.IfStatement branch) {
+                    var reads=declarations.reads(branch.condition());
+                    if(!Collections.disjoint(reads,specialized))specialized.addAll(reads);
+                } else if(statement instanceof Ast.EvaluateStatement||statement instanceof Ast.PerformStatement||statement instanceof Ast.GoToStatement) {
+                    var reads=declarations.reads(statement);
+                    if(!Collections.disjoint(reads,specialized))specialized.addAll(reads);
+                }
+            }
             specialized.addAll(relatedValues(specialized));changed=size!=specialized.size();
         }while(changed);
         specialized.retainAll(demand);
@@ -298,7 +639,7 @@ final class DependencyFlow {
         for(var root:roots)subscribe(new Entry(root.endpoint(),initial),root.exit());
         while(!work.isEmpty()) {
             if(++visits>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: dataflow did not complete within --max-work="+maxWork);
-            var location=work.removeFirst();queued.remove(location);
+            var location=work.remove();queued.remove(location);
             if(location.result()!=null) {
                 var ctx=contexts.get(location.context());
                 deliver(location.caller(),location.result(),ctx.results.get(location.result()));
@@ -307,7 +648,7 @@ final class DependencyFlow {
         var queriesAt=new HashMap<String,List<Query>>();
         for(var q:queries)queriesAt.computeIfAbsent(handle(q.statement()),k->new ArrayList<>()).add(q);
         for(var e:before.entrySet())for(var q:queriesAt.getOrDefault(e.getKey().node(),List.of())) {
-            var value=q.literal().map(DependencyValues::known).orElseGet(()->resolve(e.getKey().context(),observation(q,e.getValue())));
+            var value=resolve(e.getKey().context(),observe(q,e.getValue()));
             answers.merge(q,value,DependencyValues::join);
         }
         for(var q:queries)if(answers.containsKey(q)&&answers.get(q).unknown())diagnostics.add("DYNAMIC_REMAINDER at "+q.statement().meta().provenance().original().file()+":"+q.statement().meta().provenance().original().startLine());
@@ -364,15 +705,73 @@ final class DependencyFlow {
     private Optional<String> conditionText(Ast.ConditionValue v) {
         return switch(v.kind()){case TEXT,NUMBER->Optional.of(v.value());case SPACES->Optional.of(" ");case ZERO->Optional.of("0");default->Optional.empty();};
     }
-    private Set<Integer> writes(Ast.Statement s) {
-        if(writeCache.containsKey(s))return writeCache.get(s);
-        var out=new HashSet<Integer>();
-        if(s instanceof Ast.MoveStatement m)m.targets().forEach(t->out.addAll(declarations.reads(t)));
-        else if(s instanceof Ast.CallStatement c) {for(var a:c.arguments())if(a.passingMode()!=Ast.PassingMode.CONTENT&&a.passingMode()!=Ast.PassingMode.VALUE)out.addAll(declarations.reads(a.value()));out.addAll(declarations.reads(c.returning()));}
-        else if(s instanceof Ast.EmbeddedLanguageStatement e) {
-            e.hostOperands().stream().filter(h->h.role()!=Ast.EmbeddedHostRole.READ).forEach(h->out.addAll(declarations.reads(h.reference())));
-        } else StatementEffectSummary.of(s).ifPresent(e->{e.mayWrites().forEach(r->out.addAll(declarations.reads(r)));e.sourceTargets().forEach(r->out.addAll(declarations.reads(r)));e.exposedRegions().forEach(r->out.addAll(declarations.reads(r)));});
-        var result=Set.copyOf(out);writeCache.put(s,result);return result;
+    private Set<Integer> nominalWrites(Ast.Statement statement) {
+        var targets=new ArrayList<Ast.Expression>();
+        if(statement instanceof Ast.MoveStatement move)targets.addAll(move.targets());
+        else if(statement instanceof Ast.CallStatement call) {
+            for(var argument:call.arguments())if(argument.passingMode()!=Ast.PassingMode.CONTENT&&argument.passingMode()!=Ast.PassingMode.VALUE)targets.add(argument.value());
+            if(call.returning()!=null)targets.add(call.returning());
+        } else if(statement instanceof Ast.EmbeddedLanguageStatement embedded)
+            embedded.hostOperands().stream().filter(h->h.role()!=Ast.EmbeddedHostRole.READ).forEach(h->targets.add(h.reference()));
+        else StatementEffectSummary.of(statement).ifPresent(effect->{targets.addAll(effect.mayWrites());targets.addAll(effect.sourceTargets());targets.addAll(effect.exposedRegions());});
+        var ids=new HashSet<Integer>();
+        for(var target:targets)if(target instanceof Ast.DataReference reference) {
+            Integer id=declarations.references.get(reference.meta().id());if(id!=null){id=declarations.conditions.getOrDefault(id,id);ids.add(id);ids.addAll(declarations.leaves(id));}
+        }else ids.addAll(declarations.reads(target));
+        return ids;
+    }
+    private Set<Integer> writes(Ast.Statement statement) {
+        return writeCache.computeIfAbsent(statement,key->{
+            var ids=new HashSet<Integer>();for(int id:nominalWrites(key))ids.addAll(declarations.related(id));return Set.copyOf(ids);
+        });
+    }
+    private WriteSupport writeSupport(Ast.Statement statement) {
+        return writeSupports.computeIfAbsent(statement,key->{
+            var effect=StatementEffectSummary.of(key);
+            boolean direct=key instanceof Ast.MoveStatement||key instanceof Ast.ModeledStatement modeled&&modeled.conditionSet().isPresent()
+                ||effect.filter(e->e.proof()==StatementEffectSummary.Proof.INITIALIZE_TARGETS).isPresent();
+            var written=new HashSet<>(direct?nominalWrites(key):potentialWrites(key));var decoded=new HashSet<Integer>();boolean changed;
+            do {
+                int size=written.size();
+                for(int id:new ArrayList<>(written)) {
+                    written.addAll(declarations.equivalents.getOrDefault(id,Set.of(id)));written.addAll(elementIds.getOrDefault(id,List.of()));
+                    Integer ancestor=id;
+                    while(ancestor!=null) {
+                        for(int view:declarations.textualViews.getOrDefault(ancestor,Set.of())){written.add(view);written.addAll(declarations.leaves(view));decoded.addAll(declarations.leaves(view));}
+                        ancestor=declarations.parent.get(ancestor);
+                    }
+                }
+                changed=size!=written.size();
+            }while(changed);
+            var aliases=new HashSet<Integer>();
+            for(int id:written)for(int alias:declarations.possibleAliases.getOrDefault(id,Set.of())){aliases.add(alias);aliases.addAll(elementIds.getOrDefault(alias,List.of()));}
+            aliases.removeAll(written);aliases.removeAll(textGroups);aliases.retainAll(demand);
+            var affected=new HashSet<>(written);affected.addAll(aliases);
+            for(int group:textGroups)if(!Collections.disjoint(affected,declarations.leaves(group)))affected.add(group);
+            var widenings=new HashMap<Integer,Set<Integer>>();for(int id:aliases)widenings.put(id,Set.of(id));
+            if(!direct)for(int id:written)if(!decoded.contains(id)&&!textGroups.contains(id)
+                    &&declarations.children.getOrDefault(id,List.of()).isEmpty()) {
+                var reads=new HashSet<Integer>();reads.add(id);
+                for(int peer:declarations.equivalents.getOrDefault(id,Set.of(id)))if(written.contains(peer))reads.add(peer);
+                widenings.put(id,Set.copyOf(reads));
+                for(int slot:elementIds.getOrDefault(id,List.of()))widenings.put(slot,Set.of(slot));
+            }
+            // A group with unproven text extent cannot decode the incoming
+            // value. The canonical write opens its previous leaves instead.
+            if(key instanceof Ast.MoveStatement move)for(var target:move.targets())if(target instanceof Ast.DataReference reference) {
+                Integer group=declarations.references.get(reference.meta().id());
+                if(group!=null&&declarations.widths.getOrDefault(group,0)==0&&!declarations.children.getOrDefault(group,List.of()).isEmpty()) {
+                    var leaves=new HashSet<>(declarations.leaves(group));
+                    for(int leaf:leaves)for(int id:declarations.equivalents.getOrDefault(leaf,Set.of(leaf)))if(!decoded.contains(id)&&demand.contains(id)) {
+                        var reads=new HashSet<Integer>();reads.add(id);
+                        for(int peer:declarations.equivalents.getOrDefault(leaf,Set.of(leaf)))if(leaves.contains(peer))reads.add(peer);
+                        widenings.put(id,Set.copyOf(reads));
+                    }
+                    for(int leaf:leaves)for(int id:elementIds.getOrDefault(leaf,List.of()))if(!decoded.contains(id))widenings.put(id,Set.of(id));
+                }
+            }
+            affected.retainAll(demand);return new WriteSupport(Set.copyOf(affected),Map.copyOf(widenings));
+        });
     }
     DependencyValues read(Ast.Expression expression,State state) {
         if(expression==null)return DependencyValues.UNKNOWN;
@@ -709,8 +1108,9 @@ final class DependencyFlow {
         }return state;
     }
     private void enqueue(int context,String node,State state) {
-        var key=new Location(context,node);var old=before.get(key);var joined=old==null?state:old.join(state);
-        if(!joined.equals(old)){before.put(key,joined);if(queued.add(key))work.addLast(key);}
+        if(state.reach().equals(NO))return;
+        var key=new Location(context,node);var old=before.get(key);var joined=old==null?state:join(old,state);
+        if(!joined.equals(old)){before.put(key,joined);if(queued.add(key))work.add(key);}
         if(before.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many states");
     }
     private Exit normalize(Exit target) {
@@ -808,6 +1208,7 @@ final class DependencyFlow {
     }
     private void route(int context,Target target,State state){route(context,Exit.of(target),state);}
     private void route(int context,Exit target,State state) {
+        if(state.reach().equals(NO))return;
         var seen=new HashSet<Exit>();
         while(true) {
             target=normalize(target);
@@ -840,7 +1241,7 @@ final class DependencyFlow {
         var selection=projections.computeIfAbsent(point,key->Selection.of(relevance.needed(key)));
         var input=selection.apply(state);var values=new DependencyEnvironment.Builder<>(input.values());var parameters=new HashMap<Integer,Term>();
         for(int id:input.values().keySet())if(!specialized.contains(id)){values.put(id,DependencyValues.UNKNOWN);parameters.put(id,new Parameter(id));}
-        var key=new SummaryKey(entry,endpoint,new State(values,input.handlers(),input.reached(),parameters));
+        var key=new SummaryKey(entry,endpoint,new State(values,input.handlers(),input.reached(),parameters,YES,input.controls()));
         Integer context=memo.get(key);
         if(context==null) {
             context=contexts.size();memo.put(key,context);contexts.add(new Context(key));route(context,entry,key.input());
@@ -854,23 +1255,35 @@ final class DependencyFlow {
         var restored=new DependencyEnvironment.Builder<>(caller.input().values());restored.putAll(result.values());
         var handlers=new HashMap<>(caller.input().handlers());handlers.putAll(result.handlers());
         var parameters=new DependencyEnvironment.Builder<>(caller.input().parameters());result.values().keySet().forEach(parameters::remove);parameters.putAll(result.parameters());
-        return new State(restored,handlers,union(caller.input().reached(),result.reached()),parameters);
+        var controls=new HashMap<>(caller.input().controls());result.handlers().keySet().forEach(name->controls.remove(new Handler(name)));result.reached().forEach(name->controls.remove(new Fact(name)));controls.putAll(result.controls());
+        return new State(restored,handlers,union(caller.input().reached(),result.reached()),parameters,choose(caller.input().reach(),result.reach(),NO),controls);
     }
     private Term calculation(String node,State input,int declaration) {
-        if(input.parameters().isEmpty()) {
-            var result=instantiated.computeIfAbsent(new Computation(node,input),key->{instantiationEvaluations++;return transfer(statements.get(node),input);});
-            if(instantiated.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many instantiated calculations");
-            return new Constant(result.get(declaration));
+        if(statements.get(node) instanceof Ast.MoveStatement move&&!move.corresponding()
+                &&declarations.children.getOrDefault(declaration,List.of()).isEmpty()
+                &&!declarations.repeated.contains(declaration)&&!declarations.assumed.contains(declaration)
+                &&!textGroups.contains(declaration)) {
+            // A scalar result reads the source and its own partial destination.
+            // Uncertain aliases are separate openings, not value operands.
+            boolean nominal=move.targets().stream().filter(Ast.DataReference.class::isInstance).map(Ast.DataReference.class::cast)
+                .map(r->declarations.references.get(r.meta().id())).filter(Objects::nonNull)
+                .anyMatch(id->declarations.equivalents.getOrDefault(id,Set.of(id)).contains(declaration));
+            if(nominal) {
+                var reads=new HashSet<Integer>(expressionInputs(move.source(),input));
+                for(var target:move.targets())if(target instanceof Ast.DataReference r) {
+                    if(r.referenceModification()!=null){reads.addAll(expressionInputs(r,input));}
+                    for(var group:r.subscriptGroups())for(var subscript:group.subscripts())reads.addAll(expressionInputs(subscript,input));
+                }
+                var selected=new HashSet<Input>();reads.forEach(id->selected.add(new Value(id)));input=Selection.of(selected).apply(input);
+            }
         }
-        var key=new CalculationKey(node,input,declaration);
-        var term=calculations.computeIfAbsent(key,k->new Calculation(k.node(),k.input(),k.declaration()));
-        if(calculations.size()>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many parametric calculations");
-        return term;
+        return lift(new Operation("write",node,null,false,declaration),input.withReach(YES));
     }
-    private Term observation(Query query,State input) {
-        var ids=relatedValues(declarations.reads(query.expression()));var inputs=new HashSet<Input>();for(int id:ids)inputs.add(new Value(id));
-        var selected=Selection.of(inputs).apply(input);
-        return selected.parameters().isEmpty()?new Constant(read(query.expression(),selected)):new Observation(query,selected);
+    private Term observe(Query query,State input) {
+        var ids=expressionInputs(query.expression(),input);var inputs=new HashSet<Input>();for(int id:ids)inputs.add(new Value(id));
+        var selected=Selection.of(inputs).apply(input).withReach(YES);
+        Term value=query.literal().map(v->(Term)new Constant(DependencyValues.known(v))).orElseGet(()->lift(new Operation("read","",query.expression(),false,0),selected));
+        return choose(input.reach(),value,EMPTY);
     }
     /** Substitute a whole caller environment, keeping correlated operands
      * together. The explicit stack handles long chains without Java recursion. */
@@ -883,7 +1296,11 @@ final class DependencyFlow {
             if(term instanceof Constant){translated.put(term,term);continue;}
             if(!visit.expanded()) {
                 pending.push(new Visit(term,true));
-                Collection<Term> children=term instanceof Calculation c?c.input.parameters().values():term instanceof Observation o?o.input().parameters().values():((Alternatives)term).terms();
+                Collection<Term> children;
+                if(term instanceof Decision d){var list=new ArrayList<Term>(d.test.input.parameters().values());list.add(d.high);list.add(d.low);children=list;}
+                else if(term instanceof Refinement r)children=r.input().parameters().values();
+                else if(term instanceof Widening widening)children=List.of(widening.input());
+                else children=term instanceof Calculation c?c.input.parameters().values():term instanceof Observation o?o.input().parameters().values():((Alternatives)term).terms();
                 for(var child:children)if(!translated.containsKey(child))pending.push(new Visit(child,false));
                 continue;
             }
@@ -891,9 +1308,16 @@ final class DependencyFlow {
             if(term instanceof Calculation c) {
                 var input=substitute(c.input,binding,translated);
                 replacement=input.equals(c.input)?c:calculation(c.node,input,c.declaration);
+            }else if(term instanceof Decision d) {
+                var input=substitute(d.test.input,binding,translated);
+                replacement=choose(input.equals(d.test.input)?node(d.test,YES,NO):boundPredicate(d.test,input),translated.get(d.high),translated.get(d.low));
+            }else if(term instanceof Widening widening) {
+                replacement=open(translated.get(widening.input()));
+            }else if(term instanceof Refinement r) {
+                replacement=lift(new Operation("refine","",r.condition(),r.wanted(),r.declaration()),substitute(r.input(),binding,translated));
             }else if(term instanceof Observation o) {
                 var input=substitute(o.input(),binding,translated);
-                replacement=input.parameters().isEmpty()?new Constant(read(o.query().expression(),input)):input.equals(o.input())?o:new Observation(o.query(),input);
+                replacement=lift(new Operation("read","",o.expression(),false,0),input);
             }else {
                 replacement=null;
                 for(var child:((Alternatives)term).terms())replacement=replacement==null?translated.get(child):combine(replacement,translated.get(child));
@@ -902,14 +1326,33 @@ final class DependencyFlow {
         }
         return translated.get(root);
     }
+    private Term boundPredicate(Test original,State input) {
+        // Equal abstract UNKNOWN values do not prove that two mutations are
+        // the same runtime value. Preserve the symbolic decision's identity
+        // when binding cannot establish either outcome.
+        if(input.parameters().isEmpty()&&testTruth(original.operation,input)==3) {
+            var key=new TestKey(original.operation,input,original);
+            var test=tests.computeIfAbsent(key,k->new Test(tests.size(),original.operation,input));
+            return node(test,YES,NO);
+        }
+        return lift(original.operation,input);
+    }
     private State substitute(State input,State binding,IdentityHashMap<Term,Term> translated) {
-        if(input.parameters().isEmpty())return input;
+        if(input.parameters().isEmpty()&&input.controls().isEmpty()&&input.reach() instanceof Constant)return input;
         var values=new DependencyEnvironment.Builder<>(input.values());var parameters=new HashMap<Integer,Term>();
         for(var entry:input.parameters().entrySet()) {
             var term=translated.get(entry.getValue());if(term==null)term=substitute(entry.getValue(),binding,translated);
             if(term instanceof Constant constant)values.put(entry.getKey(),constant.value());else parameters.put(entry.getKey(),term);
         }
-        return new State(values,input.handlers(),input.reached(),parameters);
+        var handlers=new HashMap<>(input.handlers());var reached=new HashSet<>(input.reached());var controls=new HashMap<Input,Term>();
+        for(var entry:input.controls().entrySet()) {
+            var term=substitute(entry.getValue(),binding,translated);
+            if(term instanceof Constant c) {
+                if(entry.getKey() instanceof Handler h)handlers.put(h.name(),c.value().values());
+                else if(c.equals(YES))reached.add(((Fact)entry.getKey()).statement());else reached.remove(((Fact)entry.getKey()).statement());
+            }else controls.put(entry.getKey(),term);
+        }
+        return new State(values,handlers,reached,parameters,substitute(input.reach(),binding,translated),controls);
     }
     record ResolutionKey(int context,Term term) { }
     final Map<ResolutionKey,DependencyValues> resolved=new HashMap<>();
@@ -921,14 +1364,18 @@ final class DependencyFlow {
         while(!discover.isEmpty()) {
             var key=discover.removeFirst();if(resolutionInputs.containsKey(key))continue;
             var inputs=new HashSet<ResolutionKey>();resolutionInputs.put(key,inputs);
-            if(key.term() instanceof Constant constant)resolved.put(key,constant.value());
+            var grounded=ground(key.term());
+            if(grounded!=null)resolved.put(key,grounded);
             else {
                 resolved.put(key,new DependencyValues(Set.of(),false));
+                var grouped=new HashMap<Integer,Term>();
                 for(var caller:contexts.get(key.context()).callers) {
-                    var actual=substitute(key.term(),caller.input(),new IdentityHashMap<>());
+                    var actual=choose(caller.input().reach(),substitute(key.term(),caller.input(),new IdentityHashMap<>()),EMPTY);
                     int owner=caller.context()<0?key.context():caller.context();
-                    var child=new ResolutionKey(owner,actual);inputs.add(child);resolutionParents.computeIfAbsent(child,k->new HashSet<>()).add(key);
-                    discover.add(child);
+                    grouped.merge(owner,actual,this::combine);
+                }
+                for(var actual:grouped.entrySet()) {
+                    var child=new ResolutionKey(actual.getKey(),actual.getValue());inputs.add(child);resolutionParents.computeIfAbsent(child,k->new HashSet<>()).add(key);discover.add(child);
                 }
             }
             if(queued.add(key))work.add(key);
@@ -950,6 +1397,7 @@ final class DependencyFlow {
     private void deliver(Continuation caller,Exit exit,State result) {
         resultDeliveries++;
         State state=restore(caller,result);
+        if(state.reach().equals(NO))return;
         if(caller instanceof Forward forward){finish(forward.context(),exit,state);return;}
         ReturnTo returnTo=caller instanceof ReturnTo r?r:null;
         String endpoint=returnTo==null?caller.endpoint():contexts.get(returnTo.context()).key.endpoint();
@@ -1032,10 +1480,15 @@ final class DependencyFlow {
     }
 
     private void queueResult(int context,Exit exit,Continuation caller) {
-        var location=new Location(context,"",exit,caller);if(queued.add(location))work.addLast(location);
+        var location=new Location(context,"",exit,caller);if(queued.add(location))work.add(location);
     }
     private void finish(int context,Exit exit,State state) {
-        var ctx=contexts.get(context);var old=ctx.results.get(exit);var joined=old==null?state:old.join(state);
+        // A terminal program exit propagates only reachability. Its variables,
+        // handlers and prerequisite facts can never be consumed by a resume;
+        // dependency observations already retain their own BEFORE operands.
+        if(exit.kind()==TargetKind.PROGRAM_RETURN||exit.kind()==TargetKind.PROGRAM_HALT)
+            state=new State(Map.of(),Map.of(),Set.of(),Map.of(),state.reach());
+        var ctx=contexts.get(context);var old=ctx.results.get(exit);var joined=old==null?state:join(old,state);
         if(joined.equals(old))return;ctx.results.put(exit,joined);for(var caller:ctx.callers)queueResult(context,exit,caller);
     }
     private void phase(int caller,Binding binding,String phase,State state) {
@@ -1050,13 +1503,13 @@ final class DependencyFlow {
             subscribe(new Forward(location.context(),context.key.endpoint(),input),new Exit(TargetKind.OCCURRENCE,node));return;
         }
         var selection=operands.computeIfAbsent(node,this::operands);
-        var key=new Computation(node,selection.apply(input));
+        var key=new Computation(node,selection.apply(input).withReach(YES));
         var actions=computations.get(key);
         if(actions==null) {
             evaluations++;actions=compute(node,key.input());computations.put(key,actions);
         }else reusedEvaluations++;
         for(var action:actions) {
-            var state=action.patch().apply(input);
+            var state=action.patch().apply(input,this);
             if(action instanceof Advance advance)route(location.context(),advance.target(),state);
             else if(action instanceof Phase phase)phase(location.context(),bindings.get(phase.binding()),phase.phase(),state);
             else if(action instanceof Enter enter)subscribe(new Entry(location.context(),enter.endpoint(),state),enter.entry());
@@ -1096,15 +1549,27 @@ final class DependencyFlow {
     private List<Action> compute(String node,State input) {
         var actions=calculate(node,input);var statement=statements.get(node);
         if(input.parameters().isEmpty()||statement==null||potentialWrites(statement).isEmpty())return actions;
-        var changed=relatedValues(potentialWrites(statement));var lifted=new ArrayList<Action>();
+        // Evaluate with TOP for every symbolic operand. A closed result under
+        // that input is independent of caller values and needs no expression.
+        // The ordinary approximation may contain closed sets from a branch
+        // join; those sets alone cannot prove independence or correlation.
+        var unknown=new DependencyEnvironment.Builder<>(input.values());
+        input.parameters().keySet().forEach(id->unknown.put(id,DependencyValues.UNKNOWN));
+        var independent=transfer(statement,input.withValues(unknown));
+        var support=writeSupport(statement);var changed=support.changed();var lifted=new ArrayList<Action>();
         for(var action:actions) {
-            var result=action.patch().apply(input);var values=new DependencyEnvironment.Builder<>(result.values());var parameters=new DependencyEnvironment.Builder<>(result.parameters());
+            var result=action.patch().apply(input,this);var values=new DependencyEnvironment.Builder<>(result.values());var parameters=new DependencyEnvironment.Builder<>(result.parameters());
             for(int id:changed) {
-                var term=calculation(node,input,id);
+                if(specialized.contains(id)){parameters.remove(id);continue;}
+                Term term;
+                var opening=support.widenings().get(id);
+                if(!independent.get(id).unknown())term=new Constant(independent.get(id));
+                else if(opening!=null){term=EMPTY;for(int source:opening)term=combine(term,input.term(source));term=open(term);}
+                else term=calculation(node,input,id);
                 if(term instanceof Constant c){values.put(id,c.value());parameters.remove(id);}
                 else {values.put(id,DependencyValues.UNKNOWN);parameters.put(id,term);}
             }
-            var patch=Patch.of(input,new State(values,result.handlers(),result.reached(),parameters));
+            var patch=Patch.of(input,new State(values,result.handlers(),result.reached(),parameters,result.reach(),result.controls()));
             if(action instanceof Advance a)lifted.add(new Advance(a.target(),patch));
             else if(action instanceof Phase a)lifted.add(new Phase(a.binding(),a.phase(),patch));
             else if(action instanceof Enter a)lifted.add(new Enter(a.entry(),a.endpoint(),patch));
@@ -1119,12 +1584,20 @@ final class DependencyFlow {
         if(node.startsWith("phase/")) {
             int split=node.lastIndexOf('/');var b=bindings.get(node.substring(6,split));String id=node.substring(split+1);
             var p=b.phases().stream().filter(x->x.id().equals(id)).findFirst().orElseThrow();
-            var perform=(Ast.PerformStatement)statements.get(b.caller());State state=input;int truth=3;
+            var perform=(Ast.PerformStatement)statements.get(b.caller());State state=input;Term decision=null;
             if(p.operation().equals("UNTIL_PREDICATE")) {
                 var condition=perform.controls().stream().filter(c->c.context()==Ast.PerformControlContext.CONDITION&&(p.level()==0||c.varyingLevel()==p.level())).map(Ast.PerformControl::expression).findFirst();
-                if(condition.isPresent())truth=truth(condition.get(),state);
-            } else if(p.operation().equals("COUNT_ENTRY")) {int count=perform.controls().isEmpty()?-1:integer(perform.controls().get(0).expression(),state);truth=count<0?3:count==0?1:2;}
-            else if(p.operation().equals("COUNT_REPEAT")) {int count=perform.controls().isEmpty()?-1:integer(perform.controls().get(0).expression(),state);truth=count==1?1:3;}
+                if(condition.isPresent()) {
+                    var expression=condition.get();
+                    var selected=conditionInput(expression,state);
+                    if(requiresDecision(selected)||truth(expression,state)!=3)decision=predicate(expression,selected);
+                }
+            } else if(p.operation().equals("COUNT_ENTRY")||p.operation().equals("COUNT_REPEAT")) {
+                var expression=perform.controls().isEmpty()?null:perform.controls().get(0).expression();
+                var test=new Operation(p.operation().equals("COUNT_ENTRY")?"count-entry":"count-repeat","",expression,false,0);
+                var selected=conditionInput(expression,state);
+                if(requiresDecision(selected)||testTruth(test,state)!=3)decision=lift(test,selected);
+            }
             else if(p.operation().equals("VARY_INITIAL")||p.operation().equals("VARY_UPDATE")) {
                 var controls=perform.controls().stream().filter(c->p.level()==0||c.varyingLevel()==p.level()).toList();
                 var variable=controls.stream().filter(c->c.context()==Ast.PerformControlContext.CONTROL_VARIABLE).map(Ast.PerformControl::expression).findFirst();
@@ -1136,12 +1609,18 @@ final class DependencyFlow {
                     state=assign(variable.get(),assigned,state);
                 }
             }
-            for(var edge:p.edges())if(edge.role().equals("next")||edge.role().equals("true")&&(truth&1)!=0||edge.role().equals("false")&&(truth&2)!=0)actions.add(new Phase(b.id(),edge.target(),Patch.of(input,state)));
+            for(var edge:p.edges()) {
+                State branch=edge.role().equals("next")||decision==null?state:guard(state,decision,edge.role().equals("true"));
+                if(branch!=null)actions.add(new Phase(b.id(),edge.target(),Patch.of(input,branch)));
+            }
             return List.copyOf(actions);
         }
         var s=statements.get(node);if(s==null)return List.copyOf(actions);
         State state=transfer(s,input);
-        if(prerequisites.contains(node)&&!state.reached().contains(node))state=new State(state.values(),state.handlers(),union(state.reached(),Set.of(node)),state.parameters());
+        if(prerequisites.contains(node)) {
+            var controls=new HashMap<>(state.controls());controls.remove(new Fact(node));
+            state=new State(state.values(),state.handlers(),union(state.reached(),Set.of(node)),state.parameters(),state.reach(),controls);
+        }
         var registration=abendRegistrations.get(node);
         if(registration!=null) {
             var h=new HashMap<>(state.handlers());
@@ -1150,20 +1629,26 @@ final class DependencyFlow {
                 h.put("ABEND",target);h.put("ABEND-SAVED",target);
             } else if(registration.action()==CicsHandlerSemantics.Action.CANCEL)h.put("ABEND",Set.of("CANCEL"));
             else if(registration.action()==CicsHandlerSemantics.Action.RESET)h.put("ABEND",h.getOrDefault("ABEND-SAVED",Set.of("UNKNOWN")));
-            state=state.withHandlers(h);
+            var saved=state.control(new Handler("ABEND-SAVED"));
+            state=withHandlers(state,h,registration.action()==CicsHandlerSemantics.Action.ACTIVATE?Set.of("ABEND","ABEND-SAVED"):Set.of("ABEND"));
+            if(registration.action()==CicsHandlerSemantics.Action.RESET&&!(saved instanceof Constant)) {
+                var controls=new HashMap<>(state.controls());controls.put(new Handler("ABEND"),saved);
+                state=new State(state.values(),state.handlers(),state.reached(),state.parameters(),state.reach(),controls);
+            }
         }
         if(registrations.containsKey(node)) {
             var h=new HashMap<>(state.handlers());
             for(var r:registrations.get(node))h.put(r.condition(),Set.of(r.action()==ConditionAction.LABEL?r.target().get(0).reference():r.action().name()));
-            state=state.withHandlers(h);
+            state=withHandlers(state,h,registrations.get(node).stream().map(ConditionRegistration::condition).collect(java.util.stream.Collectors.toSet()));
         }
         for(var e:edges.getOrDefault(node,List.of())) {
             State branch=state;
-            if(s instanceof Ast.IfStatement f && e.kind()==OutcomeKind.BRANCH)branch=filter(f.condition(),e.role().equals("then"),state);
+            if(s instanceof Ast.IfStatement f && e.kind()==OutcomeKind.BRANCH&&controlSummary.observed(node))branch=filter(f.condition(),e.role().equals("then"),state);
             if(s instanceof Ast.EvaluateStatement evaluate&&e.kind()==OutcomeKind.BRANCH)branch=evaluate(evaluate,e.role(),state);
             if(s instanceof Ast.GoToStatement g&&g.goToKind()==Ast.GoToKind.DEPENDING_ON) {
-                int index=integer(g.dependingOn(),state);
-                if(index>=0 && !(e.role().equals("normal")?index==0||index>g.targets().size():e.role().equals("target-"+(index-1))))continue;
+                var expression=g.dependingOn();
+                var selected=conditionInput(expression,branch);var test=new Operation("dispatch",e.role(),expression,false,g.targets().size());
+                if(requiresDecision(selected)||testTruth(test,state)!=3)branch=guard(branch,lift(test,selected),true);
             }
             if(branch==null)continue;
             if(e.kind()==OutcomeKind.LOCAL_INVOKE)actions.add(new Phase(e.binding(),bindings.get(e.binding()).entryPhase(),Patch.of(input,branch)));
@@ -1171,7 +1656,10 @@ final class DependencyFlow {
         }
         // Inventory the source-qualified continuations with uncertainty. Their
         // prerequisites must have been reached in this invocation.
-        for(var p:possibilities.getOrDefault(node,List.of()))if(state.reached().containsAll(p.prerequisites()))actions.add(new Advance(Exit.of(p.target()),Patch.of(input,state)));
+        for(var p:possibilities.getOrDefault(node,List.of())) {
+            Term eligible=YES;for(var fact:p.prerequisites())eligible=choose(eligible,state.control(new Fact(fact)),NO);
+            var branch=guard(state,eligible,true);if(branch!=null)actions.add(new Advance(Exit.of(p.target()),Patch.of(input,branch)));
+        }
         // File handler bodies already have grammar-owned entries/completions.
         var surface=fileSurface(s);
         if(surface.isPresent())for(var h:surface.get().handlers()) {
@@ -1179,44 +1667,88 @@ final class DependencyFlow {
         }
         for(var use:ioDeclarations.getOrDefault(node,List.of()))actions.add(new Phase(use.id(),use.entryPhase(),Patch.of(input,state)));
         for(var event:events.getOrDefault(node,List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
-            var hs=state.handlers().getOrDefault(event.condition(),state.handlers().getOrDefault("ERROR",Set.of("DEFAULT")));
-            for(String handler:hs)if(handler.equals("IGNORE"))actions.add(new Advance(Exit.of(event.continuation()),Patch.of(input,state)));else if(regions.containsKey(handler))actions.add(new Advance(Exit.of(regions.get(handler).entry()),Patch.of(input,state)));
+            var field=state.handlers().containsKey(event.condition())||state.controls().containsKey(new Handler(event.condition()))?new Handler(event.condition()):new Handler("ERROR");
+            var dispositions=state.control(field);
+            for(String handler:controlCandidates(dispositions)) {
+                var branch=guard(state,controlMatch(dispositions,handler),true);if(branch==null)continue;
+                if(handler.equals("IGNORE"))actions.add(new Advance(Exit.of(event.continuation()),Patch.of(input,branch)));
+                else if(regions.containsKey(handler))actions.add(new Advance(Exit.of(regions.get(handler).entry()),Patch.of(input,branch)));
+            }
         }
         for(var event:exceptionalEvents.getOrDefault(node,List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
             boolean explicit=event.origin()==EventOrigin.EXPLICIT_ABEND;
-            var dispositions=state.handlers().getOrDefault("PGMIDERR",state.handlers().getOrDefault("ERROR",Set.of("DEFAULT")));
-            if(!explicit&&!dispositions.contains("DEFAULT"))continue;
-            for(String handler:state.handlers().getOrDefault("ABEND",Set.of("UNKNOWN")))if(handlerEndpoints.containsKey(handler)) {
-                var h=new HashMap<>(state.handlers());h.put("ABEND",Set.of("CANCEL"));
-                State ingress=state.withHandlers(h);String endpoint=handlerEndpoints.get(handler);
+            var field=state.handlers().containsKey("PGMIDERR")||state.controls().containsKey(new Handler("PGMIDERR"))?new Handler("PGMIDERR"):new Handler("ERROR");
+            var eligible=explicit?state:guard(state,controlMatch(state.control(field),"DEFAULT"),true);if(eligible==null)continue;
+            var abend=eligible.control(new Handler("ABEND"));
+            for(String handler:controlCandidates(abend))if(handlerEndpoints.containsKey(handler)) {
+                var branch=guard(eligible,controlMatch(abend,handler),true);if(branch==null)continue;
+                var h=new HashMap<>(branch.handlers());h.put("ABEND",Set.of("CANCEL"));
+                State ingress=withHandlers(branch,h,Set.of("ABEND"));String endpoint=handlerEndpoints.get(handler);
                 actions.add(new Enter(new Exit(TargetKind.OCCURRENCE,handler),endpoint,Patch.of(input,ingress)));
             }
         }
         return List.copyOf(actions);
     }
+    private State withHandlers(State state,Map<String,Set<String>> handlers,Set<String> written) {
+        var controls=new HashMap<>(state.controls());written.forEach(name->controls.remove(new Handler(name)));
+        return new State(state.values(),handlers,state.reached(),state.parameters(),state.reach(),controls);
+    }
+    private Set<String> controlCandidates(Term root) {
+        var values=new HashSet<String>();var pending=new ArrayDeque<Term>();var seen=Collections.newSetFromMap(new IdentityHashMap<Term,Boolean>());pending.push(root);
+        while(!pending.isEmpty()){var term=pending.pop();if(!seen.add(term))continue;if(term instanceof Constant c)values.addAll(c.value().values());else if(term instanceof Decision d){pending.push(d.high);pending.push(d.low);}else if(term instanceof Alternatives a)pending.addAll(a.terms());else throw new IllegalStateException("unresolved control disposition");}return values;
+    }
+    private Term controlMatch(Term root,String value) {
+        record Visit(Term term,boolean expanded) { }
+        var translated=new IdentityHashMap<Term,Term>();var pending=new ArrayDeque<Visit>();pending.push(new Visit(root,false));
+        while(!pending.isEmpty()) {
+            var visit=pending.pop();var term=visit.term();if(translated.containsKey(term))continue;
+            if(term instanceof Constant c){translated.put(term,c.value().values().contains(value)?YES:NO);continue;}
+            if(!visit.expanded()){pending.push(new Visit(term,true));if(term instanceof Decision d){pending.push(new Visit(d.high,false));pending.push(new Visit(d.low,false));}else for(var child:((Alternatives)term).terms())pending.push(new Visit(child,false));continue;}
+            if(term instanceof Decision d)translated.put(term,choose(node(d.test,YES,NO),translated.get(d.high),translated.get(d.low)));
+            else {Term out=NO;for(var child:((Alternatives)term).terms())out=choose(out,YES,translated.get(child));translated.put(term,out);}
+        }return translated.get(root);
+    }
     private static Optional<Ast.FileIoSurface> fileSurface(Ast.Statement s) {
         return s instanceof Ast.ModeledStatement m?m.fileIo():s instanceof Ast.PreservedStatement p?p.fileIo():Optional.empty();
     }
-    private State evaluate(Ast.EvaluateStatement e,String role,State state) {
+    private State evaluate(Ast.EvaluateStatement statement,String role,State state) {
         State remaining=state;int ordinal=0;
-        for(var b:e.branches()) {
-            if(b.other())return role.equals("other")?remaining:null;
-            boolean selected=role.equals("when-"+(ordinal++));State match=remaining;
-            for(var selector:b.selectors()) {
-                if(selector.subjectIndex()>=e.subjects().size())continue;
-                var subject=e.subjects().get(selector.subjectIndex());
-                if((selector.context()==Ast.EvaluateSelectorContext.VALUE_COMPARISON||selector.context()==Ast.EvaluateSelectorContext.SIMPLE_LITERAL)) {
-                    var predicate=new Ast.RelationCondition(e.meta(),subject,selector.negated()?"NOT =":"=",selector.expression(),"",selector.negated()?Ast.RelationOperator.NOT_EQUAL:Ast.RelationOperator.EQUAL);
-                    if(match!=null)match=filter(predicate,true,match);
-                    // Exclude a prior arm only for one simple selector; ALSO needs a disjunction.
-                    if(b.selectors().size()==1&&remaining!=null)remaining=filter(predicate,false,remaining);
-                } else {int t=truth(selector.expression(),remaining);if((t&1)==0)match=null;if(t==1)remaining=null;}
-            }
-            if(selected)return match;if(remaining==null)return null;
+        for(var branch:statement.branches()) {
+            if(branch.other())return role.equals("other")?remaining:null;
+            var condition=evaluateConditions.computeIfAbsent(branch,b->evaluateCondition(statement,b));
+            var match=condition==null?remaining:filter(condition,true,remaining);
+            if(role.equals("when-"+(ordinal++)))return match;
+            if(condition!=null)remaining=filter(condition,false,remaining);
+            if(remaining==null)return null;
         }
         return role.equals("other")?remaining:null;
     }
-    private State filter(Ast.Expression condition,boolean wanted,State state) {
+    private Ast.Expression evaluateCondition(Ast.EvaluateStatement statement,Ast.EvaluateBranch branch) {
+        var alternatives=new ArrayList<Ast.Expression>();var operands=new ArrayList<Ast.Expression>();
+        // The frontend flattens WHEN groups. Subject index zero starts each
+        // alternative; increasing indexes are the conjunction written as ALSO.
+        for(var selector:branch.selectors()) {
+            if(selector.subjectIndex()==0&&!operands.isEmpty()) {
+                alternatives.add(logical(branch.meta(),Ast.LogicalConnector.AND,operands));operands.clear();
+            }
+            if(selector.subjectIndex()>=statement.subjects().size())continue;
+            var subject=statement.subjects().get(selector.subjectIndex());Ast.Expression condition;
+            if(selector.context()==Ast.EvaluateSelectorContext.VALUE_COMPARISON||selector.context()==Ast.EvaluateSelectorContext.SIMPLE_LITERAL)
+                condition=new Ast.RelationCondition(branch.meta(),subject,"",selector.expression(),"",selector.negated()?Ast.RelationOperator.NOT_EQUAL:Ast.RelationOperator.EQUAL);
+            else {
+                condition=selector.expression();
+                boolean invert=selector.negated()^(subject instanceof Ast.LiteralExpression literal&&literal.booleanValue().equals(Optional.of(false)));
+                if(invert)condition=new Ast.NegatedCondition(branch.meta(),condition,"");
+            }
+            operands.add(condition);
+        }
+        if(!operands.isEmpty())alternatives.add(logical(branch.meta(),Ast.LogicalConnector.AND,operands));
+        return alternatives.isEmpty()?null:logical(branch.meta(),Ast.LogicalConnector.OR,alternatives);
+    }
+    private static Ast.Expression logical(Ast.Meta meta,Ast.LogicalConnector connector,List<Ast.Expression> operands) {
+        return operands.size()==1?operands.get(0):new Ast.LogicalCondition(meta,connector,operands,"");
+    }
+    private State filterConcrete(Ast.Expression condition,boolean wanted,State state) {
         if(state==null)return null;int bit=wanted?1:2;if((truth(condition,state)&bit)==0)return null;
         var out=new DependencyEnvironment.Builder<>(state.values());
         for(int id:declarations.reads(condition)) {

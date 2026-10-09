@@ -25,9 +25,120 @@ class DependencySummaryTest {
             result.programs().get(0).dependencies().forEach(d->{assertEquals("program",d.type());actual.add(d.name());});
             assertEquals(expected,actual,path.toString());
             assertEquals(List.of(),result.diagnostics(),path.toString());
-            // Context counts belong to the measurement, not the semantic oracle:
-            // a future solver may share guarded inputs without changing names.
+            assertTrue(result.metrics().contexts()<=16,"Ten independent flags must share summaries: "+result.metrics());
+            assertTrue(result.metrics().decisionNodes()<5000,"The fixture must keep a compact decision DAG: "+result.metrics());
         }
+    }
+
+    @Test void guardedSummariesPreserveCorrelatedPartialWritesAndRefinements()throws Exception {
+        var result=check("01 FLAG PIC X.\n01 TARGET PIC X(8).\n01 PATCH-VALUE PIC X(4).",
+            "MAIN.\nIF FLAG = 'Y'\nMOVE 'AAAA0000' TO TARGET\nMOVE '1111' TO PATCH-VALUE\nELSE\nMOVE 'BBBB0000' TO TARGET\nMOVE '2222' TO PATCH-VALUE\nEND-IF.\n"
+            +"PERFORM BODY.\nCALL TARGET.\nGOBACK.\nBODY.\nMOVE PATCH-VALUE TO TARGET(5:4).\nCALL TARGET.\nEXIT.","AAAA1111","BBBB2222");
+        assertEquals(2,result.metrics().contexts());
+        check("01 FLAG PIC X.\n01 TARGET PIC X(8).",
+            "MAIN.\nIF FLAG = 'Y'\nMOVE 'FIRST' TO TARGET\nELSE\nMOVE 'SECOND' TO TARGET\nEND-IF.\nPERFORM BODY.\nGOBACK.\n"
+            +"BODY.\nIF TARGET = 'FIRST'\nCALL TARGET\nEND-IF.\nEXIT.","FIRST");
+    }
+    @Test void guardedQueriesAndReturnsExcludeInfeasibleBranches()throws Exception {
+        check("01 FLAG PIC X.","MAIN.\nIF FLAG = 'Y'\nIF FLAG NOT = 'Y'\nCALL 'BAD'\nELSE\nCALL 'GOOD'\nEND-IF\nEND-IF.\nGOBACK.","GOOD");
+        var result=check("01 FLAG PIC X.\n01 TARGET PIC X(8).",
+            "MAIN.\nMOVE 'Y' TO FLAG.\nMOVE 'DEAD' TO TARGET.\nPERFORM BODY.\nCALL TARGET.\nGOBACK.\n"
+            +"BODY.\nIF FLAG = 'Y'\nCALL 'LIVE'\nGOBACK\nEND-IF.\nEXIT.","LIVE");
+        assertFalse(result.diagnostics().stream().anyMatch(d->d.contains("DYNAMIC_REMAINDER")));
+    }
+
+    @Test void conditionalHandlerResultsBindToTheActualCaller()throws Exception {
+        var result=check("01 FLAG PIC X.","MAIN.\nEXEC CICS HANDLE CONDITION ERROR(FIRST-HANDLER) END-EXEC.\n"
+            +"MOVE 'N' TO FLAG.\nPERFORM BODY.\nEXEC CICS LINK PROGRAM('TARGET') END-EXEC.\n"
+            +"MOVE 'Y' TO FLAG.\nPERFORM BODY.\nGOBACK.\nBODY.\nIF FLAG = 'Y'\n"
+            +"EXEC CICS HANDLE CONDITION ERROR(SECOND-HANDLER) END-EXEC\nEND-IF.\nEXIT.\n"
+            +"FIRST-HANDLER.\nCALL 'FIRST'.\nGOBACK.\nSECOND-HANDLER.\nCALL 'SECOND'.\nGOBACK.","FIRST","TARGET");
+        assertFalse(result.diagnostics().stream().anyMatch(d->d.contains("DYNAMIC_REMAINDER")));
+    }
+    @Test void evaluateAndRepeatDecisionsBindWithoutSeparateValueContexts()throws Exception {
+        var result=check("01 FLAG PIC X.\n01 TARGET PIC X(8).",
+            "MAIN.\nMOVE 'N' TO FLAG.\nPERFORM BODY.\nCALL TARGET.\nMOVE 'Y' TO FLAG.\nPERFORM BODY.\nGOBACK.\n"
+            +"BODY.\nEVALUATE FLAG\nWHEN 'N' MOVE 'FIRST' TO TARGET\nWHEN 'Y' MOVE 'SECOND' TO TARGET\nWHEN OTHER MOVE 'BAD' TO TARGET\nEND-EVALUATE.\nEXIT.","FIRST");
+        assertEquals(2,result.metrics().contexts());
+        check("01 COUNT-VALUE PIC 9.\n01 TARGET PIC X(8).",
+            "MAIN.\nMOVE 'OLD' TO TARGET.\nMOVE 0 TO COUNT-VALUE.\nPERFORM BODY COUNT-VALUE TIMES.\nCALL TARGET.\n"
+            +"MOVE 1 TO COUNT-VALUE.\nPERFORM BODY COUNT-VALUE TIMES.\nGOBACK.\nBODY.\nMOVE 'NEW' TO TARGET.\nCALL 'HIT'.\nEXIT.","OLD","HIT");
+    }
+
+    @Test void evaluateCombinesWhenAlternativesAndAlsoOperands()throws Exception {
+        check("01 FLAG PIC X.","MAIN.\nMOVE 'Y' TO FLAG.\nPERFORM BODY.\nGOBACK.\nBODY.\n"
+            +"EVALUATE FLAG\nWHEN 'N'\nWHEN 'Y' CALL 'GOOD'\nWHEN OTHER CALL 'BAD'\nEND-EVALUATE.\nEXIT.","GOOD");
+        check("01 A PIC X.\n01 B PIC X.","MAIN.\nMOVE 'Y' TO A.\nMOVE 'N' TO B.\nPERFORM BODY.\nGOBACK.\nBODY.\n"
+            +"EVALUATE A ALSO B\nWHEN 'N' ALSO 'Y'\nWHEN 'Y' ALSO 'N' CALL 'GOOD'\nWHEN OTHER CALL 'BAD'\nEND-EVALUATE.\nEXIT.","GOOD");
+        check("01 FLAG PIC X.","MAIN.\nMOVE 'N' TO FLAG.\nPERFORM BODY.\nGOBACK.\nBODY.\n"
+            +"EVALUATE FALSE\nWHEN FLAG = 'Y' CALL 'GOOD'\nWHEN OTHER CALL 'BAD'\nEND-EVALUATE.\nEXIT.","GOOD");
+    }
+
+    @Test void qualifiedReferencesDoNotReadOrWriteTheirContainer()throws Exception {
+        var data=new StringBuilder("01 AREA-VALUE.\n05 TARGET PIC X(8).\n");
+        for(int i=0;i<64;i++)data.append("05 UNUSED-").append(i).append(" PIC X(8).\n");
+        data.append("01 ORIGIN PIC X(8).\n");
+        var result=check(data.toString(),"MAIN.\nMOVE 'GOOD' TO ORIGIN.\nPERFORM BODY.\nCALL TARGET OF AREA-VALUE.\nGOBACK.\n"
+            +"BODY.\nMOVE ORIGIN TO TARGET OF AREA-VALUE.\nIF TARGET OF AREA-VALUE = 'GOOD' CALL TARGET OF AREA-VALUE END-IF.\nEXIT.","GOOD");
+        assertTrue(result.metrics().trackedDeclarations()<=3,"A qualifier identifies scope, not a value operand: "+result.metrics());
+    }
+
+    @Test void impreciseAliasWritesOnlyOpenThePreviousAliasValue()throws Exception {
+        var data=new StringBuilder("01 RAW-AREA.\n05 UNKNOWN-WIDTH PIC S9(4) COMP.\n");
+        for(int i=0;i<32;i++)data.append("05 LEFT-").append(i).append(" PIC X(8).\n");
+        data.append("01 ALIAS-AREA REDEFINES RAW-AREA.\n");
+        for(int i=0;i<32;i++)data.append("05 RIGHT-").append(i).append(" PIC X(8).\n");
+        data.append("01 ORIGIN PIC X(8).\n01 FLAG PIC X.\n");
+        var procedure=new StringBuilder("MAIN.\nMOVE 'KEEP' TO RIGHT-0 OF ALIAS-AREA.\nPERFORM BODY.\nCALL RIGHT-0 OF ALIAS-AREA.\nGOBACK.\nBODY.\n");
+        for(int i=0;i<8;i++)procedure.append("MOVE ORIGIN TO LEFT-").append(i).append(" OF RAW-AREA.\n");
+        procedure.append("IF FLAG = 'Y' CALL RIGHT-0 OF ALIAS-AREA END-IF.\nEXIT.");
+        var result=check(data.toString(),procedure.toString(),"KEEP");
+        assertTrue(result.diagnostics().stream().anyMatch(d->d.contains("DYNAMIC_REMAINDER")),"An imprecise alias remains open");
+        assertTrue(result.metrics().parametricCalculations()<30,"Uncertain aliases must not capture the whole operand vector: "+result.metrics());
+    }
+
+    @Test void groupWritesWithUnknownExtentPreservePreviousLeafCandidates()throws Exception {
+        var result=check("01 AREA-VALUE.\n05 BINARY-FIELD PIC S9(4) COMP.\n05 TARGET PIC X(8).\n01 FLAG PIC X.",
+            "MAIN.\nMOVE 'KEEP' TO TARGET.\nPERFORM BODY.\nCALL TARGET.\nGOBACK.\n"
+            +"BODY.\nMOVE LOW-VALUES TO AREA-VALUE.\nIF FLAG = 'Y' CALL TARGET END-IF.\nEXIT.","KEEP");
+        assertTrue(result.diagnostics().stream().anyMatch(d->d.contains("DYNAMIC_REMAINDER")));
+    }
+    @Test void opaqueComparisonsKeepBothOutcomesWithoutDuplicatingValueRefinements()throws Exception {
+        var procedure=new StringBuilder("MAIN.\nMOVE 'KEEP' TO TARGET.\nPERFORM BODY.\nCALL TARGET.\nGOBACK.\nBODY.\n");
+        for(int i=0;i<8;i++)procedure.append("EVALUATE STATUS-VALUE\nWHEN DFHRESP(NORMAL) CALL 'FIRST'\nWHEN DFHRESP(NOTFND) CALL 'SECOND'\nWHEN OTHER CONTINUE\nEND-EVALUATE.\n");
+        procedure.append("EXIT.");
+        var result=check("01 STATUS-VALUE PIC 9.\n01 TARGET PIC X(8).",procedure.toString(),"KEEP","FIRST","SECOND");
+        assertTrue(result.metrics().predicateInputs()<100,"Opaque comparisons must not split identical value operands: "+result.metrics());
+        assertTrue(result.metrics().decisionNodes()<10000,"Unchanged values must share after the branch: "+result.metrics());
+    }
+
+    @Test void uncertainWritesInvalidateEarlierPredicateChoices()throws Exception {
+        check("01 FLAG PIC X.","MAIN.\nPERFORM BODY.\nGOBACK.\nBODY.\n"
+            +"IF FLAG = 'Y'\nACCEPT FLAG\nIF FLAG NOT = 'Y' CALL 'CHANGED' END-IF\nEND-IF.\nEXIT.","CHANGED");
+    }
+    @Test void terminalResultsKeepEarlierDynamicObservationsAndNeverResume()throws Exception {
+        for(String terminal:List.of("GOBACK","STOP RUN"))check("01 FLAG PIC X.\n01 TARGET PIC X(8).",
+            "MAIN.\nMOVE 'N' TO FLAG.\nPERFORM BODY.\nCALL 'UNREACH'.\nGOBACK.\nBODY.\n"
+            +"IF FLAG = 'Y' MOVE 'DEAD' TO TARGET ELSE MOVE 'LIVE' TO TARGET END-IF.\n"
+            +"CALL TARGET.\n"+terminal+".","LIVE");
+    }
+    @Test void constantDefinitionsDoNotCaptureTheirOverwrittenInput()throws Exception {
+        var result=check("01 FLAG PIC X.\n88 READY VALUE 'Y'.",
+            "MAIN.\nMOVE 'N' TO FLAG.\nPERFORM BODY.\nMOVE 'Y' TO FLAG.\nPERFORM BODY.\nGOBACK.\n"
+            +"BODY.\nSET READY TO TRUE.\nIF READY CALL 'GOOD' ELSE CALL 'BAD' END-IF.\nEXIT.","GOOD");
+        assertEquals(2,result.metrics().contexts());
+        assertEquals(0,result.metrics().parametricCalculations(),"A proven constant definition has no caller operand");
+        assertEquals(0,result.metrics().predicateInputs(),"The predicate is proven before binding callers");
+    }
+
+    @Test void infeasibleSharedBodiesDoNotMultiplyUnchangedFieldDecisions()throws Exception {
+        var data=new StringBuilder("01 FLAG PIC X.\n");var procedure=new StringBuilder("MAIN.\nMOVE 'N' TO FLAG.\n");
+        for(int i=0;i<32;i++){data.append("01 V-").append(i).append(" PIC X.\n");procedure.append("MOVE 'N' TO V-").append(i).append(".\n");}
+        procedure.append("PERFORM A.\nPERFORM B.\nCALL 'GOOD'.\nGOBACK.\nA.\nIF FLAG = 'Y' GO TO HUB END-IF.\nEXIT.\nB.\nIF FLAG = 'Y' GO TO HUB END-IF.\nEXIT.\nHUB.\n");
+        for(int i=0;i<32;i++)procedure.append("IF V-").append(i).append(" = 'Y' CALL 'BAD' END-IF.\n");
+        procedure.append("GOBACK.");
+        var result=check(data.toString(),procedure.toString(),"GOOD");
+        assertTrue(result.metrics().decisionOperations()<50000,"Reachability must simplify value decisions: "+result.metrics());
     }
 
     @Test void recursiveObservationRelationsConvergeWithoutChangingCallerBindings()throws Exception {
@@ -57,7 +168,7 @@ class DependencySummaryTest {
         procedure.append("GOBACK.\nBODY.\nMOVE ORIGIN TO TARGET.\nIF FLAG = 'S'\nMOVE 'SPECIAL' TO TARGET\nEND-IF.\nCALL TARGET.\nEXIT.");
         names.add("SPECIAL");
         var result=check("01 ORIGIN PIC X(8).\n01 TARGET PIC X(8).\n01 FLAG PIC X.",procedure.toString(),names.toArray(String[]::new));
-        assertEquals(3,result.metrics().contexts(),"Root and two control inputs; data inputs are parameters");
+        assertEquals(2,result.metrics().contexts(),"Root and one guarded body summary");
         assertTrue(result.metrics().workItems()<600,result.metrics().toString());
         assertTrue(result.metrics().resultDeliveries()<110,"New subscribers must not replay results to old subscribers: "+result.metrics());
     }
@@ -97,8 +208,8 @@ class DependencySummaryTest {
         procedure.append("GOBACK.\nBODY.\nMOVE 'SAME' TO TARGET.\nIF KEEP = 'NEVER'\nCALL 'BAD'\nEND-IF.\nEXIT.");
         names.add("SAME");
         var result=check("01 KEEP PIC X(8).\n01 TARGET PIC X(8).",procedure.toString(),names.toArray(String[]::new));
-        assertEquals(41,result.metrics().contexts(),"Each caller input remains distinct");
-        assertTrue(result.metrics().reusedEvaluations()>=39,result.metrics().toString());
+        assertEquals(2,result.metrics().contexts(),"Caller data and predicates bind into one body summary");
+        assertTrue(result.metrics().evaluations()<180,result.metrics().toString());
     }
     @Test void sharedPatchesKeepPartialWritesAndCallerCorrelation() throws Exception {
         check("01 TARGET PIC X(8).\n01 KEEP PIC X(8).\n01 FLAG PIC X.",

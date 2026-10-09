@@ -133,7 +133,19 @@ final class DependencyDeclarations {
         var out=new HashSet<Integer>();var todo=new ArrayDeque<Ast.Node>();if(node!=null)todo.add(node);
         while(!todo.isEmpty()) {var n=todo.removeFirst();if(n instanceof Ast.DataReference r) {
             Integer id=references.get(r.meta().id());if(id!=null)out.addAll(related(conditions.getOrDefault(id,id)));
-        } todo.addAll(Ast.children(n));}
+        } todo.addAll(valueChildren(n));}
         var result=Set.copyOf(out);readCache.put(node,result);return result;
+    }
+    /** Qualifiers select the declaration's scope; they do not read its container.
+     * Address expressions on every reference still contribute value operands. */
+    static List<? extends Ast.Node> valueChildren(Ast.Node node) {
+        if(!(node instanceof Ast.DataReference reference))return Ast.children(node);
+        var out=new ArrayList<Ast.Node>();var pending=new ArrayDeque<Ast.DataReference>();pending.add(reference);
+        while(!pending.isEmpty()) {
+            var next=pending.removeFirst();out.addAll(next.subscriptGroups());
+            if(next.referenceModification()!=null)out.add(next.referenceModification());
+            next.qualifiers().forEach(q->pending.add(q.reference()));
+        }
+        return out;
     }
 }

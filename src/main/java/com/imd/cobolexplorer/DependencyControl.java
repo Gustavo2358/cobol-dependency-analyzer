@@ -81,18 +81,7 @@ final class DependencyControl {
         return List.copyOf(next);
     }
     Set<String> cyclicNodes() {
-        var order=new ArrayList<Point>();var seen=new HashSet<Point>();
-        record Visit(Point point,Iterator<Point> children) { }
-        var stack=new ArrayDeque<Visit>();
-        for(var root:reachable)if(seen.add(root)) {
-            stack.push(new Visit(root,successors(root).iterator()));
-            while(!stack.isEmpty()) {
-                var top=stack.peek();
-                if(top.children().hasNext()) {
-                    var child=top.children().next();if(seen.add(child))stack.push(new Visit(child,successors(child).iterator()));
-                }else {order.add(top.point());stack.pop();}
-            }
-        }
+        var order=postorder();var seen=new HashSet<Point>();
         var reverse=new HashMap<Point,Set<Point>>();
         for(var point:reachable)for(var child:successors(point))reverse.computeIfAbsent(child,k->new HashSet<>()).add(point);
         seen.clear();var cyclic=new HashSet<Point>();var pending=new ArrayDeque<Point>();
@@ -110,6 +99,25 @@ final class DependencyControl {
         for(var point:List.copyOf(cyclic))for(var call:plans.get(point).calls)pending.add(call.entry());
         while(!pending.isEmpty()) {var point=pending.removeFirst();if(cyclic.add(point))pending.addAll(successors(point));}
         var names=new HashSet<String>();cyclic.forEach(p->names.add(p.exit().reference()));return Set.copyOf(names);
+    }
+    private List<Point> postorder() {
+        var order=new ArrayList<Point>();var seen=new HashSet<Point>();
+        record Visit(Point point,Iterator<Point> children) { }
+        var stack=new ArrayDeque<Visit>();
+        for(var root:reachable.stream().sorted(Comparator.comparing(Point::toString)).toList())if(seen.add(root)) {
+            stack.push(new Visit(root,successors(root).iterator()));
+            while(!stack.isEmpty()) {
+                var top=stack.peek();
+                if(top.children().hasNext()) {
+                    var child=top.children().next();if(seen.add(child))stack.push(new Visit(child,successors(child).iterator()));
+                }else {order.add(top.point());stack.pop();}
+            }
+        }
+        return order;
+    }
+    Map<Point,Integer> forwardOrder() {
+        var order=postorder();var ranks=new HashMap<Point,Integer>();
+        for(int i=order.size()-1;i>=0;i--)ranks.put(order.get(i),ranks.size());return Map.copyOf(ranks);
     }
     private void schedule(Point point){if(queued.add(point))work.addLast(point);}
     private void discover(Point point) {
