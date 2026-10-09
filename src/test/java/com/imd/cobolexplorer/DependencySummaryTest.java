@@ -10,6 +10,26 @@ import static org.junit.jupiter.api.Assertions.*;
 class DependencySummaryTest {
     @TempDir Path temp;
 
+    @Test void binaryControlSignatureFixturesKeepExactClosedDependencies()throws Exception {
+        var directory=Path.of("src/test/resources/dependency-regression/control-signatures");
+        var cases=new com.fasterxml.jackson.databind.ObjectMapper().readTree(directory.resolve("expected.json").toFile());
+        for(var fixture:cases) {
+            var path=directory.resolve(fixture.get("source").asText());
+            assertEquals(fixture.get("sha256").asText(),HexFormat.of().formatHex(
+                java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(path))));
+            var result=new DependencyAnalyzer().analyze(path,DependencyAnalyzer.Options.defaults());
+            assertEquals(1,result.programs().size());
+            assertEquals(fixture.get("program").asText(),result.programs().get(0).program());
+            var expected=new TreeSet<String>();fixture.get("names").forEach(n->expected.add(n.asText()));
+            var actual=new TreeSet<String>();
+            result.programs().get(0).dependencies().forEach(d->{assertEquals("program",d.type());actual.add(d.name());});
+            assertEquals(expected,actual,path.toString());
+            assertEquals(List.of(),result.diagnostics(),path.toString());
+            // Context counts belong to the measurement, not the semantic oracle:
+            // a future solver may share guarded inputs without changing names.
+        }
+    }
+
     @Test void recursiveObservationRelationsConvergeWithoutChangingCallerBindings()throws Exception {
         var result=check("01 TARGET PIC X(8).\n01 FLAG PIC X.",
             "MAIN.\nMOVE 'FIRST' TO TARGET.\nPERFORM BODY.\nCALL TARGET.\n"

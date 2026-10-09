@@ -1,0 +1,24 @@
+[
+  {
+    "source": "flags-10-predicates.cbl",
+    "program": "CTRLFLAGS10",
+    "flags": 10,
+    "mode": "predicates",
+    "sha256": "2806222c163995c3d8a2b6f626200e5bdef4994f4efbc15788187e0ab7b5f0ed",
+    "names": [
+      "ONE00000",
+      "ZERO0000"
+    ]
+  },
+  {
+    "source": "flags-10-data.cbl",
+    "program": "DATAFLAGS10",
+    "flags": 10,
+    "mode": "data",
+    "sha256": "38ee2841bd50a77c8cf855d17efe70e324a7b780203f0438c41d8ccb57f0ded1",
+    "names": [
+      "ONE00000",
+      "ZERO0000"
+    ]
+  }
+]

@@ -43,3 +43,9 @@ na política de falha, não uma comparação aprovada de um programa válido.
 Fontes, hashes, procedência e destinos estão em `resource-stress/expected.json`.
 Sem consultas operacionais, a análise publica os fatos de fonte sem explorar
 controle/dataflow; isso elimina o custo da sobreposição irrelevante de faixas.
+
+A família [control-signatures](control-signatures/README.md) foi criada para
+provocar crescimento de contextos por combinações de flags usadas em IFs.
+Inclui um controle com as mesmas entradas usadas como dados de CALL, gerador
+de escalas e oráculo manual de duas dependências. Seus resultados são medidos
+separadamente dos oráculos históricos da pipeline.

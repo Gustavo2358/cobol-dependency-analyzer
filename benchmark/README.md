@@ -1,5 +1,10 @@
 # Medições locais
 
+[Fixture de combinações de controle](control-signatures-20261009.md):
+dez flags em IFs provocam 2.048 contextos; doze provocam 8.192, mantendo somente
+duas dependências. O controle com as flags usadas como dados fica em 12 e 14
+contextos. Dez casos completos, heap 512 MiB, maior RSS 268,0 MiB, sem OOM.
+
 [Compartilhamento do fluxo entre entradas](shared-flow-20261009.md):
 resumos paramétricos de dados e controle balanceado compartilhado. Com 400
 entradas, 401 → 2 contextos, 28.002 → 1.668 visitas, tempo interno −46,3% e
