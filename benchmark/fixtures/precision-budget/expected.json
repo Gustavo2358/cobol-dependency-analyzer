@@ -1,0 +1,116 @@
+[
+  {
+    "id": "depth-12",
+    "source": "depth-12.cbl",
+    "sha256": "a2079218c7fe8865ab4d5e81782a4824eb0a1808d4eabf9ff50cc0c4ee4cd266",
+    "expected": [
+      "AFTER",
+      "DEEPCALL"
+    ],
+    "expectedUnknown": false
+  },
+  {
+    "id": "depth-32",
+    "source": "depth-32.cbl",
+    "sha256": "e28c32ba60ed58692964a5c46c762b5ed6fb1b02cea7afcc9be5475153071205",
+    "expected": [
+      "AFTER",
+      "DEEPCALL"
+    ],
+    "expectedUnknown": false
+  },
+  {
+    "id": "caller-correlation",
+    "source": "caller-correlation.cbl",
+    "sha256": "c5326d034a6c2ab9ceef848a14830b371e2792ef6c596e0680896887058ed9a1",
+    "expected": [
+      "ONLY"
+    ],
+    "expectedUnknown": false
+  },
+  {
+    "id": "full-unknown-write",
+    "source": "full-unknown-write.cbl",
+    "sha256": "4aead5c0f5f8d629bb7f31417e890694ca9e9670414f5d556b9b8ab77d8602eb",
+    "expected": [],
+    "expectedUnknown": true
+  },
+  {
+    "id": "section-escape",
+    "source": "section-escape.cbl",
+    "sha256": "b1bd3ccf2e27255b1813f1142231fe8185004df6d3e15cdc84a1b41e629de9ed",
+    "expected": [
+      "GOOD"
+    ],
+    "expectedUnknown": false
+  },
+  {
+    "id": "terminal-no-resume",
+    "source": "terminal-no-resume.cbl",
+    "sha256": "324216ee63dca435f55c2ce7789bcd5ba482d5335b1a95658290e40d344a7c48",
+    "expected": [
+      "REACHED"
+    ],
+    "expectedUnknown": false
+  },
+  {
+    "id": "conditional-passthrough",
+    "source": "conditional-passthrough.cbl",
+    "sha256": "5a4d98d9e9c758b75681f00fc80dfc43f2f9fdc379473f1119cf2b54ce10ec9e",
+    "expected": [
+      "KEEP",
+      "NEW"
+    ],
+    "expectedUnknown": false
+  },
+  {
+    "id": "caller-many-12",
+    "source": "caller-many-12.cbl",
+    "sha256": "9271442e68f8aca7d360c977efb3301a631164785d72d4714aceb02ef0b72101",
+    "expected": [
+      "PGM00000",
+      "PGM00001",
+      "PGM00002",
+      "PGM00003",
+      "PGM00004",
+      "PGM00005",
+      "PGM00006",
+      "PGM00007",
+      "PGM00008",
+      "PGM00009",
+      "PGM00010"
+    ],
+    "expectedUnknown": false
+  },
+  {
+    "id": "caller-many-24",
+    "source": "caller-many-24.cbl",
+    "sha256": "4b0294ded0442c337f37d2a3fdfdf2b02cc93088f52d132c76ff85943c322c84",
+    "expected": [
+      "PGM00000",
+      "PGM00001",
+      "PGM00002",
+      "PGM00003",
+      "PGM00004",
+      "PGM00005",
+      "PGM00006",
+      "PGM00007",
+      "PGM00008",
+      "PGM00009",
+      "PGM00010",
+      "PGM00011",
+      "PGM00012",
+      "PGM00013",
+      "PGM00014",
+      "PGM00015",
+      "PGM00016",
+      "PGM00017",
+      "PGM00018",
+      "PGM00019",
+      "PGM00020",
+      "PGM00021",
+      "PGM00022"
+    ],
+    "expectedUnknown": false
+  }
+]

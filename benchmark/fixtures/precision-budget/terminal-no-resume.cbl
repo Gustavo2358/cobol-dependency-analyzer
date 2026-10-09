@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TERMINALWITNESS.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 UNUSED-FIELD PIC X.
+       PROCEDURE DIVISION.
+       MAIN.
+       PERFORM A THRU B.
+       CALL 'UNREACH'.
+       GOBACK.
+       A.
+       CALL 'REACHED'.
+       GOBACK.
+       B.
+       CONTINUE.
