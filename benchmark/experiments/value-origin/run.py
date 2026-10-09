@@ -19,7 +19,7 @@ def main():
  fixed={c['id']:(ROOT/'benchmark/fixtures/precision-budget'/c['source'],c['expected']) for c in json.loads((ROOT/'benchmark/fixtures/precision-budget/expected.json').read_text())}
  fixed.update({'occurs-'+c['id']:(ROOT/'src/test/resources/dependency-regression/sparse-occurs'/c['source'],c['expected']) for c in json.loads((ROOT/'src/test/resources/dependency-regression/sparse-occurs/expected.json').read_text())})
  fixed['fixture02']=(ROOT/'src/test/resources/dependency-regression/video-reconstructed/fixture02.fixed.cbl',None);fixed['escape-sentinel']=(ROOT/'benchmark/fixtures/control-return-fanout/escape-ablation-sentinel.cbl',['AFTER','ESCAPED'])
- for name in ['group-partial','group-alias','publication-kinds']:fixed['experiment-'+name]=(Path(__file__).parent/'fixtures'/(name+'.cbl'),None)
+ for name in ['group-partial','group-alias','group-alias-single','publication-kinds']:fixed['experiment-'+name]=(Path(__file__).parent/'fixtures'/(name+'.cbl'),None)
  rows=[]
  for case in a.cases:
   if case.startswith(('fanout-','dynamic-','perform-','flags-','hub-value-')):

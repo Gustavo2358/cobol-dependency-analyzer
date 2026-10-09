@@ -170,6 +170,17 @@ final class ValueOriginExperiment {
         if(statement instanceof Ast.MoveStatement move&&!move.corresponding())operands.addAll(reads(move.source()));
         else if(!(statement instanceof Ast.ModeledStatement modeled&&StatementEffectSummary.of(statement).filter(e->e.proof()==StatementEffectSummary.Proof.INITIALIZE_TARGETS).isPresent()))operands.addAll(reads(statement));
         if(!flow.originKills(statement).contains(cell.declaration()))operands.add(cell.declaration());
+        // A textual REDEFINES reconstructs another declaration from sibling
+        // fields. Preserve those exact logical view operands; possible aliases
+        // remain separate openings and do not expand all reads/destinations.
+        Integer ancestor=cell.declaration();
+        while(ancestor!=null){
+            for(int view:flow.declarations.textualViews.getOrDefault(ancestor,Set.of())){
+                operands.add(ancestor);operands.add(view);
+                operands.addAll(flow.declarations.leaves(ancestor));operands.addAll(flow.declarations.leaves(view));
+            }
+            ancestor=flow.declarations.parent.get(ancestor);
+        }
         if(statement instanceof Ast.MoveStatement move)for(var target:move.targets())for(var child:DependencyDeclarations.valueChildren(target))operands.addAll(reads(child));
         operands.retainAll(flow.demand);
         // Share an evaluation for identical operand support, rather than adding
