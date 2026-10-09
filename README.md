@@ -29,7 +29,9 @@ atribuírem nomes diferentes, ambos permanecem candidatos.
 
 O dataflow usa um único solver de resumos, com uma worklist até o ponto fixo.
 Cada resumo é identificado por entrada de controle normalizada, endpoint de
-retorno e estado relevante. Parágrafos alcançados por fallthrough, GO TO,
+retorno e entradas que precisam determinar o controle ou uma recorrência.
+As demais entradas relevantes são parâmetros: valores diferentes podem usar
+o mesmo fluxo e receber resultados específicos. Parágrafos alcançados por fallthrough, GO TO,
 PERFORM ou handlers compartilham esse mesmo mecanismo. Componentes fortemente
 conexos são identificados por Kosaraju iterativo: um ciclo permanece na mesma
 worklist para juntar seus estados, e trechos entre componentes podem compartilhar
@@ -39,6 +41,20 @@ necessários às continuações. A chave retém as entradas que podem ser lidas 
 de uma sobrescrita completa ou conservadas em algum caminho de retorno. Escritas parciais,
 leituras anteriores e aliases que conservam texto continuam exigindo a entrada.
 Handlers omitidos da chave são restaurados a partir do estado de cada chamador.
+
+Antes de propagar valores, um índice de controle calcula as saídas possíveis
+de cada `(posição, endpoint)`. A continuação de um PERFORM só fica alcançável
+quando seu corpo produz uma saída compatível. Um ciclo sem saída não inventa
+um retorno. Esse ponto fixo independe dos valores dos chamadores e permite
+descartar leituras que só alimentariam consultas inalcançáveis.
+
+Se dois chamadores passam `A='PROGA'` e `A='PROGB'` para um corpo com
+`MOVE A TO B`, o resumo guarda a transformação de B em função do parâmetro A.
+O fluxo do corpo é percorrido uma vez; cada retorno aplica a transformação à
+entrada inteira de seu chamador. Consultas internas também guardam expressões
+paramétricas sobre o estado BEFORE. Árvores persistentes armazenam tanto
+valores quanto expressões, e um grafo compartilhado evita copiar as operações.
+Substituir a entrada inteira conserva as correlações nas escritas parciais.
 
 A relevância usa um índice compartilhado de pontos `(posição, endpoint)`, ampliado
 sob demanda. Uma chamada entra no endpoint próprio do callee; seu retorno é
@@ -62,19 +78,22 @@ passam pela worklist, evitando desempilhar recursivamente caudas longas.
 Consultar uma dependência continua usando o estado anterior à instrução. Grupos
 conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam
 declarações e textos logicamente. O analisador não simula memória física.
-As consultas são indexadas pelo consumidor: cada estado BEFORE é avaliado
-separadamente, e só os valores resultantes são unidos. Isso preserva a correlação
+As consultas são indexadas pelo consumidor. Expressões do estado BEFORE são
+resolvidas sobre os vínculos com os chamadores, e só os valores resultantes são unidos. Isso preserva a correlação
 entre valores de um chamador e evita varrer todos os estados para cada consulta.
 A construção e validação do frontend também usam índices de membros e posições,
 em lugar de buscas lineares repetidas. O contrato dos intervalos THRU é preservado.
 UPPER-CASE, LOWER-CASE e TRIM usam expressões tipadas do frontend.
 
-Compartilhar resumos elimina a repetição quando diferentes intervalos chegam ao
-mesmo trecho com o mesmo estado relevante e endpoint. Entradas, endpoints ou
-handlers diferentes podem exigir resumos diferentes: a solução geral não implica
+Compartilhar resumos elimina a repetição do fluxo entre diferentes entradas de
+dados. Predicados e valores que mudam em ciclos continuam especializados:
+os primeiros precisam determinar branches viáveis; os segundos precisam
+convergir pelo domínio de valores, sem produzir uma cadeia infinita de expressões.
+Essa necessidade é fechada sobre suas fontes, aliases, grupos e tabelas.
+Entradas de controle, endpoints ou handlers diferentes podem exigir resumos diferentes: a solução geral não implica
 um limite linear para todo programa COBOL. O orçamento explícito continua sendo
 aplicado sem descartar candidatos para obter sucesso. Combinações de entradas
-realmente observadas ainda podem criar exponencialmente muitos contextos. A
+de controle ou recorrência realmente observadas ainda podem criar exponencialmente muitos contextos. A
 relevância conserva aproximações seguras: não compõe kills de um callee com a
 continuação do chamador e não presume sobrescrita completa de grupos ou tabelas.
 
@@ -141,12 +160,19 @@ ponto fixo, podendo sobreaproximar alvos que dependem da contagem exata.
 Não há garantia de paridade universal de COBOL; a paridade medida refere-se
 aos insumos e oráculos documentados.
 
-`--max-work N` limita visitas, estados, resumos, trabalho de relevância e produtos de candidatos (padrão 1000000).
+`--max-work N` limita visitas, estados, resumos, trabalho de relevância e controle,
+expressões/resoluções paramétricas e produtos de candidatos (padrão 1000000).
 Ultrapassar o orçamento falha explicitamente; não corta candidatos para obter
 sucesso. `--metrics arquivo.jsonl` grava tempos e contadores fora do JSON de
 produto. `evaluations` conta transformações locais calculadas e `reusedEvaluations`
-conta visitas que reaproveitam esses resultados; `workItems` continua contando
-o trabalho do solver, inclusive essas visitas. Heap é configurado pelo Java, por exemplo `-Xmx768m`.
+conta visitas que reaproveitam esses resultados; `workItems` conta visitas ao
+fluxo de valores e entregas de resultados. `instantiationEvaluations` conta
+aplicações concretas das expressões; `resolutionWorkItems`, a resolução das
+consultas paramétricas; `controlWorkItems` e `controlSummaries`, o índice de
+controle compartilhado. `parametricCalculations`, `specializedDeclarations`
+e `resultDeliveries` tornam visíveis as expressões, entradas especializadas e
+entregas a chamadores. `dataflowNanos` inclui esses custos internos; reduzir
+`workItems` sozinho não mede o ganho total. Heap é configurado pelo Java.
 
 Para programas grandes, os testes de escala usaram heap de 4 GiB e orçamento
 de 100 milhões de visitas:
@@ -201,10 +227,18 @@ transformações por instrução e seus operandos, aplicando somente as mudança
 ao estado específico de cada chamador. Na comparação com a etapa 1, calculou
 120 transformações para 15.282 visitas, reduziu o tempo do solver em 32,8%
 e os bytes alocados em 17,2%; a memória viva aumentou 5,7% pelos caches.
-O experimento usa heap de 512 MiB e parada em 2.048 contextos. A multiplicação
-de resumos por estados distintos permanece; a execução completa da FIXTURE02
-ainda não está qualificada. Os 40 fixtures do discovery e os 73 programas
-CardDemo preservaram JSONs e diagnósticos byte a byte nesta etapa.
+Esse experimento histórico usa heap de 512 MiB e parada em 2.048 contextos.
+Os 40 fixtures do discovery e os 73 programas CardDemo preservaram JSONs e
+diagnósticos byte a byte nessa etapa.
+
+O [compartilhamento de fluxo entre entradas](benchmark/shared-flow-20261009.md)
+passa a usar resumos paramétricos de dados e controle balanceado compartilhado.
+Com 400 entradas diferentes, os contextos caíram de 401 para 2, preservando as
+400 dependências; o tempo interno da análise caiu 46,3%. A FIXTURE02 original
+agora termina com 25 contextos e 200 visitas, em cerca de 1,86 s, usando o mesmo
+heap de 512 MiB. Nela, os CALLs são inalcançáveis porque os PERFORMs anteriores
+entram em ciclos sem retorno; a saída vazia foi conferida. Esse resultado não
+garante custo linear para combinações diferentes de controle ou recorrência.
 
 ```sh
 python3 -B scripts/harness/lean.py fast

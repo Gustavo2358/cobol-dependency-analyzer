@@ -1,5 +1,13 @@
 # Medições locais
 
+[Compartilhamento do fluxo entre entradas](shared-flow-20261009.md):
+resumos paramétricos de dados e controle balanceado compartilhado. Com 400
+entradas, 401 → 2 contextos, 28.002 → 1.668 visitas, tempo interno −46,3% e
+400 dependências preservadas. A FIXTURE02 original termina com 25 contextos
+e 200 visitas, heap 512 MiB; seus CALLs são inalcançáveis após PERFORMs sem retorno.
+FAST 1.055, discovery 40/40 e CardDemo 73/73, com 815 relações e os mesmos
+47 PARTIAL. Assinaturas distintas de controle/recorrência ainda podem crescer.
+
 As evidências históricas abaixo são [cópias anonimizadas](../docs/identity-redaction.md).
 Contagens e resultados foram preservados; caminhos e identificadores são
 substituições documentais. Consulte o manifest para os hashes das cópias.

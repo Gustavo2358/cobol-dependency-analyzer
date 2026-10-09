@@ -10,6 +10,64 @@ import static org.junit.jupiter.api.Assertions.*;
 class DependencySummaryTest {
     @TempDir Path temp;
 
+    @Test void recursiveObservationRelationsConvergeWithoutChangingCallerBindings()throws Exception {
+        var result=check("01 TARGET PIC X(8).\n01 FLAG PIC X.",
+            "MAIN.\nMOVE 'FIRST' TO TARGET.\nPERFORM BODY.\nCALL TARGET.\n"
+            +"MOVE 'SECOND' TO TARGET.\nPERFORM BODY.\nCALL TARGET.\nGOBACK.\n"
+            +"BODY.\nCALL TARGET.\nIF FLAG = 'Y'\nPERFORM BODY\nEND-IF.\nEXIT.","FIRST","SECOND");
+        assertEquals(2,result.metrics().contexts());
+        assertTrue(result.metrics().resolutionWorkItems()<30,result.metrics().toString());
+    }
+
+    @Test void longParametricChainsUseAnExplicitEvaluationStack()throws Exception {
+        var body=new StringBuilder("MAIN.\nMOVE 'ONLY' TO A.\nPERFORM BODY.\nCALL B.\nGOBACK.\nBODY.\n");
+        for(int i=0;i<600;i++)body.append("MOVE A TO B.\nMOVE B TO A.\n");
+        body.append("EXIT.");
+        var result=check("01 A PIC X(8).\n01 B PIC X(8).",body.toString(),"ONLY");
+        assertEquals(2,result.metrics().contexts());
+    }
+
+    @Test void oneFlowPerControlInputServesOneHundredDifferentDataInputs()throws Exception {
+        var procedure=new StringBuilder("MAIN.\n");var names=new TreeSet<String>();
+        for(int i=0;i<100;i++) {
+            String name=String.format("P%06d",i);if(i%2==0)names.add(name);
+            procedure.append("MOVE '").append(name).append("' TO ORIGIN.\nMOVE '").append(i%2==0?"N":"S")
+                .append("' TO FLAG.\nPERFORM BODY.\nCALL TARGET.\n");
+        }
+        procedure.append("GOBACK.\nBODY.\nMOVE ORIGIN TO TARGET.\nIF FLAG = 'S'\nMOVE 'SPECIAL' TO TARGET\nEND-IF.\nCALL TARGET.\nEXIT.");
+        names.add("SPECIAL");
+        var result=check("01 ORIGIN PIC X(8).\n01 TARGET PIC X(8).\n01 FLAG PIC X.",procedure.toString(),names.toArray(String[]::new));
+        assertEquals(3,result.metrics().contexts(),"Root and two control inputs; data inputs are parameters");
+        assertTrue(result.metrics().workItems()<600,result.metrics().toString());
+        assertTrue(result.metrics().resultDeliveries()<110,"New subscribers must not replay results to old subscribers: "+result.metrics());
+    }
+    @Test void parametricPartialWritesBindCorrelatedOperandsTogether()throws Exception {
+        var result=check("01 TARGET PIC X(8).\n01 PATCH-VALUE PIC X(4).",
+            "MAIN.\nMOVE 'AAAA0000' TO TARGET.\nMOVE '1111' TO PATCH-VALUE.\nPERFORM BODY.\nCALL TARGET.\n"
+            +"MOVE 'BBBB0000' TO TARGET.\nMOVE '2222' TO PATCH-VALUE.\nPERFORM BODY.\nCALL TARGET.\nGOBACK.\n"
+            +"BODY.\nMOVE PATCH-VALUE TO TARGET(5:4).\nCALL TARGET.\nEXIT.","AAAA1111","BBBB2222");
+        assertEquals(2,result.metrics().contexts());
+    }
+    @Test void nestedParametricResultsPreserveObservationBindings()throws Exception {
+        var result=check("01 TARGET PIC X(8).\n01 ORIGIN PIC X(8).",
+            "MAIN.\nMOVE 'FIRST' TO ORIGIN.\nPERFORM OUTER.\nCALL TARGET.\n"
+            +"MOVE 'SECOND' TO ORIGIN.\nPERFORM OUTER.\nCALL TARGET.\nGOBACK.\n"
+            +"OUTER.\nPERFORM INNER.\nEXIT.\nINNER.\nMOVE ORIGIN TO TARGET.\nCALL TARGET.\nEXIT.","FIRST","SECOND");
+        assertEquals(3,result.metrics().contexts());
+    }
+
+    @Test void nonReturningBodiesDoNotEnumerateDeadValueCombinations()throws Exception {
+        var data=new StringBuilder();var body=new StringBuilder("BODY.\n");
+        for(int i=0;i<16;i++) {
+            data.append("01 V-").append(i).append(" PIC X.\n");
+            body.append("IF V-").append(i).append(" = 'X'\nMOVE 'X' TO V-").append((i+1)%16).append("\nEND-IF.\n");
+        }
+        body.append("PERFORM BODY.\nCALL 'DEAD-BODY'.\nEXIT.");
+        var result=check(data.toString(),"MAIN.\nCALL 'LIVE'.\nPERFORM BODY.\nCALL 'DEAD-CALLER'.\nGOBACK.\n"+body,"LIVE");
+        assertTrue(result.metrics().contexts()<=3,result.metrics().toString());
+        assertTrue(result.metrics().workItems()<200,result.metrics().toString());
+    }
+
     @Test void localTransformationsShareWorkWithoutMergingCallerInputs() throws Exception {
         var procedure=new StringBuilder("MAIN.\n");var names=new ArrayList<String>();
         for(int i=0;i<40;i++) {
@@ -188,7 +246,7 @@ class DependencySummaryTest {
         assertTrue(result.metrics().workItems()<40,result.metrics().toString());
     }
 
-    @Test void overwrittenInputsShareSummariesButReadsAndPartialWritesDoNot()throws Exception {
+    @Test void parametricReadsAndPartialWritesShareFlowAndKeepEveryCallerValue()throws Exception {
         for(String body:List.of("MOVE 'PROGA' TO TARGET.","MOVE 'A' TO TARGET(8:1).",
                 "CALL TARGET.\nMOVE 'PROGA' TO TARGET.")) {
             var procedure=new StringBuilder("MAIN.\n");var expected=new TreeSet<String>();
@@ -200,7 +258,7 @@ class DependencySummaryTest {
             }
             procedure.append("GOBACK.\nBODY.\n").append(body).append("\nEXIT.");
             var result=check("01 TARGET PIC X(8).",procedure.toString(),expected.toArray(String[]::new));
-            assertEquals(body.equals("MOVE 'PROGA' TO TARGET.")?2:13,result.metrics().contexts());
+            assertEquals(2,result.metrics().contexts(),"The body is parameterized, including observations and partial writes");
         }
     }
     @Test void predicateReadAfterAFullWriteDoesNotDistinguishInputs()throws Exception {
