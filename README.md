@@ -85,6 +85,12 @@ chamadores registrados. Chamadores novos também recebem as saídas já conhecid
 Resultados e marcas de entrega usam bitsets e são descartados após construir o
 grafo de controle. Há um único caminho de produção para essa análise.
 
+Os pontos distintos por endpoint ainda podem crescer e exigir muita memória.
+A [ampliação da família de caixinhas](benchmark/shared-continuation-scale-20261009.md)
+registra OOM em N=128 com heap de 1 GiB e em N=192 com 1,5 GiB, na construção
+e cópia do grafo de controle. A redução das continuações não é uma garantia
+de convergência para qualquer escala de programa.
+
 Consultar uma dependência continua usando o estado anterior à instrução. Grupos
 conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam
 declarações e textos logicamente. O analisador não simula memória física.

@@ -1,5 +1,10 @@
 # Medições locais
 
+[Escala ampliada das continuações](shared-continuation-scale-20261009.md): a
+mesma implementação tem OOM em N=128 com 1 GiB e em N=192/254 com 1,5 GiB.
+Pilhas localizam falhas no pico de cópia do grafo e no índice de predecessores.
+N=128 conclui com 1,5 GiB, mas leva 97 s; profiling registra também custo da fila.
+
 [Continuações compartilhadas](shared-continuation-fix-20261009.md): checkpoints
 com bitsets, propagação por deltas e escopo canônico de escape. A família N=32
 passa de OOM a mediana de 3,13 s, preservando saídas e dependências, com heap
