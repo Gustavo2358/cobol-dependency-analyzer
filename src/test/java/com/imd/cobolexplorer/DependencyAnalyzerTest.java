@@ -202,4 +202,51 @@ class DependencyAnalyzerTest {
         targets("01 ROWS-VIEW VALUE 'PROGA001PROGB001'.\n05 ROW-PROGRAM PIC X(8) OCCURS 2 TIMES.",
             "CALL ROW-PROGRAM(2).\nGOBACK.", "PROGB001");
     }
+    @Test void sparseOccursAdversariesPreserveCandidatesAndRemaindersWithinBudget()throws Exception {
+        Path fixtures=Path.of("src/test/resources/dependency-regression/sparse-occurs");
+        var mapper=new com.fasterxml.jackson.databind.ObjectMapper();
+        var defaults=DependencyAnalyzer.Options.defaults();
+        var options=new DependencyAnalyzer.Options(defaults.copyDirectories(),defaults.format(),defaults.charset(),null,defaults.parser(),10000);
+        for(var fixture:mapper.readTree(fixtures.resolve("expected.json").toFile())) {
+            var result=new DependencyAnalyzer().analyze(fixtures.resolve(fixture.get("source").asText()),options);
+            var expected=new TreeSet<String>();fixture.get("expected").forEach(v->expected.add(v.asText()));
+            var actual=new TreeSet<String>();result.programs().forEach(p->p.dependencies().stream().filter(d->d.type().equals("program")).forEach(d->actual.add(d.name())));
+            String name=fixture.get("id").asText();assertEquals(expected,actual,name+result.diagnostics());
+            assertEquals(fixture.get("unknown").asBoolean(),result.diagnostics().stream().anyMatch(d->d.contains("DYNAMIC_REMAINDER")),name+result.diagnostics());
+            assertTrue(result.metrics().materializedTableElements()<=4,name+result.metrics());
+            assertTrue(result.metrics().trackedDeclarations()<12,name+result.metrics());
+        }
+    }
+    @Test void anInvalidKnownIndexDoesNotReadTheTableSummary()throws Exception {
+        targets("01 AREA-X.\n05 DEST PIC X(8) OCCURS 2 TIMES.",
+            "MOVE 'BAD' TO DEST(1).\nCALL DEST(3).\nGOBACK.");
+    }
+    @Test void newlyDiscoveredCellsCanProvideTheNextIndex()throws Exception {
+        targets("01 AREA-X.\n05 CELL OCCURS 1000 TIMES.\n10 INDEX-X PIC 9(4).\n10 DEST PIC X(8).\n01 IDX PIC 9(4).",
+            "MAIN.\nMOVE 1 TO IDX.\nPERFORM SET-NEXT.\nPERFORM NEXT-X.\nMOVE 'GOOD' TO DEST(IDX).\nCALL DEST(IDX).\nGOBACK.\nSET-NEXT.\nMOVE 999 TO INDEX-X(IDX).\nNEXT-X.\nMOVE INDEX-X(IDX) TO IDX.","GOOD");
+    }
+    @Test void tableDemandFailurePreservesThePreviousOutput()throws Exception {
+        analyze("01 AREA-X.\n05 DEST PIC X(8) OCCURS 1000 TIMES.","MOVE 'GOOD' TO DEST(1).\nCALL DEST(1).\nGOBACK.");
+        var output=temp.resolve("previous.json");Files.writeString(output,"previous output");
+        assertEquals(2,DependencyMain.run(new String[]{"--source",temp.resolve("test.cbl").toString(),"--output",output.toString(),"--max-work","1"}));
+        assertEquals("previous output",Files.readString(output));
+    }
+
+    @Test void correlatedIndexesKeepTheirOwnRowThroughASharedParagraph()throws Exception {
+        targets("01 AREA-X.\n05 DEST PIC X(8) OCCURS 1000 TIMES.\n01 IDX PIC 9(4).\n01 FLAG PIC X.",
+            "MAIN.\nMOVE 'FIRST' TO DEST(1).\nMOVE 'SECOND' TO DEST(1000).\nIF FLAG = 'Y'\nMOVE 1 TO IDX\nELSE\nMOVE 1000 TO IDX\nEND-IF.\nPERFORM READ-X.\nGOBACK.\nREAD-X.\nIF IDX = 1\nCALL DEST(IDX)\nEND-IF.","FIRST");
+    }
+    @Test void untouchedRowsKeepTheirOwnDefaultAfterAnUnknownIndexedWrite()throws Exception {
+        targets("01 AREA-X.\n05 DEST PIC X(8) OCCURS 1000 TIMES VALUE 'BASE'.\n01 IDX PIC 9(4).\n01 OTHER-IDX PIC 9(4).",
+            "MAIN.\nMOVE 'OTHER' TO DEST(1).\nMOVE 'NEW' TO DEST(OTHER-IDX).\nMOVE 2 TO IDX.\nPERFORM READ-X.\nGOBACK.\nREAD-X.\nCALL DEST(IDX).","BASE","NEW");
+    }
+
+    @Test void aSharedDefaultCanCompleteAWholeGroupAfterOneIndexedWrite()throws Exception {
+        var result=analyze("01 AREA-X.\n05 PART-X PIC X(4) OCCURS 2 TIMES.",
+            "INITIALIZE AREA-X.\nMOVE 'PROG' TO PART-X(1).\nCALL AREA-X.\nGOBACK.");
+        assertEquals(List.of("PROG"),result.programs().get(0).dependencies().stream().map(DependencyAnalyzer.Dependency::name).toList());
+        assertFalse(result.diagnostics().stream().anyMatch(d->d.contains("DYNAMIC_REMAINDER")));
+        assertEquals(1,result.metrics().materializedTableElements());
+    }
+
 }

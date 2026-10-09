@@ -170,9 +170,16 @@ Saídas: **0** sem diagnóstico de incompletude; **1** candidatos publicados com
 limitações locais explicitadas em stderr; **2** falha global, preservando o JSON
 anterior. VALUE persistente, input externo, missing COPY/INCLUDE, SQL dinâmico e
 operações sem transformação lógica suportada mantêm incerteza explícita.
-Tabelas de extensão estática conservam os elementos lógicos para consultas com
-índice conhecido; subscrito desconhecido usa resumo dos elementos. Tabelas de
-extensão não estabelecida permanecem abertas. Representações binárias/edições numéricas complexas
+Tabelas usam posições lógicas sob demanda e um valor compartilhado para as
+posições restantes. A extensão declarada não cria antecipadamente seus elementos
+nem o produto das dimensões. Índices conhecidos distinguem as posições consultadas;
+subscritos desconhecidos usam o resumo e escritas incertas conservam valores anteriores.
+Quando um índice calculado revela uma posição nova, o mesmo solver fecha a demanda
+antes de publicar respostas; projeções e caches são reconstruídos com a demanda
+ampliada. `--metrics` informa `materializedTableElements` e `tableDemandPasses`.
+Tabelas de extensão não estabelecida permanecem abertas. Leituras de grupos como
+texto ainda podem exigir trabalho proporcional ao texto efetivamente reconstruído.
+Veja a [medição de OCCURS esparso](benchmark/sparse-occurs-20261009.md). Representações binárias/edições numéricas complexas
 não são interpretadas como textos. PERFORM TIMES acima de uma iteração usa
 ponto fixo, podendo sobreaproximar alvos que dependem da contagem exata.
 Não há garantia de paridade universal de COBOL; a paridade medida refere-se
