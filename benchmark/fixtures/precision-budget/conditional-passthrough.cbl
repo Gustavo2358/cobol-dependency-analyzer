@@ -1,0 +1,22 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CONDITIONALPASS.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 FLAG PIC X.
+       01 TARGET PIC X(8).
+       PROCEDURE DIVISION.
+       MAIN.
+       MOVE 'KEEP' TO TARGET.
+       PERFORM BODY.
+       CALL TARGET.
+       GOBACK.
+       BODY.
+       IF FLAG = 'Y'
+       MOVE 'NEW' TO TARGET
+       ELSE
+       CONTINUE
+       END-IF.
+       EXIT.
+       TAIL.
+       MOVE 'POISON' TO TARGET.
+       GOBACK.

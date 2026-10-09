@@ -43,7 +43,7 @@ leituras anteriores e aliases que conservam texto continuam exigindo a entrada.
 Handlers omitidos da chave são restaurados a partir do estado de cada chamador.
 
 Antes de propagar valores, um índice de controle calcula as saídas possíveis
-de cada `(posição, endpoint)`. A continuação de um PERFORM só fica alcançável
+de cada `(posição, endpoint, escopo de escape)`. A continuação de um PERFORM só fica alcançável
 quando seu corpo produz uma saída compatível. Um ciclo sem saída não inventa
 um retorno. Esse ponto fixo independe dos valores dos chamadores e permite
 descartar leituras que só alimentariam consultas inalcançáveis.
@@ -56,7 +56,7 @@ paramétricas sobre o estado BEFORE. Árvores persistentes armazenam tanto
 valores quanto expressões, e um grafo compartilhado evita copiar as operações.
 Substituir a entrada inteira conserva as correlações nas escritas parciais.
 
-A relevância usa um índice compartilhado de pontos `(posição, endpoint)`, ampliado
+A relevância usa um índice compartilhado de pontos `(posição, endpoint, escopo de escape)`, ampliado
 sob demanda. Uma chamada entra no endpoint próprio do callee; seu retorno é
 analisado no escopo do chamador. Para cada ponto, a necessidade é a união das
 leituras locais com a necessidade dos sucessores, retirando as entradas que a
@@ -66,7 +66,9 @@ caminho intacto. Escritas de UNKNOWN ficam explícitas no resultado para substit
 o valor anterior do chamador. Conjuntos são bitsets com índices densos.
 Sucessores são processados antes dos predecessores; ciclos usam worklist até o
 ponto fixo. Efeitos locais e componentes já fechados são reutilizados. O endpoint
-continua presente porque altera a regra de retorno.
+continua presente porque altera a regra de retorno. O escopo de escape identifica
+a cadeia de ancestrais que pode encerrar uma invocação; corpos com a mesma política
+compartilham esse escopo, sem incluir a identidade do chamador.
 
 O resultado de um resumo conserva o tipo de saída: conclusão, escape ou término
 do programa. A continuação aplica a regra correspondente: seguir o trecho,
@@ -74,6 +76,44 @@ retornar/repetir uma invocação ou encerrar uma entrada independente. Essas reg
 representam diferenças da linguagem no mesmo solver. Não há seletor de estratégia,
 modo antigo ou restrição global a programas estruturados. As conclusões também
 passam pela worklist, evitando desempilhar recursivamente caudas longas.
+
+Cruzar uma fronteira alheia ao endpoint e aos ancestrais continua no mesmo
+resumo, sem inventar outra chamada de continuação. Um escape real desenrola uma
+invocação por vez e é interpretado no escopo do pai; sua saída não é descartada.
+O solver de controle propaga apenas saídas novas aos predecessores e aos
+chamadores registrados. Chamadores novos também recebem as saídas já conhecidas.
+O grafo canônico guarda posições físicas e arestas tipadas em arrays de IDs,
+com índices nas duas direções. Uma aresta comum conserva a obrigação de retorno;
+uma chamada instala a obrigação do callee. Cada obrigação guarda endpoint e
+política de escape juntos. Nas fronteiras, as obrigações que retornam param,
+enquanto as demais continuam pela mesma topologia. Somente as combinações
+alcançadas recebem IDs lógicos; não há matriz antecipada de todas as posições
+por todas as obrigações, nem uma cópia das arestas por combinação.
+
+As saídas são propagadas em colunas: uma saída e uma obrigação identificam um
+bitset das posições que já produzem esse resultado. Cada ligação física de
+chamada aplica a continuação uma vez por saída, conservando as obrigações dos
+chamadores. Chamadores e arestas descobertos depois recebem os resultados antigos.
+Resultados temporários são descartados antes das fases seguintes. Observação,
+ciclos, ordenação e relevância consomem o mesmo grafo; não há cópia final dos
+planos nem reconstrução de adjacência por fase. Fatos iguais de relevância usam
+compartilhamento imutável com referências fracas, e a fila calcula a prioridade
+uma vez por item. Estados inteiramente iguais também compartilham o mesmo
+payload imutável em um pool local à análise, com chave e valor fracos. A igualdade
+inclui valores conhecidos/desconhecidos, parâmetros, handlers, fatos e guardas;
+posições e continuadores de cada chamador permanecem separados. O mesmo pool
+serve aos fatos de relevância. Há um único caminho de produção, sem seletor especial para hubs.
+
+A [medição das duas etapas](benchmark/compact-factor-control-20261009.md) compara
+essa representação com a versão que armazenava pontos e adjacências por endpoint.
+As combinações lógicas, relações de saída e trabalho de valores ainda podem
+crescer quadraticamente. Compartilhar a topologia reduz memória e trabalho
+repetido, mas não estabelece convergência para qualquer programa ou escala. A
+[ampliação com heap de 4 GiB](benchmark/factored-large-heap-scale-20261009.md)
+confirma N=384 e registra N=512 como inconclusivo por proteção do host. A
+[avaliação de flyweight](benchmark/state-flyweight-20261009.md) elimina payloads
+de estado repetidos, com economia pequena de memória retida nesta família;
+as obrigações distintas continuam crescendo.
 
 Consultar uma dependência continua usando o estado anterior à instrução. Grupos
 conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam
@@ -193,8 +233,21 @@ produto. `evaluations` conta transformações locais calculadas e `reusedEvaluat
 conta visitas que reaproveitam esses resultados; `workItems` conta visitas ao
 fluxo de valores e entregas de resultados. `instantiationEvaluations` conta
 aplicações concretas das expressões; `resolutionWorkItems`, a resolução das
-consultas paramétricas; `controlWorkItems` e `controlSummaries`, o índice de
-controle compartilhado. `parametricCalculations`, `specializedDeclarations`
+consultas paramétricas; `controlWorkItems` conta lotes de propagação de saídas
+novas, descobertas por posição física e entregas do solver de controle;
+`controlSummaries` conta combinações lógicas de posição e obrigação de retorno.
+`controlResultPairs` conta pares distintos de chamada/saída entregues;
+`controlResultFacts`, inserções distintas de ponto/saída. Os três contadores de
+trabalho e resultados de controle somam todas as passagens de demanda. A unidade
+de `controlWorkItems` mudou com a propagação por colunas e descobertas agrupadas;
+não equivale às visitas das versões anteriores. `physicalControlNodes` e
+`physicalControlEdges` contam a topologia compartilhada; `controlObligations`
+conta descritores correlacionados de retorno; `controlResultColumns` conta as
+colunas distintas de saída/obrigação, antes de liberar os temporários. Esses
+quatro contadores e `controlSummaries` representam a última passagem de demanda
+por unidade, somados entre unidades. O limite de controle em
+`--max-work` se aplica a esses lotes e à quantidade de pontos, e não é um limite
+de bytes, segundos ou número de dependências. `parametricCalculations`, `specializedDeclarations`
 e `resultDeliveries` tornam visíveis as expressões, entradas especializadas e
 entregas a chamadores. `predicateInputs` conta os predicados internados;
 `decisionNodes` conta cumulativamente os nós criados, inclusive os já coletados.

@@ -1,5 +1,36 @@
 # Medições locais
 
+[Armazenamento do controle](control-layout-discovery-20261009.md): contadores e
+histogramas vivos em heap de 256 MiB localizam o peso das coleções por ponto e
+dos índices duplicados. Proposta de grafo compacto canônico por IDs, reutilizado
+pelas fases; distingue redução de bytes por relação de fatoração do produto.
+
+[Escala ampliada das continuações](shared-continuation-scale-20261009.md): a
+mesma implementação tem OOM em N=128 com 1 GiB e em N=192/254 com 1,5 GiB.
+Pilhas localizam falhas no pico de cópia do grafo e no índice de predecessores.
+N=128 conclui com 1,5 GiB, mas leva 97 s; profiling registra também custo da fila.
+
+[Continuações compartilhadas](shared-continuation-fix-20261009.md): checkpoints
+com bitsets, propagação por deltas e escopo canônico de escape. A família N=32
+passa de OOM a mediana de 3,13 s, preservando saídas e dependências, com heap
+256 MiB. N=36 também converge; FAST 1.084 e CardDemo 73/73, sem perdas.
+
+[Pares de chamada e saída](control-return-fanout-20261009.md): testemunho com
+mais de um milhão de Returned e apenas três contextos de valores; OOM no solver
+de controle confirmado por JFR no JAR original, em heap de 256 MiB.
+
+[Coleta de JVM em execução](running-jvm-diagnostics.md): pilhas, heap, GC e JFR
+para investigar o programa corporativo sem reiniciar sua análise.
+
+[Caixinhas com heap maior](hub-large-heap-20261009.md): sete execuções com heaps
+de 1 e 1,5 GiB e proteção do host. Separação entre GC sob RSS estável, propagação
+de valores e resolução das consultas; cinco conclusões exatas e dois OOMs.
+
+[Hubs externos e caixinhas](hub-dispatch-20261009.md): seletores renovados,
+GO TOs de 255 destinos e PERFORMs de outros hubs. O testemunho com flags
+acumuladas reproduz contextos exponenciais; profiling separa esse mecanismo
+do crescimento estrutural de fronteiras e do custo da fila de prioridade.
+
 [OCCURS sob demanda](sparse-occurs-20261009.md): posições esparsas e remainder
 compartilhado, com baseline anterior à implementação, oráculos adversariais e
 comparação de tempo, memória e candidatos em heap de 512 MiB.

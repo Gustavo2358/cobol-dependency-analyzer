@@ -10,6 +10,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class DependencySummaryTest {
     @TempDir Path temp;
 
+    @Test void hubReturnFanoutConvergesWithoutReinvokingEveryCrossedBoundary()throws Exception {
+        var source=Path.of("src/test/resources/dependency-regression/control-returns/external-8.cbl");
+        assertEquals("091187a46e50c9ffc66907b891aec95aca94f92a0bb10bd97e1cab9f87ef5dce",
+            HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(source))));
+        var defaults=DependencyAnalyzer.Options.defaults();
+        var options=new DependencyAnalyzer.Options(defaults.copyDirectories(),defaults.format(),defaults.charset(),
+            defaults.sourceInventory(),defaults.parser(),100_000);
+        var result=new DependencyAnalyzer().analyze(source,options);
+        var expected=new TreeSet<String>();for(int i=0;i<8;i++)expected.add("PGM%05d".formatted(i));
+        assertEquals(expected,result.programs().get(0).dependencies().stream().map(DependencyAnalyzer.Dependency::name)
+            .collect(Collectors.toCollection(TreeSet::new)));
+        assertEquals(List.of(),result.diagnostics());
+        assertTrue(result.metrics().controlResultPairs()<1000,"Only genuine call/exit pairs should be delivered");
+        assertTrue(result.metrics().resultDeliveries()<1000,"Crossed boundaries must share the current invocation");
+    }
+
     @Test void binaryControlSignatureFixturesKeepExactClosedDependencies()throws Exception {
         var directory=Path.of("src/test/resources/dependency-regression/control-signatures");
         var cases=new com.fasterxml.jackson.databind.ObjectMapper().readTree(directory.resolve("expected.json").toFile());
@@ -224,6 +240,27 @@ class DependencySummaryTest {
         Path path=temp.resolve("suffix.cbl");
         Files.writeString(path,text.lines().map(s->"       "+s).collect(Collectors.joining("\n","","\n")));
         return path;
+    }
+    @Test void unrelatedParagraphEscapeContinuesWithoutLosingItsDependency()throws Exception {
+        check("01 MODE-FLAG PIC 9.","MAIN.\nACCEPT MODE-FLAG.\nPERFORM A.\nCALL 'AFTER'.\nGOBACK.\n"
+            +"A.\nIF MODE-FLAG = 1 EXIT PARAGRAPH END-IF.\nGO TO B.\n"
+            +"B.\nEXIT PARAGRAPH.\nC.\nCALL 'ESCAPED'.\nGO TO A.","AFTER","ESCAPED");
+    }
+    @Test void sharedEscapeTraversalRestoresEachCallersValuesAndResume()throws Exception {
+        check("01 MODE-FLAG PIC 9.\n01 TARGET PIC X(8).", "MAIN.\nMOVE 0 TO MODE-FLAG.\n"
+            +"MOVE 'FIRST' TO TARGET.\nPERFORM A.\nCALL TARGET.\nMOVE 0 TO MODE-FLAG.\n"
+            +"MOVE 'SECOND' TO TARGET.\nPERFORM A.\nCALL TARGET.\nGOBACK.\n"
+            +"A.\nIF MODE-FLAG = 1 EXIT PARAGRAPH END-IF.\nGO TO B.\nB.\nEXIT PARAGRAPH.\n"
+            +"C.\nCALL TARGET.\nMOVE 1 TO MODE-FLAG.\nGO TO A.","FIRST","SECOND");
+    }
+    @Test void performRangesWithTheSameEndpointKeepTheirOwnEntryPolicies()throws Exception {
+        check("", "MAIN.\nPERFORM A THRU E.\nCALL 'AFTER1'.\nPERFORM B THRU E.\nCALL 'AFTER2'.\nGOBACK.\n"
+            +"A.\nGO TO D.\nB.\nCALL 'B'.\nC.\nCALL 'C'.\nD.\nEXIT PARAGRAPH.\nE.\nCALL 'E'.\nEXIT.",
+            "AFTER1","AFTER2","B","C","E");
+    }
+    @Test void anAncestorEscapeUnwindsWithoutExecutingTheInnerResume()throws Exception {
+        check("", "MAIN.\nPERFORM SEC-A.\nCALL 'AFTER'.\nGOBACK.\nSEC-A SECTION.\n"
+            +"A.\nPERFORM B.\nCALL 'BAD'.\nB.\nEXIT SECTION.\nSEC-B SECTION.\nC.\nCALL 'BAD2'.\nGOBACK.","AFTER");
     }
     private DependencyAnalyzer.Result check(String data,String procedure,String... names)throws Exception {
         Path path=source(data,procedure);

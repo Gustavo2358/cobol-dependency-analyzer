@@ -4,144 +4,158 @@ import java.util.*;
 import java.util.function.*;
 import static com.imd.cobolexplorer.DependencyRelevance.Point;
 import static com.imd.cobolexplorer.DependencyFlow.Exit;
+import static com.imd.cobolexplorer.DependencyGraph.*;
 
-/** Parametric control summaries. A call's continuation becomes reachable only
- * after its body produces a compatible exit. Recursive equations start empty;
- * a cycle cannot manufacture its own return. No value environment is a key. */
+/** Exact control closure over physical flow and return obligations. Flow is
+ * built once per position. Result columns carry one exit/obligation through sets
+ * of positions; calls deliver once to a shared continuation, retaining every
+ * caller obligation. Recursive equations start empty and cannot invent returns. */
 final class DependencyControl {
     record Call(Point entry,String binding) { }
-    record Effect(List<Point> next,List<Call> calls,List<Point> entries,Set<Exit> exits) {
+    record Effect(List<Exit> next,List<Call> calls,List<Point> entries,Set<Exit> exits) {
         Effect {next=List.copyOf(next);calls=List.copyOf(calls);entries=List.copyOf(entries);exits=Set.copyOf(exits);}
-        static Effect next(Point point){return new Effect(List.of(point),List.of(),List.of(),Set.of());}
+        static Effect next(Exit position){return new Effect(List.of(position),List.of(),List.of(),Set.of());}
         static Effect exit(Exit exit){return new Effect(List.of(),List.of(),List.of(),Set.of(exit));}
     }
-    interface Delivery { Effect apply(Point caller,Call call,Exit exit); }
-    private record Returned(Call call,Exit exit) { }
-    private static final class Plan {
-        final Set<Point> next=new HashSet<>(),entries=new HashSet<>();
-        final Set<Call> calls=new HashSet<>();
-        final Set<Exit> exits=new HashSet<>();
-        final Set<Returned> delivered=new HashSet<>();
+    /** A boundary partitions obligations: stopped ones return; the rest use
+     * the ordinary continuation. The predicate does not merge their policies. */
+    record Rule(Effect continuation,Function<Scope,Set<Exit>> returns) {
+        static Rule flow(Effect effect){return new Rule(effect,s->Set.of());}
+        static Rule boundary(Exit exit,Exit next,Predicate<Scope> stop){return new Rule(Effect.next(next),s->stop.test(s)?Set.of(exit):Set.of());}
     }
-    final Map<Point,Set<Exit>> results=new HashMap<>();
-    private final Map<Point,Plan> plans=new HashMap<>();
-    private final Map<Point,Set<Point>> parents=new HashMap<>();
-    private final Set<Point> queued=new HashSet<>(),reachable=new HashSet<>(),observed=new HashSet<>();
+    interface Delivery { Effect apply(Call call,Exit exit); }
+    final DependencyGraph graph=new DependencyGraph();
     private final Set<String> reachableNodes=new HashSet<>(),observedNodes=new HashSet<>();
-    private final ArrayDeque<Point> work=new ArrayDeque<>();
-    private final Function<Point,Effect> effects;
-    private final Delivery delivery;
-    private final long maxWork;
-    long visits;
+    final int summaryCount,physicalNodes,physicalEdges,obligations,resultColumns;long visits,resultPairs,resultFacts;
 
-    DependencyControl(List<Point> roots,Function<Point,Effect> effects,Delivery delivery,
-            Predicate<Point> observation,long maxWork) {
-        this.effects=effects;this.delivery=delivery;this.maxWork=maxWork;
-        roots.forEach(this::discover);
-        while(!work.isEmpty()) {
-            if(++visits>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: control summaries exceeded --max-work="+maxWork);
-            var point=work.removeFirst();queued.remove(point);var plan=plans.get(point);
-            for(var call:List.copyOf(plan.calls))for(var exit:List.copyOf(results.get(call.entry())))
-                if(plan.delivered.add(new Returned(call,exit)))add(point,delivery.apply(point,call,exit));
-            var exits=new HashSet<>(plan.exits);
-            for(var next:plan.next)exits.addAll(results.get(next));
-            if(results.get(point).addAll(exits))parents.getOrDefault(point,Set.of()).forEach(this::schedule);
-        }
-        var pending=new ArrayDeque<>(roots);
+    DependencyControl(List<Point> roots,Function<Exit,Rule> effects,Delivery delivery,
+            Predicate<Exit> observation,long maxWork) {
+        var construction=new Construction(effects,delivery,maxWork);construction.solve(roots);
+        summaryCount=graph.size();physicalNodes=graph.physicalSize();physicalEdges=graph.edgeCount();obligations=graph.scopeCount();resultColumns=construction.columns.size();
+        visits=construction.visits;resultPairs=construction.resultPairs;resultFacts=construction.resultFacts;construction.release();
+        var observed=new BitSet();var retained=new BitSet();var pending=new Ints();var body=new Ints();
+        for(int id=0;id<graph.size();id++){var exit=graph.positionExit(graph.position(id));reachableNodes.add(exit.reference());if(observation.test(exit)){observed.set(id);pending.add(id);}}
         while(!pending.isEmpty()) {
-            var point=pending.removeFirst();if(!reachable.add(point))continue;
-            var plan=plans.get(point);pending.addAll(plan.next);pending.addAll(plan.entries);
-            for(var call:plan.calls)pending.add(call.entry());
+            int point=pending.remove();
+            for(long e=graph.incoming(point);e>=0;e=graph.inNext(e)){int parent=graph.source(e);if(!observed.get(parent)){observed.set(parent);pending.add(parent);}}
+            for(long e=graph.outgoing(point);e>=0;e=graph.outNext(e))if(graph.kind(e)==CALL&&!graph.binding(e).isEmpty())body.add(graph.target(e));
+            while(!body.isEmpty()){int child=body.remove();if(retained.get(child))continue;retained.set(child);if(!observed.get(child)){observed.set(child);pending.add(child);}for(long e=graph.outgoing(child);e>=0;e=graph.outNext(e))body.add(graph.target(e));}
         }
-        // Returned values can affect an observation in the caller. Conservatively
-        // retain the reachable body of every such call, without combining values.
-        var retained=new HashSet<Point>();
-        for(var point:reachable)if(observation.test(point)){observed.add(point);pending.add(point);}
-        while(!pending.isEmpty()) {
-            var point=pending.removeFirst();
-            for(var parent:parents.getOrDefault(point,Set.of()))if(reachable.contains(parent)&&observed.add(parent))pending.add(parent);
-            for(var call:plans.get(point).calls) {
-                if(call.binding().isEmpty())continue; // Independent entry has no observed caller return.
-                var body=new ArrayDeque<Point>();body.add(call.entry());var seen=new HashSet<Point>();
-                while(!body.isEmpty()) {
-                    var child=body.removeFirst();if(!seen.add(child)||!retained.add(child))continue;
-                    if(observed.add(child))pending.add(child);
-                    var plan=plans.get(child);body.addAll(plan.next);body.addAll(plan.entries);
-                    for(var nested:plan.calls)body.add(nested.entry());
-                }
-            }
-        }
-        reachable.forEach(p->reachableNodes.add(p.exit().reference()));observed.forEach(p->observedNodes.add(p.exit().reference()));
+        for(int id=observed.nextSetBit(0);id>=0;id=observed.nextSetBit(id+1))observedNodes.add(graph.positionExit(graph.position(id)).reference());graph.close();
     }
-    boolean reachable(String node){return reachableNodes.contains(node);}
-    boolean observed(String node){return observedNodes.contains(node);}
-    List<Point> successors(Point point) {
-        var plan=plans.get(point);if(plan==null)return List.of();
-        var next=new HashSet<>(plan.next);next.addAll(plan.entries);for(var call:plan.calls)next.add(call.entry());
-        return List.copyOf(next);
-    }
+    boolean reachable(String node){return reachableNodes.contains(node);}boolean observed(String node){return observedNodes.contains(node);}
+    int forwardRank(Point point){return graph.rank(point);}
     Set<String> cyclicNodes() {
-        var order=postorder();var seen=new HashSet<Point>();
-        var reverse=new HashMap<Point,Set<Point>>();
-        for(var point:reachable)for(var child:successors(point))reverse.computeIfAbsent(child,k->new HashSet<>()).add(point);
-        seen.clear();var cyclic=new HashSet<Point>();var pending=new ArrayDeque<Point>();
-        for(int i=order.size()-1;i>=0;i--) {
-            var root=order.get(i);if(!seen.add(root))continue;
-            var component=new HashSet<Point>();pending.add(root);
-            while(!pending.isEmpty()) {
-                var point=pending.removeFirst();component.add(point);
-                for(var parent:reverse.getOrDefault(point,Set.of()))if(seen.add(parent))pending.add(parent);
-            }
-            if(component.size()>1||successors(root).contains(root))cyclic.addAll(component);
+        var cyclic=graph.cycles();var pending=new Ints();
+        for(int point=cyclic.nextSetBit(0);point>=0;point=cyclic.nextSetBit(point+1))for(long e=graph.outgoing(point);e>=0;e=graph.outNext(e))if(graph.kind(e)==CALL)pending.add(graph.target(e));
+        while(!pending.isEmpty()){int point=pending.remove();if(cyclic.get(point))continue;cyclic.set(point);for(long e=graph.outgoing(point);e>=0;e=graph.outNext(e))pending.add(graph.target(e));}
+        var names=new HashSet<String>();for(int id=cyclic.nextSetBit(0);id>=0;id=cyclic.nextSetBit(id+1))names.add(graph.positionExit(graph.position(id)).reference());return Set.copyOf(names);
+    }
+    private static final class Column {
+        final int scope,exit;final BitSet positions=new BitSet(),pending=new BitSet();boolean queued;
+        Column(int scope,int exit){this.scope=scope;this.exit=exit;}
+    }
+    private final class Construction {
+        private final Function<Exit,Rule> effects;private final Delivery delivery;private final long maxWork;
+        private Rule[] rules=new Rule[16];private Ints[] discoveries=new Ints[16];private BitSet[] direct=new BitSet[16],delivered=new BitSet[16],pendingDeliveries=new BitSet[16];
+        private final BitSet initialized=new BitSet(),discovered=new BitSet(),queuedPhysical=new BitSet(),queuedDeliveries=new BitSet();
+        private final Ints discovery=new Ints(),work=new Ints();
+        private final List<Exit> exits=new ArrayList<>();private final Map<Exit,Integer> exitIds=new HashMap<>();
+        private final List<Column> columns=new ArrayList<>();private final List<Map<Integer,Integer>> byScope=new ArrayList<>();
+        long visits,resultPairs,resultFacts;
+        Construction(Function<Exit,Rule> effects,Delivery delivery,long maxWork){this.effects=effects;this.delivery=delivery;this.maxWork=maxWork;}
+        void release(){rules=null;discoveries=null;direct=null;delivered=null;pendingDeliveries=null;columns.clear();byScope.clear();exits.clear();exitIds.clear();}
+        private void tick(){if(++visits>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: control summaries exceeded --max-work="+maxWork);}
+        private void capacity(int physical) {
+            if(physical<rules.length)return;int n=Math.max(physical+1,rules.length*2);rules=Arrays.copyOf(rules,n);discoveries=Arrays.copyOf(discoveries,n);direct=Arrays.copyOf(direct,n);
         }
-        // A repeated call can mutate its arguments on each iteration even when
-        // the body itself is acyclic. Include its effects in the recurrence.
-        for(var point:List.copyOf(cyclic))for(var call:plans.get(point).calls)pending.add(call.entry());
-        while(!pending.isEmpty()) {var point=pending.removeFirst();if(cyclic.add(point))pending.addAll(successors(point));}
-        var names=new HashSet<String>();cyclic.forEach(p->names.add(p.exit().reference()));return Set.copyOf(names);
-    }
-    private List<Point> postorder() {
-        var order=new ArrayList<Point>();var seen=new HashSet<Point>();
-        record Visit(Point point,Iterator<Point> children) { }
-        var stack=new ArrayDeque<Visit>();
-        for(var root:reachable.stream().sorted(Comparator.comparing(Point::toString)).toList())if(seen.add(root)) {
-            stack.push(new Visit(root,successors(root).iterator()));
-            while(!stack.isEmpty()) {
-                var top=stack.peek();
-                if(top.children().hasNext()) {
-                    var child=top.children().next();if(seen.add(child))stack.push(new Visit(child,successors(child).iterator()));
-                }else {order.add(top.point());stack.pop();}
-            }
+        private Rule rule(int physical){capacity(physical);if(rules[physical]==null)rules[physical]=effects.apply(graph.positionExit(physical));return rules[physical];}
+        private int exitId(Exit exit){return exitIds.computeIfAbsent(exit,k->{int id=exits.size();exits.add(k);return id;});}
+        private int ensure(Point point) {
+            int old=graph.find(point);if(old>=0)return old;
+            if(graph.size()>=maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many control summaries");
+            int id=graph.id(point),physical=graph.position(id),scope=graph.obligation(id);var local=rule(physical);
+            while(byScope.size()<=scope)byScope.add(new HashMap<>());
+            var stops=local.returns().apply(graph.scope(scope));
+            if(!stops.isEmpty()){graph.stop(id);for(var exit:stops)publish(physical,scope,exitId(exit));}
+            else {
+                for(var exit:local.continuation().exits())publish(physical,scope,exitId(exit));
+                if(direct[physical]!=null)for(int exit=direct[physical].nextSetBit(0);exit>=0;exit=direct[physical].nextSetBit(exit+1))publish(physical,scope,exit);
+                if(discoveries[physical]==null)discoveries[physical]=new Ints();discoveries[physical].add(id);
+                if(!queuedPhysical.get(physical)){queuedPhysical.set(physical);discovery.add(physical);}
+            }return id;
         }
-        return order;
-    }
-    Map<Point,Integer> forwardOrder() {
-        var order=postorder();var ranks=new HashMap<Point,Integer>();
-        for(int i=order.size()-1;i>=0;i--)ranks.put(order.get(i),ranks.size());return Map.copyOf(ranks);
-    }
-    private void schedule(Point point){if(queued.add(point))work.addLast(point);}
-    private void discover(Point point) {
-        if(plans.containsKey(point))return;
-        plans.put(point,new Plan());results.put(point,new HashSet<>());schedule(point);
-        // Discovery itself is iterative: source size must not consume Java stack.
-        var pending=new ArrayDeque<Point>();pending.add(point);
-        while(!pending.isEmpty()) {
-            var current=pending.removeFirst();var effect=effects.apply(current);var plan=plans.get(current);
-            plan.next.addAll(effect.next());plan.calls.addAll(effect.calls());plan.entries.addAll(effect.entries());plan.exits.addAll(effect.exits());
-            var children=new HashSet<>(plan.next);for(var call:plan.calls)children.add(call.entry());children.addAll(plan.entries);
-            for(var child:children) {
-                parents.computeIfAbsent(child,k->new HashSet<>()).add(current);
-                if(!plans.containsKey(child)) {
-                    if(plans.size()>=maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many control summaries");
-                    plans.put(child,new Plan());results.put(child,new HashSet<>());schedule(child);pending.add(child);
+        private int ensure(int physical,int scope){int old=graph.find(physical,scope);if(old>=0)return old;var s=graph.scope(scope);return ensure(new Point(graph.positionExit(physical),s.endpoint(),s.escapeScope()));}
+        void solve(List<Point> roots) {
+            roots.forEach(this::ensure);
+            while(!discovery.isEmpty()||!work.isEmpty()) {
+                while(!discovery.isEmpty()) {
+                    tick();int physical=discovery.remove();queuedPhysical.clear(physical);var points=discoveries[physical];discoveries[physical]=null;
+                    if(!initialized.get(physical)){initialized.set(physical);add(physical,rule(physical).continuation());}
+                    while(!points.isEmpty()) {
+                        int point=points.remove();discovered.set(point);
+                        for(int e=graph.physicalOutgoing(physical);e>=0;e=graph.physicalOutNext(e))activate(point,e);
+                    }
+                }
+                if(work.isEmpty())continue;tick();int task=work.remove();
+                if(task<0) {
+                    int edge=~task;queuedDeliveries.clear(edge);var pending=pendingDeliveries[edge];pendingDeliveries[edge]=null;
+                    for(int exit=pending.nextSetBit(0);exit>=0;exit=pending.nextSetBit(exit+1))deliver(edge,exit);
+                    continue;
+                }
+                var column=columns.get(task);column.queued=false;
+                var delta=(BitSet)column.pending.clone();column.pending.clear();
+                for(int physical=delta.nextSetBit(0);physical>=0;physical=delta.nextSetBit(physical+1)) {
+                    int child=graph.find(physical,column.scope);
+                    for(int e=graph.physicalIncoming(physical);e>=0;e=graph.physicalInNext(e)) {
+                        if(graph.physicalKind(e)==NEXT) {
+                            int parent=graph.find(graph.physicalSource(e),column.scope);
+                            if(parent>=0&&discovered.get(parent)&&!graph.stopped(parent))publish(graph.physicalSource(e),column.scope,column.exit);
+                        }else if(graph.physicalKind(e)==CALL&&graph.fixedTarget(e)==child)offer(e,column.exit);
+                    }
                 }
             }
         }
-    }
-    private void add(Point point,Effect effect) {
-        var plan=plans.get(point);plan.exits.addAll(effect.exits());
-        for(var next:effect.next())if(plan.next.add(next)){parents.computeIfAbsent(next,k->new HashSet<>()).add(point);discover(next);}
-        for(var call:effect.calls())if(plan.calls.add(call)){parents.computeIfAbsent(call.entry(),k->new HashSet<>()).add(point);discover(call.entry());}
-        for(var entry:effect.entries())if(plan.entries.add(entry)){parents.computeIfAbsent(entry,k->new HashSet<>()).add(point);discover(entry);}
+        private void publish(int physical,int scope,int exit) {
+            int id=byScope.get(scope).computeIfAbsent(exit,k->{int index=columns.size();columns.add(new Column(scope,exit));return index;});var column=columns.get(id);
+            if(column.positions.get(physical))return;column.positions.set(physical);column.pending.set(physical);resultFacts++;
+            if(!column.queued){column.queued=true;work.add(id);}
+        }
+        private void existing(int child,IntConsumer consumer) {
+            int physical=graph.position(child);for(int id:List.copyOf(byScope.get(graph.obligation(child)).values())){var column=columns.get(id);if(column.positions.get(physical))consumer.accept(column.exit);}
+        }
+        private void activate(int point,int edge) {
+            int child=graph.physicalKind(edge)==NEXT?ensure(graph.physicalTarget(edge),graph.obligation(point)):graph.fixedTarget(edge);
+            if(graph.physicalKind(edge)==NEXT)existing(child,exit->publish(graph.position(point),graph.obligation(point),exit));
+            else if(graph.physicalKind(edge)==CALL) {
+                if(edge<delivered.length&&delivered[edge]!=null)resultPairs+=delivered[edge].cardinality();
+                existing(child,exit->offer(edge,exit));
+            }
+        }
+        private void offer(int edge,int exit) {
+            if(edge>=delivered.length){int n=Math.max(edge+1,delivered.length*2);delivered=Arrays.copyOf(delivered,n);pendingDeliveries=Arrays.copyOf(pendingDeliveries,n);}
+            if(delivered[edge]!=null&&delivered[edge].get(exit))return;
+            if(pendingDeliveries[edge]==null)pendingDeliveries[edge]=new BitSet();pendingDeliveries[edge].set(exit);
+            if(!queuedDeliveries.get(edge)){queuedDeliveries.set(edge);work.add(~edge);}
+        }
+        private void deliver(int edge,int exit) {
+            if(delivered[edge]==null)delivered[edge]=new BitSet();if(delivered[edge].get(exit))return;delivered[edge].set(exit);
+            int physical=graph.physicalSource(edge);
+            for(int point=graph.firstCell(physical);point>=0;point=graph.nextCell(point))if(discovered.get(point)&&!graph.stopped(point))resultPairs++;
+            add(physical,delivery.apply(new Call(graph.point(graph.fixedTarget(edge)),graph.physicalBinding(edge)),exits.get(exit)));
+        }
+        private void newEdge(int edge) {
+            if(edge<0)return;int physical=graph.physicalSource(edge);
+            for(int point=graph.firstCell(physical);point>=0;point=graph.nextCell(point))if(discovered.get(point)&&!graph.stopped(point))activate(point,edge);
+        }
+        private void add(int physical,Effect effect) {
+            for(var exit:effect.exits()) {
+                int id=exitId(exit);if(direct[physical]==null)direct[physical]=new BitSet();if(direct[physical].get(id))continue;direct[physical].set(id);
+                for(int point=graph.firstCell(physical);point>=0;point=graph.nextCell(point))if(discovered.get(point)&&!graph.stopped(point))publish(physical,graph.obligation(point),id);
+            }
+            for(var next:effect.next())newEdge(graph.add(physical,graph.physicalId(next),NEXT,-1,""));
+            for(var call:effect.calls()){int child=ensure(call.entry());newEdge(graph.add(physical,graph.position(child),CALL,child,call.binding()));}
+            for(var entry:effect.entries()){int child=ensure(entry);newEdge(graph.add(physical,graph.position(child),ENTRY,child,""));}
+        }
     }
 }

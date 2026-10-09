@@ -1,0 +1,928 @@
+{
+  "date": "2026-10-09",
+  "sourceCommit": "5276279c72ea0f03598e5dac7d7d54806e2e381b",
+  "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+  "heapMiB": 256,
+  "rssGuardMiB": 640,
+  "minHostAvailableMiB": 2048,
+  "maxWork": 100000000,
+  "timingQualified": false,
+  "productionChanged": false,
+  "retainedOwnershipQualified": false,
+  "histogramMeaning": "Aggregate shallow size of all live objects after VM live histogram GC, not a dominator/retained-size heap dump",
+  "probeManifest": {
+    "originalSourceSha256": "518063d12b11ccc2bd782eba129658bdaf5bd5dde10e28bf572323804e0a9ed8",
+    "probeSourceSha256": "b6ef7d520d497a0d4f02bdb1daa76fcdbe3a4e6b70f133d1af87e61d5d457a40",
+    "jarSha256": "6bf93c8e362eebd1301a5a289402eb9e11452fadf538358e34f5024d2483d943",
+    "command": [
+      "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/javac",
+      "-J-Xmx128m",
+      "--release",
+      "17",
+      "-cp",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/shared-continuation-fix-20261009/final.jar",
+      "-d",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-layout-discovery-20261009/run3/classes",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-layout-discovery-20261009/run3/source/com/imd/cobolexplorer/DependencyControl.java"
+    ],
+    "exit": 0,
+    "timingQualified": false,
+    "mode": "return-fanout",
+    "intervention": "Counts and live histograms through VM DiagnosticCommand MBean; equations unchanged"
+  },
+  "rows": [
+    {
+      "boxes": 16,
+      "mode": "return-fanout",
+      "sourceSha256": "ae3df65a3dd4dfcd8ce47a663a4302ec4c5fbcfb024197d819886c0047c705f4",
+      "exit": 0,
+      "guard": null,
+      "dependenciesEqual": true,
+      "expectedCount": 16,
+      "actualCount": 16,
+      "peakRssKiB": 222564,
+      "minHostAvailableKiB": 3190000,
+      "layout": [
+        {
+          "stage": "solved",
+          "points": 15215,
+          "physicalExits": 463,
+          "endpoints": 33,
+          "scopes": 2,
+          "next": 18383,
+          "entries": 0,
+          "calls": 1057,
+          "parents": 19440,
+          "resultParents": 18383,
+          "subscriptions": 1057,
+          "facts": 29681,
+          "frozenPlans": 0,
+          "buckets": {
+            "capacity": 32768,
+            "occupied": 8299,
+            "treeBins": 137,
+            "maxBin": 14
+          }
+        },
+        {
+          "stage": "frozen",
+          "points": 15215,
+          "physicalExits": 463,
+          "endpoints": 33,
+          "scopes": 2,
+          "next": 18383,
+          "entries": 0,
+          "calls": 1057,
+          "parents": 19440,
+          "resultParents": 18383,
+          "subscriptions": 1057,
+          "facts": 29681,
+          "frozenPlans": 15215,
+          "buckets": {
+            "capacity": 32768,
+            "occupied": 8299,
+            "treeBins": 137,
+            "maxBin": 14
+          }
+        },
+        {
+          "stage": "released",
+          "points": 15215,
+          "physicalExits": 463,
+          "endpoints": 33,
+          "scopes": 2,
+          "next": 18383,
+          "entries": 0,
+          "calls": 1057,
+          "parents": 0,
+          "resultParents": 0,
+          "subscriptions": 0,
+          "facts": 0,
+          "frozenPlans": 15215,
+          "buckets": {
+            "capacity": 32768,
+            "occupied": 8299,
+            "treeBins": 149,
+            "maxBin": 14
+          }
+        }
+      ],
+      "rank": [
+        {
+          "keys": 15215,
+          "totalProbes": 67785,
+          "maxProbes": 74,
+          "over16": 952
+        }
+      ],
+      "phases": [
+        {
+          "stage": "solved",
+          "totalLiveShallowBytes": 26428232,
+          "classes": {
+            "java.util.HashMap$Node": {
+              "instances": 92918,
+              "shallowBytes": 2973376
+            },
+            "java.util.HashMap$TreeNode": {
+              "instances": 3269,
+              "shallowBytes": 183064
+            },
+            "java.util.HashMap": {
+              "instances": 76739,
+              "shallowBytes": 3683472
+            },
+            "java.util.HashSet": {
+              "instances": 61090,
+              "shallowBytes": 977440
+            },
+            "[Ljava.util.HashMap$Node;": {
+              "instances": 47288,
+              "shallowBytes": 4110384
+            },
+            "com.imd.cobolexplorer.DependencyControl$PendingPlan": {
+              "instances": 15215,
+              "shallowBytes": 730320
+            },
+            "com.imd.cobolexplorer.DependencyControl$Plan": {
+              "instances": 0,
+              "shallowBytes": 0
+            },
+            "com.imd.cobolexplorer.DependencyRelevance$Point": {
+              "instances": 19441,
+              "shallowBytes": 466584
+            },
+            "com.imd.cobolexplorer.DependencyFlow$Exit": {
+              "instances": 19441,
+              "shallowBytes": 466584
+            },
+            "java.util.BitSet": {
+              "instances": 32551,
+              "shallowBytes": 781224
+            },
+            "[J": {
+              "instances": 35023,
+              "shallowBytes": 949136
+            }
+          }
+        },
+        {
+          "stage": "frozen",
+          "totalLiveShallowBytes": 28110280,
+          "classes": {
+            "java.util.HashMap$Node": {
+              "instances": 106551,
+              "shallowBytes": 3409632
+            },
+            "java.util.HashMap$TreeNode": {
+              "instances": 4851,
+              "shallowBytes": 271656
+            },
+            "java.util.HashMap": {
+              "instances": 76739,
+              "shallowBytes": 3683472
+            },
+            "java.util.HashSet": {
+              "instances": 61090,
+              "shallowBytes": 977440
+            },
+            "[Ljava.util.HashMap$Node;": {
+              "instances": 47289,
+              "shallowBytes": 4241472
+            },
+            "com.imd.cobolexplorer.DependencyControl$PendingPlan": {
+              "instances": 15215,
+              "shallowBytes": 730320
+            },
+            "com.imd.cobolexplorer.DependencyControl$Plan": {
+              "instances": 15215,
+              "shallowBytes": 365160
+            },
+            "com.imd.cobolexplorer.DependencyRelevance$Point": {
+              "instances": 19441,
+              "shallowBytes": 466584
+            },
+            "com.imd.cobolexplorer.DependencyFlow$Exit": {
+              "instances": 19441,
+              "shallowBytes": 466584
+            },
+            "java.util.BitSet": {
+              "instances": 32551,
+              "shallowBytes": 781224
+            },
+            "[J": {
+              "instances": 35023,
+              "shallowBytes": 949136
+            }
+          }
+        },
+        {
+          "stage": "released",
+          "totalLiveShallowBytes": 14462680,
+          "classes": {
+            "java.util.HashMap$Node": {
+              "instances": 49888,
+              "shallowBytes": 1596416
+            },
+            "java.util.HashMap$TreeNode": {
+              "instances": 4558,
+              "shallowBytes": 255248
+            },
+            "java.util.HashMap": {
+              "instances": 659,
+              "shallowBytes": 31632
+            },
+            "java.util.HashSet": {
+              "instances": 228,
+              "shallowBytes": 3648
+            },
+            "[Ljava.util.HashMap$Node;": {
+              "instances": 658,
+              "shallowBytes": 496016
+            },
+            "com.imd.cobolexplorer.DependencyControl$PendingPlan": {
+              "instances": 0,
+              "shallowBytes": 0
+            },
+            "com.imd.cobolexplorer.DependencyControl$Plan": {
+              "instances": 15215,
+              "shallowBytes": 365160
+            },
+            "com.imd.cobolexplorer.DependencyRelevance$Point": {
+              "instances": 19441,
+              "shallowBytes": 466584
+            },
+            "com.imd.cobolexplorer.DependencyFlow$Exit": {
+              "instances": 19441,
+              "shallowBytes": 466584
+            },
+            "java.util.BitSet": {
+              "instances": 7,
+              "shallowBytes": 168
+            },
+            "[J": {
+              "instances": 2479,
+              "shallowBytes": 168080
+            }
+          }
+        }
+      ]
+    },
+    {
+      "boxes": 32,
+      "mode": "return-fanout",
+      "sourceSha256": "688584cc281e29ebef0462cfd680528945cc9e35f1d296a050aef51d6e9cc69a",
+      "exit": 0,
+      "guard": null,
+      "dependenciesEqual": true,
+      "expectedCount": 32,
+      "actualCount": 32,
+      "peakRssKiB": 314656,
+      "minHostAvailableKiB": 3076004,
+      "layout": [
+        {
+          "stage": "solved",
+          "points": 59087,
+          "physicalExits": 911,
+          "endpoints": 65,
+          "scopes": 2,
+          "next": 71567,
+          "entries": 0,
+          "calls": 4161,
+          "parents": 75728,
+          "resultParents": 71567,
+          "subscriptions": 4161,
+          "facts": 116689,
+          "frozenPlans": 0,
+          "buckets": {
+            "capacity": 131072,
+            "occupied": 30870,
+            "treeBins": 700,
+            "maxBin": 23
+          }
+        },
+        {
+          "stage": "frozen",
+          "points": 59087,
+          "physicalExits": 911,
+          "endpoints": 65,
+          "scopes": 2,
+          "next": 71567,
+          "entries": 0,
+          "calls": 4161,
+          "parents": 75728,
+          "resultParents": 71567,
+          "subscriptions": 4161,
+          "facts": 116689,
+          "frozenPlans": 59087,
+          "buckets": {
+            "capacity": 131072,
+            "occupied": 30870,
+            "treeBins": 700,
+            "maxBin": 23
+          }
+        },
+        {
+          "stage": "released",
+          "points": 59087,
+          "physicalExits": 911,
+          "endpoints": 65,
+          "scopes": 2,
+          "next": 71567,
+          "entries": 0,
+          "calls": 4161,
+          "parents": 0,
+          "resultParents": 0,
+          "subscriptions": 0,
+          "facts": 0,
+          "frozenPlans": 59087,
+          "buckets": {
+            "capacity": 131072,
+            "occupied": 30870,
+            "treeBins": 773,
+            "maxBin": 23
+          }
+        }
+      ],
+      "rank": [
+        {
+          "keys": 59087,
+          "totalProbes": 214354,
+          "maxProbes": 57,
+          "over16": 1006
+        }
+      ],
+      "phases": [
+        {
+          "stage": "solved",
+          "totalLiveShallowBytes": 75524760,
+          "classes": {
+            "java.util.HashMap$Node": {
+              "instances": 337209,
+              "shallowBytes": 10790688
+            },
+            "java.util.HashMap$TreeNode": {
+              "instances": 19440,
+              "shallowBytes": 1088640
+            },
+            "java.util.HashMap": {
+              "instances": 296096,
+              "shallowBytes": 14212608
+            },
+            "java.util.HashSet": {
+              "instances": 236575,
+              "shallowBytes": 3785200
+            },
+            "[Ljava.util.HashMap$Node;": {
+              "instances": 182101,
+              "shallowBytes": 15815616
+            },
+            "com.imd.cobolexplorer.DependencyControl$PendingPlan": {
+              "instances": 59087,
+              "shallowBytes": 2836176
+            },
+            "com.imd.cobolexplorer.DependencyControl$Plan": {
+              "instances": 0,
+              "shallowBytes": 0
+            },
+            "com.imd.cobolexplorer.DependencyRelevance$Point": {
+              "instances": 75729,
+              "shallowBytes": 1817496
+            },
+            "com.imd.cobolexplorer.DependencyFlow$Exit": {
+              "instances": 75729,
+              "shallowBytes": 1817496
+            },
+            "java.util.BitSet": {
+              "instances": 126503,
+              "shallowBytes": 3036072
+            },
+            "[J": {
+              "instances": 128975,
+              "shallowBytes": 3218856
+            }
+          }
+        },
+        {
+          "stage": "frozen",
+          "totalLiveShallowBytes": 82602728,
+          "classes": {
+            "java.util.HashMap$Node": {
+              "instances": 387623,
+              "shallowBytes": 12403936
+            },
+            "java.util.HashMap$TreeNode": {
+              "instances": 28113,
+              "shallowBytes": 1574328
+            },
+            "java.util.HashMap": {
+              "instances": 296096,
+              "shallowBytes": 14212608
+            },
+            "java.util.HashSet": {
+              "instances": 236575,
+              "shallowBytes": 3785200
+            },
+            "[Ljava.util.HashMap$Node;": {
+              "instances": 182102,
+              "shallowBytes": 16339920
+            },
+            "com.imd.cobolexplorer.DependencyControl$PendingPlan": {
+              "instances": 59087,
+              "shallowBytes": 2836176
+            },
+            "com.imd.cobolexplorer.DependencyControl$Plan": {
+              "instances": 59087,
+              "shallowBytes": 1418088
+            },
+            "com.imd.cobolexplorer.DependencyRelevance$Point": {
+              "instances": 75729,
+              "shallowBytes": 1817496
+            },
+            "com.imd.cobolexplorer.DependencyFlow$Exit": {
+              "instances": 75729,
+              "shallowBytes": 1817496
+            },
+            "java.util.BitSet": {
+              "instances": 126503,
+              "shallowBytes": 3036072
+            },
+            "[J": {
+              "instances": 128975,
+              "shallowBytes": 3218856
+            }
+          }
+        },
+        {
+          "stage": "released",
+          "totalLiveShallowBytes": 29289736,
+          "classes": {
+            "java.util.HashMap$Node": {
+              "instances": 169302,
+              "shallowBytes": 5417664
+            },
+            "java.util.HashMap$TreeNode": {
+              "instances": 24984,
+              "shallowBytes": 1399104
+            },
+            "java.util.HashMap": {
+              "instances": 659,
+              "shallowBytes": 31632
+            },
+            "java.util.HashSet": {
+              "instances": 228,
+              "shallowBytes": 3648
+            },
+            "[Ljava.util.HashMap$Node;": {
+              "instances": 818,
+              "shallowBytes": 1749904
+            },
+            "com.imd.cobolexplorer.DependencyControl$PendingPlan": {
+              "instances": 0,
+              "shallowBytes": 0
+            },
+            "com.imd.cobolexplorer.DependencyControl$Plan": {
+              "instances": 59087,
+              "shallowBytes": 1418088
+            },
+            "com.imd.cobolexplorer.DependencyRelevance$Point": {
+              "instances": 75729,
+              "shallowBytes": 1817496
+            },
+            "com.imd.cobolexplorer.DependencyFlow$Exit": {
+              "instances": 75729,
+              "shallowBytes": 1817496
+            },
+            "java.util.BitSet": {
+              "instances": 7,
+              "shallowBytes": 168
+            },
+            "[J": {
+              "instances": 2479,
+              "shallowBytes": 168080
+            }
+          }
+        }
+      ]
+    },
+    {
+      "boxes": 48,
+      "mode": "return-fanout",
+      "sourceSha256": "b1206861a5d349d9b241f6229cebc32758dd2acc7bf29d81655f72533788a4eb",
+      "exit": 0,
+      "guard": null,
+      "dependenciesEqual": true,
+      "expectedCount": 48,
+      "actualCount": 48,
+      "peakRssKiB": 425528,
+      "minHostAvailableKiB": 2966008,
+      "layout": [
+        {
+          "stage": "solved",
+          "points": 131631,
+          "physicalExits": 1359,
+          "endpoints": 97,
+          "scopes": 2,
+          "next": 159567,
+          "entries": 0,
+          "calls": 9313,
+          "parents": 168880,
+          "resultParents": 159567,
+          "subscriptions": 9313,
+          "facts": 261041,
+          "frozenPlans": 0,
+          "buckets": {
+            "capacity": 262144,
+            "occupied": 64941,
+            "treeBins": 2109,
+            "maxBin": 34
+          }
+        },
+        {
+          "stage": "frozen",
+          "points": 131631,
+          "physicalExits": 1359,
+          "endpoints": 97,
+          "scopes": 2,
+          "next": 159567,
+          "entries": 0,
+          "calls": 9313,
+          "parents": 168880,
+          "resultParents": 159567,
+          "subscriptions": 9313,
+          "facts": 261041,
+          "frozenPlans": 131631,
+          "buckets": {
+            "capacity": 262144,
+            "occupied": 64941,
+            "treeBins": 2109,
+            "maxBin": 34
+          }
+        },
+        {
+          "stage": "released",
+          "points": 131631,
+          "physicalExits": 1359,
+          "endpoints": 97,
+          "scopes": 2,
+          "next": 159567,
+          "entries": 0,
+          "calls": 9313,
+          "parents": 0,
+          "resultParents": 0,
+          "subscriptions": 0,
+          "facts": 0,
+          "frozenPlans": 131631,
+          "buckets": {
+            "capacity": 262144,
+            "occupied": 64941,
+            "treeBins": 2181,
+            "maxBin": 34
+          }
+        }
+      ],
+      "rank": [
+        {
+          "keys": 131631,
+          "totalProbes": 552184,
+          "maxProbes": 78,
+          "over16": 5188
+        }
+      ],
+      "phases": [
+        {
+          "stage": "solved",
+          "totalLiveShallowBytes": 154677624,
+          "classes": {
+            "java.util.HashMap$Node": {
+              "instances": 730007,
+              "shallowBytes": 23360224
+            },
+            "java.util.HashMap$TreeNode": {
+              "instances": 57586,
+              "shallowBytes": 3224816
+            },
+            "java.util.HashMap": {
+              "instances": 658816,
+              "shallowBytes": 31623168
+            },
+            "java.util.HashSet": {
+              "instances": 526751,
+              "shallowBytes": 8428016
+            },
+            "[Ljava.util.HashMap$Node;": {
+              "instances": 404981,
+              "shallowBytes": 35004608
+            },
+            "com.imd.cobolexplorer.DependencyControl$PendingPlan": {
+              "instances": 131631,
+              "shallowBytes": 6318288
+            },
+            "com.imd.cobolexplorer.DependencyControl$Plan": {
+              "instances": 0,
+              "shallowBytes": 0
+            },
+            "com.imd.cobolexplorer.DependencyRelevance$Point": {
+              "instances": 168881,
+              "shallowBytes": 4053144
+            },
+            "com.imd.cobolexplorer.DependencyFlow$Exit": {
+              "instances": 168881,
+              "shallowBytes": 4053144
+            },
+            "java.util.BitSet": {
+              "instances": 281895,
+              "shallowBytes": 6765480
+            },
+            "[J": {
+              "instances": 284367,
+              "shallowBytes": 7669232
+            }
+          }
+        },
+        {
+          "stage": "frozen",
+          "totalLiveShallowBytes": 169306808,
+          "classes": {
+            "java.util.HashMap$Node": {
+              "instances": 837103,
+              "shallowBytes": 26787296
+            },
+            "java.util.HashMap$TreeNode": {
+              "instances": 83579,
+              "shallowBytes": 4680424
+            },
+            "java.util.HashMap": {
+              "instances": 658819,
+              "shallowBytes": 31623312
+            },
+            "java.util.HashSet": {
+              "instances": 526754,
+              "shallowBytes": 8428064
+            },
+            "[Ljava.util.HashMap$Node;": {
+              "instances": 404985,
+              "shallowBytes": 36062528
+            },
+            "com.imd.cobolexplorer.DependencyControl$PendingPlan": {
+              "instances": 131631,
+              "shallowBytes": 6318288
+            },
+            "com.imd.cobolexplorer.DependencyControl$Plan": {
+              "instances": 131631,
+              "shallowBytes": 3159144
+            },
+            "com.imd.cobolexplorer.DependencyRelevance$Point": {
+              "instances": 168881,
+              "shallowBytes": 4053144
+            },
+            "com.imd.cobolexplorer.DependencyFlow$Exit": {
+              "instances": 168881,
+              "shallowBytes": 4053144
+            },
+            "java.util.BitSet": {
+              "instances": 281895,
+              "shallowBytes": 6765480
+            },
+            "[J": {
+              "instances": 284367,
+              "shallowBytes": 7669232
+            }
+          }
+        },
+        {
+          "stage": "released",
+          "totalLiveShallowBytes": 48785344,
+          "classes": {
+            "java.util.HashMap$Node": {
+              "instances": 347605,
+              "shallowBytes": 11123360
+            },
+            "java.util.HashMap$TreeNode": {
+              "instances": 76633,
+              "shallowBytes": 4291448
+            },
+            "java.util.HashMap": {
+              "instances": 659,
+              "shallowBytes": 31632
+            },
+            "java.util.HashSet": {
+              "instances": 228,
+              "shallowBytes": 3648
+            },
+            "[Ljava.util.HashMap$Node;": {
+              "instances": 978,
+              "shallowBytes": 3396240
+            },
+            "com.imd.cobolexplorer.DependencyControl$PendingPlan": {
+              "instances": 0,
+              "shallowBytes": 0
+            },
+            "com.imd.cobolexplorer.DependencyControl$Plan": {
+              "instances": 131631,
+              "shallowBytes": 3159144
+            },
+            "com.imd.cobolexplorer.DependencyRelevance$Point": {
+              "instances": 168881,
+              "shallowBytes": 4053144
+            },
+            "com.imd.cobolexplorer.DependencyFlow$Exit": {
+              "instances": 168881,
+              "shallowBytes": 4053144
+            },
+            "java.util.BitSet": {
+              "instances": 7,
+              "shallowBytes": 168
+            },
+            "[J": {
+              "instances": 2479,
+              "shallowBytes": 168080
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "rawArtifacts": [
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-16/frozen.gcClassHistogram.txt",
+      "sha256": "73c3ce8a6307682f261987d5e5f0f1dc2e914796848a63b7d3162f2d04e89572"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-16/frozen.gcHeapInfo.txt",
+      "sha256": "e861d60019d86db791a5a664435507556e2e99d4d4372c9d34ba7b3b7b105a01"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-16/released.gcClassHistogram.txt",
+      "sha256": "51367ef926ea7de7eb4235ac8fbb1e4a35616ed8c677587614714e18c77a216d"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-16/released.gcHeapInfo.txt",
+      "sha256": "4a0b9f69cebea420678fd555c5e4a27ab6041158586e5de56b2f15040e620a6e"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-16/solved.gcClassHistogram.txt",
+      "sha256": "9a8c717140d00ac3aea760449e97592070ead23db4d34576a1a40bfe8304e57d"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-16/solved.gcHeapInfo.txt",
+      "sha256": "016db1f6f1f896beef6ff23d2bfbbe6b548754708ee36715fc7611859a98b470"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-32/frozen.gcClassHistogram.txt",
+      "sha256": "31c803e55736287f76cd2de61884cbd34764826ebda90872797ba624208154f1"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-32/frozen.gcHeapInfo.txt",
+      "sha256": "ed10e1122ff8033eac870160db13088e403ee82f4a431b28021f2c3f4018ff75"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-32/released.gcClassHistogram.txt",
+      "sha256": "5b07b4cef33fd19301f6ad052833460119f353fc98d81b8a669ce7eaf88d82f5"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-32/released.gcHeapInfo.txt",
+      "sha256": "6b4d975b8388e38ad1c33179d72dd8f6b017adf5b011aea31d964961ed698bb2"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-32/solved.gcClassHistogram.txt",
+      "sha256": "4fb81045a034425ee9e626f0623ba94f96501fa57e2e8aa8ca0694ca088d5ec5"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-32/solved.gcHeapInfo.txt",
+      "sha256": "eede0e6eeba6ab3662a943fa18e37231e5c982d2ac6beacee494c7815cf70dec"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-48/frozen.gcClassHistogram.txt",
+      "sha256": "c3f1deaf68c4b5ee02ba30ef358804988f110eb3d167f7d23e71ec26ebba12ce"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-48/frozen.gcHeapInfo.txt",
+      "sha256": "acf598c5688c81489f6d81f0dca62c72032fd2222057de899d6664014b9a358f"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-48/released.gcClassHistogram.txt",
+      "sha256": "bb9e69bd923597341ef02f41e83b050ad6119502ddaf3c41b3c3d49cd9c9afea"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-48/released.gcHeapInfo.txt",
+      "sha256": "672888b2ed643827c3f94014a0461e23e381cbc90cd59cd7758992334b4bbb32"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-48/solved.gcClassHistogram.txt",
+      "sha256": "7aaf89a4c291fb1446f2c514a4423eb908eb6703ff719e75f9c9aa5fd8814589"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/checkpoints-48/solved.gcHeapInfo.txt",
+      "sha256": "ee88b1995e11bc9d19d5944025583cee07f820a5e580a4d8f4a9e7121b812226"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-16/dependencies.json",
+      "sha256": "f822b5c7c96a466516a020f3b738e4d81d3d669f9c7c1f6bda0db28239cbac92"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-16/metrics.jsonl",
+      "sha256": "8ab0271d44ce687eaeb86909c21fc56e9b074ce4b757d5a766008413e5ab6681"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-16/stderr.log",
+      "sha256": "e18a2c7379970be1673f32bfb03fa94c9c743ee20a4f3df9946a503e532f9663"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-16/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-16/telemetry.jsonl",
+      "sha256": "5b9a39770605e49315c0ece25d966db42c10f5f0913d213672e6770aafd51de1"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-16/time.txt",
+      "sha256": "a1fcbc4b1a2c4772320424a5eb37453ae95f6de7a702a041140aa0da65a49188"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-32/dependencies.json",
+      "sha256": "653f206802c09b58e199a678275a2fe3fd7f1008486e38b8c21f638bcfd258c1"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-32/metrics.jsonl",
+      "sha256": "79ae2107cf77bb1deb2ac4e4652eca02f47714340184ad04bce37db87558c3e3"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-32/stderr.log",
+      "sha256": "d92f750957b711d767b5c5c4b61175333a72734bb2837af24d0c70882ef45ded"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-32/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-32/telemetry.jsonl",
+      "sha256": "b0afb545a00f62443e7cffadc1caf65f7d0f2a76937779b326db1cbb7237e948"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-32/time.txt",
+      "sha256": "6f7a3ba8eec27c8069bf3ea78ac0b1d7b683ac3ce2e0eccb459118c4857f08bf"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-48/dependencies.json",
+      "sha256": "ee40d29ea1a31523d3d89efd3271d6a2693cf7299a1da3331d46646e2579ab2e"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-48/metrics.jsonl",
+      "sha256": "80db15b9699acbdc8f807bef1e83645a6771475f58b6392b4c3e8fa3a029fca6"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-48/stderr.log",
+      "sha256": "7ebf35225515e6be4ca1d365a92a0c2e768c721e4efcc45d84d27e71e64d75f5"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-48/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-48/telemetry.jsonl",
+      "sha256": "5730ee26c89a5ff21c8042de195613db6a57aae4294e747b0579852b54eb8ce1"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/fixed-48/time.txt",
+      "sha256": "0d140198b813784ce439f3732617833212fb47aacbcfa48fbf6d456e98957152"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/input-16.cbl",
+      "sha256": "ae3df65a3dd4dfcd8ce47a663a4302ec4c5fbcfb024197d819886c0047c705f4"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/input-32.cbl",
+      "sha256": "688584cc281e29ebef0462cfd680528945cc9e35f1d296a050aef51d6e9cc69a"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/input-48.cbl",
+      "sha256": "b1206861a5d349d9b241f6229cebc32758dd2acc7bf29d81655f72533788a4eb"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/manifest.json",
+      "sha256": "04dd1220bc425e6ea8f81cb5c5b6a62f06465476344531d0593a1b06fcf80159"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/results.json",
+      "sha256": "e39a34eb916b9a6b6928904fbea7cf9ecc908a3fe9a5d2a394848ce922983712"
+    },
+    {
+      "path": "benchmark/results/control-layout-discovery-20261009/run3/source/com/imd/cobolexplorer/DependencyControl.java",
+      "sha256": "b6ef7d520d497a0d4f02bdb1daa76fcdbe3a4e6b70f133d1af87e61d5d457a40"
+    }
+  ],
+  "failedCollectorAttempts": [
+    "benchmark/results/control-layout-discovery-20261009/run1/results.json",
+    "benchmark/results/control-layout-discovery-20261009/run2/results.json"
+  ],
+  "notes": [
+    "Initial bootstrap used an invalid generator mode and exited before starting any analysis JVM; preserved at parent output.",
+    "run1 collected counts but rejected time wrapper/java PID ambiguity; run2 collected counts but external Attach failed. Neither provides live histogram evidence. run3 collects through the VM DiagnosticCommand MBean and uses the identical dynamic return-fanout family."
+  ]
+}

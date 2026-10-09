@@ -1,0 +1,1107 @@
+{
+  "sourcePin": "9031dbc680576d60ee8a1bf1275fe9e19d556d24",
+  "jarSha256": "e623c8788d47a89552601bfa5e23699419fda5bcace51b97a99a94b73eb00dac",
+  "unchangedQualifiedClassCount": 2508,
+  "productionModified": false,
+  "guards": {
+    "heapMiB": 512,
+    "rssMiB": 768,
+    "systemReserveMiB": 2048,
+    "sequential": true
+  },
+  "relations": [
+    {
+      "case": "return-fanout-128",
+      "before": {
+        "entries": 397324,
+        "rows": 515,
+        "keys": 1546,
+        "values": 2,
+        "uniqueWholeRows": 3,
+        "medianDeltaEntries": 1545,
+        "factoredGroups": 1547,
+        "uniqueMembershipMasks": 4,
+        "membershipMaskWords": 20,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 3,
+          "expandedTrieNodes": 133384,
+          "uniqueTrieNodes": 520,
+          "expandedInlineEntries": 397324,
+          "uniqueInlineEntries": 1548,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "entries": 924430,
+        "rows": 257,
+        "keys": 3598,
+        "values": 6,
+        "uniqueWholeRows": 257,
+        "medianDeltaEntries": 4,
+        "factoredGroups": 4364,
+        "uniqueMembershipMasks": 514,
+        "membershipMaskWords": 1929,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 257,
+          "expandedTrieNodes": 282957,
+          "uniqueTrieNodes": 2926,
+          "expandedInlineEntries": 924430,
+          "uniqueInlineEntries": 9620,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-32",
+      "before": {
+        "entries": 25612,
+        "rows": 131,
+        "keys": 394,
+        "values": 2,
+        "uniqueWholeRows": 3,
+        "medianDeltaEntries": 393,
+        "factoredGroups": 395,
+        "uniqueMembershipMasks": 4,
+        "membershipMaskWords": 8,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 3,
+          "expandedTrieNodes": 5916,
+          "uniqueTrieNodes": 92,
+          "expandedInlineEntries": 25612,
+          "uniqueInlineEntries": 396,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "entries": 59086,
+        "rows": 65,
+        "keys": 910,
+        "values": 6,
+        "uniqueWholeRows": 65,
+        "medianDeltaEntries": 4,
+        "factoredGroups": 1100,
+        "uniqueMembershipMasks": 130,
+        "membershipMaskWords": 195,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 65,
+          "expandedTrieNodes": 17810,
+          "uniqueTrieNodes": 623,
+          "expandedInlineEntries": 59086,
+          "uniqueInlineEntries": 3313,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-64",
+      "before": {
+        "entries": 100364,
+        "rows": 259,
+        "keys": 778,
+        "values": 2,
+        "uniqueWholeRows": 3,
+        "medianDeltaEntries": 777,
+        "factoredGroups": 779,
+        "uniqueMembershipMasks": 4,
+        "membershipMaskWords": 12,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 3,
+          "expandedTrieNodes": 28123,
+          "uniqueTrieNodes": 219,
+          "expandedInlineEntries": 100364,
+          "uniqueInlineEntries": 780,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "entries": 232846,
+        "rows": 129,
+        "keys": 1806,
+        "values": 6,
+        "uniqueWholeRows": 129,
+        "medianDeltaEntries": 4,
+        "factoredGroups": 2188,
+        "uniqueMembershipMasks": 258,
+        "membershipMaskWords": 581,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 129,
+          "expandedTrieNodes": 79207,
+          "uniqueTrieNodes": 1446,
+          "expandedInlineEntries": 232846,
+          "uniqueInlineEntries": 6553,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-fixed-128",
+      "before": {
+        "entries": 1035,
+        "rows": 3,
+        "keys": 1033,
+        "values": 3,
+        "uniqueWholeRows": 3,
+        "medianDeltaEntries": 1031,
+        "factoredGroups": 1034,
+        "uniqueMembershipMasks": 4,
+        "membershipMaskWords": 4,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 3,
+          "expandedTrieNodes": 322,
+          "uniqueTrieNodes": 322,
+          "expandedInlineEntries": 1035,
+          "uniqueInlineEntries": 1035,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "entries": 923917,
+        "rows": 257,
+        "keys": 3597,
+        "values": 7,
+        "uniqueWholeRows": 257,
+        "medianDeltaEntries": 5,
+        "factoredGroups": 4363,
+        "uniqueMembershipMasks": 514,
+        "membershipMaskWords": 1929,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 257,
+          "expandedTrieNodes": 282700,
+          "uniqueTrieNodes": 2921,
+          "expandedInlineEntries": 923917,
+          "uniqueInlineEntries": 9495,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-fixed-32",
+      "before": {
+        "entries": 267,
+        "rows": 3,
+        "keys": 265,
+        "values": 3,
+        "uniqueWholeRows": 3,
+        "medianDeltaEntries": 263,
+        "factoredGroups": 266,
+        "uniqueMembershipMasks": 4,
+        "membershipMaskWords": 4,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 3,
+          "expandedTrieNodes": 61,
+          "uniqueTrieNodes": 61,
+          "expandedInlineEntries": 267,
+          "uniqueInlineEntries": 267,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "entries": 58957,
+        "rows": 65,
+        "keys": 909,
+        "values": 7,
+        "uniqueWholeRows": 65,
+        "medianDeltaEntries": 5,
+        "factoredGroups": 1099,
+        "uniqueMembershipMasks": 130,
+        "membershipMaskWords": 195,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 65,
+          "expandedTrieNodes": 17681,
+          "uniqueTrieNodes": 621,
+          "expandedInlineEntries": 58957,
+          "uniqueInlineEntries": 3264,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-fixed-64",
+      "before": {
+        "entries": 523,
+        "rows": 3,
+        "keys": 521,
+        "values": 3,
+        "uniqueWholeRows": 3,
+        "medianDeltaEntries": 519,
+        "factoredGroups": 522,
+        "uniqueMembershipMasks": 4,
+        "membershipMaskWords": 4,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 3,
+          "expandedTrieNodes": 132,
+          "uniqueTrieNodes": 132,
+          "expandedInlineEntries": 523,
+          "uniqueInlineEntries": 523,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "entries": 232589,
+        "rows": 129,
+        "keys": 1805,
+        "values": 7,
+        "uniqueWholeRows": 129,
+        "medianDeltaEntries": 5,
+        "factoredGroups": 2187,
+        "uniqueMembershipMasks": 258,
+        "membershipMaskWords": 581,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 129,
+          "expandedTrieNodes": 79207,
+          "uniqueTrieNodes": 1453,
+          "expandedInlineEntries": 232589,
+          "uniqueInlineEntries": 6484,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "case": "return-fanout-64/visit-100000",
+      "before": {
+        "rows": 181,
+        "keys": 778,
+        "values": 2,
+        "entries": 87852,
+        "uniqueWholeRows": 79,
+        "medianDeltaEntries": 5,
+        "factoredGroups": 779,
+        "uniqueMembershipMasks": 80,
+        "membershipMaskWords": 238,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 79,
+          "expandedTrieNodes": 24538,
+          "uniqueTrieNodes": 682,
+          "expandedInlineEntries": 87852,
+          "uniqueInlineEntries": 4573,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "rows": 129,
+        "keys": 1806,
+        "values": 6,
+        "entries": 232846,
+        "uniqueWholeRows": 129,
+        "medianDeltaEntries": 4,
+        "factoredGroups": 2188,
+        "uniqueMembershipMasks": 258,
+        "membershipMaskWords": 581,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 129,
+          "expandedTrieNodes": 79207,
+          "uniqueTrieNodes": 1446,
+          "expandedInlineEntries": 232846,
+          "uniqueInlineEntries": 6553,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-64/visit-133519",
+      "before": {
+        "rows": 259,
+        "keys": 778,
+        "values": 2,
+        "entries": 100364,
+        "uniqueWholeRows": 3,
+        "medianDeltaEntries": 777,
+        "factoredGroups": 779,
+        "uniqueMembershipMasks": 4,
+        "membershipMaskWords": 12,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 3,
+          "expandedTrieNodes": 28123,
+          "uniqueTrieNodes": 219,
+          "expandedInlineEntries": 100364,
+          "uniqueInlineEntries": 780,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "rows": 129,
+        "keys": 1806,
+        "values": 6,
+        "entries": 232846,
+        "uniqueWholeRows": 129,
+        "medianDeltaEntries": 4,
+        "factoredGroups": 2188,
+        "uniqueMembershipMasks": 258,
+        "membershipMaskWords": 581,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 129,
+          "expandedTrieNodes": 79207,
+          "uniqueTrieNodes": 1446,
+          "expandedInlineEntries": 232846,
+          "uniqueInlineEntries": 6553,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-64/visit-20000",
+      "before": {
+        "rows": 137,
+        "keys": 778,
+        "values": 2,
+        "entries": 19739,
+        "uniqueWholeRows": 123,
+        "medianDeltaEntries": 776,
+        "factoredGroups": 779,
+        "uniqueMembershipMasks": 124,
+        "membershipMaskWords": 370,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 123,
+          "expandedTrieNodes": 5562,
+          "uniqueTrieNodes": 474,
+          "expandedInlineEntries": 19739,
+          "uniqueInlineEntries": 2162,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "rows": 129,
+        "keys": 1806,
+        "values": 6,
+        "entries": 232846,
+        "uniqueWholeRows": 129,
+        "medianDeltaEntries": 4,
+        "factoredGroups": 2188,
+        "uniqueMembershipMasks": 258,
+        "membershipMaskWords": 581,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 129,
+          "expandedTrieNodes": 79207,
+          "uniqueTrieNodes": 1446,
+          "expandedInlineEntries": 232846,
+          "uniqueInlineEntries": 6553,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-64/visit-60000",
+      "before": {
+        "rows": 160,
+        "keys": 778,
+        "values": 2,
+        "entries": 55426,
+        "uniqueWholeRows": 100,
+        "medianDeltaEntries": 776,
+        "factoredGroups": 779,
+        "uniqueMembershipMasks": 101,
+        "membershipMaskWords": 301,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 100,
+          "expandedTrieNodes": 15482,
+          "uniqueTrieNodes": 583,
+          "expandedInlineEntries": 55426,
+          "uniqueInlineEntries": 3417,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "rows": 129,
+        "keys": 1806,
+        "values": 6,
+        "entries": 232846,
+        "uniqueWholeRows": 129,
+        "medianDeltaEntries": 4,
+        "factoredGroups": 2188,
+        "uniqueMembershipMasks": 258,
+        "membershipMaskWords": 581,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 129,
+          "expandedTrieNodes": 79207,
+          "uniqueTrieNodes": 1446,
+          "expandedInlineEntries": 232846,
+          "uniqueInlineEntries": 6553,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-fixed-64/visit-526",
+      "before": {
+        "rows": 3,
+        "keys": 521,
+        "values": 3,
+        "entries": 523,
+        "uniqueWholeRows": 3,
+        "medianDeltaEntries": 519,
+        "factoredGroups": 522,
+        "uniqueMembershipMasks": 4,
+        "membershipMaskWords": 4,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 3,
+          "expandedTrieNodes": 132,
+          "uniqueTrieNodes": 132,
+          "expandedInlineEntries": 523,
+          "uniqueInlineEntries": 523,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "rows": 129,
+        "keys": 1805,
+        "values": 7,
+        "entries": 232589,
+        "uniqueWholeRows": 129,
+        "medianDeltaEntries": 5,
+        "factoredGroups": 2187,
+        "uniqueMembershipMasks": 258,
+        "membershipMaskWords": 581,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 129,
+          "expandedTrieNodes": 79207,
+          "uniqueTrieNodes": 1453,
+          "expandedInlineEntries": 232589,
+          "uniqueInlineEntries": 6484,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    }
+  ],
+  "varyingValues": [
+    {
+      "case": "return-fanout-16/visit-29709",
+      "before": {
+        "rows": 67,
+        "keys": 266,
+        "values": 36,
+        "entries": 8780,
+        "uniqueWholeRows": 4,
+        "medianDeltaEntries": 3,
+        "factoredGroups": 305,
+        "uniqueMembershipMasks": 5,
+        "membershipMaskWords": 6,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 4,
+          "expandedTrieNodes": 1981,
+          "uniqueTrieNodes": 92,
+          "expandedInlineEntries": 8780,
+          "uniqueInlineEntries": 441,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "rows": 33,
+        "keys": 526,
+        "values": 9,
+        "entries": 17326,
+        "uniqueWholeRows": 33,
+        "medianDeltaEntries": 4,
+        "factoredGroups": 620,
+        "uniqueMembershipMasks": 66,
+        "membershipMaskWords": 66,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 33,
+          "expandedTrieNodes": 4389,
+          "uniqueTrieNodes": 296,
+          "expandedInlineEntries": 17326,
+          "uniqueInlineEntries": 1541,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    },
+    {
+      "case": "return-fanout-8/visit-5665",
+      "before": {
+        "rows": 35,
+        "keys": 138,
+        "values": 20,
+        "entries": 2348,
+        "uniqueWholeRows": 4,
+        "medianDeltaEntries": 3,
+        "factoredGroups": 161,
+        "uniqueMembershipMasks": 5,
+        "membershipMaskWords": 5,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 4,
+          "expandedTrieNodes": 749,
+          "uniqueTrieNodes": 66,
+          "expandedInlineEntries": 2348,
+          "uniqueInlineEntries": 214,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      },
+      "control": {
+        "rows": 17,
+        "keys": 270,
+        "values": 9,
+        "entries": 4574,
+        "uniqueWholeRows": 17,
+        "medianDeltaEntries": 4,
+        "factoredGroups": 316,
+        "uniqueMembershipMasks": 34,
+        "membershipMaskWords": 34,
+        "roundTripExact": true,
+        "hamtShape": {
+          "uniqueRoots": 17,
+          "expandedTrieNodes": 1054,
+          "uniqueTrieNodes": 136,
+          "expandedInlineEntries": 4574,
+          "uniqueInlineEntries": 610,
+          "representation": "Canonical 32-way hash-prefix shape; ideal global hash-consing of all completed rows, stronger than ordinary persistence"
+        }
+      }
+    }
+  ],
+  "hashExperiment": {
+    "qualifiedForProduction": false,
+    "pairs": 3,
+    "summary": {
+      "baseline": {
+        "secondsMedian": 6.77139592601452,
+        "rssMiBMedian": 423.7578125
+      },
+      "mixed": {
+        "secondsMedian": 6.16478626098251,
+        "rssMiBMedian": 380.99609375
+      }
+    },
+    "timeMedianReductionPercent": 8.958413769626471,
+    "rssMedianReductionPercent": 10.09107501705352,
+    "fullJsonAndWorkCountersIdentical": true,
+    "histograms": {
+      "baseline": {
+        "path": "benchmark/results/hamt-discovery-20261009/live-baseline/dump-return-fanout-128/histogram.txt",
+        "sha256": "a5f25188655a70f697928193a03c5e617e11f1010c73930f8826f1ae287ad847",
+        "classes": {
+          "java.util.HashMap$TreeNode": {
+            "instances": 387166,
+            "shallowBytes": 21681296
+          },
+          "com.imd.cobolexplorer.DependencyFlow$Location": {
+            "instances": 397325,
+            "shallowBytes": 12714400
+          },
+          "java.util.HashMap$Node": {
+            "instances": 109880,
+            "shallowBytes": 3516160
+          }
+        },
+        "locationHashes": {
+          "visit": 529167,
+          "keys": 397324,
+          "distinctFullHashes": 16706,
+          "keysSharingFullHash": 395522,
+          "maxSameHash": 89
+        }
+      },
+      "mixed": {
+        "path": "benchmark/results/hamt-discovery-20261009/live-mixed/dump-return-fanout-128/histogram.txt",
+        "sha256": "f1d19259ecca6a335a70956f2d1938e56b6fa53a7857dcae3dfbfa523f7864de",
+        "classes": {
+          "java.util.HashMap$Node": {
+            "instances": 497302,
+            "shallowBytes": 15913664
+          },
+          "com.imd.cobolexplorer.DependencyFlow$Location": {
+            "instances": 397325,
+            "shallowBytes": 12714400
+          }
+        },
+        "locationHashes": {
+          "visit": 529167,
+          "keys": 397324,
+          "distinctFullHashes": 397306,
+          "keysSharingFullHash": 36,
+          "maxSameHash": 2
+        }
+      }
+    }
+  },
+  "profile": {
+    "events": 15607,
+    "executionSamplesMain": 3640,
+    "cpuCategories": {
+      "control-summary": 1635,
+      "input-relevance": 1072,
+      "query-resolution": 376,
+      "enqueue-and-join": 277,
+      "other-dataflow": 159,
+      "local-step": 67,
+      "frontend-or-other-product": 42,
+      "summary-input-projection": 11,
+      "state-join": 1
+    },
+    "firstProductMethods": {
+      "com.imd.cobolexplorer.DependencyGraph.find": 2022,
+      "com.imd.cobolexplorer.DependencyFlow$Location.equals": 274,
+      "com.imd.cobolexplorer.DependencyValues.equals": 197,
+      "com.imd.cobolexplorer.DependencyRelevance.lambda$extend$3": 143,
+      "com.imd.cobolexplorer.DependencyFlow$ResolutionKey.equals": 88,
+      "com.imd.cobolexplorer.DependencyRelevance.lambda$extend$2": 86,
+      "com.imd.cobolexplorer.DependencyFlow.enqueue": 71,
+      "com.imd.cobolexplorer.DependencyFlow.<init>": 71,
+      "com.imd.cobolexplorer.DependencyFlow.inputEffect": 51,
+      "com.imd.cobolexplorer.DependencyControl$Construction.existing": 48,
+      "com.imd.cobolexplorer.DependencyRelevance.propagate": 37,
+      "com.imd.cobolexplorer.DependencyControl.<init>": 31,
+      "com.imd.cobolexplorer.DependencyGraph.incoming": 27,
+      "com.imd.cobolexplorer.DependencyGraph.close": 27,
+      "com.imd.cobolexplorer.DependencyControl$Construction.publish": 26,
+      "com.imd.cobolexplorer.DependencyFlyweight.retain": 20,
+      "com.imd.cobolexplorer.DependencyFlow.resolve": 19,
+      "com.imd.cobolexplorer.DependencyFlow.step": 18,
+      "com.imd.cobolexplorer.DependencyControl$Construction.solve": 18,
+      "com.imd.cobolexplorer.DependencyRelevance.extend": 15,
+      "com.imd.cobolexplorer.DependencyRelevance.capacity": 15,
+      "com.imd.cobolexplorer.DependencyGraph$Ints.add": 15,
+      "com.imd.cobolexplorer.DependencyFlow.route": 15,
+      "com.imd.cobolexplorer.DependencyControl$Construction.ensure": 14,
+      "com.imd.cobolexplorer.DependencyGraph.indexCell": 14,
+      "com.imd.cobolexplorer.DependencyGraph.target": 13,
+      "com.imd.cobolexplorer.DependencyControl.cyclicNodes": 12,
+      "com.imd.cobolexplorer.antlr.CobolPreprocessorParser.charDataLine": 12,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92c3440.applyAsInt": 11,
+      "com.imd.cobolexplorer.DependencyFlow.normalize": 11,
+      "com.imd.cobolexplorer.DependencyEnvironment$Projection.retain": 10,
+      "com.imd.cobolexplorer.DependencyFlow.subscribe": 9,
+      "com.imd.cobolexplorer.Ast.children": 9,
+      "com.imd.cobolexplorer.DependencyFlow.schedule": 9,
+      "com.imd.cobolexplorer.DependencyGraph.id": 8,
+      "com.imd.cobolexplorer.DependencyGraph.scopeId": 7,
+      "com.imd.cobolexplorer.DependencyFlow.queueResult": 7,
+      "com.imd.cobolexplorer.DependencyFlow$State.equals": 6,
+      "com.imd.cobolexplorer.DependencyGraph.physicalId": 6,
+      "com.imd.cobolexplorer.DependencyFlow.finish": 6,
+      "com.imd.cobolexplorer.DependencyFlow.hasUnsupportedPredicate": 5,
+      "com.imd.cobolexplorer.Ast$SourceProvenance.hashCode": 5,
+      "com.imd.cobolexplorer.DependencyGraph.active": 5,
+      "com.imd.cobolexplorer.DependencyFlow$Exit.equals": 5,
+      "com.imd.cobolexplorer.Ast$SourceSpan.hashCode": 4,
+      "com.imd.cobolexplorer.DependencyFlow.lambda$new$37": 4,
+      "com.imd.cobolexplorer.DependencyFlow$State.<init>": 4,
+      "com.imd.cobolexplorer.DependencyFlow.restore": 4,
+      "com.imd.cobolexplorer.DependencyRelevance.encode": 4,
+      "com.imd.cobolexplorer.DependencyControl$Construction.capacity": 4,
+      "com.imd.cobolexplorer.DependencyGraph.kind": 4,
+      "com.imd.cobolexplorer.DependencyFlow$Patch$$Lambda.0x00007721a92d7660.accept": 4,
+      "com.imd.cobolexplorer.DependencyFlow.observe": 3,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92c3660.applyAsInt": 3,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92c6230.apply": 3,
+      "com.imd.cobolexplorer.DependencyFlow$Exit.hashCode": 3,
+      "com.imd.cobolexplorer.DependencyFlow$State.hashCode": 3,
+      "com.imd.cobolexplorer.DependencyEnvironment$Projection.<init>": 3,
+      "com.imd.cobolexplorer.DirectRecognizer$Memo.slot": 3,
+      "com.imd.cobolexplorer.Ast$ParseTreeOrigin.hashCode": 3,
+      "com.imd.cobolexplorer.DependencyControl$Construction.activate": 3,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology.<init>": 3,
+      "com.imd.cobolexplorer.DependencyGraph$Scope.equals": 3,
+      "com.imd.cobolexplorer.DependencyFlow$Constant.equals": 3,
+      "com.imd.cobolexplorer.DependencyEnvironment.get": 2,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology.refs": 2,
+      "com.imd.cobolexplorer.DependencyRelevance$Value.equals": 2,
+      "com.imd.cobolexplorer.DependencyFlow.expressionInputs": 2,
+      "com.imd.cobolexplorer.DirectRecognizer.match": 2,
+      "com.imd.cobolexplorer.DependencyValues.hashCode": 2,
+      "com.imd.cobolexplorer.DependencyFlow.controlDelivery": 2,
+      "com.imd.cobolexplorer.DependencyFlow.invoke": 2,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1.push": 2,
+      "com.imd.cobolexplorer.DependencyFlow.deliver": 2,
+      "com.imd.cobolexplorer.DependencyAnalyzer.analyze": 2,
+      "com.imd.cobolexplorer.ConditionNameSemantics.analyze": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Location.hashCode": 1,
+      "com.imd.cobolexplorer.DirectLedger.view": 1,
+      "com.imd.cobolexplorer.DependencyControl$Construction.offer": 1,
+      "com.imd.cobolexplorer.antlr.CobolLexer.<clinit>": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment.copyOf": 1,
+      "com.imd.cobolexplorer.DependencyFlow.exitsScope": 1,
+      "com.imd.cobolexplorer.DependencyRelevance$Point.equals": 1,
+      "com.imd.cobolexplorer.ReferenceOccurrences.<init>": 1,
+      "com.imd.cobolexplorer.ControlTopologySemantics.build": 1,
+      "com.imd.cobolexplorer.SourceDependencySemantics.maxOriginalEnd": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1.next": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Query.hashCode": 1,
+      "com.imd.cobolexplorer.ResolutionContracts$ProgramUnitId.toString": 1,
+      "com.imd.cobolexplorer.Ast$CallStatement.hashCode": 1,
+      "com.imd.cobolexplorer.ResolutionAnalysisReport.lambda$compose$0": 1,
+      "com.imd.cobolexplorer.CicsHandlerSemantics.analyze": 1,
+      "com.imd.cobolexplorer.DependencyDeclarations.<init>": 1,
+      "com.imd.cobolexplorer.SourceMap.mapped": 1,
+      "com.imd.cobolexplorer.ControlTopologySemantics$$Lambda.0x00007721a92bb788.test": 1,
+      "com.imd.cobolexplorer.DependencyFlow.ground": 1,
+      "com.imd.cobolexplorer.SourceNormalizer.normalizeFixed": 1,
+      "com.imd.cobolexplorer.CobolReferenceResolver.buildIndexes": 1,
+      "com.imd.cobolexplorer.DependencyGraph.add": 1,
+      "com.imd.cobolexplorer.DependencyGraph.scope": 1,
+      "com.imd.cobolexplorer.antlr.CobolPreprocessorParser.cobolWord": 1,
+      "com.imd.cobolexplorer.DependencyControl$Construction.add": 1,
+      "com.imd.cobolexplorer.DirectCobolParser.parse": 1,
+      "com.imd.cobolexplorer.CicsProgramControlAnalyzer.analyze": 1,
+      "com.imd.cobolexplorer.DirectRecognizer.parse": 1,
+      "com.imd.cobolexplorer.DependencyFlow$ReturnTo.hashCode": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Selection.apply": 1
+    },
+    "estimatedAllocatedBytesMain": 18323447144,
+    "allocationCategories": {
+      "control-summary": 4754342232,
+      "local-step": 4025268328,
+      "input-relevance": 3567481616,
+      "other-dataflow": 3118674032,
+      "summary-input-projection": 936865688,
+      "enqueue-and-join": 930072656,
+      "frontend-or-other-product": 578155688,
+      "query-resolution": 387753288,
+      "other-or-truncated": 22737632,
+      "state-write": 2095984
+    },
+    "allocationClasses": {
+      "java.util.HashMap": 2430277976,
+      "[Ljava.lang.Object;": 2065369704,
+      "java.util.ImmutableCollections$ListItr": 1256365768,
+      "java.util.BitSet": 1242938200,
+      "[I": 1091394432,
+      "[J": 1046771008,
+      "[Ljava.util.HashMap$Node;": 813827904,
+      "java.util.HashMap$Node": 596882696,
+      "java.util.ImmutableCollections$SetN$SetNIterator": 523583584,
+      "com.imd.cobolexplorer.DependencyEnvironment": 496743008,
+      "com.imd.cobolexplorer.DependencyControl$Construction$$Lambda.0x00007721a92cd1a8": 469313264,
+      "[Ljava.util.BitSet;": 461307960,
+      "com.imd.cobolexplorer.DependencyGraph$Scope": 461269904,
+      "com.imd.cobolexplorer.DependencyFlow$State": 380417728,
+      "com.imd.cobolexplorer.DependencyControl$Construction$$Lambda.0x00007721a92ccd28": 331636792,
+      "com.imd.cobolexplorer.DependencyFlow$Exit": 299702536,
+      "java.lang.Integer": 286358784,
+      "java.util.ArrayDeque": 280860776,
+      "[B": 260570968,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1": 249414744,
+      "org.antlr.v4.runtime.misc.FlexibleHashMap$Entry": 246552000,
+      "com.imd.cobolexplorer.DependencyRelevance$Point": 227210624,
+      "com.imd.cobolexplorer.DependencyFlow$Location": 210642392,
+      "java.util.HashMap$TreeNode": 203307064,
+      "java.util.HashMap$EntryIterator": 190733400,
+      "java.util.HashSet": 188639144,
+      "java.util.ImmutableCollections$List12": 128620856,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92d4b00": 124576920,
+      "com.imd.cobolexplorer.DependencyFlow$Scheduled": 123659584,
+      "com.imd.cobolexplorer.DependencyFlow$Selection$$Lambda.0x00007721a92d5cf0": 121566856,
+      "com.imd.cobolexplorer.DependencyEnvironment$1": 114231048,
+      "java.util.HashMap$EntrySet": 94319296,
+      "java.util.HashMap$KeyIterator": 91174904,
+      "java.util.ArrayList$Itr": 76456552,
+      "com.imd.cobolexplorer.DependencyFlow$Computation": 74407464,
+      "com.imd.cobolexplorer.DependencyGraph$$Lambda.0x00007721a92c7d88": 68238976,
+      "com.imd.cobolexplorer.DependencyEnvironment$Builder": 50303384,
+      "com.imd.cobolexplorer.DependencyFlow$DeliveryKey": 50303104,
+      "java.util.ImmutableCollections$Set12$1": 47338824,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92d6bd0": 45063840,
+      "java.lang.String": 42905944,
+      "java.util.ImmutableCollections$MapN$MapNIterator": 41919664,
+      "[Ljava.util.WeakHashMap$Entry;": 41918560,
+      "java.util.HashMap$KeySet": 37727864,
+      "java.util.ArrayList": 35499600,
+      "java.util.IdentityHashMap": 31439544,
+      "java.util.ImmutableCollections$MapN$1": 29343904,
+      "java.util.TreeMap": 28295440,
+      "com.imd.cobolexplorer.DependencyEnvironment$Node": 28292936,
+      "java.util.WeakHashMap": 27247384,
+      "[Ljava.util.concurrent.ConcurrentHashMap$Node;": 22297704,
+      "com.imd.cobolexplorer.DependencyFlow$ReturnTo": 19911760,
+      "com.imd.cobolexplorer.DependencyEnvironment$Projection": 19911744,
+      "java.lang.ref.ReferenceQueue": 18863800,
+      "java.util.concurrent.locks.ReentrantLock": 17815936,
+      "org.antlr.v4.runtime.atn.ATNConfig": 16908680,
+      "com.imd.cobolexplorer.DependencyControl$Call": 15719848,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92dd5d8": 14671952,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92ddc90": 14671888,
+      "java.util.concurrent.locks.ReentrantLock$NonfairSync": 14671816,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92d48b8": 13623936,
+      "com.imd.cobolexplorer.DependencyFlow$ResolutionKey": 13623912,
+      "com.imd.cobolexplorer.DependencyFlow$SummaryKey": 13623808,
+      "java.util.Optional": 12575968,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92ce140": 12575904,
+      "java.util.ImmutableCollections$Set12": 12323248,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92dd3a0": 11527968,
+      "com.imd.cobolexplorer.DependencyFlow$4Visit": 10479920,
+      "java.util.stream.ReferencePipeline$Head": 10000120,
+      "java.util.TreeSet": 9431952,
+      "com.imd.cobolexplorer.DependencyValues": 9431920,
+      "com.imd.cobolexplorer.DependencyRelevance$$Lambda.0x00007721a92d51a0": 9095128,
+      "java.util.ArrayDeque$$Lambda.0x00007721a9020720": 8383976,
+      "com.imd.cobolexplorer.DependencyFlow$Selection": 8383960,
+      "[Lorg.antlr.v4.runtime.atn.ATNConfig;": 8272784,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92dd168": 7335984,
+      "com.imd.cobolexplorer.DependencyFlow$Constant": 7335968,
+      "org.antlr.v4.runtime.atn.SingletonPredictionContext": 5656496,
+      "com.imd.cobolexplorer.ExplorerMain$Node": 5489648,
+      "java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject": 5239976,
+      "com.imd.cobolexplorer.DependencyControl$Construction$$Lambda.0x00007721a92cdcf8": 5239920,
+      "java.util.LinkedHashMap$Entry": 4280360,
+      "java.util.LinkedList$Node": 3396800,
+      "java.util.stream.SortedOps$OfRef": 3143952,
+      "java.util.stream.SortedOps$SizedRefSortingSink": 3143936,
+      "java.util.AbstractList$RandomAccessSpliterator": 3143888,
+      "java.util.stream.ReferencePipeline$3": 2891280,
+      "java.util.ArrayList$ArrayListSpliterator": 2424376,
+      "java.util.LinkedList": 2415504,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$Target": 2095984,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$$Lambda.0x00007721a92c1d28": 2095984,
+      "java.util.ImmutableCollections$ListN": 2095976,
+      "java.util.AbstractMap$1$1": 2095968,
+      "java.util.regex.Matcher": 2095416,
+      "com.imd.cobolexplorer.Ast$SourceLocation": 2095336,
+      "java.util.LinkedList$ListItr": 1885584,
+      "[Ljava.util.LinkedList;": 1796208,
+      "[[Lorg.antlr.v4.runtime.atn.ATNConfig;": 1711928,
+      "java.util.regex.Pattern$BmpCharPropertyGreedy": 1590680,
+      "jdk.internal.org.objectweb.asm.SymbolTable$Entry": 1377632,
+      "com.imd.cobolexplorer.Ast$SourceSpan": 1300040,
+      "[Ljava.lang.Class;": 1212240,
+      "[C": 1140088,
+      "java.lang.Long": 1048000,
+      "java.util.stream.MatchOps$1MatchSink": 1048000,
+      "com.imd.cobolexplorer.AlternateEntrySemantics$$Lambda.0x00007721a92ba1e8": 1048000,
+      "com.imd.cobolexplorer.DependencyGraph$$Lambda.0x00007721a92ccae0": 1048000,
+      "com.imd.cobolexplorer.semanticproduct.CobolSemanticProduct$Location": 1048000,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$Occurrence": 1048000,
+      "com.imd.cobolexplorer.DataAndIndexReferenceResolver$Decision": 1048000,
+      "com.imd.cobolexplorer.DependencyRelevance$Value": 1048000,
+      "java.util.stream.ReferencePipeline$3$1": 1048000,
+      "com.imd.cobolexplorer.DependencyDeclarations$$Lambda.0x00007721a92cea20": 1047992,
+      "java.util.Comparator$$Lambda.0x00007721a9264780": 1047992,
+      "com.imd.cobolexplorer.DependencyDeclarations$$Lambda.0x00007721a92aa298": 1047992,
+      "java.util.ImmutableCollections$SetN": 1047992,
+      "java.util.TreeMap$Entry": 1047992,
+      "com.imd.cobolexplorer.DependencyRelevance$Effect": 1047984,
+      "java.util.WeakHashMap$Entry": 1047976,
+      "com.imd.cobolexplorer.semanticproduct.CobolSemanticProduct$Provenance": 1047976,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$Proof": 1047976,
+      "java.lang.ref.WeakReference": 1047976,
+      "java.util.stream.Nodes$SpinedNodeBuilder": 1023872,
+      "com.imd.cobolexplorer.Ast$ModeledStatement": 795360,
+      "com.imd.cobolexplorer.DirectAstActions$$Lambda.0x00007721a92471b0": 795344,
+      "java.util.RegularEnumSet": 795336,
+      "java.lang.invoke.MemberName": 795320,
+      "com.imd.cobolexplorer.Ast$Meta": 795304,
+      "java.util.LinkedHashMap$LinkedKeyIterator": 789072,
+      "java.lang.Class": 552552,
+      "java.util.regex.Pattern": 504736,
+      "java.math.BigInteger": 504712,
+      "com.imd.cobolexplorer.Ast$SourceProvenance": 503720,
+      "java.util.stream.ReferencePipeline$4$1": 492776,
+      "com.imd.cobolexplorer.SourceNormalizer$NormalizedLine": 492616,
+      "java.util.stream.Nodes$IntFixedNodeBuilder": 328448,
+      "java.lang.Object": 256296,
+      "java.lang.WeakPairMap$Pair$Weak": 207304,
+      "org.antlr.v4.runtime.CommonToken": 206056,
+      "org.antlr.v4.runtime.atn.ATNConfigSet": 206040,
+      "java.util.jar.JarFile$JarFileEntry": 184000,
+      "com.imd.cobolexplorer.SourceNormalizer$PhysicalLine": 175304,
+      "jdk.internal.util.WeakReferenceKey": 165952,
+      "java.lang.invoke.MethodType": 164216,
+      "java.util.zip.ZipFile$ZipFileInputStream": 164208,
+      "java.util.Locale": 160920,
+      "java.util.concurrent.ConcurrentHashMap$Node": 160896,
+      "java.lang.ref.SoftReference": 160896,
+      "java.net.URL": 105464,
+      "java.util.concurrent.ConcurrentHashMap": 83464,
+      "jdk.internal.loader.URLClassPath$JarLoader$2": 80496,
+      "sun.util.locale.LanguageTag": 80472,
+      "sun.util.locale.BaseLocale$Key": 80456,
+      "jdk.internal.util.StrongReferenceKey": 80456,
+      "sun.util.locale.LocaleObjectCache$CacheEntry": 80432,
+      "jdk.internal.org.objectweb.asm.MethodWriter": 77832,
+      "jdk.internal.org.objectweb.asm.Label": 13376
+    },
+    "environmentNodeAllocationOrigins": {
+      "other-dataflow": 28292936
+    },
+    "oldObjectSamplesClasses": {
+      "java.util.HashMap$TreeNode": 68,
+      "[Ljava.lang.Object;": 18,
+      "java.util.HashMap": 17,
+      "[B": 16,
+      "com.imd.cobolexplorer.DependencyFlow$Location": 16,
+      "[Ljava.util.HashMap$Node;": 12,
+      "[I": 9,
+      "java.util.ImmutableCollections$ListItr": 7,
+      "java.util.HashMap$Node": 7,
+      "java.lang.Class": 6,
+      "[Ljava.util.BitSet;": 5,
+      "com.imd.cobolexplorer.DependencyFlow$ReturnTo": 3,
+      "[C": 3,
+      "com.imd.cobolexplorer.DependencyEnvironment$1$1": 3,
+      "[J": 3,
+      "com.imd.cobolexplorer.DependencyFlow$State": 2,
+      "java.util.ArrayList": 2,
+      "java.util.HashSet": 2,
+      "[Ljava.util.WeakHashMap$Entry;": 2,
+      "java.util.HashMap$KeySet": 2,
+      "com.imd.cobolexplorer.DependencyFlow$Constant": 1,
+      "java.util.concurrent.ConcurrentHashMap$Node": 1,
+      "org.antlr.v4.runtime.atn.LexerATNConfig": 1,
+      "com.imd.cobolexplorer.DependencyFlow$ResolutionKey": 1,
+      "org.antlr.v4.runtime.atn.RuleTransition": 1,
+      "java.lang.Integer": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Selection$$Lambda.0x00007721a92d5cf0": 1,
+      "com.imd.cobolexplorer.semanticproduct.ControlTopology$Target": 1,
+      "org.antlr.v4.runtime.CommonToken": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment": 1,
+      "java.util.concurrent.ConcurrentHashMap": 1,
+      "com.imd.cobolexplorer.DependencyRelevance$Effect": 1,
+      "jdk.internal.util.WeakReferenceKey": 1,
+      "java.lang.invoke.MemberName": 1,
+      "java.util.Optional": 1,
+      "[Lorg.antlr.v4.runtime.dfa.DFAState;": 1,
+      "com.imd.cobolexplorer.Ast$SourceLocation": 1,
+      "com.imd.cobolexplorer.DependencyEnvironment$Projection": 1,
+      "java.util.HashMap$KeyIterator": 1,
+      "[Ljava.util.concurrent.ConcurrentHashMap$Node;": 1,
+      "com.imd.cobolexplorer.DependencyFlow$$Lambda.0x00007721a92ddc90": 1,
+      "java.util.concurrent.locks.ReentrantLock$NonfairSync": 1,
+      "java.lang.String": 1,
+      "com.imd.cobolexplorer.ExplorerMain$Node": 1,
+      "java.lang.WeakPairMap$Pair$Weak": 1,
+      "com.imd.cobolexplorer.DependencyFlow$Exit": 1,
+      "java.lang.invoke.LambdaForm$Name": 1,
+      "com.imd.cobolexplorer.SourceMap$Segment": 1,
+      "java.lang.invoke.MethodType": 1,
+      "java.util.TreeMap": 1,
+      "java.util.HashMap$EntryIterator": 1,
+      "java.lang.Object": 1,
+      "[Ljava.nio.ByteBuffer;": 1,
+      "java.util.ArrayDeque": 1,
+      "com.imd.cobolexplorer.Ast$SourceProvenance": 1
+    },
+    "environmentOldObjectOrigins": {}
+  },
+  "decision": {
+    "hamtAsPrimaryFix": false,
+    "priority": [
+      "Correct general Location hash composition and qualify it",
+      "Factor exact position/payload/context relations and propagate membership deltas",
+      "Use CHAMP only where immutable map sharing is still needed"
+    ],
+    "limitations": [
+      "Post-hoc grouping is exact for sampled relations, not a verified replacement solver",
+      "Ideal trie shape counts do not measure Java memory or execution time",
+      "Control SCC/rank and caller/return relations are not captured by this dump",
+      "No general linear bound or corporate-source parity claim"
+    ]
+  },
+  "evidence": [
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/row-analysis-r2.json",
+      "sha256": "6e5b4d5d8cc35251b0f22be8f4d2e663ec48f250c650e83635810132af279be3"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/checkpoint-analysis.json",
+      "sha256": "8ae5615d2eb30e602c64c005c19435a6175c01bbfc5af72fd351c39321529f66"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/varying-analysis.json",
+      "sha256": "3ac1ea5476839211559a725f721271ad4314bf08ac7baedfd4d930b0ac31d7a3"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/production-n384-jfr.json",
+      "sha256": "8b87bd414f3620e0d50e26651c00bbb4c26e03f7dbf4eeed9cbee865d2a0cf03"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/hash-performance/summary.json",
+      "sha256": "3997a6391b0abf937fdee041c7f0c0a52790d7af0358e2ec612b89dfe2e7db6b"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/row-tests.log",
+      "sha256": "464e0ee629edf74de09ef21e4232fbcedc26588ff7cc23c470f47fe2da88c255"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/census/manifest.json",
+      "sha256": "ae4093bd86f06e7b97d286d49ecd89b5a0762e473492dce336263e5fef0f062d"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/checkpoints/manifest.json",
+      "sha256": "b9462f4e17948508f87eb8dac3c2d3382edf2291bb501cf8f4484a7e1355982b"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/hash-checkpoint/manifest.json",
+      "sha256": "4f9c60f4b129d1d103f0c4b1d17d17120e7250a61d10ea0da0adb0368b4c1d40"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/hash-performance/manifest.json",
+      "sha256": "9c0099a6168f404ee1b3443885363cf1fdb661bdc0ad5bdd211eb8d4e1eddf3f"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/live-baseline/manifest.json",
+      "sha256": "10d430ea8f12339962a1a97f4dcde4d2ce3fdc772bb379b25f6fdfef37a61f69"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/live-mixed/manifest.json",
+      "sha256": "58dcde04de9860fc96a510ec79d26afa8ca24ddded90755863b7140571fbfb0a"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/mixed-hash/manifest.json",
+      "sha256": "afc2c55e91f56fbc189f41f2c2ba6de7127b7db723fe5396d6af36a74b6561a4"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/varying-values/manifest.json",
+      "sha256": "7956570fe25af0e1222017fcf1b61414d28bc9eef4d3da97e9ca17c43b7eae66"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/census/results.json",
+      "sha256": "6ec9e876a2e1c4c78e798da8ac9a7e3f22d012bd3711f763978ba3e5b31b29ee"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/checkpoints/results.json",
+      "sha256": "f23330a1f6a1ccfb9561407814c90a376a749245d8e05e3a5ccb3b00cd6ac289"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/hash-checkpoint/results.json",
+      "sha256": "5aecd5bb272f1ea6cc529c8c3e9dbf3dee7c8a489018ae769672b2c401336981"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/hash-performance/results.json",
+      "sha256": "ad2762bcca5ccffad4b127675e607c26ab4284f68140e8f873a7c170a70939d4"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/live-baseline/results.json",
+      "sha256": "92e6547f6ea823e2ff332814d82be8df60ec9fb84c7094deb3f81be8ad900d2a"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/live-mixed/results.json",
+      "sha256": "b6b871ab21e16a24a60d5e912833273547ba2e597a0a7038005d2d87963d4680"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/mixed-hash/results.json",
+      "sha256": "635b8d87592e9d677386edbf0e310d3acff0c25f1d9ffc330c4c54a4dde7915d"
+    },
+    {
+      "path": "benchmark/results/hamt-discovery-20261009/varying-values/results.json",
+      "sha256": "f6d0c5940ce21b79ff11caa1ea839170979c3f5d585df1e37991863f58c19e3e"
+    },
+    {
+      "path": "benchmark/results/state-flyweight-20261009/flyweight-n384/return-fanout-2h-384b/profile.jfr",
+      "sha256": "7037cedee5d4cb4728a3832871e55da10ff123a93555e1e6686101329d625acc"
+    }
+  ]
+}

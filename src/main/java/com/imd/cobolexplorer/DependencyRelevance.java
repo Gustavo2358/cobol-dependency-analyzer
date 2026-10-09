@@ -2,125 +2,85 @@ package com.imd.cobolexplorer;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.IntPredicate;
+import static com.imd.cobolexplorer.DependencyGraph.Ints;
 
-/** Backward input demand over shared control. An invocation enters its own
- * endpoint; its caller's resume remains in the caller's scope. Full writes
- * kill only proven overwritten inputs; conditional writes retain passthrough
- * inputs before results join. Dense bit sets avoid copying sets of
- * declarations at every edge. The graph is immutable and extended lazily. */
+/** Backward input demand over the canonical indexed control graph. Only demand
+ * facts belong to this solver; topology, component IDs and order are shared.
+ * Conditional overwrites retain passthrough before the returning paths join. */
 final class DependencyRelevance {
     sealed interface Input permits Value,Handler,Fact { }
     record Value(int declaration) implements Input { }
     record Handler(String name) implements Input { }
     record Fact(String statement) implements Input { }
-    record Point(DependencyFlow.Exit exit,String endpoint) { }
-    record Effect(Set<Input> reads,Set<Input> kills,List<Point> successors) {
-        Effect {reads=Set.copyOf(reads);kills=Set.copyOf(kills);successors=List.copyOf(successors);}
+    record Point(DependencyFlow.Exit exit,String endpoint,String escapeScope) {
+        Point(DependencyFlow.Exit exit,String endpoint){this(exit,endpoint,"");}
     }
-    private record Node(BitSet reads,BitSet kills,List<Point> successors) { }
-    private record Overwrites(BitSet possible,BitSet definite) { }
+    record Effect(Set<Input> reads,Set<Input> kills) {
+        Effect {reads=Set.copyOf(reads);kills=Set.copyOf(kills);}
+    }
     private final Function<Point,Effect> effects;
-    private final long maxWork;
-    private long work;
-    private final Map<Input,Integer> slots=new HashMap<>();
-    private final List<Input> inputs=new ArrayList<>();
-    private final Map<Point,Node> nodes=new HashMap<>();
-    private final Map<Point,BitSet> needs=new HashMap<>();
-    private final Map<Point,Overwrites> overwrites=new HashMap<>();
-    private final Map<Point,Set<Input>> decoded=new HashMap<>();
-    private final Map<Point,Set<Point>> predecessors=new HashMap<>();
-    private final Map<Point,Integer> components=new HashMap<>();
-    private int nextComponent;
+    private final DependencyGraph graph;
+    private final long maxWork;private long work;
+    private final Map<Input,Integer> slots=new HashMap<>();private final List<Input> inputs=new ArrayList<>();
+    private final BitSet discovered=new BitSet();
+    private BitSet[] reads=new BitSet[16],kills=new BitSet[16],needs=new BitSet[16],possible=new BitSet[16],definite=new BitSet[16];
+    private final Map<Integer,Set<Input>> decoded=new HashMap<>();
+    // Stored facts are immutable. Weak interning shares equal demand across
+    // obligations without keeping obsolete iterations alive as a global cache.
+    private final DependencyFlyweight<BitSet> facts=new DependencyFlyweight<>();
+    private final BitSet empty=new BitSet();
 
-    DependencyRelevance(Function<Point,Effect> effects,long maxWork) {this.effects=effects;this.maxWork=maxWork;}
-    Set<Input> needed(Point entry) {
-        if(!nodes.containsKey(entry))extend(entry);
-        return decoded.computeIfAbsent(entry,key->{
-            var result=new HashSet<Input>();var bits=needs.get(key);
-            for(int i=bits.nextSetBit(0);i>=0;i=bits.nextSetBit(i+1))result.add(inputs.get(i));
-            return Set.copyOf(result);
-        });
+    DependencyRelevance(DependencyGraph graph,Function<Point,Effect> effects,long maxWork){this.graph=graph;this.effects=effects;this.maxWork=maxWork;}
+    Set<Input> needed(Point point) {
+        int entry=graph.id(point);if(!discovered.get(entry))extend(entry);
+        return decoded.computeIfAbsent(entry,key->{var result=new HashSet<Input>();var bits=needs[key];for(int i=bits.nextSetBit(0);i>=0;i=bits.nextSetBit(i+1))result.add(inputs.get(i));return Set.copyOf(result);});
     }
-    boolean sameComponent(Point a,Point b) {
-        needed(a);needed(b);return components.get(a).equals(components.get(b));
-    }
+    boolean sameComponent(Point a,Point b){return graph.component(graph.id(a))==graph.component(graph.id(b));}
     private BitSet encode(Set<Input> values) {
-        var bits=new BitSet();for(var value:values) {
-            Integer slot=slots.get(value);
-            if(slot==null){slot=inputs.size();slots.put(value,slot);inputs.add(value);}
-            bits.set(slot);
-        }return bits;
+        var bits=new BitSet();for(var value:values)bits.set(slots.computeIfAbsent(value,k->{int id=inputs.size();inputs.add(k);return id;}));return retain(bits);
     }
-    private void tick() {
-        if(++work>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: input relevance exceeded --max-work="+maxWork);
+    private BitSet retain(BitSet bits) {
+        if(bits.isEmpty())return empty;
+        return facts.retain(bits);
     }
-    private void extend(Point entry) {
-        var added=new HashSet<Point>();var pending=new ArrayDeque<Point>();pending.add(entry);
+    private void tick(){if(++work>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: input relevance exceeded --max-work="+maxWork);}
+    private void capacity(int id) {
+        if(id<needs.length)return;int n=Math.max(id+1,needs.length*2);reads=Arrays.copyOf(reads,n);kills=Arrays.copyOf(kills,n);needs=Arrays.copyOf(needs,n);possible=Arrays.copyOf(possible,n);definite=Arrays.copyOf(definite,n);
+    }
+    private void extend(int entry) {
+        var added=new BitSet();var pending=new Ints();pending.add(entry);
         while(!pending.isEmpty()) {
-            var point=pending.removeFirst();if(nodes.containsKey(point))continue;tick();
-            var effect=effects.apply(point);var node=new Node(encode(effect.reads()),encode(effect.kills()),effect.successors());
-            nodes.put(point,node);needs.put(point,new BitSet());
-            overwrites.put(point,new Overwrites(new BitSet(),new BitSet()));added.add(point);
-            for(var child:node.successors()) {
-                predecessors.computeIfAbsent(child,k->new HashSet<>()).add(point);pending.add(child);
-            }
+            int point=pending.remove();if(discovered.get(point))continue;tick();capacity(point);discovered.set(point);added.set(point);
+            var effect=effects.apply(graph.point(point));reads[point]=encode(effect.reads());kills[point]=encode(effect.kills());needs[point]=empty;possible[point]=empty;definite[point]=empty;
+            for(long e=graph.outgoing(point);e>=0;e=graph.outNext(e))pending.add(graph.target(e));
         }
-        // Successors precede parents. Acyclic chains need a single pass rather
-        // than propagating each newly discovered operand through every prefix.
-        var order=new ArrayList<Point>();var seen=new HashSet<Point>();
-        record Visit(Point point,Iterator<Point> successors) { }
-        var stack=new ArrayDeque<Visit>();
-        for(var root:added)if(seen.add(root)) {
-            stack.push(new Visit(root,nodes.get(root).successors().iterator()));
-            while(!stack.isEmpty()) {
-                var top=stack.peek();
-                if(top.successors().hasNext()) {
-                    var child=top.successors().next();
-                    if(added.contains(child)&&seen.add(child))stack.push(new Visit(child,nodes.get(child).successors().iterator()));
-                }else{order.add(top.point());stack.pop();}
-            }
-        }
-        // Existing nodes have a closed successor graph: no existing component
-        // can acquire a back edge to this extension. Their IDs stay valid.
-        for(int i=order.size()-1;i>=0;i--) {
-            var root=order.get(i);if(components.containsKey(root))continue;
-            int component=nextComponent++;components.put(root,component);pending.add(root);
-            while(!pending.isEmpty())for(var parent:predecessors.getOrDefault(pending.removeFirst(),Set.of()))
-                if(added.contains(parent)&&!components.containsKey(parent)){components.put(parent,component);pending.add(parent);}
-        }
-        // A conditional overwrite also returns the original value on its
-        // untouched path. Keep that input before joining results, regardless of
-        // which branch happens to reach the worklist first. Invocation/resume
-        // edges conservatively intersect guarantees, without assuming a callee
-        // overwrites a value on every returning path.
+        // A closed successor subset has the same SCCs and postorder as the
+        // canonical graph. No topology or reverse relation is rebuilt here.
+        var order=new Ints();for(int point:graph.postorder())if(added.get(point)){order.add(point);added.clear(point);}
+        for(int point=added.nextSetBit(0);point>=0;point=added.nextSetBit(point+1))order.add(point); // Isolated query points.
         propagate(order,point->{
-            var node=nodes.get(point);var possible=(BitSet)node.kills().clone();BitSet definite=null;
-            for(var child:node.successors()) {
-                var writes=overwrites.get(child);possible.or(writes.possible());
-                if(definite==null)definite=(BitSet)writes.definite().clone();else definite.and(writes.definite());
+            var writes=(BitSet)kills[point].clone();BitSet guaranteed=null;
+            for(long e=graph.outgoing(point);e>=0;e=graph.outNext(e)) {
+                int child=graph.target(e);writes.or(possible[child]);if(guaranteed==null)guaranteed=(BitSet)definite[child].clone();else guaranteed.and(definite[child]);
             }
-            if(definite==null)definite=new BitSet();definite.or(node.kills());
-            var old=overwrites.get(point);
-            if(possible.equals(old.possible())&&definite.equals(old.definite()))return false;
-            overwrites.put(point,new Overwrites(possible,definite));return true;
+            if(guaranteed==null)guaranteed=new BitSet();guaranteed.or(kills[point]);
+            if(writes.equals(possible[point])&&guaranteed.equals(definite[point]))return false;
+            possible[point]=retain(writes);definite[point]=retain(guaranteed);return true;
         });
         propagate(order,point->{
-            var node=nodes.get(point);var next=new BitSet();
-            for(var child:node.successors())next.or(needs.get(child));
-            next.andNot(node.kills());next.or(node.reads());
-            var writes=overwrites.get(point);var passthrough=(BitSet)writes.possible().clone();
-            passthrough.andNot(writes.definite());next.or(passthrough);
-            if(next.equals(needs.get(point)))return false;
-            needs.put(point,next);decoded.remove(point);return true;
+            var next=new BitSet();for(long e=graph.outgoing(point);e>=0;e=graph.outNext(e))next.or(needs[graph.target(e)]);
+            next.andNot(kills[point]);next.or(reads[point]);var passthrough=(BitSet)possible[point].clone();passthrough.andNot(definite[point]);next.or(passthrough);
+            if(next.equals(needs[point]))return false;needs[point]=retain(next);decoded.remove(point);return true;
         });
     }
-    private void propagate(List<Point> order,Predicate<Point> update) {
-        var pending=new ArrayDeque<>(order);var scheduled=new HashSet<>(order);
+    private void propagate(Ints order,IntPredicate update) {
+        var pending=new Ints();var scheduled=new BitSet();for(int i=0;i<order.size();i++){int point=order.get(i);pending.add(point);scheduled.set(point);}
         while(!pending.isEmpty()) {
-            tick();var point=pending.removeFirst();scheduled.remove(point);
-            if(!update.test(point))continue;
-            for(var parent:predecessors.getOrDefault(point,Set.of()))if(scheduled.add(parent))pending.addLast(parent);
+            tick();int point=pending.remove();scheduled.clear(point);if(!update.test(point))continue;
+            for(long e=graph.incoming(point);e>=0;e=graph.inNext(e)) {
+                int parent=graph.source(e);if(discovered.get(parent)&&!scheduled.get(parent)){scheduled.set(parent);pending.add(parent);}
+            }
         }
     }
 }

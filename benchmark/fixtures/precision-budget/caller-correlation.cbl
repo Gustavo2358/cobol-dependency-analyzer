@@ -1,0 +1,23 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CALLERCORRELATION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 FLAG PIC X.
+       01 LOOP-FLAG PIC 9 VALUE 0.
+       01 TARGET PIC X(8).
+       PROCEDURE DIVISION.
+       MAIN.
+       MOVE '0' TO FLAG.
+       PERFORM BODY.
+       CALL TARGET.
+       MOVE '1' TO FLAG.
+       PERFORM BODY.
+       GOBACK.
+       BODY.
+       IF FLAG = '0'
+       MOVE 'ONLY' TO TARGET
+       ELSE
+       MOVE 'UNOBS' TO TARGET
+       END-IF.
+       IF LOOP-FLAG = 1 GO TO BODY END-IF.
+       EXIT.
