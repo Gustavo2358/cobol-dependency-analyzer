@@ -1,0 +1,12 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. ORIGIN-GROUP.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 DEST.
+          05 PART-A PIC X(4) VALUE 'ABCD'.
+          05 PART-B PIC X(4) VALUE 'EFGH'.
+       PROCEDURE DIVISION.
+           MOVE '12345678' TO DEST.
+           MOVE 'WXYZ' TO PART-A.
+           CALL DEST.
+           GOBACK.
