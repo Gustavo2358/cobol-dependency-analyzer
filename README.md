@@ -98,7 +98,11 @@ Resultados temporários são descartados antes das fases seguintes. Observação
 ciclos, ordenação e relevância consomem o mesmo grafo; não há cópia final dos
 planos nem reconstrução de adjacência por fase. Fatos iguais de relevância usam
 compartilhamento imutável com referências fracas, e a fila calcula a prioridade
-uma vez por item. Há um único caminho de produção, sem seletor especial para hubs.
+uma vez por item. Estados inteiramente iguais também compartilham o mesmo
+payload imutável em um pool local à análise, com chave e valor fracos. A igualdade
+inclui valores conhecidos/desconhecidos, parâmetros, handlers, fatos e guardas;
+posições e continuadores de cada chamador permanecem separados. O mesmo pool
+serve aos fatos de relevância. Há um único caminho de produção, sem seletor especial para hubs.
 
 A [medição das duas etapas](benchmark/compact-factor-control-20261009.md) compara
 essa representação com a versão que armazenava pontos e adjacências por endpoint.
@@ -106,7 +110,10 @@ As combinações lógicas, relações de saída e trabalho de valores ainda pode
 crescer quadraticamente. Compartilhar a topologia reduz memória e trabalho
 repetido, mas não estabelece convergência para qualquer programa ou escala. A
 [ampliação com heap de 4 GiB](benchmark/factored-large-heap-scale-20261009.md)
-confirma N=384 e registra N=512 como inconclusivo por proteção do host.
+confirma N=384 e registra N=512 como inconclusivo por proteção do host. A
+[avaliação de flyweight](benchmark/state-flyweight-20261009.md) elimina payloads
+de estado repetidos, com economia pequena de memória retida nesta família;
+as obrigações distintas continuam crescendo.
 
 Consultar uma dependência continua usando o estado anterior à instrução. Grupos
 conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam

@@ -1,0 +1,974 @@
+{
+  "baselineCommit": "935c9b9f295c4d6ce525edd95e569f54d2f8a39c",
+  "implementationCommit": "5a925160d921efa8c756484783d7e058513bbe87",
+  "baselineJarSha256": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41",
+  "flyweightJarSha256": "e623c8788d47a89552601bfa5e23699419fda5bcace51b97a99a94b73eb00dac",
+  "census": {
+    "baseline": {
+      "rows": [
+        {
+          "field": "locationNodes",
+          "identities": 1546,
+          "equalClasses": 1546
+        },
+        {
+          "references": 468523,
+          "identities": 4893,
+          "equalClasses": 5,
+          "before": 397324,
+          "contexts": 515
+        },
+        {
+          "field": "values",
+          "identities": 4634,
+          "equalClasses": 5
+        },
+        {
+          "field": "parameters",
+          "identities": 4893,
+          "equalClasses": 1
+        },
+        {
+          "field": "handlers",
+          "identities": 1,
+          "equalClasses": 1
+        },
+        {
+          "field": "reached",
+          "identities": 1,
+          "equalClasses": 1
+        },
+        {
+          "field": "controls",
+          "identities": 1,
+          "equalClasses": 1
+        }
+      ],
+      "liveBytes": 133823384,
+      "classes": {
+        "[Ljava.util.BitSet;": {
+          "instances": 5,
+          "bytes": 34355880
+        },
+        "[I": {
+          "instances": 5462,
+          "bytes": 33011464
+        },
+        "java.util.HashMap$TreeNode": {
+          "instances": 387166,
+          "bytes": 21681296
+        },
+        "com.imd.cobolexplorer.DependencyFlow$Location": {
+          "instances": 397324,
+          "bytes": 12714368
+        },
+        "[Ljava.util.HashMap$Node;": {
+          "instances": 2815,
+          "bytes": 5294688
+        },
+        "[B": {
+          "instances": 62434,
+          "bytes": 4024384
+        },
+        "java.util.HashMap$Node": {
+          "instances": 109879,
+          "bytes": 3516128
+        },
+        "com.imd.cobolexplorer.DependencyFlow$ReturnTo": {
+          "instances": 65792,
+          "bytes": 2105344
+        },
+        "[Ljava.lang.Object;": {
+          "instances": 35630,
+          "bytes": 1882920
+        },
+        "com.imd.cobolexplorer.ExplorerMain$Node": {
+          "instances": 26616,
+          "bytes": 1703424
+        },
+        "java.lang.String": {
+          "instances": 61373,
+          "bytes": 1472952
+        },
+        "java.lang.Class": {
+          "instances": 5565,
+          "bytes": 674144
+        },
+        "[Ljdk.internal.vm.FillerElement;": {
+          "instances": 9642,
+          "bytes": 599240
+        },
+        "org.antlr.v4.runtime.CommonToken": {
+          "instances": 11980,
+          "bytes": 575040
+        },
+        "[J": {
+          "instances": 2487,
+          "bytes": 509928
+        },
+        "java.util.ImmutableCollections$ListN": {
+          "instances": 19616,
+          "bytes": 470784
+        },
+        "java.util.concurrent.ConcurrentHashMap$Node": {
+          "instances": 11893,
+          "bytes": 380576
+        },
+        "com.imd.cobolexplorer.Ast$SourceLocation": {
+          "instances": 11882,
+          "bytes": 380224
+        },
+        "org.antlr.v4.runtime.atn.BasicState": {
+          "instances": 7028,
+          "bytes": 281120
+        },
+        "java.util.ArrayList": {
+          "instances": 11601,
+          "bytes": 278424
+        },
+        "com.imd.cobolexplorer.Ast$SourceSpan": {
+          "instances": 6463,
+          "bytes": 258520
+        },
+        "com.imd.cobolexplorer.DependencyEnvironment": {
+          "instances": 9527,
+          "bytes": 228648
+        },
+        "java.lang.Integer": {
+          "instances": 13739,
+          "bytes": 219824
+        },
+        "org.antlr.v4.runtime.atn.EpsilonTransition": {
+          "instances": 8991,
+          "bytes": 215784
+        },
+        "java.util.ImmutableCollections$List12": {
+          "instances": 8257,
+          "bytes": 198168
+        },
+        "com.imd.cobolexplorer.DependencyFlow$State": {
+          "instances": 4893,
+          "bytes": 195720
+        },
+        "com.imd.cobolexplorer.Ast$SourceProvenance": {
+          "instances": 5941,
+          "bytes": 190112
+        },
+        "com.imd.cobolexplorer.semanticproduct.CobolSemanticProduct$Location": {
+          "instances": 5674,
+          "bytes": 181568
+        },
+        "org.antlr.v4.runtime.atn.RuleTransition": {
+          "instances": 5477,
+          "bytes": 175264
+        },
+        "com.imd.cobolexplorer.Ast$Meta": {
+          "instances": 5429,
+          "bytes": 173728
+        },
+        "[Ljava.util.WeakHashMap$Entry;": {
+          "instances": 2090,
+          "bytes": 167840
+        },
+        "com.imd.cobolexplorer.DependencyFlow$Exit": {
+          "instances": 6172,
+          "bytes": 148128
+        },
+        "[Lorg.antlr.v4.runtime.dfa.DFAState;": {
+          "instances": 240,
+          "bytes": 137472
+        },
+        "com.imd.cobolexplorer.Ast$ParseTreeOrigin": {
+          "instances": 5429,
+          "bytes": 130296
+        },
+        "com.imd.cobolexplorer.semanticproduct.ControlTopology$Target": {
+          "instances": 5398,
+          "bytes": 129552
+        },
+        "com.imd.cobolexplorer.SourceMap$Segment": {
+          "instances": 2396,
+          "bytes": 115008
+        },
+        "org.antlr.v4.runtime.atn.LexerATNConfig": {
+          "instances": 2653,
+          "bytes": 106120
+        },
+        "java.util.LinkedHashMap": {
+          "instances": 1593,
+          "bytes": 101952
+        },
+        "java.util.LinkedHashMap$Entry": {
+          "instances": 2541,
+          "bytes": 101640
+        },
+        "java.util.TreeMap": {
+          "instances": 2092,
+          "bytes": 100416
+        },
+        "java.util.WeakHashMap": {
+          "instances": 2085,
+          "bytes": 100080
+        },
+        "com.imd.cobolexplorer.DependencyEnvironment$Node": {
+          "instances": 2068,
+          "bytes": 82720
+        },
+        "com.imd.cobolexplorer.DependencyEnvironment$Projection": {
+          "instances": 2061,
+          "bytes": 65952
+        }
+      },
+      "manifest": {
+        "sourceRef": "HEAD",
+        "originalSourceSha256": "0a6c1c4ebfb52e982690e35146323cc29f276dc0453d2728d444d4452b26d9c1",
+        "probeSourceSha256": "0f125873ad8dbfc34f1f11c9f8dcd7f2e8d9a23ba56c2bd7dc12e24107c8ad78",
+        "jarSha256": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/javac",
+          "-J-Xmx128m",
+          "--release",
+          "17",
+          "-cp",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/compact-factor-control-20261009/final.jar",
+          "-d",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/full-baseline-census-r2/classes",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/full-baseline-census-r2/source/com/imd/cobolexplorer/DependencyFlow.java"
+        ],
+        "timingQualified": false,
+        "intervention": "Exact equality and identity census, followed by forced live GC histogram; equations unchanged"
+      },
+      "histogramSha256": "60bc27c108a8f9dbdb8d025a1ae4607130def2cbe77d7abb3e11ab091e1e3040",
+      "passed": true,
+      "histogramClassCount": 1884,
+      "classSelection": "Classes >= 100000 live bytes plus State and Environment; complete histogram preserved with SHA256"
+    },
+    "flyweight": {
+      "rows": [
+        {
+          "field": "locationNodes",
+          "identities": 1546,
+          "equalClasses": 1546
+        },
+        {
+          "references": 468523,
+          "identities": 5,
+          "equalClasses": 5,
+          "before": 397324,
+          "contexts": 515
+        },
+        {
+          "field": "values",
+          "identities": 5,
+          "equalClasses": 5
+        },
+        {
+          "field": "parameters",
+          "identities": 5,
+          "equalClasses": 1
+        },
+        {
+          "field": "handlers",
+          "identities": 1,
+          "equalClasses": 1
+        },
+        {
+          "field": "reached",
+          "identities": 1,
+          "equalClasses": 1
+        },
+        {
+          "field": "controls",
+          "identities": 1,
+          "equalClasses": 1
+        }
+      ],
+      "liveBytes": 133342648,
+      "classes": {
+        "[Ljava.util.BitSet;": {
+          "instances": 5,
+          "bytes": 34355880
+        },
+        "[I": {
+          "instances": 5462,
+          "bytes": 33011480
+        },
+        "java.util.HashMap$TreeNode": {
+          "instances": 387166,
+          "bytes": 21681296
+        },
+        "com.imd.cobolexplorer.DependencyFlow$Location": {
+          "instances": 397324,
+          "bytes": 12714368
+        },
+        "[Ljava.util.HashMap$Node;": {
+          "instances": 2815,
+          "bytes": 5294688
+        },
+        "[B": {
+          "instances": 62456,
+          "bytes": 4024968
+        },
+        "java.util.HashMap$Node": {
+          "instances": 109879,
+          "bytes": 3516128
+        },
+        "com.imd.cobolexplorer.DependencyFlow$ReturnTo": {
+          "instances": 65792,
+          "bytes": 2105344
+        },
+        "[Ljava.lang.Object;": {
+          "instances": 35630,
+          "bytes": 1882920
+        },
+        "com.imd.cobolexplorer.ExplorerMain$Node": {
+          "instances": 26616,
+          "bytes": 1703424
+        },
+        "java.lang.String": {
+          "instances": 61395,
+          "bytes": 1473480
+        },
+        "java.lang.Class": {
+          "instances": 5566,
+          "bytes": 674256
+        },
+        "[Ljdk.internal.vm.FillerElement;": {
+          "instances": 9117,
+          "bytes": 591280
+        },
+        "org.antlr.v4.runtime.CommonToken": {
+          "instances": 11980,
+          "bytes": 575040
+        },
+        "[J": {
+          "instances": 2487,
+          "bytes": 509928
+        },
+        "java.util.ImmutableCollections$ListN": {
+          "instances": 19616,
+          "bytes": 470784
+        },
+        "java.util.concurrent.ConcurrentHashMap$Node": {
+          "instances": 11938,
+          "bytes": 382016
+        },
+        "com.imd.cobolexplorer.Ast$SourceLocation": {
+          "instances": 11882,
+          "bytes": 380224
+        },
+        "org.antlr.v4.runtime.atn.BasicState": {
+          "instances": 7028,
+          "bytes": 281120
+        },
+        "java.util.ArrayList": {
+          "instances": 11601,
+          "bytes": 278424
+        },
+        "com.imd.cobolexplorer.Ast$SourceSpan": {
+          "instances": 6463,
+          "bytes": 258520
+        },
+        "java.lang.Integer": {
+          "instances": 13739,
+          "bytes": 219824
+        },
+        "org.antlr.v4.runtime.atn.EpsilonTransition": {
+          "instances": 8991,
+          "bytes": 215784
+        },
+        "java.util.ImmutableCollections$List12": {
+          "instances": 8257,
+          "bytes": 198168
+        },
+        "com.imd.cobolexplorer.Ast$SourceProvenance": {
+          "instances": 5941,
+          "bytes": 190112
+        },
+        "com.imd.cobolexplorer.semanticproduct.CobolSemanticProduct$Location": {
+          "instances": 5674,
+          "bytes": 181568
+        },
+        "org.antlr.v4.runtime.atn.RuleTransition": {
+          "instances": 5477,
+          "bytes": 175264
+        },
+        "com.imd.cobolexplorer.Ast$Meta": {
+          "instances": 5429,
+          "bytes": 173728
+        },
+        "[Ljava.util.WeakHashMap$Entry;": {
+          "instances": 2091,
+          "bytes": 167920
+        },
+        "com.imd.cobolexplorer.DependencyFlow$Exit": {
+          "instances": 6172,
+          "bytes": 148128
+        },
+        "[Lorg.antlr.v4.runtime.dfa.DFAState;": {
+          "instances": 240,
+          "bytes": 137472
+        },
+        "com.imd.cobolexplorer.Ast$ParseTreeOrigin": {
+          "instances": 5429,
+          "bytes": 130296
+        },
+        "com.imd.cobolexplorer.semanticproduct.ControlTopology$Target": {
+          "instances": 5398,
+          "bytes": 129552
+        },
+        "com.imd.cobolexplorer.SourceMap$Segment": {
+          "instances": 2396,
+          "bytes": 115008
+        },
+        "org.antlr.v4.runtime.atn.LexerATNConfig": {
+          "instances": 2653,
+          "bytes": 106120
+        },
+        "java.util.LinkedHashMap": {
+          "instances": 1593,
+          "bytes": 101952
+        },
+        "java.util.LinkedHashMap$Entry": {
+          "instances": 2541,
+          "bytes": 101640
+        },
+        "[Ljava.util.concurrent.ConcurrentHashMap$Node;": {
+          "instances": 92,
+          "bytes": 101408
+        },
+        "java.util.TreeMap": {
+          "instances": 2092,
+          "bytes": 100416
+        },
+        "java.util.WeakHashMap": {
+          "instances": 2086,
+          "bytes": 100128
+        },
+        "com.imd.cobolexplorer.DependencyEnvironment$Node": {
+          "instances": 2066,
+          "bytes": 82640
+        },
+        "com.imd.cobolexplorer.DependencyEnvironment$Projection": {
+          "instances": 2061,
+          "bytes": 65952
+        },
+        "com.imd.cobolexplorer.DependencyEnvironment": {
+          "instances": 10,
+          "bytes": 240
+        },
+        "com.imd.cobolexplorer.DependencyFlow$State": {
+          "instances": 5,
+          "bytes": 200
+        }
+      },
+      "manifest": {
+        "sourceRef": "working",
+        "originalSourceSha256": "e10bffb651af61842bf4b81f0b5fe483fe7d6459f05caa7b379c72f83125aa1a",
+        "probeSourceSha256": "90ecf14f354bedb2a33b75a5252cece4e9251aa2cfa29a036591ca5a85a4e0df",
+        "jarSha256": "e623c8788d47a89552601bfa5e23699419fda5bcace51b97a99a94b73eb00dac",
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/javac",
+          "-J-Xmx128m",
+          "--release",
+          "17",
+          "-cp",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight.jar",
+          "-d",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-census/classes",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-census/source/com/imd/cobolexplorer/DependencyFlow.java"
+        ],
+        "timingQualified": false,
+        "intervention": "Exact equality and identity census, followed by forced live GC histogram; equations unchanged"
+      },
+      "histogramSha256": "a8dded383104b5dd73a77e5f34ce28ae54db76a422c7d7419b4854133a57c899",
+      "passed": true,
+      "histogramClassCount": 1885,
+      "classSelection": "Classes >= 100000 live bytes plus State and Environment; complete histogram preserved with SHA256"
+    }
+  },
+  "benchmarks": {
+    "254": {
+      "baseline": {
+        "exit": 0,
+        "guard": null,
+        "seconds": 24.03840478201164,
+        "peakRssKiB": 993884,
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms16m",
+          "-Xmx1024m",
+          "-XX:MaxMetaspaceSize=128m",
+          "-XX:MaxDirectMemorySize=32m",
+          "-XX:StartFlightRecording=settings=profile,duration=150s,maxsize=24m,filename=/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n254/return-fanout-2h-254b/profile.jfr",
+          "-Xlog:gc:file=/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n254/return-fanout-2h-254b/gc.log",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/compact-factor-control-20261009/final.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n254/return-fanout-2h-254b.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n254/return-fanout-2h-254b/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n254/return-fanout-2h-254b/metrics.jsonl",
+          "--max-work",
+          "1000000000"
+        ],
+        "observedCpuSeconds": 41.54,
+        "rssGuardMiB": 1536,
+        "systemReserveMiB": 2048,
+        "id": "return-fanout-2h-254b",
+        "boxes": 254,
+        "hubs": 2,
+        "mode": "return-fanout",
+        "sourceSha256": "062f095088a82dcfc77d6c246b55d869f762ca2f1cb06d11c5b3bc23534f78c8",
+        "jarSha256": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41",
+        "passed": true,
+        "diagnosticAblation": false,
+        "diagnosticInterventions": [],
+        "productionQualified": true,
+        "failure": null,
+        "metrics": {
+          "parseNanos": 825924222,
+          "bindingNanos": 204545943,
+          "cfgNanos": 213502712,
+          "dataflowNanos": 22225631343,
+          "resolutionNanos": 3733651,
+          "totalNanos": 23478875589,
+          "workItems": 2074179,
+          "contexts": 1019,
+          "trackedDeclarations": 3,
+          "evaluations": 3058,
+          "reusedEvaluations": 1552956,
+          "instantiationEvaluations": 0,
+          "resolutionWorkItems": 258572,
+          "parametricCalculations": 0,
+          "specializedDeclarations": 3,
+          "controlSummaries": 3626626,
+          "physicalControlNodes": 7126,
+          "physicalControlEdges": 9159,
+          "controlObligations": 509,
+          "controlResultColumns": 1017,
+          "controlWorkItems": 57442,
+          "controlResultPairs": 517144,
+          "controlResultFacts": 7241557,
+          "resultDeliveries": 517655,
+          "decisionNodes": 0,
+          "predicateInputs": 0,
+          "decisionOperations": 0,
+          "liftedOperations": 0,
+          "materializedTableElements": 0,
+          "tableDemandPasses": 1
+        },
+        "gcPauseMs": 611.108
+      },
+      "flyweight": {
+        "exit": 0,
+        "guard": null,
+        "seconds": 25.35641482999199,
+        "peakRssKiB": 991436,
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms16m",
+          "-Xmx1024m",
+          "-XX:MaxMetaspaceSize=128m",
+          "-XX:MaxDirectMemorySize=32m",
+          "-XX:StartFlightRecording=settings=profile,duration=150s,maxsize=24m,filename=/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n254/return-fanout-2h-254b/profile.jfr",
+          "-Xlog:gc:file=/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n254/return-fanout-2h-254b/gc.log",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n254/return-fanout-2h-254b.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n254/return-fanout-2h-254b/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n254/return-fanout-2h-254b/metrics.jsonl",
+          "--max-work",
+          "1000000000"
+        ],
+        "observedCpuSeconds": 43.32,
+        "rssGuardMiB": 1536,
+        "systemReserveMiB": 2048,
+        "id": "return-fanout-2h-254b",
+        "boxes": 254,
+        "hubs": 2,
+        "mode": "return-fanout",
+        "sourceSha256": "062f095088a82dcfc77d6c246b55d869f762ca2f1cb06d11c5b3bc23534f78c8",
+        "jarSha256": "e623c8788d47a89552601bfa5e23699419fda5bcace51b97a99a94b73eb00dac",
+        "passed": true,
+        "diagnosticAblation": false,
+        "diagnosticInterventions": [],
+        "productionQualified": true,
+        "failure": null,
+        "metrics": {
+          "parseNanos": 795370070,
+          "bindingNanos": 195674374,
+          "cfgNanos": 228365395,
+          "dataflowNanos": 23579667702,
+          "resolutionNanos": 3611930,
+          "totalNanos": 24808463556,
+          "workItems": 2074179,
+          "contexts": 1019,
+          "trackedDeclarations": 3,
+          "evaluations": 3058,
+          "reusedEvaluations": 1552956,
+          "instantiationEvaluations": 0,
+          "resolutionWorkItems": 258572,
+          "parametricCalculations": 0,
+          "specializedDeclarations": 3,
+          "controlSummaries": 3626626,
+          "physicalControlNodes": 7126,
+          "physicalControlEdges": 9159,
+          "controlObligations": 509,
+          "controlResultColumns": 1017,
+          "controlWorkItems": 57442,
+          "controlResultPairs": 517144,
+          "controlResultFacts": 7241557,
+          "resultDeliveries": 517655,
+          "decisionNodes": 0,
+          "predicateInputs": 0,
+          "decisionOperations": 0,
+          "liftedOperations": 0,
+          "materializedTableElements": 0,
+          "tableDemandPasses": 1
+        },
+        "gcPauseMs": 661.64
+      },
+      "identicalJson": true,
+      "identicalWorkCounters": true
+    },
+    "384": {
+      "baseline": {
+        "exit": 0,
+        "guard": null,
+        "seconds": 59.284480984002585,
+        "peakRssKiB": 2075012,
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms16m",
+          "-Xmx4096m",
+          "-XX:MaxMetaspaceSize=128m",
+          "-XX:MaxDirectMemorySize=32m",
+          "-XX:StartFlightRecording=settings=profile,duration=180s,maxsize=24m,filename=/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n384/return-fanout-2h-384b/profile.jfr",
+          "-Xlog:gc:file=/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n384/return-fanout-2h-384b/gc.log",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/compact-factor-control-20261009/final.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n384/return-fanout-2h-384b.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n384/return-fanout-2h-384b/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/baseline-n384/return-fanout-2h-384b/metrics.jsonl",
+          "--max-work",
+          "1000000000"
+        ],
+        "observedCpuSeconds": 86.63,
+        "rssGuardMiB": 2304,
+        "systemReserveMiB": 2048,
+        "id": "return-fanout-2h-384b",
+        "boxes": 384,
+        "hubs": 2,
+        "mode": "return-fanout",
+        "sourceSha256": "989ee2d0dc99bf9ee39fe4c18b9a653660fd225b233e981beb472b9f32079d50",
+        "jarSha256": "56896d52a204fe933a50e18fffc8fa3b383b0f0f10cc1ef4b67badcf0deefb41",
+        "passed": true,
+        "diagnosticAblation": false,
+        "diagnosticInterventions": [],
+        "productionQualified": true,
+        "failure": null,
+        "metrics": {
+          "parseNanos": 943956328,
+          "bindingNanos": 233651284,
+          "cfgNanos": 318611360,
+          "dataflowNanos": 57151558736,
+          "resolutionNanos": 6681885,
+          "totalNanos": 58661476156,
+          "workItems": 4733199,
+          "contexts": 1539,
+          "trackedDeclarations": 3,
+          "evaluations": 4618,
+          "reusedEvaluations": 3545856,
+          "instantiationEvaluations": 0,
+          "resolutionWorkItems": 590592,
+          "parametricCalculations": 0,
+          "specializedDeclarations": 3,
+          "controlSummaries": 8278286,
+          "physicalControlNodes": 10766,
+          "physicalControlEdges": 13839,
+          "controlObligations": 769,
+          "controlResultColumns": 1537,
+          "controlWorkItems": 86822,
+          "controlResultPairs": 1181184,
+          "controlResultFacts": 16538897,
+          "resultDeliveries": 1181955,
+          "decisionNodes": 0,
+          "predicateInputs": 0,
+          "decisionOperations": 0,
+          "liftedOperations": 0,
+          "materializedTableElements": 0,
+          "tableDemandPasses": 1
+        },
+        "gcPauseMs": 1204.738
+      },
+      "flyweight": {
+        "exit": 0,
+        "guard": null,
+        "seconds": 57.466634645010345,
+        "peakRssKiB": 2003384,
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms16m",
+          "-Xmx4096m",
+          "-XX:MaxMetaspaceSize=128m",
+          "-XX:MaxDirectMemorySize=32m",
+          "-XX:StartFlightRecording=settings=profile,duration=180s,maxsize=24m,filename=/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n384/return-fanout-2h-384b/profile.jfr",
+          "-Xlog:gc:file=/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n384/return-fanout-2h-384b/gc.log",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n384/return-fanout-2h-384b.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n384/return-fanout-2h-384b/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight-n384/return-fanout-2h-384b/metrics.jsonl",
+          "--max-work",
+          "1000000000"
+        ],
+        "observedCpuSeconds": 84.51,
+        "rssGuardMiB": 2304,
+        "systemReserveMiB": 2048,
+        "id": "return-fanout-2h-384b",
+        "boxes": 384,
+        "hubs": 2,
+        "mode": "return-fanout",
+        "sourceSha256": "989ee2d0dc99bf9ee39fe4c18b9a653660fd225b233e981beb472b9f32079d50",
+        "jarSha256": "e623c8788d47a89552601bfa5e23699419fda5bcace51b97a99a94b73eb00dac",
+        "passed": true,
+        "diagnosticAblation": false,
+        "diagnosticInterventions": [],
+        "productionQualified": true,
+        "failure": null,
+        "metrics": {
+          "parseNanos": 971361308,
+          "bindingNanos": 241721670,
+          "cfgNanos": 310105963,
+          "dataflowNanos": 55299695129,
+          "resolutionNanos": 7196189,
+          "totalNanos": 56837088618,
+          "workItems": 4733199,
+          "contexts": 1539,
+          "trackedDeclarations": 3,
+          "evaluations": 4618,
+          "reusedEvaluations": 3545856,
+          "instantiationEvaluations": 0,
+          "resolutionWorkItems": 590592,
+          "parametricCalculations": 0,
+          "specializedDeclarations": 3,
+          "controlSummaries": 8278286,
+          "physicalControlNodes": 10766,
+          "physicalControlEdges": 13839,
+          "controlObligations": 769,
+          "controlResultColumns": 1537,
+          "controlWorkItems": 86822,
+          "controlResultPairs": 1181184,
+          "controlResultFacts": 16538897,
+          "resultDeliveries": 1181955,
+          "decisionNodes": 0,
+          "predicateInputs": 0,
+          "decisionOperations": 0,
+          "liftedOperations": 0,
+          "materializedTableElements": 0,
+          "tableDemandPasses": 1
+        },
+        "gcPauseMs": 1152.637
+      },
+      "identicalJson": true,
+      "identicalWorkCounters": true
+    }
+  },
+  "rawRoot": "benchmark/results/state-flyweight-20261009",
+  "limits": [
+    "Live census on N=128 only; forced GC invalidates its timing",
+    "One profiled production run per version and scale; RSS and timing differences are indicative",
+    "No N=512 retry: host protections from previous runs remain inconclusive, not analyzer OOM",
+    "Flyweight does not reduce distinct position/context obligations; unique-state payloads incur weak pool metadata"
+  ],
+  "validation": {
+    "focused": {
+      "tests": 77,
+      "failures": 0,
+      "errors": 0,
+      "suites": [
+        "DependencyFlyweightTest",
+        "DependencyEnvironmentTest",
+        "DependencySummaryTest",
+        "DependencyControlTest",
+        "DependencyPreservationTest"
+      ],
+      "logSha256": "ae819954faa0f431189ab98a84f3e605bd3d38f05e5d7450b671f3f3126b22e8"
+    },
+    "carddemo": {
+      "sources": 73,
+      "passed": 73,
+      "equal": 815,
+      "missing": 0,
+      "additional": 0,
+      "partial": 47,
+      "seconds": 130.28431029993226,
+      "peakRssKiB": 330104,
+      "heapMiB": 256,
+      "rssGuardMiB": 512,
+      "systemReserveMiB": 2048,
+      "timeoutSeconds": 45,
+      "maxWork": 100000000,
+      "jarSha256": "e623c8788d47a89552601bfa5e23699419fda5bcace51b97a99a94b73eb00dac",
+      "inputHashesSha256": "752e15fbabdb6d0a24913036fc01ad35810a4c0f6ed66a7f1e779afecade7f96",
+      "frozenInputHashesSha256": "752e15fbabdb6d0a24913036fc01ad35810a4c0f6ed66a7f1e779afecade7f96"
+    },
+    "standalone": [
+      {
+        "exit": 0,
+        "guard": null,
+        "seconds": 1.768789816997014,
+        "peakRssKiB": 238868,
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms16m",
+          "-Xmx256m",
+          "-XX:MaxMetaspaceSize=128m",
+          "-XX:MaxDirectMemorySize=32m",
+          "-XX:+ExitOnOutOfMemoryError",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/fixture02-profiling-20261008/original-bounded/input.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/standalone/fixture02/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/standalone/fixture02/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "observedCpuSeconds": 5.81,
+        "telemetry": [
+          {
+            "seconds": 0.00021291698794811964,
+            "rssKiB": 284,
+            "cpuSeconds": 0.0,
+            "availableKiB": 3585860
+          },
+          {
+            "seconds": 1.0108789560035802,
+            "rssKiB": 201712,
+            "cpuSeconds": 3.0,
+            "availableKiB": 3476604
+          }
+        ],
+        "rssGuardMiB": 640,
+        "systemReserveMiB": 2048,
+        "id": "fixture02",
+        "passed": true,
+        "sourceSha256": "71408d8c98ae04600f119ad98fd3e16c3066c20babdec8c4ab6ada8632a9c9d3",
+        "jarSha256": "e623c8788d47a89552601bfa5e23699419fda5bcace51b97a99a94b73eb00dac"
+      },
+      {
+        "exit": 0,
+        "guard": null,
+        "seconds": 0.8083450050035026,
+        "peakRssKiB": 135764,
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms16m",
+          "-Xmx256m",
+          "-XX:MaxMetaspaceSize=128m",
+          "-XX:MaxDirectMemorySize=32m",
+          "-XX:+ExitOnOutOfMemoryError",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/fixtures/control-return-fanout/escape-ablation-sentinel.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/standalone/escape-sentinel/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/standalone/escape-sentinel/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "observedCpuSeconds": 2.1,
+        "telemetry": [
+          {
+            "seconds": 0.0002640899911057204,
+            "rssKiB": 280,
+            "cpuSeconds": 0.0,
+            "availableKiB": 3585732
+          }
+        ],
+        "rssGuardMiB": 640,
+        "systemReserveMiB": 2048,
+        "id": "escape-sentinel",
+        "passed": true,
+        "sourceSha256": "fb537c66af17c380f77216e25232cb4a5601d56ba0bade16eceeea346d0dfc9a",
+        "jarSha256": "e623c8788d47a89552601bfa5e23699419fda5bcace51b97a99a94b73eb00dac"
+      },
+      {
+        "exit": 0,
+        "guard": null,
+        "seconds": 1.314345361024607,
+        "peakRssKiB": 178540,
+        "command": [
+          "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+          "-Xms16m",
+          "-Xmx256m",
+          "-XX:MaxMetaspaceSize=128m",
+          "-XX:MaxDirectMemorySize=32m",
+          "-XX:+ExitOnOutOfMemoryError",
+          "-jar",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/flyweight.jar",
+          "--source",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/fixtures/hub-dispatch/literal-255.cbl",
+          "--output",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/standalone/hub-255/dependencies.json",
+          "--metrics",
+          "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/state-flyweight-20261009/standalone/hub-255/metrics.jsonl",
+          "--max-work",
+          "100000000"
+        ],
+        "observedCpuSeconds": 4.03,
+        "telemetry": [
+          {
+            "seconds": 0.00026479101506993175,
+            "rssKiB": 280,
+            "cpuSeconds": 0.0,
+            "availableKiB": 3598312
+          },
+          {
+            "seconds": 1.0111790810187813,
+            "rssKiB": 157880,
+            "cpuSeconds": 2.96,
+            "availableKiB": 3519828
+          }
+        ],
+        "rssGuardMiB": 640,
+        "systemReserveMiB": 2048,
+        "id": "hub-255",
+        "passed": true,
+        "sourceSha256": "765efcf97db1ae75e4482a50f46c3dc67c6e2efb81c3efc14b2cba91d94ef50a",
+        "jarSha256": "e623c8788d47a89552601bfa5e23699419fda5bcace51b97a99a94b73eb00dac"
+      }
+    ],
+    "smoke": {
+      "passed": true,
+      "logSha256": "dfc3ee562883f3b0fd1ce06077a283c5a9de1e9b9e94ffa6e6e7b0455edcf8c9"
+    },
+    "fast": {
+      "passed": true,
+      "suites": 142,
+      "tests": 1093,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "logSha256": "5cc9b8554cff6b4d6a690cf7b877d991207d194aeb6699d5082cb5603b0621ac"
+    },
+    "qualifiedClassCount": 2508,
+    "qualifiedClassesByteIdenticalToFrozenJar": true
+  }
+}
