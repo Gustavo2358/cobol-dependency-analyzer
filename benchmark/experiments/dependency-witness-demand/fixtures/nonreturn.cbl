@@ -1,0 +1,11 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. WNONRETURN.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 P PIC X(8).
+       PROCEDURE DIVISION.
+       PERFORM DIE.
+       CALL 'DEAD'.
+       GOBACK.
+       DIE.
+       GOBACK.
