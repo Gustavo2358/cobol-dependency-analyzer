@@ -213,8 +213,9 @@ public record ControlTopology(String authority, List<Occurrence> occurrences,
                 for(var edge:fps.get(id).targets())if(edge.kind()==TargetKind.FILE_POINT)pending.addLast(edge.reference());}
             require(seen.size()==flow.points().size(),"orphan FILE point");
         }
+        var members=new HashMap<String,Set<String>>();rs.forEach((id,r)->members.put(id,new HashSet<>(r.members())));
         for(var o:occurrences){refs(o.proofs(),ps);require(rs.containsKey(o.region()),"occurrence region");refs(o.outcomes(),es);
-            require(rs.get(o.region()).members().contains(o.statement()),"inventoried region member");
+            require(members.get(o.region()).contains(o.statement()),"inventoried region member");
             // A role selects one published outcome; opaque IDs never break a tie.
             var roles=new HashSet<String>();
             for(var id:o.outcomes()) {

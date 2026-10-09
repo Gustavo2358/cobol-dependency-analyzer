@@ -18,7 +18,9 @@ public final class ControlTopologySemantics {
     private final Map<Integer,String> paragraphIds=new HashMap<>();
     private final Map<Integer,Ast.Section> sections=new LinkedHashMap<>();
     private final Map<Integer,String> sectionIds=new HashMap<>();
+    private final Map<String,Integer> sectionDeclarations=new HashMap<>();
     private final List<Integer> procedureOrder=new ArrayList<>();
+    private final Map<Integer,Integer> procedurePositions=new HashMap<>(),sectionEnds=new HashMap<>();
     private final Map<Integer,String> paragraphOwners=new HashMap<>();
     private final Map<String,Ast.Section> declarativeRegions=new TreeMap<>();
     private final Map<String,Occurrence> occurrences=new TreeMap<>();
@@ -70,6 +72,13 @@ public final class ControlTopologySemantics {
                     targetDeclarations.put(ref.occurrence().referenceAstNodeId(),symbol.declarationAstNodeId());});
         }
         collectParagraphs(division,root);
+        sectionIds.forEach((id,region)->sectionDeclarations.put(region,id));
+        for(int i=0;i<procedureOrder.size();i++) {
+            int declaration=procedureOrder.get(i);procedurePositions.put(declaration,i);
+            if(sectionIds.containsKey(declaration))sectionEnds.put(declaration,i);
+            String owner=paragraphOwners.get(declaration);
+            if(sectionDeclarations.containsKey(owner))sectionEnds.put(sectionDeclarations.get(owner),i);
+        }
         paragraphs.forEach(p->paragraphIds.put(p.meta().id(),"region:paragraph:"+p.meta().id()));
     }
     private void collectParagraphs(Ast.Node node,String owner) {
@@ -105,15 +114,14 @@ public final class ControlTopologySemantics {
             sentences(section.children().stream().filter(Ast.Sentence.class::isInstance).map(Ast.Sentence.class::cast).toList(),id,tail,isolation);
         }
         // Each paragraph default is the canonical ordinary relation, not transported list order.
-        for(var p:paragraphs) {
-            String id=paragraphIds.get(p.meta().id());var ps=proof(id,ProofKind.LOCAL_GRAMMAR,"paragraph-boundary",p.meta().provenance(),List.of(isolation));
+        for(int ordinal=0;ordinal<paragraphs.size();ordinal++) {
+            var p=paragraphs.get(ordinal);String id=paragraphIds.get(p.meta().id());var ps=proof(id,ProofKind.LOCAL_GRAMMAR,"paragraph-boundary",p.meta().provenance(),List.of(isolation));
             var direct=p.sentences().stream().flatMap(s->s.statements().stream()).toList();
             String owner=paragraphOwners.get(p.meta().id());
             Target after=unknown(owner,ps);
-            int ordinal=paragraphs.indexOf(p);
             if(ordinal+1<paragraphs.size()&&paragraphOwners.get(paragraphs.get(ordinal+1).meta().id()).equals(owner))
                 after=entry(paragraphIds.get(paragraphs.get(ordinal+1).meta().id()),ps);
-            else if(sectionIds.containsValue(owner))after=complete(owner,ps);
+            else if(sectionDeclarations.containsKey(owner))after=complete(owner,ps);
             else if(owner.equals(root)&&!sectionList.isEmpty())after=entry(sectionIds.get(sectionList.get(0).meta().id()),ps);
             makeRegion(id,RegionKind.PARAGRAPH,owner,direct,after,ps);
             sentences(p.sentences(),id,complete(id,ps),isolation);
@@ -135,7 +143,9 @@ public final class ControlTopologySemantics {
         fileRoutes();
         openControlDestinations();
         openConditionRestorations();
-        for(var r:new ArrayList<>(regions.values()))regions.put(r.id(),new Region(r.id(),r.kind(),r.parent(),r.entry(),occurrences.values().stream().filter(o->o.region().equals(r.id())).map(Occurrence::statement).toList(),
+        var members=new HashMap<String,List<String>>();
+        occurrences.values().forEach(o->members.computeIfAbsent(o.region(),k->new ArrayList<>()).add(o.statement()));
+        for(var r:new ArrayList<>(regions.values()))regions.put(r.id(),new Region(r.id(),r.kind(),r.parent(),r.entry(),members.getOrDefault(r.id(),List.of()),
             r.kind()==RegionKind.RANGE?r.regions():subregions.getOrDefault(r.id(),List.of()).stream().sorted().toList(),r.boundary(),r.proofs()));
         return new ControlTopology(fileFlows.isEmpty()?"FRONTEND_CONTROL_TOPOLOGY_R1":"FRONTEND_CONTROL_TOPOLOGY_R2",List.copyOf(occurrences.values()),List.copyOf(regions.values()),
             List.copyOf(boundaries.values()),List.copyOf(outcomes.values()),List.copyOf(bindings.values()),List.copyOf(proofs.values()),exceptionalEvents,fileFlows,sourceContinuations,entryPoints,conditionRegistrations,conditionEvents);
@@ -250,11 +260,10 @@ public final class ControlTopologySemantics {
             if(s instanceof Ast.PerformStatement perform&&perform.performKind()==Ast.PerformKind.PROCEDURE) {
                 var from=perform.fromReference()==null?null:targetDeclarations.get(perform.fromReference().meta().id());
                 var to=perform.throughReference()==null?from:targetDeclarations.get(perform.throughReference().meta().id());
-                int first=procedureOrder.indexOf(from),last=procedureOrder.indexOf(to);
+                int first=procedurePositions.getOrDefault(from,-1),last=procedurePositions.getOrDefault(to,-1);
                 // A SECTION endpoint is its completion, after its paragraphs;
                 // its header may precede the starting paragraph of a valid THRU.
-                if(sectionIds.containsKey(to))while(last+1<procedureOrder.size()
-                        &&sectionIds.get(to).equals(paragraphOwners.get(procedureOrder.get(last+1))))last++;
+                if(sectionIds.containsKey(to))last=sectionEnds.get(to);
                 if(first>=0&&last>=first&&procedureOwner(from).equals(procedureOwner(to))) {
                     String range="region:"+id+"/range",binding="binding:"+id;
                     var resolution=proof(binding,ProofKind.RESOLVED_TARGET,"resolved-ordered-paragraph-range",perform.meta().provenance(),List.of(p));
@@ -463,7 +472,7 @@ public final class ControlTopologySemantics {
     private String procedureRegion(Integer id) { return sectionIds.getOrDefault(id,paragraphIds.get(id)); }
     private String procedureOwner(Integer id) {
         if(sectionIds.containsKey(id))return root;
-        String owner=paragraphOwners.get(id);return sectionIds.containsValue(owner)?root:owner;
+        String owner=paragraphOwners.get(id);return sectionDeclarations.containsKey(owner)?root:owner;
     }
     private void conditionEvent(Ast.Statement statement,Target continuation,String premise) {
         if(cics==null)return;var command=cics.fact(unit.id(),statement.meta().id()).orElse(null);

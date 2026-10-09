@@ -1,5 +1,18 @@
 # Medições locais
 
+[Fixture de combinações de controle](control-signatures-20261009.md):
+dez flags em IFs provocam 2.048 contextos; doze provocam 8.192, mantendo somente
+duas dependências. O controle com as flags usadas como dados fica em 12 e 14
+contextos. Dez casos completos, heap 512 MiB, maior RSS final 246,6 MiB, sem OOM.
+
+[Compartilhamento do fluxo entre entradas](shared-flow-20261009.md):
+resumos paramétricos de dados e controle balanceado compartilhado. Com 400
+entradas, 401 → 2 contextos, 28.002 → 1.668 visitas, tempo interno −46,3% e
+400 dependências preservadas. A FIXTURE02 original termina com 25 contextos
+e 200 visitas, heap 512 MiB; seus CALLs são inalcançáveis após PERFORMs sem retorno.
+FAST 1.055, discovery 40/40 e CardDemo 73/73, com 815 relações e os mesmos
+47 PARTIAL. Assinaturas distintas de controle/recorrência ainda podem crescer.
+
 As evidências históricas abaixo são [cópias anonimizadas](../docs/identity-redaction.md).
 Contagens e resultados foram preservados; caminhos e identificadores são
 substituições documentais. Consulte o manifest para os hashes das cópias.
@@ -111,3 +124,26 @@ python3 -B benchmark/summarize.py benchmark/results/carddemo benchmark/results/r
 
 Omitir o terceiro argumento de run-reference.py usa o consumidor congelado.
 Os testes Maven e o smoke do JAR não dependem de nenhum desses repositórios.
+
+## Discovery de frontend e solver
+
+[Discovery de 8/10/2026](frontend-solver-discovery-20261008.md): 40 fixtures
+comparados entre a CLI original e cópias instrumentadas, sem mudanças de
+produção. Isola projeções excessivas, fechamento por endpoint, custos
+quadráticos do frontend e crescimento combinatório real de contextos.
+Inclui a ordem recomendada de correções e evidência bruta local preservada.
+
+## Relevância e índices
+
+[Correção de 8/10/2026](relevance-fix-20261008.md): relevância compartilhada
+com READ/KILL e preservação de caminhos intactos, endpoint próprio do callee,
+consultas indexadas por consumidor e índices do frontend. Um único solver
+permanece canônico. Inclui os contraexemplos corrigidos, os 40 controles de
+discovery, CardDemo 73/73 e matrizes 30/30 e 20/20 com paridade preservada.
+O fechamento grande de relevância passa de 3.912,1 para 506,7 ms; combinações
+realmente observadas ainda mantêm seus 524.288 contextos.
+
+[Profiling da FIXTURE02](fixture02-profiling-20261008.md): OOM confirmado em
+ambas as versões com 4 GiB. JFR, histogramas vivos, contadores e controles
+limitados a 512 MiB localizam multiplicação de contextos e reconstrução dos
+ambientes de entrada. A melhoria de relevância não resolve esse finding.

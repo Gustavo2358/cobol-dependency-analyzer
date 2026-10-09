@@ -1,0 +1,786 @@
+{
+  "purpose": "A linear-source fixture that exposes combinatorial growth of specialized predicate signatures, with an otherwise equivalent data-only control. No production change.",
+  "productionCommit": "88dbd63c7adab0705e8443ad16d98f6303c23614",
+  "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+  "oracle": {
+    "names": [
+      "ONE00000",
+      "ZERO0000"
+    ],
+    "dependencyCount": 2,
+    "diagnostics": [],
+    "reason": "Each INPUT is unknown; either flag value can reach the terminating BODY, and these are the only program names used."
+  },
+  "java": "Temurin 21.0.12+1.1",
+  "heapMiB": 512,
+  "metaspaceMiB": 256,
+  "directMemoryMiB": 64,
+  "maxWork": 1000000,
+  "rssGuardMiB": 640,
+  "timeoutSeconds": 30,
+  "sequential": true,
+  "repetitionsPerCase": 1,
+  "scales": [
+    4,
+    6,
+    8,
+    10,
+    12
+  ],
+  "measurements": [
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.108796505985083,
+      "peakRssKiB": 142748,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/cases/flags-04-predicates.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-04-predicates/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-04-predicates/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 4,
+      "mode": "predicates",
+      "sourceSha256": "373c31c06b6ac64cde27ac31d260246e7c487063b0eb009e3464a476aed7e366",
+      "sourceLines": 78,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 16,
+      "metrics": {
+        "parseNanos": 521818233,
+        "bindingNanos": 70212734,
+        "cfgNanos": 51230747,
+        "dataflowNanos": 75982031,
+        "resolutionNanos": 1988531,
+        "totalNanos": 725920027,
+        "workItems": 268,
+        "contexts": 32,
+        "trackedDeclarations": 8,
+        "evaluations": 43,
+        "reusedEvaluations": 193,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 0,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 8,
+        "controlSummaries": 109,
+        "controlWorkItems": 221,
+        "resultDeliveries": 32
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-04-predicates.cbl",
+            "line": 59
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-04-predicates.cbl",
+            "line": 61
+          }
+        }
+      ],
+      "outputSha256": "50822aa94d2c2aedfa9f4a484e32f355016bca06e65171e66766c89ee95b31da",
+      "passed": true
+    },
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.1058779259910807,
+      "peakRssKiB": 127148,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/cases/flags-04-data.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-04-data/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-04-data/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 4,
+      "mode": "data",
+      "sourceSha256": "83de5e20251b720ea0bb05f343f7691d62d1af2e4fa1d3a5e1faa2a024360451",
+      "sourceLines": 62,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 16,
+      "metrics": {
+        "parseNanos": 568075228,
+        "bindingNanos": 70437071,
+        "cfgNanos": 51101833,
+        "dataflowNanos": 74012384,
+        "resolutionNanos": 1740220,
+        "totalNanos": 770384688,
+        "workItems": 41,
+        "contexts": 6,
+        "trackedDeclarations": 8,
+        "evaluations": 31,
+        "reusedEvaluations": 0,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 24,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 4,
+        "controlSummaries": 81,
+        "controlWorkItems": 165,
+        "resultDeliveries": 10
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-04-data.cbl",
+            "line": 58
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-04-data.cbl",
+            "line": 58
+          }
+        }
+      ],
+      "outputSha256": "bc8f8958a8668f93eeb418a445ece0f4e1f5fa938b625cd0fec37ad941ac3e4a",
+      "passed": true
+    },
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.1048414940014482,
+      "peakRssKiB": 148532,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/cases/flags-06-predicates.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-06-predicates/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-06-predicates/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 6,
+      "mode": "predicates",
+      "sourceSha256": "0a3f8594f7fd1596adc72918aaff8555dabf74f66b6e821d2bc9944e874bda4f",
+      "sourceLines": 110,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 64,
+      "metrics": {
+        "parseNanos": 556542796,
+        "bindingNanos": 67168346,
+        "cfgNanos": 56164445,
+        "dataflowNanos": 86925592,
+        "resolutionNanos": 1657690,
+        "totalNanos": 773673329,
+        "workItems": 1340,
+        "contexts": 128,
+        "trackedDeclarations": 12,
+        "evaluations": 63,
+        "reusedEvaluations": 1149,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 0,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 12,
+        "controlSummaries": 159,
+        "controlWorkItems": 323,
+        "resultDeliveries": 128
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-06-predicates.cbl",
+            "line": 81
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-06-predicates.cbl",
+            "line": 83
+          }
+        }
+      ],
+      "outputSha256": "7e507561d6cb28a0713e2c7aacce30a74ecd15e4cbef93acd3fa493668612bdb",
+      "passed": true
+    },
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.1050713220029138,
+      "peakRssKiB": 138632,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/cases/flags-06-data.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-06-data/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-06-data/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 6,
+      "mode": "data",
+      "sourceSha256": "a9383887c40fc8738813acf4821868167a48dd97eb6bef613af7e67278205d42",
+      "sourceLines": 86,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 64,
+      "metrics": {
+        "parseNanos": 557168804,
+        "bindingNanos": 68653272,
+        "cfgNanos": 41623892,
+        "dataflowNanos": 65736586,
+        "resolutionNanos": 1532453,
+        "totalNanos": 739495719,
+        "workItems": 59,
+        "contexts": 8,
+        "trackedDeclarations": 12,
+        "evaluations": 45,
+        "reusedEvaluations": 0,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 48,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 6,
+        "controlSummaries": 117,
+        "controlWorkItems": 239,
+        "resultDeliveries": 14
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-06-data.cbl",
+            "line": 80
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-06-data.cbl",
+            "line": 80
+          }
+        }
+      ],
+      "outputSha256": "91381826aa43d30db5cc31b8d0cbae66384b0e5f322748f4981aae83dc770ed5",
+      "passed": true
+    },
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.2063903200032655,
+      "peakRssKiB": 156624,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/cases/flags-08-predicates.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-08-predicates/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-08-predicates/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 8,
+      "mode": "predicates",
+      "sourceSha256": "824edc79dab7905d69294e9a05d521b020939f23c63d9edb3cc3db72189f1acc",
+      "sourceLines": 142,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 256,
+      "metrics": {
+        "parseNanos": 561617201,
+        "bindingNanos": 63168123,
+        "cfgNanos": 53223325,
+        "dataflowNanos": 178990396,
+        "resolutionNanos": 1976048,
+        "totalNanos": 863007224,
+        "workItems": 6396,
+        "contexts": 512,
+        "trackedDeclarations": 16,
+        "evaluations": 83,
+        "reusedEvaluations": 5801,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 0,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 16,
+        "controlSummaries": 209,
+        "controlWorkItems": 425,
+        "resultDeliveries": 512
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-08-predicates.cbl",
+            "line": 103
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-08-predicates.cbl",
+            "line": 105
+          }
+        }
+      ],
+      "outputSha256": "51abd267447eb745635336c4d6a8b06d1cc188260a7a10291a60c606985af249",
+      "passed": true
+    },
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.00402779399883,
+      "peakRssKiB": 135064,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/cases/flags-08-data.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-08-data/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-08-data/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 8,
+      "mode": "data",
+      "sourceSha256": "7b7f3792678bc211c2bd28332224f026aa2022bd2076e58c403b458211aa4a71",
+      "sourceLines": 110,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 256,
+      "metrics": {
+        "parseNanos": 486566753,
+        "bindingNanos": 58560947,
+        "cfgNanos": 46038769,
+        "dataflowNanos": 79647807,
+        "resolutionNanos": 1740570,
+        "totalNanos": 676275611,
+        "workItems": 77,
+        "contexts": 10,
+        "trackedDeclarations": 16,
+        "evaluations": 59,
+        "reusedEvaluations": 0,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 80,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 8,
+        "controlSummaries": 153,
+        "controlWorkItems": 313,
+        "resultDeliveries": 18
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-08-data.cbl",
+            "line": 102
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-08-data.cbl",
+            "line": 102
+          }
+        }
+      ],
+      "outputSha256": "2544e66383335fdc538325731fcff0e6799d4a49c874d0f357515dc590bbe7de",
+      "passed": true
+    },
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.2051921839884017,
+      "peakRssKiB": 148540,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/control-signatures/flags-10-predicates.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-10-predicates/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-10-predicates/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 10,
+      "mode": "predicates",
+      "sourceSha256": "6c2c4e3d3086ba3f02b989c5b3e9a612c57713c4eba1b530b54afae38e19a37c",
+      "sourceLines": 174,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 1024,
+      "metrics": {
+        "parseNanos": 472258781,
+        "bindingNanos": 54184600,
+        "cfgNanos": 40852090,
+        "dataflowNanos": 350648598,
+        "resolutionNanos": 1691070,
+        "totalNanos": 923238153,
+        "workItems": 29692,
+        "contexts": 2048,
+        "trackedDeclarations": 20,
+        "evaluations": 103,
+        "reusedEvaluations": 27541,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 0,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 20,
+        "controlSummaries": 259,
+        "controlWorkItems": 527,
+        "resultDeliveries": 2048
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-10-predicates.cbl",
+            "line": 125
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-10-predicates.cbl",
+            "line": 127
+          }
+        }
+      ],
+      "outputSha256": "61bd3863c1fbda7521976832ffa239169e2c479a1bbffe402728c27a9b01db70",
+      "passed": true
+    },
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.0039175229903776,
+      "peakRssKiB": 125564,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/control-signatures/flags-10-data.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-10-data/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-10-data/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 10,
+      "mode": "data",
+      "sourceSha256": "e372f7329453db5444a742dcf248937212f28baa6bf9498d83dcfdb54a066ff3",
+      "sourceLines": 134,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 1024,
+      "metrics": {
+        "parseNanos": 537538980,
+        "bindingNanos": 73380787,
+        "cfgNanos": 42018208,
+        "dataflowNanos": 67374631,
+        "resolutionNanos": 1377722,
+        "totalNanos": 725169034,
+        "workItems": 95,
+        "contexts": 12,
+        "trackedDeclarations": 20,
+        "evaluations": 73,
+        "reusedEvaluations": 0,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 120,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 10,
+        "controlSummaries": 189,
+        "controlWorkItems": 387,
+        "resultDeliveries": 22
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-10-data.cbl",
+            "line": 124
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-10-data.cbl",
+            "line": 124
+          }
+        }
+      ],
+      "outputSha256": "b7d9472a6c1406524458da363de5c6333d62d0099904103da1938b6e3069d6fd",
+      "passed": true
+    },
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 1.80870106301154,
+      "peakRssKiB": 252508,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/cases/flags-12-predicates.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-12-predicates/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-12-predicates/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 12,
+      "mode": "predicates",
+      "sourceSha256": "d0184e8b4ba53a2c9d8d9f6787ffe493907429cbfe3d58feb69a1bd70ea32229",
+      "sourceLines": 206,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 4096,
+      "metrics": {
+        "parseNanos": 455539522,
+        "bindingNanos": 57992123,
+        "cfgNanos": 44497950,
+        "dataflowNanos": 944579737,
+        "resolutionNanos": 1420689,
+        "totalNanos": 1507950061,
+        "workItems": 135164,
+        "contexts": 8192,
+        "trackedDeclarations": 24,
+        "evaluations": 123,
+        "reusedEvaluations": 126849,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 0,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 24,
+        "controlSummaries": 309,
+        "controlWorkItems": 629,
+        "resultDeliveries": 8192
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-12-predicates.cbl",
+            "line": 147
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-12-predicates.cbl",
+            "line": 149
+          }
+        }
+      ],
+      "outputSha256": "eb4b8332cfe2e166c7345664e3396f73c057775ba35731502c6d02d264d4d2cc",
+      "passed": true
+    },
+    {
+      "exit": 0,
+      "guard": null,
+      "seconds": 0.9034955739916768,
+      "peakRssKiB": 116056,
+      "command": [
+        "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+        "-Xms16m",
+        "-Xmx512m",
+        "-XX:MaxMetaspaceSize=256m",
+        "-XX:MaxDirectMemorySize=64m",
+        "-XX:+ExitOnOutOfMemoryError",
+        "-jar",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/target/cobol-dependency-analyzer.jar",
+        "--source",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/cases/flags-12-data.cbl",
+        "--output",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-12-data/dependencies.json",
+        "--metrics",
+        "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/control-signatures-20261009/runs/flags-12-data/metrics.jsonl",
+        "--max-work",
+        "1000000"
+      ],
+      "flags": 12,
+      "mode": "data",
+      "sourceSha256": "145ee5c1a39233ae3b765e73531419ffa501eba4f0df6479ee96c83724322e4c",
+      "sourceLines": 158,
+      "jarSha256": "afae3a62c961dd5ae03a0cc29cbbfe9fca6d1aa54e0952d017431e0608ad200f",
+      "possibleBodyInputs": 4096,
+      "metrics": {
+        "parseNanos": 434559667,
+        "bindingNanos": 51769395,
+        "cfgNanos": 37464149,
+        "dataflowNanos": 72576476,
+        "resolutionNanos": 1389063,
+        "totalNanos": 601159464,
+        "workItems": 113,
+        "contexts": 14,
+        "trackedDeclarations": 24,
+        "evaluations": 87,
+        "reusedEvaluations": 0,
+        "instantiationEvaluations": 0,
+        "resolutionWorkItems": 168,
+        "parametricCalculations": 0,
+        "specializedDeclarations": 12,
+        "controlSummaries": 225,
+        "controlWorkItems": 461,
+        "resultDeliveries": 26
+      },
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ONE00000",
+          "at": {
+            "file": "flags-12-data.cbl",
+            "line": 146
+          }
+        },
+        {
+          "type": "program",
+          "name": "ZERO0000",
+          "at": {
+            "file": "flags-12-data.cbl",
+            "line": 146
+          }
+        }
+      ],
+      "outputSha256": "2d0ec6b38e421704107427f18b3545dd32345639fc2f4bcb51a15e85d9115879",
+      "passed": true
+    }
+  ],
+  "observedContexts": {
+    "predicates": "2**(flags+1), including intermediate paragraphs and root",
+    "data": "flags+2"
+  },
+  "peakRssKiB": 252508,
+  "qualification": {
+    "changeClass": "C1 fixture and test/oracle only",
+    "focusedSuite": "DependencySummaryTest",
+    "focusedTests": 31,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cliCases": 10,
+    "cliPassed": 10,
+    "docsPassed": true,
+    "namingPassed": true,
+    "namingTests": 19,
+    "productionAndJarUnchanged": true,
+    "fullFastAndCarddemoRerun": false,
+    "priorProductionQualification": "benchmark/shared-flow-20261009.json",
+    "reasonForNoBroadRerun": "Only fixture, generator, semantic oracle and parent test changed; production bytecode is identical to the previously qualified JAR."
+  },
+  "remainingLimits": [
+    "This reproduces count growth; no OOM attempted and no flags above12 executed.",
+    "Single execution per case: timings are descriptive, not statistical performance estimates.",
+    "Does not establish how common this pattern is in production COBOL.",
+    "No conditional-flow solution is implemented by this change."
+  ],
+  "preservedNamingGateFailure": {
+    "directory": "before-naming-fix",
+    "reason": "Fixture comments and README used a measurement-directory path forbidden by the repository naming guard. References were corrected; the guard was unchanged; final source hashes and runs were regenerated."
+  },
+  "preservedMeasurementHarnessFailure": {
+    "directory": "attempt1",
+    "reason": "The harness initially expected an absolute provenance filename; the product uses the source basename. The path assertion was corrected without changing dependencies or production."
+  },
+  "qualifiedSourceSha256": {
+    "README.md": "fece8f6784f2b28f9caf2399286f80bedcce68f8bfd83cb38f2d746673131129",
+    "benchmark/generate-control-signatures.py": "61ba5a6a3ec982b9bddc9c7738ab5ae43915584e15bc2e9df99d255d7d88727c",
+    "src/test/java/com/imd/cobolexplorer/DependencySummaryTest.java": "f3f95e55ac6e5cab42ed2f04a11f7696216146acc2759cc83d7d473c17ee8b8f",
+    "src/test/resources/dependency-regression/control-signatures/flags-10-predicates.cbl": "6c2c4e3d3086ba3f02b989c5b3e9a612c57713c4eba1b530b54afae38e19a37c",
+    "src/test/resources/dependency-regression/control-signatures/flags-10-data.cbl": "e372f7329453db5444a742dcf248937212f28baa6bf9498d83dcfdb54a066ff3",
+    "src/test/resources/dependency-regression/control-signatures/expected.json": "04c7fa96dc972207b274d4f27576bdb8f8334288500531a1eaea632cf4af8eab",
+    "src/test/resources/dependency-regression/control-signatures/README.md": "046a9d22d43761622d10ecfa6ed7a4c8fb167cd8677d8d6708989e19850ebf4e",
+    "src/test/resources/dependency-regression/README.md": "c35dcf954748b393ed67c98dafb26cb2a3dac119b985da9695aa1fdfef2493c6",
+    "benchmark/README.md": "0ffac860422b8ec526ae949b3a0fd9fc40b20d28ae458f992a68e8b8bb1132bd",
+    "benchmark/control-signatures-20261009.md": "b4664d667689a6e888ab79cb456a0e285379db717bcd5ed3e947e58820fed473"
+  },
+  "rawEvidenceDirectory": "benchmark/results/control-signatures-20261009",
+  "rawEvidenceManifestSha256": "0fc1cf8f0dc1d5689abd58b74559277e87eb89e3a8577836229e8be3d6248540",
+  "rawEvidenceFileCount": 162,
+  "rawEvidenceArchive": "benchmark/results/control-signatures-20261009.tar.gz",
+  "rawEvidenceArchiveSha256": "4da0e961c604a63710c82738c374768f2901e5f74c9a053d0685a67e6729f7a3",
+  "rawEvidenceArchiveBytes": 76169
+}

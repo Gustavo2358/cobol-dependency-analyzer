@@ -29,15 +29,44 @@ atribuírem nomes diferentes, ambos permanecem candidatos.
 
 O dataflow usa um único solver de resumos, com uma worklist até o ponto fixo.
 Cada resumo é identificado por entrada de controle normalizada, endpoint de
-retorno e estado relevante. Parágrafos alcançados por fallthrough, GO TO,
+retorno e entradas que precisam determinar o controle ou uma recorrência.
+As demais entradas relevantes são parâmetros: valores diferentes podem usar
+o mesmo fluxo e receber resultados específicos. Parágrafos alcançados por fallthrough, GO TO,
 PERFORM ou handlers compartilham esse mesmo mecanismo. Componentes fortemente
 conexos são identificados por Kosaraju iterativo: um ciclo permanece na mesma
 worklist para juntar seus estados, e trechos entre componentes podem compartilhar
 resumos. Isso evita transformar iterações em uma sequência de novas entradas.
-O estado contém valores
-lógicos, handlers ativos/salvos e os fatos de alcance necessários às continuações.
-O índice de relevância usa uma única propagação retrógrada de conjuntos, ampliada
-sob demanda; não percorre o programa inteiro para cada PERFORM inline.
+O estado contém valores lógicos, handlers ativos/salvos e os fatos de alcance
+necessários às continuações. A chave retém as entradas que podem ser lidas antes
+de uma sobrescrita completa ou conservadas em algum caminho de retorno. Escritas parciais,
+leituras anteriores e aliases que conservam texto continuam exigindo a entrada.
+Handlers omitidos da chave são restaurados a partir do estado de cada chamador.
+
+Antes de propagar valores, um índice de controle calcula as saídas possíveis
+de cada `(posição, endpoint)`. A continuação de um PERFORM só fica alcançável
+quando seu corpo produz uma saída compatível. Um ciclo sem saída não inventa
+um retorno. Esse ponto fixo independe dos valores dos chamadores e permite
+descartar leituras que só alimentariam consultas inalcançáveis.
+
+Se dois chamadores passam `A='PROGA'` e `A='PROGB'` para um corpo com
+`MOVE A TO B`, o resumo guarda a transformação de B em função do parâmetro A.
+O fluxo do corpo é percorrido uma vez; cada retorno aplica a transformação à
+entrada inteira de seu chamador. Consultas internas também guardam expressões
+paramétricas sobre o estado BEFORE. Árvores persistentes armazenam tanto
+valores quanto expressões, e um grafo compartilhado evita copiar as operações.
+Substituir a entrada inteira conserva as correlações nas escritas parciais.
+
+A relevância usa um índice compartilhado de pontos `(posição, endpoint)`, ampliado
+sob demanda. Uma chamada entra no endpoint próprio do callee; seu retorno é
+analisado no escopo do chamador. Para cada ponto, a necessidade é a união das
+leituras locais com a necessidade dos sucessores, retirando as entradas que a
+instrução certamente sobrescreve. Uma análise de sobrescritas possíveis e
+garantidas também conserva a entrada quando uma escrita condicional deixa um
+caminho intacto. Escritas de UNKNOWN ficam explícitas no resultado para substituir
+o valor anterior do chamador. Conjuntos são bitsets com índices densos.
+Sucessores são processados antes dos predecessores; ciclos usam worklist até o
+ponto fixo. Efeitos locais e componentes já fechados são reutilizados. O endpoint
+continua presente porque altera a regra de retorno.
 
 O resultado de um resumo conserva o tipo de saída: conclusão, escape ou término
 do programa. A continuação aplica a regra correspondente: seguir o trecho,
@@ -49,13 +78,42 @@ passam pela worklist, evitando desempilhar recursivamente caudas longas.
 Consultar uma dependência continua usando o estado anterior à instrução. Grupos
 conservam alternativas textuais correlacionadas, e REDEFINES/RENAMES relacionam
 declarações e textos logicamente. O analisador não simula memória física.
+As consultas são indexadas pelo consumidor. Expressões do estado BEFORE são
+resolvidas sobre os vínculos com os chamadores, e só os valores resultantes são unidos. Isso preserva a correlação
+entre valores de um chamador e evita varrer todos os estados para cada consulta.
+A construção e validação do frontend também usam índices de membros e posições,
+em lugar de buscas lineares repetidas. O contrato dos intervalos THRU é preservado.
 UPPER-CASE, LOWER-CASE e TRIM usam expressões tipadas do frontend.
 
-Compartilhar resumos elimina a repetição quando diferentes intervalos chegam ao
-mesmo trecho com o mesmo estado relevante e endpoint. Entradas, endpoints ou
-handlers diferentes podem exigir resumos diferentes: a solução geral não implica
-um limite linear para todo programa COBOL. O orçamento explícito continua sendo
-aplicado sem descartar candidatos para obter sucesso.
+Predicados fora de recorrências também são parâmetros. Um resumo pode guardar
+`TARGET = escolha(FLAG = 'S', 'SPECIAL', ORIGIN)`, sem criar um contexto para
+cada combinação de flags. Um DAG de decisões ordenadas reúne ramos iguais e
+compartilha seus sufixos. Ao aplicar uma operação, todos os operandos seguem a
+mesma decisão; isso mantém a correlação entre campos e escritas parciais.
+A worklist segue a ordem do controle, para reunir os ramos antes de propagar
+uma junção pelo restante do programa. Isso evita gerar muitas versões
+transitórias do DAG. A memoização de cada operação dura somente sua aplicação;
+o índice de nós usa referências fracas para permitir a coleta de decisões
+sem consumidores. Escritas comprovadamente independentes da entrada viram
+constantes. Comparações com um operando desconhecido independente da entrada
+não excluem candidatos; seu filtro conserva o valor original e mantém o guarda
+do ramo. Essas simplificações usam propriedades
+do domínio, sem seleção por nome de programa ou construção CICS.
+As condições acompanham consultas, saídas, handlers e fatos de controle.
+Vínculos de um mesmo contexto são reunidos antes de resolver a camada seguinte,
+para não enumerar combinações de chamadores desnecessárias.
+
+Recorrências continuam convergindo pelo domínio finito de valores: escritas,
+refinamentos repetidos e controles de repetição não podem formar uma cadeia
+infinita de expressões. Predicados abertos em ciclos conservam a aproximação
+por iteração que o analisador já usa. Essa necessidade é fechada sobre fontes,
+aliases, grupos e tabelas. É uma regra de convergência do mesmo solver.
+Endpoints, estados de handlers e entradas de recorrência diferentes ainda podem
+exigir resumos diferentes. O DAG, os produtos de candidatos e as resoluções
+podem crescer muito em outros programas; compartilhar decisões não estabelece
+um limite linear universal. O orçamento explícito falha sem descartar candidatos.
+A relevância conserva aproximações seguras: não compõe kills de um callee com a
+continuação do chamador e não presume sobrescrita completa de grupos ou tabelas.
 
 O JAR executa sozinho: não requer AIR, lowering, outros repositórios, serviços
 externos ou produtos intermediários serializados.
@@ -65,7 +123,7 @@ externos ou produtos intermediários serializados.
 ```sh
 cd cobol-dependency-analyzer
 mvn package
-java -Xmx768m -jar target/cobol-dependency-analyzer.jar \
+java -Xmx512m -jar target/cobol-dependency-analyzer.jar \
   --source programa.cbl --copy-dir copybooks --output dependencies.json
 ```
 
@@ -120,19 +178,30 @@ ponto fixo, podendo sobreaproximar alvos que dependem da contagem exata.
 Não há garantia de paridade universal de COBOL; a paridade medida refere-se
 aos insumos e oráculos documentados.
 
-`--max-work N` limita visitas, estados, resumos e produtos de candidatos (padrão 1000000).
+`--max-work N` limita visitas, estados, resumos, trabalho de relevância e controle,
+expressões/resoluções paramétricas e produtos de candidatos (padrão 1000000).
 Ultrapassar o orçamento falha explicitamente; não corta candidatos para obter
 sucesso. `--metrics arquivo.jsonl` grava tempos e contadores fora do JSON de
-produto. Heap é configurado pelo Java, por exemplo `-Xmx768m`.
+produto. `evaluations` conta transformações locais calculadas e `reusedEvaluations`
+conta visitas que reaproveitam esses resultados; `workItems` conta visitas ao
+fluxo de valores e entregas de resultados. `instantiationEvaluations` conta
+aplicações concretas das expressões; `resolutionWorkItems`, a resolução das
+consultas paramétricas; `controlWorkItems` e `controlSummaries`, o índice de
+controle compartilhado. `parametricCalculations`, `specializedDeclarations`
+e `resultDeliveries` tornam visíveis as expressões, entradas especializadas e
+entregas a chamadores. `predicateInputs` conta os predicados internados;
+`decisionNodes` conta cumulativamente os nós criados, inclusive os já coletados.
+`decisionOperations` e `liftedOperations` somam as células visitadas nas
+aplicações da álgebra e das operações sobre decisões. Não representam memória
+residente: os caches de aplicação são descartados ao concluir cada operação,
+e seu orçamento limita uma aplicação individual. `dataflowNanos` inclui esses
+custos internos; reduzir `workItems` sozinho não mede o ganho total.
+Heap é configurado pelo Java.
 
-Para programas grandes, os testes de escala usaram heap de 4 GiB e orçamento
-de 100 milhões de visitas:
-
-```sh
-java -Xmx4g -jar target/cobol-dependency-analyzer.jar \
-  --source programa.cbl --copy-dir copybooks --max-work 100000000 \
-  --output dependencies.json
-```
+A auditoria histórica de escala usou heap de 4 GiB e 100 milhões de visitas.
+As investigações posteriores e a validação do DAG usam heap de 512 MiB,
+com supervisão externa de memória e tempo. Esses resultados não autorizam
+extrapolar o consumo para qualquer programa do mesmo tamanho.
 
 A [auditoria de escala](benchmark/explosion-review-20261008.md) inclui
 117 mil atribuições e 1.800 faixas sobrepostas com consulta dinâmica, com
@@ -165,6 +234,42 @@ Em OR1216, o trabalho caiu de 1.485.530 para 18.040 itens e o tempo de
 9.98 s para 4.12 s na comparação nova. Transferências,
 escapes e handlers usam o mesmo solver. O relatório registra também o overhead
 nos casos já otimizados e os limites de crescimento restantes.
+
+A [correção de relevância e índices](benchmark/relevance-fix-20261008.md) registra
+os resultados sobre os 40 fixtures do discovery e as regressões do produto.
+O FAST inclui as suítes do solver canônico, além dos contratos do frontend.
+O [profiling da FIXTURE02](benchmark/fixture02-profiling-20261008.md) registra
+um OOM na versão anterior. A [etapa 1 de compartilhamento](benchmark/shared-projection-20261008.md)
+preserva os ramos das projeções e reduz a memória viva em 48% no experimento
+limitado a 2.048 contextos, mantendo as mesmas entradas e o mesmo trabalho.
+A [etapa 2 de compartilhamento](benchmark/shared-work-20261008.md) reutiliza
+transformações por instrução e seus operandos, aplicando somente as mudanças
+ao estado específico de cada chamador. Na comparação com a etapa 1, calculou
+120 transformações para 15.282 visitas, reduziu o tempo do solver em 32,8%
+e os bytes alocados em 17,2%; a memória viva aumentou 5,7% pelos caches.
+Esse experimento histórico usa heap de 512 MiB e parada em 2.048 contextos.
+Os 40 fixtures do discovery e os 73 programas CardDemo preservaram JSONs e
+diagnósticos byte a byte nessa etapa.
+
+O [compartilhamento de fluxo entre entradas](benchmark/shared-flow-20261009.md)
+passa a usar resumos paramétricos de dados e controle balanceado compartilhado.
+Com 400 entradas diferentes, os contextos caíram de 401 para 2, preservando as
+400 dependências; o tempo interno da análise caiu 46,3%. A FIXTURE02 original
+agora termina com 25 contextos e 200 visitas, em cerca de 1,86 s, usando o mesmo
+heap de 512 MiB. Nela, os CALLs são inalcançáveis porque os PERFORMs anteriores
+entram em ciclos sem retorno; a saída vazia foi conferida. Esse resultado não
+garante custo linear para combinações diferentes de controle ou recorrência.
+O [fixture de combinações de controle](benchmark/control-signatures-20261009.md)
+reproduziu esse limite na versão anterior: dez flags geraram 2.048 contextos e doze geraram 8.192,
+mantendo somente duas dependências. O controle com uso direto dos dados
+fica em 12 e 14 contextos, respectivamente.
+
+O [DAG de decisões compartilhadas](benchmark/guarded-flow-20261009.md) elimina
+essa enumeração na família: doze flags passam de 8.192 para 14 contextos e o
+dataflow mediano cai 80,3%, com heap de 512 MiB. Vinte flags usam 22 contextos.
+O candidato preserva os 40 fixtures do discovery e os 73 programas CardDemo,
+incluindo seus diagnósticos. O relatório registra os custos nos casos pequenos,
+as tentativas de profiling e os limites que permanecem.
 
 ```sh
 python3 -B scripts/harness/lean.py fast
