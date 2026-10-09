@@ -1,5 +1,12 @@
 # Medições locais
 
+[Pares de chamada e saída](control-return-fanout-20261009.md): testemunho com
+mais de um milhão de Returned e apenas três contextos de valores; OOM no solver
+de controle confirmado por JFR no JAR original, em heap de 256 MiB.
+
+[Coleta de JVM em execução](running-jvm-diagnostics.md): pilhas, heap, GC e JFR
+para investigar o programa corporativo sem reiniciar sua análise.
+
 [Caixinhas com heap maior](hub-large-heap-20261009.md): sete execuções com heaps
 de 1 e 1,5 GiB e proteção do host. Separação entre GC sob RSS estável, propagação
 de valores e resolução das consultas; cinco conclusões exatas e dois OOMs.

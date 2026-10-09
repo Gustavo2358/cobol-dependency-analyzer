@@ -4,7 +4,8 @@ import argparse, hashlib, json
 from pathlib import Path
 
 MODES = ('literal', 'value', 'flags', 'perform', 'perform-flags', 'cross-perform',
-         'hub-perform', 'hub-perform-flags')
+         'hub-perform', 'hub-perform-flags', 'return-fanout', 'return-fanout-no-exit',
+         'return-fanout-fixed')
 
 def source(boxes, hubs, mode):
     if not 1 <= boxes <= 254 or hubs < 1:
@@ -15,18 +16,24 @@ def source(boxes, hubs, mode):
              'IDENTIFICATION DIVISION.', 'PROGRAM-ID. HUBDISPATCH.',
              'DATA DIVISION.', 'WORKING-STORAGE SECTION.',
              "01 TARGET-PGM PIC X(8) VALUE 'BOOT0000'.",
-             '01 EXTERNAL-FLAG PIC 9.']
+             '01 EXTERNAL-FLAG PIC 9 VALUE 0.' if mode == 'return-fanout-fixed' else '01 EXTERNAL-FLAG PIC 9.']
     for h in range(hubs):
         lines.append(f'01 INPUT-{h:02d} PIC 9(3).')
     if mode in ('flags', 'perform-flags', 'hub-perform-flags'):
         for b in range(boxes):
             lines.append(f'01 FLAG-{b:03d} PIC X VALUE SPACE.')
-    lines.extend(['PROCEDURE DIVISION.', 'MAIN.', '    GO TO HUB-00.'])
+    lines.extend(['PROCEDURE DIVISION.', 'MAIN.'])
+    if mode == 'return-fanout-fixed':
+        lines.append('    MOVE 0 TO EXTERNAL-FLAG.')
+    lines.append('    GO TO HUB-00.')
     for h in range(hubs):
         lines.append(f'HUB-{h:02d}.')
         if mode in ('value', 'hub-perform'):
             lines.append('    CALL TARGET-PGM.')
-        lines.extend([f'    ACCEPT INPUT-{h:02d}.', '    GO TO'])
+        lines.append(f'    ACCEPT INPUT-{h:02d}.')
+        if mode in ('return-fanout', 'return-fanout-no-exit'):
+            lines.append('    ACCEPT EXTERNAL-FLAG.')
+        lines.append('    GO TO')
         targets = [f'B{h:02d}-{b:03d}' for b in range(boxes)] + ['FINAL-BOX']
         for start in range(0, len(targets), 4):
             lines.append('        ' + ' '.join(targets[start:start+4]))
@@ -34,10 +41,18 @@ def source(boxes, hubs, mode):
     for h in range(hubs):
         for b in range(boxes):
             lines.append(f'B{h:02d}-{b:03d}.')
-            if mode in ('literal', 'cross-perform'):
+            if mode in ('literal', 'cross-perform', 'return-fanout', 'return-fanout-no-exit', 'return-fanout-fixed'):
                 lines.append(f"    CALL 'PGM{b:05d}'.")
+                if mode.startswith('return-fanout'):
+                    lines.extend(['    IF EXTERNAL-FLAG = 1',
+                                  '        EXIT' if mode == 'return-fanout-no-exit' else '        EXIT PARAGRAPH',
+                                  '    END-IF.'])
                 if mode == 'cross-perform':
                     lines.extend(['    IF EXTERNAL-FLAG = 1',
+                                  f'        PERFORM B{(h+1)%hubs:02d}-{(b+1)%boxes:03d}',
+                                  '    END-IF.'])
+                if mode.startswith('return-fanout'):
+                    lines.extend(['    IF EXTERNAL-FLAG = 2',
                                   f'        PERFORM B{(h+1)%hubs:02d}-{(b+1)%boxes:03d}',
                                   '    END-IF.'])
             elif mode in ('value', 'perform', 'hub-perform'):
