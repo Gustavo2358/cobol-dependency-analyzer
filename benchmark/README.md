@@ -1,5 +1,10 @@
 # Medições locais
 
+[Armazenamento do controle](control-layout-discovery-20261009.md): contadores e
+histogramas vivos em heap de 256 MiB localizam o peso das coleções por ponto e
+dos índices duplicados. Proposta de grafo compacto canônico por IDs, reutilizado
+pelas fases; distingue redução de bytes por relação de fatoração do produto.
+
 [Escala ampliada das continuações](shared-continuation-scale-20261009.md): a
 mesma implementação tem OOM em N=128 com 1 GiB e em N=192/254 com 1,5 GiB.
 Pilhas localizam falhas no pico de cópia do grafo e no índice de predecessores.
