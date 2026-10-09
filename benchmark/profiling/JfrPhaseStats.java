@@ -7,15 +7,14 @@ public class JfrPhaseStats {
  static String category(List<String> frames){
   if(frames.contains("com.imd.cobolexplorer.DependencyFlow.resolve"))return "query-resolution";
   if(frames.contains("com.imd.cobolexplorer.DependencyFlow.workRank"))return "queue-rank";
-  if(frames.stream().anyMatch(s->s.startsWith("com.imd.cobolexplorer.DependencyControl.")))return "control-summary";
-  if(frames.stream().anyMatch(s->s.startsWith("com.imd.cobolexplorer.DependencyRelevance.")))return "input-relevance";
+  if(frames.stream().anyMatch(s->s.startsWith("com.imd.cobolexplorer.DependencyControl.")||s.startsWith("com.imd.cobolexplorer.DependencyControl$")))return "control-summary";
+  if(frames.stream().anyMatch(s->s.startsWith("com.imd.cobolexplorer.DependencyRelevance.")||s.startsWith("com.imd.cobolexplorer.DependencyRelevance$")))return "input-relevance";
   if(frames.contains("com.imd.cobolexplorer.DependencyFlow.join"))return "state-join";
   if(frames.contains("com.imd.cobolexplorer.DependencyFlow.subscribe"))return "summary-input-projection";
   if(frames.contains("com.imd.cobolexplorer.DependencyFlow.enqueue"))return "enqueue-and-join";
   if(frames.contains("com.imd.cobolexplorer.DependencyFlow.step"))return "local-step";
   if(frames.contains("com.imd.cobolexplorer.DependencyFlow$State.join"))return "state-join";
   if(frames.stream().anyMatch(s->s.startsWith("com.imd.cobolexplorer.DependencyFlow.write")))return "state-write";
-  if(frames.stream().anyMatch(s->s.startsWith("com.imd.cobolexplorer.DependencyRelevance.")))return "input-relevance";
   if(frames.stream().anyMatch(s->s.startsWith("com.imd.cobolexplorer.DependencyFlow.")))return "other-dataflow";
   if(frames.stream().anyMatch(s->s.startsWith("com.imd.cobolexplorer.")))return "frontend-or-other-product";
   return "other-or-truncated";

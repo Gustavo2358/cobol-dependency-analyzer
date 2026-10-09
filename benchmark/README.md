@@ -1,5 +1,10 @@
 # Medições locais
 
+[Continuações compartilhadas](shared-continuation-fix-20261009.md): checkpoints
+com bitsets, propagação por deltas e escopo canônico de escape. A família N=32
+passa de OOM a mediana de 3,13 s, preservando saídas e dependências, com heap
+256 MiB. N=36 também converge; FAST 1.084 e CardDemo 73/73, sem perdas.
+
 [Pares de chamada e saída](control-return-fanout-20261009.md): testemunho com
 mais de um milhão de Returned e apenas três contextos de valores; OOM no solver
 de controle confirmado por JFR no JAR original, em heap de 256 MiB.

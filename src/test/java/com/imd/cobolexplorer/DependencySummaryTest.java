@@ -10,6 +10,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class DependencySummaryTest {
     @TempDir Path temp;
 
+    @Test void hubReturnFanoutConvergesWithoutReinvokingEveryCrossedBoundary()throws Exception {
+        var source=Path.of("src/test/resources/dependency-regression/control-returns/external-8.cbl");
+        assertEquals("091187a46e50c9ffc66907b891aec95aca94f92a0bb10bd97e1cab9f87ef5dce",
+            HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(source))));
+        var defaults=DependencyAnalyzer.Options.defaults();
+        var options=new DependencyAnalyzer.Options(defaults.copyDirectories(),defaults.format(),defaults.charset(),
+            defaults.sourceInventory(),defaults.parser(),100_000);
+        var result=new DependencyAnalyzer().analyze(source,options);
+        var expected=new TreeSet<String>();for(int i=0;i<8;i++)expected.add("PGM%05d".formatted(i));
+        assertEquals(expected,result.programs().get(0).dependencies().stream().map(DependencyAnalyzer.Dependency::name)
+            .collect(Collectors.toCollection(TreeSet::new)));
+        assertEquals(List.of(),result.diagnostics());
+        assertTrue(result.metrics().controlResultPairs()<1000,"Only genuine call/exit pairs should be delivered");
+        assertTrue(result.metrics().resultDeliveries()<1000,"Crossed boundaries must share the current invocation");
+    }
+
     @Test void binaryControlSignatureFixturesKeepExactClosedDependencies()throws Exception {
         var directory=Path.of("src/test/resources/dependency-regression/control-signatures");
         var cases=new com.fasterxml.jackson.databind.ObjectMapper().readTree(directory.resolve("expected.json").toFile());
