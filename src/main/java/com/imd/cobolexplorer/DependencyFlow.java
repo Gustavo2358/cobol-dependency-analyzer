@@ -522,16 +522,16 @@ final class DependencyFlow {
     static DependencyFlow analyze(CompilationUnitModel.ProgramUnit unit,DependencyDeclarations declarations,
             ControlTopology control,List<Query> queries,long maxWork,CicsProgramControlAnalyzer.Contribution cics,Map<Integer,ConditionNameSemantics.Use> conditions) {
         var cells=new LinkedHashSet<Element>();
-        long work=0,evaluations=0,reused=0,instantiated=0,resolved=0,delivered=0,decisions=0,operations=0,lifted=0,controlWork=0;
+        long work=0,evaluations=0,reused=0,instantiated=0,resolved=0,delivered=0,decisions=0,operations=0,lifted=0,controlWork=0,controlPairs=0,controlFacts=0;
         int passes=0;
         while(true) {
             var flow=new DependencyFlow(unit,declarations,control,queries,maxWork,cics,conditions,cells);passes++;
             work+=flow.visits;evaluations+=flow.evaluations;reused+=flow.reusedEvaluations;instantiated+=flow.instantiationEvaluations;
-            resolved+=flow.resolutionVisits;delivered+=flow.resultDeliveries;decisions+=flow.decisionNodes;operations+=flow.decisionOperations;lifted+=flow.liftedOperations;controlWork+=flow.controlSummary.visits;
+            resolved+=flow.resolutionVisits;delivered+=flow.resultDeliveries;decisions+=flow.decisionNodes;operations+=flow.decisionOperations;lifted+=flow.liftedOperations;controlWork+=flow.controlSummary.visits;controlPairs+=flow.controlSummary.resultPairs;controlFacts+=flow.controlSummary.resultFacts;
             if(work>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: table demand closure exceeded --max-work="+maxWork);
             if(flow.tableDemandExpanded)continue;
             flow.visits=work;flow.evaluations=evaluations;flow.reusedEvaluations=reused;flow.instantiationEvaluations=instantiated;flow.resolutionVisits=resolved;
-            flow.resultDeliveries=delivered;flow.decisionNodes=decisions;flow.decisionOperations=operations;flow.liftedOperations=lifted;flow.tableDemandPasses=passes;flow.controlSummary.visits=controlWork;return flow;
+            flow.resultDeliveries=delivered;flow.decisionNodes=decisions;flow.decisionOperations=operations;flow.liftedOperations=lifted;flow.tableDemandPasses=passes;flow.controlSummary.visits=controlWork;flow.controlSummary.resultPairs=controlPairs;flow.controlSummary.resultFacts=controlFacts;return flow;
         }
     }
     private DependencyFlow(CompilationUnitModel.ProgramUnit unit,DependencyDeclarations declarations,

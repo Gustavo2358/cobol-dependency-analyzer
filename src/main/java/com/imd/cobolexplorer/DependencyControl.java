@@ -16,37 +16,21 @@ final class DependencyControl {
         static Effect exit(Exit exit){return new Effect(List.of(),List.of(),List.of(),Set.of(exit));}
     }
     interface Delivery { Effect apply(Point caller,Call call,Exit exit); }
-    private record Returned(Call call,Exit exit) { }
-    private static final class Plan {
-        final Set<Point> next=new HashSet<>(),entries=new HashSet<>();
-        final Set<Call> calls=new HashSet<>();
-        final Set<Exit> exits=new HashSet<>();
-        final Set<Returned> delivered=new HashSet<>();
-    }
-    final Map<Point,Set<Exit>> results=new HashMap<>();
+    private record Plan(List<Point> next,List<Point> entries,List<Call> calls) { }
     private final Map<Point,Plan> plans=new HashMap<>();
-    private final Map<Point,Set<Point>> parents=new HashMap<>();
-    private final Set<Point> queued=new HashSet<>(),reachable=new HashSet<>(),observed=new HashSet<>();
+    private final Set<Point> reachable=new HashSet<>(),observed=new HashSet<>();
     private final Set<String> reachableNodes=new HashSet<>(),observedNodes=new HashSet<>();
-    private final ArrayDeque<Point> work=new ArrayDeque<>();
-    private final Function<Point,Effect> effects;
-    private final Delivery delivery;
-    private final long maxWork;
-    long visits;
+    final int summaryCount;
+    long visits,resultPairs,resultFacts;
 
     DependencyControl(List<Point> roots,Function<Point,Effect> effects,Delivery delivery,
             Predicate<Point> observation,long maxWork) {
-        this.effects=effects;this.delivery=delivery;this.maxWork=maxWork;
-        roots.forEach(this::discover);
-        while(!work.isEmpty()) {
-            if(++visits>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: control summaries exceeded --max-work="+maxWork);
-            var point=work.removeFirst();queued.remove(point);var plan=plans.get(point);
-            for(var call:List.copyOf(plan.calls))for(var exit:List.copyOf(results.get(call.entry())))
-                if(plan.delivered.add(new Returned(call,exit)))add(point,delivery.apply(point,call,exit));
-            var exits=new HashSet<>(plan.exits);
-            for(var next:plan.next)exits.addAll(results.get(next));
-            if(results.get(point).addAll(exits))parents.getOrDefault(point,Set.of()).forEach(this::schedule);
-        }
+        var construction=new Construction(effects,delivery,maxWork);
+        construction.solve(roots);
+        summaryCount=construction.plans.size();visits=construction.visits;
+        resultPairs=construction.resultPairs;resultFacts=construction.resultFacts;
+        construction.plans.forEach((point,plan)->plans.put(point,new Plan(
+            List.copyOf(plan.next),List.copyOf(plan.entries),List.copyOf(plan.calls))));
         var pending=new ArrayDeque<>(roots);
         while(!pending.isEmpty()) {
             var point=pending.removeFirst();if(!reachable.add(point))continue;
@@ -59,7 +43,7 @@ final class DependencyControl {
         for(var point:reachable)if(observation.test(point)){observed.add(point);pending.add(point);}
         while(!pending.isEmpty()) {
             var point=pending.removeFirst();
-            for(var parent:parents.getOrDefault(point,Set.of()))if(reachable.contains(parent)&&observed.add(parent))pending.add(parent);
+            for(var parent:construction.parents.getOrDefault(point,Set.of()))if(reachable.contains(parent)&&observed.add(parent))pending.add(parent);
             for(var call:plans.get(point).calls) {
                 if(call.binding().isEmpty())continue; // Independent entry has no observed caller return.
                 var body=new ArrayDeque<Point>();body.add(call.entry());var seen=new HashSet<Point>();
@@ -72,6 +56,7 @@ final class DependencyControl {
             }
         }
         reachable.forEach(p->reachableNodes.add(p.exit().reference()));observed.forEach(p->observedNodes.add(p.exit().reference()));
+        // Construction, its exit index, results and delivery marks end here.
     }
     boolean reachable(String node){return reachableNodes.contains(node);}
     boolean observed(String node){return observedNodes.contains(node);}
@@ -119,29 +104,75 @@ final class DependencyControl {
         var order=postorder();var ranks=new HashMap<Point,Integer>();
         for(int i=order.size()-1;i>=0;i--)ranks.put(order.get(i),ranks.size());return Map.copyOf(ranks);
     }
-    private void schedule(Point point){if(queued.add(point))work.addLast(point);}
-    private void discover(Point point) {
-        if(plans.containsKey(point))return;
-        plans.put(point,new Plan());results.put(point,new HashSet<>());schedule(point);
-        // Discovery itself is iterative: source size must not consume Java stack.
-        var pending=new ArrayDeque<Point>();pending.add(point);
-        while(!pending.isEmpty()) {
-            var current=pending.removeFirst();var effect=effects.apply(current);var plan=plans.get(current);
-            plan.next.addAll(effect.next());plan.calls.addAll(effect.calls());plan.entries.addAll(effect.entries());plan.exits.addAll(effect.exits());
-            var children=new HashSet<>(plan.next);for(var call:plan.calls)children.add(call.entry());children.addAll(plan.entries);
-            for(var child:children) {
-                parents.computeIfAbsent(child,k->new HashSet<>()).add(current);
-                if(!plans.containsKey(child)) {
-                    if(plans.size()>=maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many control summaries");
-                    plans.put(child,new Plan());results.put(child,new HashSet<>());schedule(child);pending.add(child);
+
+    private static final class PendingPlan {
+        final Set<Point> next=new HashSet<>(),entries=new HashSet<>();
+        final Set<Call> calls=new HashSet<>();
+        final BitSet exits=new BitSet(),results=new BitSet();
+        final Map<Call,BitSet> delivered=new HashMap<>();
+    }
+    private static final class Construction {
+        final Map<Point,PendingPlan> plans=new HashMap<>();
+        final Map<Point,Set<Point>> parents=new HashMap<>();
+        final Set<Point> queued=new HashSet<>();
+        final ArrayDeque<Point> work=new ArrayDeque<>();
+        final List<Exit> exitValues=new ArrayList<>();
+        final Map<Exit,Integer> exitIds=new HashMap<>();
+        final Function<Point,Effect> effects;
+        final Delivery delivery;
+        final long maxWork;
+        long visits,resultPairs,resultFacts;
+        Construction(Function<Point,Effect> effects,Delivery delivery,long maxWork) {
+            this.effects=effects;this.delivery=delivery;this.maxWork=maxWork;
+        }
+        int exitId(Exit exit) {
+            return exitIds.computeIfAbsent(exit,e->{int id=exitValues.size();exitValues.add(e);return id;});
+        }
+        void solve(List<Point> roots) {
+            roots.forEach(this::discover);
+            while(!work.isEmpty()) {
+                if(++visits>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: control summaries exceeded --max-work="+maxWork);
+                var point=work.removeFirst();queued.remove(point);var plan=plans.get(point);
+                for(var call:List.copyOf(plan.calls)) {
+                    var known=(BitSet)plans.get(call.entry()).results.clone();
+                    var sent=plan.delivered.computeIfAbsent(call,c->new BitSet());known.andNot(sent);
+                    for(int id=known.nextSetBit(0);id>=0;id=known.nextSetBit(id+1)) {
+                        sent.set(id);resultPairs++;add(point,delivery.apply(point,call,exitValues.get(id)));
+                    }
+                }
+                var exits=(BitSet)plan.exits.clone();
+                for(var next:plan.next)exits.or(plans.get(next).results);
+                exits.andNot(plan.results);
+                if(!exits.isEmpty()) {
+                    resultFacts+=exits.cardinality();plan.results.or(exits);
+                    parents.getOrDefault(point,Set.of()).forEach(this::schedule);
                 }
             }
         }
-    }
-    private void add(Point point,Effect effect) {
-        var plan=plans.get(point);plan.exits.addAll(effect.exits());
-        for(var next:effect.next())if(plan.next.add(next)){parents.computeIfAbsent(next,k->new HashSet<>()).add(point);discover(next);}
-        for(var call:effect.calls())if(plan.calls.add(call)){parents.computeIfAbsent(call.entry(),k->new HashSet<>()).add(point);discover(call.entry());}
-        for(var entry:effect.entries())if(plan.entries.add(entry)){parents.computeIfAbsent(entry,k->new HashSet<>()).add(point);discover(entry);}
+        void schedule(Point point){if(queued.add(point))work.addLast(point);}
+        void discover(Point point) {
+            if(plans.containsKey(point))return;
+            plans.put(point,new PendingPlan());schedule(point);
+            var pending=new ArrayDeque<Point>();pending.add(point);
+            while(!pending.isEmpty()) {
+                var current=pending.removeFirst();var effect=effects.apply(current);var plan=plans.get(current);
+                plan.next.addAll(effect.next());plan.calls.addAll(effect.calls());plan.entries.addAll(effect.entries());
+                effect.exits().forEach(e->plan.exits.set(exitId(e)));
+                var children=new HashSet<>(plan.next);for(var call:plan.calls)children.add(call.entry());children.addAll(plan.entries);
+                for(var child:children) {
+                    parents.computeIfAbsent(child,k->new HashSet<>()).add(current);
+                    if(!plans.containsKey(child)) {
+                        if(plans.size()>=maxWork)throw new IllegalStateException("RESOURCE_LIMIT: too many control summaries");
+                        plans.put(child,new PendingPlan());schedule(child);pending.add(child);
+                    }
+                }
+            }
+        }
+        void add(Point point,Effect effect) {
+            var plan=plans.get(point);effect.exits().forEach(e->plan.exits.set(exitId(e)));
+            for(var next:effect.next())if(plan.next.add(next)){parents.computeIfAbsent(next,k->new HashSet<>()).add(point);discover(next);}
+            for(var call:effect.calls())if(plan.calls.add(call)){parents.computeIfAbsent(call.entry(),k->new HashSet<>()).add(point);discover(call.entry());}
+            for(var entry:effect.entries())if(plan.entries.add(entry)){parents.computeIfAbsent(entry,k->new HashSet<>()).add(point);discover(entry);}
+        }
     }
 }

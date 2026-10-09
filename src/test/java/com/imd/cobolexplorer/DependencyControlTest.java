@@ -14,7 +14,7 @@ class DependencyControlTest {
         var built=new HashSet<Point>();var root=point("root");var body=point("body");var dead=point("dead");
         var summary=new DependencyControl(List.of(root),p->{built.add(p);return call(body,"resume");},
             (p,c,e)->DependencyControl.Effect.next(dead),p->p.equals(dead),100);
-        assertTrue(summary.results.get(root).isEmpty());assertTrue(summary.results.get(body).isEmpty());
+        assertEquals(0,summary.resultFacts);
         assertFalse(built.contains(dead));assertFalse(summary.reachable("dead"));assertFalse(summary.observed("root"));
     }
     @Test void aBaseReturnUnlocksRecursiveAndCallerContinuations() {
@@ -25,7 +25,7 @@ class DependencyControlTest {
             if(p.equals(body))return new DependencyControl.Effect(List.of(base),List.of(new DependencyControl.Call(body,"recursive")),List.of(),Set.of());
             return DependencyControl.Effect.exit(done);
         },(p,c,e)->DependencyControl.Effect.next(c.binding().equals("outer")?query:base),p->p.equals(query),100);
-        assertEquals(Set.of(done),summary.results.get(root));assertTrue(summary.reachable("query"));
+        assertTrue(summary.resultFacts>0);assertTrue(summary.reachable("query"));
         assertTrue(summary.observed("body"));assertTrue(summary.observed("base"));
     }
     @Test void manyCallersUseOneBodyEquationAndPreserveEveryResume() {
@@ -43,8 +43,18 @@ class DependencyControlTest {
         var summary=new DependencyControl(List.of(root),p->p.equals(root)
             ?new DependencyControl.Effect(List.of(),List.of(),List.of(handler),Set.of())
             :DependencyControl.Effect.exit(halt),(p,c,e)->{throw new AssertionError();},p->p.equals(handler),100);
-        assertTrue(summary.results.get(root).isEmpty());assertEquals(Set.of(halt),summary.results.get(handler));
+        assertEquals(1,summary.resultFacts);
         assertTrue(summary.reachable("handler"));assertTrue(summary.observed("root"));
+    }
+    @Test void compactResultsPreserveMoreThanOneMachineWordOfDistinctExits() {
+        var root=point("root");var body=point("body");var exits=new HashSet<Exit>();
+        for(int i=0;i<150;i++)exits.add(new Exit(TargetKind.ESCAPE,"boundary-"+i));
+        var received=new HashSet<Exit>();
+        var summary=new DependencyControl(List.of(root),p->p.equals(root)?call(body,"resume")
+            :new DependencyControl.Effect(List.of(),List.of(),List.of(),exits),
+            (p,c,e)->{assertTrue(received.add(e));return DependencyControl.Effect.exit(e);},p->false,1000);
+        assertEquals(exits,received);assertEquals(150,summary.resultPairs);
+        assertEquals(300,summary.resultFacts);assertEquals(2,summary.summaryCount);
     }
     @Test void structuralWorkHonorsTheExplicitBudget() {
         var error=assertThrows(IllegalStateException.class,()->new DependencyControl(List.of(point("0")),
