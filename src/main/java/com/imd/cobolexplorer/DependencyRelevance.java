@@ -14,7 +14,9 @@ final class DependencyRelevance {
     record Value(int declaration) implements Input { }
     record Handler(String name) implements Input { }
     record Fact(String statement) implements Input { }
-    record Point(DependencyFlow.Exit exit,String endpoint) { }
+    record Point(DependencyFlow.Exit exit,String endpoint,String escapeScope) {
+        Point(DependencyFlow.Exit exit,String endpoint){this(exit,endpoint,"");}
+    }
     record Effect(Set<Input> reads,Set<Input> kills,List<Point> successors) {
         Effect {reads=Set.copyOf(reads);kills=Set.copyOf(kills);successors=List.copyOf(successors);}
     }

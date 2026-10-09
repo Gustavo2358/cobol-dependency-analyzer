@@ -225,6 +225,27 @@ class DependencySummaryTest {
         Files.writeString(path,text.lines().map(s->"       "+s).collect(Collectors.joining("\n","","\n")));
         return path;
     }
+    @Test void unrelatedParagraphEscapeContinuesWithoutLosingItsDependency()throws Exception {
+        check("01 MODE-FLAG PIC 9.","MAIN.\nACCEPT MODE-FLAG.\nPERFORM A.\nCALL 'AFTER'.\nGOBACK.\n"
+            +"A.\nIF MODE-FLAG = 1 EXIT PARAGRAPH END-IF.\nGO TO B.\n"
+            +"B.\nEXIT PARAGRAPH.\nC.\nCALL 'ESCAPED'.\nGO TO A.","AFTER","ESCAPED");
+    }
+    @Test void sharedEscapeTraversalRestoresEachCallersValuesAndResume()throws Exception {
+        check("01 MODE-FLAG PIC 9.\n01 TARGET PIC X(8).", "MAIN.\nMOVE 0 TO MODE-FLAG.\n"
+            +"MOVE 'FIRST' TO TARGET.\nPERFORM A.\nCALL TARGET.\nMOVE 0 TO MODE-FLAG.\n"
+            +"MOVE 'SECOND' TO TARGET.\nPERFORM A.\nCALL TARGET.\nGOBACK.\n"
+            +"A.\nIF MODE-FLAG = 1 EXIT PARAGRAPH END-IF.\nGO TO B.\nB.\nEXIT PARAGRAPH.\n"
+            +"C.\nCALL TARGET.\nMOVE 1 TO MODE-FLAG.\nGO TO A.","FIRST","SECOND");
+    }
+    @Test void performRangesWithTheSameEndpointKeepTheirOwnEntryPolicies()throws Exception {
+        check("", "MAIN.\nPERFORM A THRU E.\nCALL 'AFTER1'.\nPERFORM B THRU E.\nCALL 'AFTER2'.\nGOBACK.\n"
+            +"A.\nGO TO D.\nB.\nCALL 'B'.\nC.\nCALL 'C'.\nD.\nEXIT PARAGRAPH.\nE.\nCALL 'E'.\nEXIT.",
+            "AFTER1","AFTER2","B","C","E");
+    }
+    @Test void anAncestorEscapeUnwindsWithoutExecutingTheInnerResume()throws Exception {
+        check("", "MAIN.\nPERFORM SEC-A.\nCALL 'AFTER'.\nGOBACK.\nSEC-A SECTION.\n"
+            +"A.\nPERFORM B.\nCALL 'BAD'.\nB.\nEXIT SECTION.\nSEC-B SECTION.\nC.\nCALL 'BAD2'.\nGOBACK.","AFTER");
+    }
     private DependencyAnalyzer.Result check(String data,String procedure,String... names)throws Exception {
         Path path=source(data,procedure);
         var shared=new DependencyAnalyzer().analyze(path,DependencyAnalyzer.Options.defaults());
