@@ -437,9 +437,7 @@ final class DependencyFlow {
     final Set<String> prerequisites=new HashSet<>();
     final DependencyRelevance relevance;
     final DependencyControl controlSummary;
-    final Map<String,Point> controlEntries=new HashMap<>();
-    final Map<Point,Point> controlEntryAliases=new HashMap<>();
-    record DeliveryKey(String binding,String endpoint,String escapeScope,Exit exit) { }
+    record DeliveryKey(String binding,Exit exit) { }
     final Map<DeliveryKey,DependencyControl.Effect> continuationPlans=new HashMap<>();
     final Map<Point,Selection> projections=new HashMap<>();
     final Map<String,Selection> operands=new HashMap<>();
@@ -583,9 +581,9 @@ final class DependencyFlow {
             for(var entry:control.entryPoints())roots.add(new Point(Exit.of(entry.target()),endpoint));
         });
         var observations=new HashSet<String>();queries.forEach(q->observations.add(handle(q.statement())));
-        controlSummary=new DependencyControl(roots.stream().map(this::controlEntry).toList(),this::controlEffect,this::controlDelivery,p->{
-            var statement=statements.get(p.exit().reference());
-            return observations.contains(p.exit().reference())||p.exit().kind()==TargetKind.UNKNOWN_LOCAL
+        controlSummary=new DependencyControl(roots,this::controlEffect,this::controlDelivery,p->{
+            var statement=statements.get(p.reference());
+            return observations.contains(p.reference())||p.kind()==TargetKind.UNKNOWN_LOCAL
                 ||statement!=null&&StatementEffectSummary.of(statement).filter(e->e.unknownWriteBound()==StatementEffectSummary.Bound.ALL).isPresent()
                 ||statement!=null&&hasUnsupportedPredicate(statement);
         },maxWork);
@@ -1206,65 +1204,58 @@ final class DependencyFlow {
             for(var child:Ast.children(node))if(!(child instanceof Ast.Statement))pending.add(child);
         }return false;
     }
-    private Point controlPhase(Binding binding,String phase,String endpoint,String escapeScope) {
-        return new Point(new Exit(TargetKind.OCCURRENCE,"phase/"+binding.id()+"/"+phase),endpoint,escapeScope);
-    }
-    private Point controlEntry(Point entry) {
-        return controlEntryAliases.computeIfAbsent(entry,p->{
-            String name="entry/"+controlEntries.size();controlEntries.put(name,p);
-            return new Point(new Exit(TargetKind.OCCURRENCE,name),p.endpoint(),p.escapeScope());
-        });
-    }
-    /** The control relation is independent of actual values. Branches remain
-     * guarded by the value solver; calls acquire resumes only through delivery. */
-    private DependencyControl.Effect controlEffect(Point point) {
-        var exit=normalize(point.exit());String endpoint=point.endpoint(),scope=point.escapeScope();
-        if(!exit.equals(point.exit()))return DependencyControl.Effect.next(new Point(exit,endpoint,scope));
-        var next=new ArrayList<Point>();var calls=new ArrayList<DependencyControl.Call>();var entries=new ArrayList<Point>();
+    /** Physical transfers preserve the caller obligation. Only real invocation
+     * edges install a fixed callee obligation; boundary rules partition them. */
+    private DependencyControl.Rule controlEffect(Exit position) {
+        var exit=normalize(position);
+        if(!exit.equals(position))return DependencyControl.Rule.flow(DependencyControl.Effect.next(exit));
+        var next=new ArrayList<Exit>();var calls=new ArrayList<DependencyControl.Call>();var entries=new ArrayList<Point>();
         switch(exit.kind()) {
             case COMPLETE -> {
-                return ("boundary:"+exit.reference()).equals(endpoint)?DependencyControl.Effect.exit(exit)
-                    :DependencyControl.Effect.next(new Point(Exit.of(boundaries.get(exit.reference()).ordinaryDefault()),endpoint,scope));
+                return DependencyControl.Rule.boundary(exit,Exit.of(boundaries.get(exit.reference()).ordinaryDefault()),
+                    scope->("boundary:"+exit.reference()).equals(scope.endpoint()));
             }
             case ESCAPE -> {
-                return exitsScope(exit,endpoint,scope)?DependencyControl.Effect.exit(exit)
-                    :DependencyControl.Effect.next(new Point(Exit.of(boundaries.get(exit.reference()).ordinaryDefault()),endpoint,scope));
+                return DependencyControl.Rule.boundary(exit,Exit.of(boundaries.get(exit.reference()).ordinaryDefault()),
+                    scope->exitsScope(exit,scope.endpoint(),scope.escapeScope()));
             }
-            case PROGRAM_RETURN,PROGRAM_HALT -> {return DependencyControl.Effect.exit(exit);}
-            case FILE_POINT -> filePoints.get(exit.reference()).targets().forEach(t->next.add(new Point(Exit.of(t),endpoint,scope)));
+            case PROGRAM_RETURN,PROGRAM_HALT -> {return DependencyControl.Rule.flow(DependencyControl.Effect.exit(exit));}
+            case FILE_POINT -> filePoints.get(exit.reference()).targets().forEach(t->next.add(Exit.of(t)));
             case UNKNOWN_LOCAL -> {
-                if(endpoint.equals("boundary:"+exit.reference())&&regions.get(exit.reference()).kind()==RegionKind.DECLARATIVE)
-                    return DependencyControl.Effect.exit(new Exit(TargetKind.COMPLETE,exit.reference()));
+                return new DependencyControl.Rule(new DependencyControl.Effect(List.of(),List.of(),List.of(),Set.of()),
+                    scope->scope.endpoint().equals("boundary:"+exit.reference())&&regions.get(exit.reference()).kind()==RegionKind.DECLARATIVE
+                        ?Set.of(new Exit(TargetKind.COMPLETE,exit.reference())):Set.of());
             }
             case OCCURRENCE -> {
                 String node=exit.reference();
-                if(controlEntries.containsKey(node))calls.add(new DependencyControl.Call(controlEntries.get(node),""));
-                else if(node.startsWith("phase/")) {
+                if(node.startsWith("phase/")) {
                     int split=node.lastIndexOf('/');var binding=bindings.get(node.substring(6,split));String phase=node.substring(split+1);
                     if(phase.equals("BODY"))calls.add(new DependencyControl.Call(new Point(Exit.of(regions.get(binding.region()).entry()),binding.endpoint(),escapeScope(binding)),binding.id()));
-                    else if(phase.equals("RESUME"))next.add(new Point(Exit.of(binding.resume()),endpoint,scope));
-                    else for(var edge:binding.phases().stream().filter(p->p.id().equals(phase)).findFirst().orElseThrow().edges())next.add(controlPhase(binding,edge.target(),endpoint,scope));
+                    else if(phase.equals("RESUME"))next.add(Exit.of(binding.resume()));
+                    else for(var edge:binding.phases().stream().filter(p->p.id().equals(phase)).findFirst().orElseThrow().edges())next.add(controlPhase(binding,edge.target()));
                 }else {
                     for(var edge:edges.getOrDefault(node,List.of()))next.add(edge.kind()==OutcomeKind.LOCAL_INVOKE
-                        ?controlPhase(bindings.get(edge.binding()),bindings.get(edge.binding()).entryPhase(),endpoint,scope)
-                        :new Point(Exit.of(edge.target()),endpoint,scope));
-                    for(var possibility:possibilities.getOrDefault(node,List.of()))next.add(new Point(Exit.of(possibility.target()),endpoint,scope));
+                        ?controlPhase(bindings.get(edge.binding()),bindings.get(edge.binding()).entryPhase()):Exit.of(edge.target()));
+                    for(var possibility:possibilities.getOrDefault(node,List.of()))next.add(Exit.of(possibility.target()));
                     var statement=statements.get(node);
                     if(statement!=null)fileSurface(statement).ifPresent(surface->{for(var handler:surface.handlers()) {
-                        var region=regions.get("region:"+node+"/file/handler-"+handler.kind());if(region!=null)next.add(new Point(Exit.of(region.entry()),endpoint,scope));
+                        var region=regions.get("region:"+node+"/file/handler-"+handler.kind());if(region!=null)next.add(Exit.of(region.entry()));
                     }});
-                    for(var binding:ioDeclarations.getOrDefault(node,List.of()))next.add(controlPhase(binding,binding.entryPhase(),endpoint,scope));
+                    for(var binding:ioDeclarations.getOrDefault(node,List.of()))next.add(controlPhase(binding,binding.entryPhase()));
                     for(var event:events.getOrDefault(node,List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
-                        next.add(new Point(Exit.of(event.continuation()),endpoint,scope));
-                        for(var registrations:registrations.values())for(var registration:registrations)for(var target:registration.target())next.add(new Point(Exit.of(target),endpoint,scope));
+                        next.add(Exit.of(event.continuation()));
+                        for(var registrations:registrations.values())for(var registration:registrations)for(var target:registration.target())next.add(Exit.of(target));
                     }
                     if(exceptionalEvents.getOrDefault(node,List.of()).stream().anyMatch(e->e.eligibility()==EventEligibility.HANDLER_ELIGIBLE))
-                        handlerEndpoints.forEach((handler,handlerEndpoint)->entries.add(controlEntry(new Point(new Exit(TargetKind.OCCURRENCE,handler),handlerEndpoint))));
+                        handlerEndpoints.forEach((handler,endpoint)->entries.add(new Point(new Exit(TargetKind.OCCURRENCE,handler),endpoint)));
                 }
             }
             default -> throw new IllegalStateException("unresolved control entry "+exit);
         }
-        return new DependencyControl.Effect(next,calls,entries,Set.of());
+        return DependencyControl.Rule.flow(new DependencyControl.Effect(next,calls,entries,Set.of()));
+    }
+    private Exit controlPhase(Binding binding,String phase) {
+        return new Exit(TargetKind.OCCURRENCE,"phase/"+binding.id()+"/"+phase);
     }
     /** Invocation bodies share an escape policy, not a caller's resume address.
      * Crossing an unrelated boundary continues in this same scope. Only a
@@ -1282,16 +1273,15 @@ final class DependencyFlow {
         while(regions.containsKey(ancestor)&&!ancestor.equals(exit.reference()))ancestor=regions.get(ancestor).parent();
         return ancestor.equals(exit.reference());
     }
-    private DependencyControl.Effect controlDelivery(Point caller,DependencyControl.Call call,Exit exit) {
-        return continuationPlans.computeIfAbsent(new DeliveryKey(call.binding(),caller.endpoint(),caller.escapeScope(),exit),key->{
-            if(call.binding().isEmpty())return new DependencyControl.Effect(List.of(),List.of(),List.of(),Set.of());
+    private DependencyControl.Effect controlDelivery(DependencyControl.Call call,Exit exit) {
+        return continuationPlans.computeIfAbsent(new DeliveryKey(call.binding(),exit),key->{
             var binding=bindings.get(call.binding());
-            if(exit.kind()==TargetKind.COMPLETE)return DependencyControl.Effect.next(controlPhase(binding,binding.completionPhase(),caller.endpoint(),caller.escapeScope()));
+            if(exit.kind()==TargetKind.COMPLETE)return DependencyControl.Effect.next(controlPhase(binding,binding.completionPhase()));
             if(exit.kind()==TargetKind.ESCAPE) {
-                if(("boundary:"+exit.reference()).equals(call.entry().endpoint()))
-                    return DependencyControl.Effect.next(new Point(Exit.of(binding.resume()),caller.endpoint(),caller.escapeScope()));
-                // Unwind one invocation, then interpret the escape in its parent scope.
-                return DependencyControl.Effect.next(new Point(exit,caller.endpoint(),caller.escapeScope()));
+                if(("boundary:"+exit.reference()).equals(call.entry().endpoint()))return DependencyControl.Effect.next(Exit.of(binding.resume()));
+                // The physical escape keeps the caller's obligation and is
+                // interpreted by its boundary rule, unwinding one invocation.
+                return DependencyControl.Effect.next(exit);
             }
             return DependencyControl.Effect.exit(exit);
         });
@@ -1497,14 +1487,12 @@ final class DependencyFlow {
         if(state.reach().equals(NO))return;
         if(caller instanceof Forward forward){finish(forward.context(),exit,state);return;}
         if(!(caller instanceof ReturnTo returnTo))return; // Independent entry has no caller to resume.
-        var parent=contexts.get(returnTo.context()).key;
-        var plan=controlDelivery(new Point(exit,parent.endpoint(),parent.escapeScope()),
-            new DependencyControl.Call(new Point(exit,caller.endpoint()),returnTo.binding()),exit);
+        var plan=controlDelivery(new DependencyControl.Call(new Point(exit,caller.endpoint()),returnTo.binding()),exit);
         for(var next:plan.next()) {
-            if(next.exit().reference().startsWith("phase/")) {
-                String node=next.exit().reference();int split=node.lastIndexOf('/');
+            if(next.reference().startsWith("phase/")) {
+                String node=next.reference();int split=node.lastIndexOf('/');
                 phase(returnTo.context(),bindings.get(node.substring(6,split)),node.substring(split+1),state);
-            }else route(returnTo.context(),next.exit(),state);
+            }else route(returnTo.context(),next,state);
         }
         for(var resultExit:plan.exits())route(returnTo.context(),resultExit,state);
     }
