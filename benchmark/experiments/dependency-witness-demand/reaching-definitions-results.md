@@ -1,5 +1,9 @@
 # Resultado: reaching definitions esparso
 
+Registro histórico anterior à correção do controle. A qualificação posterior
+que remove os 11 adicionais do CardDemo está em
+[control-fix-results.md](control-fix-results.md).
+
 Implementação local `332abaf`, branch `experiment/dependency-witness-demand`.
 Baseline main `52c1b82dc6accbb615818cf5b5298843a85b0f01`; JAR SHA-256
 `6bd96f31911976c097c9fb47377587c11bf3ebe6dc60305190104314bc39b036`. Build final: `build-06`.

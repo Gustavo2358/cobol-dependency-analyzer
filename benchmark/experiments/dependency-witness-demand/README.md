@@ -103,3 +103,7 @@ always disclosed. Compare actual dependency names and source locations against
 frozen baseline JSON. No lost baseline name is acceptable; additional names and
 location changes are reported separately. Corpus parity is empirical, not a
 universal soundness proof. `reaching-definitions-results.md` records this wave.
+The subsequent boundary/handler correction and its qualifications are in
+[control-fix-results.md](control-fix-results.md). `control-regressions.py`
+compares 15 independent name oracles on main, the previous experiment build,
+and the corrected build; pass `--jar`, `--before`, and `--after` build paths.
