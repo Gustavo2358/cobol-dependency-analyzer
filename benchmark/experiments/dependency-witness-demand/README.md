@@ -76,6 +76,9 @@ semantics that the baseline frontend/evaluator does not provide.
 
 ## CLI integration and validation
 
+[Packaged CLI qualification](cli-integration-results.md) records the JAR hashes,
+source equivalence, regression results and the precise-mode heap128 limitation.
+
 Both algorithms now ship in the normal product JAR. The frontend, nominal binding,
 logical evaluator and sparse table allocation are shared. `--solver` chooses the
 analysis algorithm once per invocation; no automatic fallback or per-query
