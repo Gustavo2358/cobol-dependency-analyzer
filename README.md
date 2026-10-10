@@ -244,7 +244,9 @@ Não há garantia de paridade universal de COBOL; a paridade medida refere-se
 aos insumos e oráculos documentados.
 
 `--max-work N` limita visitas, estados, resumos, trabalho de relevância e controle,
-expressões/resoluções paramétricas e produtos de candidatos (padrão 1000000).
+expressões/resoluções paramétricas e produtos de candidatos (padrão 100000000,
+ou 100 milhões, na CLI e na API). Esse é o orçamento usado na qualificação de
+N=2048 com reaching definitions; `--max-work N` permite substituí-lo.
 Ultrapassar o orçamento falha explicitamente; não corta candidatos para obter
 sucesso. `--metrics arquivo.jsonl` grava tempos e contadores fora do JSON de
 produto. `evaluations` conta transformações locais calculadas e `reusedEvaluations`

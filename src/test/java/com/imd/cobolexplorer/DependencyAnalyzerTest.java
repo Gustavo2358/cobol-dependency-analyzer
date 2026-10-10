@@ -250,6 +250,7 @@ class DependencyAnalyzerTest {
     }
 
     @Test void cliSelectsSolversInTheSameJarAndExplainsApproximation()throws Exception {
+        assertEquals(100_000_000L,DependencyAnalyzer.Options.defaults().maxWork());
         analyze("01 TARGET PIC X(8).\n01 FLAG PIC X.",
             "MOVE 'Y' TO FLAG.\nIF FLAG = 'Y'\nMOVE 'GOOD' TO TARGET\nELSE\nMOVE 'BAD' TO TARGET\nEND-IF.\nCALL TARGET.\nGOBACK.");
         var source=temp.resolve("test.cbl");var output=temp.resolve("dependencies.json");

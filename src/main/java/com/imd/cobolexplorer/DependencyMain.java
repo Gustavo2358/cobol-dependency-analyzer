@@ -11,9 +11,9 @@ public final class DependencyMain {
     static int run(String[] args) {
         try {
             Path source=null,output=null,inventory=null,metrics=null;var copies=new ArrayList<Path>();
-            var format=SourceNormalizer.SourceFormat.FIXED;var charset=Charset.forName("UTF-8");String parser="direct-ast-lab";long maxWork=1_000_000;var solver=DependencyAnalyzer.Solver.PRECISE;
+            var format=SourceNormalizer.SourceFormat.FIXED;var charset=Charset.forName("UTF-8");String parser="direct-ast-lab";long maxWork=DependencyAnalyzer.DEFAULT_MAX_WORK;var solver=DependencyAnalyzer.Solver.PRECISE;
             for(int i=0;i<args.length;i++) {
-                if(args[i].equals("--help")){System.out.println("java -jar cobol-dependency-analyzer.jar --source FILE_OR_DIR --output dependencies.json [--copy-dir DIR] [--source-format fixed] [--source-inventory FILE] [--charset UTF-8] [--parser direct|antlr] [--solver precise|reaching-definitions] [--max-work N] [--metrics FILE]");return 0;}
+                if(args[i].equals("--help")){System.out.println("java -jar cobol-dependency-analyzer.jar --source FILE_OR_DIR --output dependencies.json [--copy-dir DIR] [--source-format fixed] [--source-inventory FILE] [--charset UTF-8] [--parser direct|antlr] [--solver precise|reaching-definitions] [--max-work N] [--metrics FILE]\n--max-work default: "+DependencyAnalyzer.DEFAULT_MAX_WORK);return 0;}
                 if(i+1==args.length)throw new IllegalArgumentException("Missing value for "+args[i]);String option=args[i++],value=args[i];
                 switch(option) {
                     case "--source"->source=Path.of(value);case "--output"->output=Path.of(value);case "--copy-dir"->copies.add(Path.of(value));

@@ -9,6 +9,7 @@ import com.imd.cobolexplorer.semanticproduct.CobolSemanticProduct;
 /** Headless single-process analysis. Never builds/publishes the Semantic Product,
  * physical storage, AIR, presentation snapshots or intermediate files. */
 public final class DependencyAnalyzer {
+    public static final long DEFAULT_MAX_WORK=100_000_000L;
     public record At(String file,int line) { }
     public record Dependency(String type,String name,At at) { }
     public record Program(String program,List<Dependency> dependencies) { }
@@ -33,7 +34,7 @@ public final class DependencyAnalyzer {
         public Options(List<Path> copyDirectories,SourceNormalizer.SourceFormat format,Charset charset,Path sourceInventory,String parser,long maxWork){
             this(copyDirectories,format,charset,sourceInventory,parser,maxWork,Solver.PRECISE);
         }
-        public static Options defaults(){return new Options(List.of(),SourceNormalizer.SourceFormat.FIXED,Charset.forName("UTF-8"),null,"direct-ast-lab",1_000_000);}
+        public static Options defaults(){return new Options(List.of(),SourceNormalizer.SourceFormat.FIXED,Charset.forName("UTF-8"),null,"direct-ast-lab",DEFAULT_MAX_WORK);}
     }
     public Result analyze(Path source,Options options)throws Exception {
         long started=System.nanoTime();var binding=Bindings.cobol();
