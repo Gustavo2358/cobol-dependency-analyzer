@@ -1,0 +1,2512 @@
+{
+  "auditOfImplementation": "1797f16",
+  "baselineCommit": "52c1b82dc6accbb615818cf5b5298843a85b0f01",
+  "auditStartingCommit": "67e6a739817bfc8260c1673bc2ed2dc88b4e14fb",
+  "qualificationResultsSha256": "833a40bc35d38286b25efabb48d076ccd366c9f017bb18b6e3629368e2ff88b5",
+  "counts": {
+    "PREDICATE_IGNORED": 5,
+    "TABLE_OVERWRITE_NOT_KILLED": 9,
+    "TABLE_POSITIONS_MIXED": 15,
+    "WHOLE_TABLE_INITIALIZE_WEAK": 1
+  },
+  "occurrenceUnit": "one (fixture, program, dependency type, normalized name); category counted once; secondary causes may overlap",
+  "qualifiedStandaloneCases": 36,
+  "affectedCases": 21,
+  "knownExtras": 30,
+  "scope": "standalone only, excludes the separate 25-adversarial and 73-CardDemo groups and 32 provenance changes",
+  "resourceLimits": {
+    "heapMiB": 128,
+    "rssMiB": 768,
+    "reserveMiB": 2048,
+    "timeoutSeconds": 60,
+    "maxWork": 100000000
+  },
+  "newIsolationRuns": {
+    "count": 18,
+    "completed": 18,
+    "expectedResultsMatched": 18,
+    "peakRssMiB": 107.4140625,
+    "evidence": "benchmark/results/standalone-rd-audit-20261009",
+    "resultsSha256": "5b419370241b11991aed2883ece456cb8bbe588c699f7879eff5710d6d88285e"
+  },
+  "reusedEvidence": "36 qualified source hashes checked; unchanged build/JAR hashes verified. Existing corpus output comparison reused, not rerun.",
+  "cases": {
+    "precision-caller-correlation": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/fixtures/precision-budget/caller-correlation.cbl",
+      "sourceSha256": "c5326d034a6c2ab9ceef848a14830b371e2792ef6c596e0680896887058ed9a1",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/precision-caller-correlation/dependencies.json",
+      "baselineOutputSha256": "d172c4e8cb3a23aa38bb4f9bb8cb5be40118c6c244cdeed4c7d08181920c2feb",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/precision-caller-correlation/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "CALLERCORRELATION",
+          "program",
+          "UNOBS"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. CALLERCORRELATION."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 FLAG PIC X."
+        },
+        {
+          "line": 6,
+          "text": "       01 LOOP-FLAG PIC 9 VALUE 0."
+        },
+        {
+          "line": 7,
+          "text": "       01 TARGET PIC X(8)."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MAIN."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE '0' TO FLAG."
+        },
+        {
+          "line": 11,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 12,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 13,
+          "text": "       MOVE '1' TO FLAG."
+        },
+        {
+          "line": 14,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 15,
+          "text": "       GOBACK."
+        },
+        {
+          "line": 16,
+          "text": "       BODY."
+        },
+        {
+          "line": 17,
+          "text": "       IF FLAG = '0'"
+        },
+        {
+          "line": 18,
+          "text": "       MOVE 'ONLY' TO TARGET"
+        },
+        {
+          "line": 19,
+          "text": "       ELSE"
+        },
+        {
+          "line": 20,
+          "text": "       MOVE 'UNOBS' TO TARGET"
+        },
+        {
+          "line": 21,
+          "text": "       END-IF."
+        },
+        {
+          "line": 22,
+          "text": "       IF LOOP-FLAG = 1 GO TO BODY END-IF."
+        },
+        {
+          "line": 23,
+          "text": "       EXIT."
+        }
+      ]
+    },
+    "precision-caller-many-12": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/fixtures/precision-budget/caller-many-12.cbl",
+      "sourceSha256": "9271442e68f8aca7d360c977efb3301a631164785d72d4714aceb02ef0b72101",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/precision-caller-many-12/dependencies.json",
+      "baselineOutputSha256": "18164b5ae5de4912e06200c8c0299d0d460cf0fd3fbe6b1de7b06cce16ddde68",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/precision-caller-many-12/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "MANYCALLERS",
+          "program",
+          "INITIAL"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00011"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. MANYCALLERS."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 FLAG PIC X(8)."
+        },
+        {
+          "line": 6,
+          "text": "       01 LOOP-FLAG PIC 9 VALUE 0."
+        },
+        {
+          "line": 7,
+          "text": "       01 TARGET PIC X(8) VALUE 'INITIAL'."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MAIN."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'MODE0000' TO FLAG."
+        },
+        {
+          "line": 11,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 12,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 13,
+          "text": "       MOVE 'MODE0001' TO FLAG."
+        },
+        {
+          "line": 14,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 15,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 16,
+          "text": "       MOVE 'MODE0002' TO FLAG."
+        },
+        {
+          "line": 17,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 18,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 19,
+          "text": "       MOVE 'MODE0003' TO FLAG."
+        },
+        {
+          "line": 20,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 21,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 22,
+          "text": "       MOVE 'MODE0004' TO FLAG."
+        },
+        {
+          "line": 23,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 24,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 25,
+          "text": "       MOVE 'MODE0005' TO FLAG."
+        },
+        {
+          "line": 26,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 27,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 28,
+          "text": "       MOVE 'MODE0006' TO FLAG."
+        },
+        {
+          "line": 29,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 30,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 31,
+          "text": "       MOVE 'MODE0007' TO FLAG."
+        },
+        {
+          "line": 32,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 33,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 34,
+          "text": "       MOVE 'MODE0008' TO FLAG."
+        },
+        {
+          "line": 35,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 36,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 37,
+          "text": "       MOVE 'MODE0009' TO FLAG."
+        },
+        {
+          "line": 38,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 39,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 40,
+          "text": "       MOVE 'MODE0010' TO FLAG."
+        },
+        {
+          "line": 41,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 42,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 43,
+          "text": "       MOVE 'MODE0011' TO FLAG."
+        },
+        {
+          "line": 44,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 45,
+          "text": "       GOBACK."
+        },
+        {
+          "line": 46,
+          "text": "       BODY."
+        },
+        {
+          "line": 47,
+          "text": "       IF FLAG = 'MODE0000' MOVE 'PGM00000' TO TARGET END-IF."
+        },
+        {
+          "line": 48,
+          "text": "       IF FLAG = 'MODE0001' MOVE 'PGM00001' TO TARGET END-IF."
+        },
+        {
+          "line": 49,
+          "text": "       IF FLAG = 'MODE0002' MOVE 'PGM00002' TO TARGET END-IF."
+        },
+        {
+          "line": 50,
+          "text": "       IF FLAG = 'MODE0003' MOVE 'PGM00003' TO TARGET END-IF."
+        },
+        {
+          "line": 51,
+          "text": "       IF FLAG = 'MODE0004' MOVE 'PGM00004' TO TARGET END-IF."
+        },
+        {
+          "line": 52,
+          "text": "       IF FLAG = 'MODE0005' MOVE 'PGM00005' TO TARGET END-IF."
+        },
+        {
+          "line": 53,
+          "text": "       IF FLAG = 'MODE0006' MOVE 'PGM00006' TO TARGET END-IF."
+        },
+        {
+          "line": 54,
+          "text": "       IF FLAG = 'MODE0007' MOVE 'PGM00007' TO TARGET END-IF."
+        },
+        {
+          "line": 55,
+          "text": "       IF FLAG = 'MODE0008' MOVE 'PGM00008' TO TARGET END-IF."
+        },
+        {
+          "line": 56,
+          "text": "       IF FLAG = 'MODE0009' MOVE 'PGM00009' TO TARGET END-IF."
+        },
+        {
+          "line": 57,
+          "text": "       IF FLAG = 'MODE0010' MOVE 'PGM00010' TO TARGET END-IF."
+        },
+        {
+          "line": 58,
+          "text": "       IF FLAG = 'MODE0011' MOVE 'PGM00011' TO TARGET END-IF."
+        },
+        {
+          "line": 59,
+          "text": "       IF LOOP-FLAG = 1 GO TO BODY END-IF."
+        },
+        {
+          "line": 60,
+          "text": "       EXIT."
+        }
+      ]
+    },
+    "precision-caller-many-24": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/fixtures/precision-budget/caller-many-24.cbl",
+      "sourceSha256": "4b0294ded0442c337f37d2a3fdfdf2b02cc93088f52d132c76ff85943c322c84",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/precision-caller-many-24/dependencies.json",
+      "baselineOutputSha256": "a7ec2414a4977a0146fbcf3282c95a9bee1c408d934309abdad5b43694a8e4a4",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/precision-caller-many-24/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "MANYCALLERS",
+          "program",
+          "INITIAL"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00023"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. MANYCALLERS."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 FLAG PIC X(8)."
+        },
+        {
+          "line": 6,
+          "text": "       01 LOOP-FLAG PIC 9 VALUE 0."
+        },
+        {
+          "line": 7,
+          "text": "       01 TARGET PIC X(8) VALUE 'INITIAL'."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MAIN."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'MODE0000' TO FLAG."
+        },
+        {
+          "line": 11,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 12,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 13,
+          "text": "       MOVE 'MODE0001' TO FLAG."
+        },
+        {
+          "line": 14,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 15,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 16,
+          "text": "       MOVE 'MODE0002' TO FLAG."
+        },
+        {
+          "line": 17,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 18,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 19,
+          "text": "       MOVE 'MODE0003' TO FLAG."
+        },
+        {
+          "line": 20,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 21,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 22,
+          "text": "       MOVE 'MODE0004' TO FLAG."
+        },
+        {
+          "line": 23,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 24,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 25,
+          "text": "       MOVE 'MODE0005' TO FLAG."
+        },
+        {
+          "line": 26,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 27,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 28,
+          "text": "       MOVE 'MODE0006' TO FLAG."
+        },
+        {
+          "line": 29,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 30,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 31,
+          "text": "       MOVE 'MODE0007' TO FLAG."
+        },
+        {
+          "line": 32,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 33,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 34,
+          "text": "       MOVE 'MODE0008' TO FLAG."
+        },
+        {
+          "line": 35,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 36,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 37,
+          "text": "       MOVE 'MODE0009' TO FLAG."
+        },
+        {
+          "line": 38,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 39,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 40,
+          "text": "       MOVE 'MODE0010' TO FLAG."
+        },
+        {
+          "line": 41,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 42,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 43,
+          "text": "       MOVE 'MODE0011' TO FLAG."
+        },
+        {
+          "line": 44,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 45,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 46,
+          "text": "       MOVE 'MODE0012' TO FLAG."
+        },
+        {
+          "line": 47,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 48,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 49,
+          "text": "       MOVE 'MODE0013' TO FLAG."
+        },
+        {
+          "line": 50,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 51,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 52,
+          "text": "       MOVE 'MODE0014' TO FLAG."
+        },
+        {
+          "line": 53,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 54,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 55,
+          "text": "       MOVE 'MODE0015' TO FLAG."
+        },
+        {
+          "line": 56,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 57,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 58,
+          "text": "       MOVE 'MODE0016' TO FLAG."
+        },
+        {
+          "line": 59,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 60,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 61,
+          "text": "       MOVE 'MODE0017' TO FLAG."
+        },
+        {
+          "line": 62,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 63,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 64,
+          "text": "       MOVE 'MODE0018' TO FLAG."
+        },
+        {
+          "line": 65,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 66,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 67,
+          "text": "       MOVE 'MODE0019' TO FLAG."
+        },
+        {
+          "line": 68,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 69,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 70,
+          "text": "       MOVE 'MODE0020' TO FLAG."
+        },
+        {
+          "line": 71,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 72,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 73,
+          "text": "       MOVE 'MODE0021' TO FLAG."
+        },
+        {
+          "line": 74,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 75,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 76,
+          "text": "       MOVE 'MODE0022' TO FLAG."
+        },
+        {
+          "line": 77,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 78,
+          "text": "       CALL TARGET."
+        },
+        {
+          "line": 79,
+          "text": "       MOVE 'MODE0023' TO FLAG."
+        },
+        {
+          "line": 80,
+          "text": "       PERFORM BODY."
+        },
+        {
+          "line": 81,
+          "text": "       GOBACK."
+        },
+        {
+          "line": 82,
+          "text": "       BODY."
+        },
+        {
+          "line": 83,
+          "text": "       IF FLAG = 'MODE0000' MOVE 'PGM00000' TO TARGET END-IF."
+        },
+        {
+          "line": 84,
+          "text": "       IF FLAG = 'MODE0001' MOVE 'PGM00001' TO TARGET END-IF."
+        },
+        {
+          "line": 85,
+          "text": "       IF FLAG = 'MODE0002' MOVE 'PGM00002' TO TARGET END-IF."
+        },
+        {
+          "line": 86,
+          "text": "       IF FLAG = 'MODE0003' MOVE 'PGM00003' TO TARGET END-IF."
+        },
+        {
+          "line": 87,
+          "text": "       IF FLAG = 'MODE0004' MOVE 'PGM00004' TO TARGET END-IF."
+        },
+        {
+          "line": 88,
+          "text": "       IF FLAG = 'MODE0005' MOVE 'PGM00005' TO TARGET END-IF."
+        },
+        {
+          "line": 89,
+          "text": "       IF FLAG = 'MODE0006' MOVE 'PGM00006' TO TARGET END-IF."
+        },
+        {
+          "line": 90,
+          "text": "       IF FLAG = 'MODE0007' MOVE 'PGM00007' TO TARGET END-IF."
+        },
+        {
+          "line": 91,
+          "text": "       IF FLAG = 'MODE0008' MOVE 'PGM00008' TO TARGET END-IF."
+        },
+        {
+          "line": 92,
+          "text": "       IF FLAG = 'MODE0009' MOVE 'PGM00009' TO TARGET END-IF."
+        },
+        {
+          "line": 93,
+          "text": "       IF FLAG = 'MODE0010' MOVE 'PGM00010' TO TARGET END-IF."
+        },
+        {
+          "line": 94,
+          "text": "       IF FLAG = 'MODE0011' MOVE 'PGM00011' TO TARGET END-IF."
+        },
+        {
+          "line": 95,
+          "text": "       IF FLAG = 'MODE0012' MOVE 'PGM00012' TO TARGET END-IF."
+        },
+        {
+          "line": 96,
+          "text": "       IF FLAG = 'MODE0013' MOVE 'PGM00013' TO TARGET END-IF."
+        },
+        {
+          "line": 97,
+          "text": "       IF FLAG = 'MODE0014' MOVE 'PGM00014' TO TARGET END-IF."
+        },
+        {
+          "line": 98,
+          "text": "       IF FLAG = 'MODE0015' MOVE 'PGM00015' TO TARGET END-IF."
+        },
+        {
+          "line": 99,
+          "text": "       IF FLAG = 'MODE0016' MOVE 'PGM00016' TO TARGET END-IF."
+        },
+        {
+          "line": 100,
+          "text": "       IF FLAG = 'MODE0017' MOVE 'PGM00017' TO TARGET END-IF."
+        },
+        {
+          "line": 101,
+          "text": "       IF FLAG = 'MODE0018' MOVE 'PGM00018' TO TARGET END-IF."
+        },
+        {
+          "line": 102,
+          "text": "       IF FLAG = 'MODE0019' MOVE 'PGM00019' TO TARGET END-IF."
+        },
+        {
+          "line": 103,
+          "text": "       IF FLAG = 'MODE0020' MOVE 'PGM00020' TO TARGET END-IF."
+        },
+        {
+          "line": 104,
+          "text": "       IF FLAG = 'MODE0021' MOVE 'PGM00021' TO TARGET END-IF."
+        },
+        {
+          "line": 105,
+          "text": "       IF FLAG = 'MODE0022' MOVE 'PGM00022' TO TARGET END-IF."
+        },
+        {
+          "line": 106,
+          "text": "       IF FLAG = 'MODE0023' MOVE 'PGM00023' TO TARGET END-IF."
+        },
+        {
+          "line": 107,
+          "text": "       IF LOOP-FLAG = 1 GO TO BODY END-IF."
+        },
+        {
+          "line": 108,
+          "text": "       EXIT."
+        }
+      ]
+    },
+    "occurs-sparse-100": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/sparse-100.cbl",
+      "sourceSha256": "d6af529dc636739a4e5a51499e7f052b2e3da2e6074c1c42c5a7710a29797442",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-sparse-100/dependencies.json",
+      "baselineOutputSha256": "8668f88b0c172da143494d2f24567af1ada882a65edd083ee0e48deea937cd5a",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-sparse-100/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 100 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 8,
+          "text": "       MOVE 'OLD' TO DEST(1)."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OTHER' TO DEST(100)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'GOOD' TO DEST(1)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-sparse-1000": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/sparse-1000.cbl",
+      "sourceSha256": "9eafb8e4d1c72244be4513c8b7f4f4ec79bbee707c091c2dbf65b08ef1066d80",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-sparse-1000/dependencies.json",
+      "baselineOutputSha256": "056eca998809598dcb0a61c16332b5abd7285d827f7f945b2dbed973d551af95",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-sparse-1000/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 8,
+          "text": "       MOVE 'OLD' TO DEST(1)."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OTHER' TO DEST(1000)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'GOOD' TO DEST(1)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-sparse-5000": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/sparse-5000.cbl",
+      "sourceSha256": "454df2e191f91c5e83cc66c54c0edc327c4982158df1709fd2d8e5986e4d4ea0",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-sparse-5000/dependencies.json",
+      "baselineOutputSha256": "2221452ba8e96fa6ddadf2ae7b0fbbb14ddadae7c35a1b16ac39491d1e33ed6e",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-sparse-5000/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 5000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 8,
+          "text": "       MOVE 'OLD' TO DEST(1)."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OTHER' TO DEST(5000)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'GOOD' TO DEST(1)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-sparse-50000": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/sparse-50000.cbl",
+      "sourceSha256": "5a51de131f18c55ef9f0d602c1e0309ad24bcad1e3fc96be62339c3e03fa834c",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-sparse-50000/dependencies.json",
+      "baselineOutputSha256": "ab825339d090b348a4e37a75e701c697049711707bfc6666d3cf1a82e0cd4aec",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-sparse-50000/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 50000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 8,
+          "text": "       MOVE 'OLD' TO DEST(1)."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OTHER' TO DEST(50000)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'GOOD' TO DEST(1)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-nested-10": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/nested-10.cbl",
+      "sourceSha256": "b36a74f9f4bfe0248f9d24d019cb0fd0a30931c8758e2fcadfbc41c38f86e505",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-nested-10/dependencies.json",
+      "baselineOutputSha256": "8290c5a86a7b2d152a4746d0d51c18cc2ec0cdc712fd5bee5e66fbe9452960ea",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-nested-10/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 ROW-X OCCURS 10 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       10 DEST PIC X(8) OCCURS 10 TIMES."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OTHER' TO DEST(10, 10)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'GOOD' TO DEST(1, 2)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(1, 2)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-nested-50": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/nested-50.cbl",
+      "sourceSha256": "1aaf52189e43d555c84cf407a4729f0861b792eabb74646d02be975dab455c4a",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-nested-50/dependencies.json",
+      "baselineOutputSha256": "e7fa99a7be5764b4d034915060a4cdf1df90e335b4fec1e67dcb6167d49a4559",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-nested-50/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 ROW-X OCCURS 50 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       10 DEST PIC X(8) OCCURS 50 TIMES."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OTHER' TO DEST(50, 50)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'GOOD' TO DEST(1, 2)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(1, 2)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-nested-200": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/nested-200.cbl",
+      "sourceSha256": "42f027ded5798d1c2e12735dad4716520fc5c399c5ea83fb3097d715e64e1b56",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-nested-200/dependencies.json",
+      "baselineOutputSha256": "ef45ab384e5e353eefb8091cca6ba4e6098b535ea370f15dedade78488f08570",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-nested-200/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 ROW-X OCCURS 200 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       10 DEST PIC X(8) OCCURS 200 TIMES."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OTHER' TO DEST(200, 200)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'GOOD' TO DEST(1, 2)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(1, 2)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-unknown-content": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/unknown-content.cbl",
+      "sourceSha256": "0d4185f67fffee718787f9b469d28d93ebfa727904b1814e8d6b1039b344f7f9",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-unknown-content/dependencies.json",
+      "baselineOutputSha256": "1b508dfb5f1dcde2cbeac05751c9a387f9d5de245d6b1bf1e27c882beb58fb02",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-unknown-content/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       01 INPUT-X PIC X(8)."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OLD' TO DEST(3)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE INPUT-X TO DEST(3)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(3)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-unknown-write": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/unknown-write.cbl",
+      "sourceSha256": "7140c735f2c61f46c700626c271ec8a0623e53c449e78158b381afa36793f82b",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-unknown-write/dependencies.json",
+      "baselineOutputSha256": "5376c2cb334773f9cd8ec4fdc3c6e9167bc9cb466f26223c097e9694756a3bab",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-unknown-write/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       01 IDX PIC 9(4)."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'FIRST' TO DEST(1)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'OTHER' TO DEST(2)."
+        },
+        {
+          "line": 11,
+          "text": "       MOVE 'NEW' TO DEST(IDX)."
+        },
+        {
+          "line": 12,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 13,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-unknown-then-known": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/unknown-then-known.cbl",
+      "sourceSha256": "4efc1177de96562208c0204fac49a18da4632974d2270143c157a6f733b198b4",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-unknown-then-known/dependencies.json",
+      "baselineOutputSha256": "f75a7c3454bfdc33decb05ea6a89e96114070eb5cbd6e584d5e2cb0143f9e994",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-unknown-then-known/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       01 IDX PIC 9(4)."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OLD' TO DEST(IDX)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'GOOD' TO DEST(1)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-all-overwritten": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/all-overwritten.cbl",
+      "sourceSha256": "3fb28d23741b98a528d192539e89880ace2a999197ea47c0a2138ac49184dc7e",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-all-overwritten/dependencies.json",
+      "baselineOutputSha256": "275fa22e6cba65ded1763eb9e30ef902fc97aa486ece2c10d06c4d81a1502604",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-all-overwritten/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 2 TIMES VALUE 'OLD'."
+        },
+        {
+          "line": 7,
+          "text": "       01 IDX PIC 9."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'FIRST' TO DEST(1)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'SECOND' TO DEST(2)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(IDX)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-initialize": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/initialize.cbl",
+      "sourceSha256": "cecc7166a9996054466085b9c3b85d26cc44bcef62e0b8c190982e6ab20e32d4",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-initialize/dependencies.json",
+      "baselineOutputSha256": "1b508dfb5f1dcde2cbeac05751c9a387f9d5de245d6b1bf1e27c882beb58fb02",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-initialize/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 8,
+          "text": "       MOVE 'OLD' TO DEST(1)."
+        },
+        {
+          "line": 9,
+          "text": "       INITIALIZE TABLE-DATA."
+        },
+        {
+          "line": 10,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 11,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-alias-write": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/alias-write.cbl",
+      "sourceSha256": "a4c85d045f6e8be87867350ea2e2bae25a9ba7a29f023fa073ccf888ecb755bd",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-alias-write/dependencies.json",
+      "baselineOutputSha256": "f548f314ede3d53d99b9fb8d6f91361dbe44e8103202518ae3a4229b1d5967e2",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-alias-write/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       01 ALIAS-DATA REDEFINES TABLE-DATA."
+        },
+        {
+          "line": 8,
+          "text": "       05 OTHER-DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 9,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'OLD' TO DEST(1)."
+        },
+        {
+          "line": 11,
+          "text": "       MOVE 'OTHER' TO DEST(2)."
+        },
+        {
+          "line": 12,
+          "text": "       MOVE 'GOOD' TO OTHER-DEST(1)."
+        },
+        {
+          "line": 13,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 14,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-alias-weak": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/alias-weak.cbl",
+      "sourceSha256": "713879f39d74ea3640aba7d7b6ebcfdb2c0fb37f118ccb95b25ffa3f7dea9ab5",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-alias-weak/dependencies.json",
+      "baselineOutputSha256": "f35be295ee3dc640640bcf6b99635240c0e8c590fa68daca1cfaa99b6334e325",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-alias-weak/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       01 ALIAS-DATA REDEFINES TABLE-DATA."
+        },
+        {
+          "line": 8,
+          "text": "       05 OTHER-DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 9,
+          "text": "       01 IDX PIC 9(4)."
+        },
+        {
+          "line": 10,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 11,
+          "text": "       MOVE 'FIRST' TO DEST(1)."
+        },
+        {
+          "line": 12,
+          "text": "       MOVE 'OTHER' TO DEST(2)."
+        },
+        {
+          "line": 13,
+          "text": "       MOVE 'NEW' TO OTHER-DEST(IDX)."
+        },
+        {
+          "line": 14,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 15,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-full-text": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/full-text.cbl",
+      "sourceSha256": "b219dccc3494b7b04a4764f88658b2a8e292acf4f3f309c38f87270dadcdd480",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-full-text/dependencies.json",
+      "baselineOutputSha256": "56593814c766a54a5480f12096d451d29624fe4ad76f5af95190b4fdee3e936f",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-full-text/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "FIRST"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 2 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 8,
+          "text": "       MOVE 'FIRST   SECOND  ' TO TABLE-DATA."
+        },
+        {
+          "line": 9,
+          "text": "       CALL DEST(2)."
+        },
+        {
+          "line": 10,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-partial-cell": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/partial-cell.cbl",
+      "sourceSha256": "43ba5a767c8085df1bd4b278d1bb7b6b0cf28624eb5ad06f1157586764ebd43b",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-partial-cell/dependencies.json",
+      "baselineOutputSha256": "71f29b34fe6489a6d143c85d6b6a6110708651e8b7068800019d79bfce11a16e",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-partial-cell/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHEB"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "PROGA001"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 8,
+          "text": "       MOVE 'PROGA001' TO DEST(1)."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 'OTHER' TO DEST(2)."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'B' TO DEST(1)(5:1)."
+        },
+        {
+          "line": 11,
+          "text": "       CALL DEST(1)."
+        },
+        {
+          "line": 12,
+          "text": "       GOBACK."
+        }
+      ]
+    },
+    "occurs-index-through-perform": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/index-through-perform.cbl",
+      "sourceSha256": "81c92ee2d68fda9c8b76280fb0d6cb60d0a17b5e80e2b44ea2239711c250bbd3",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-index-through-perform/dependencies.json",
+      "baselineOutputSha256": "f7b5553a11f239c76c3ab5b2f62e774f7a20c490508fda8784e29f07c9bfb617",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-index-through-perform/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       01 IDX PIC 9(4)."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MAIN."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 1000 TO IDX."
+        },
+        {
+          "line": 11,
+          "text": "       MOVE 'OTHER' TO DEST(1)."
+        },
+        {
+          "line": 12,
+          "text": "       PERFORM STORE-X."
+        },
+        {
+          "line": 13,
+          "text": "       PERFORM READ-X."
+        },
+        {
+          "line": 14,
+          "text": "       GOBACK."
+        },
+        {
+          "line": 15,
+          "text": "       STORE-X."
+        },
+        {
+          "line": 16,
+          "text": "       MOVE 'GOOD' TO DEST(IDX)."
+        },
+        {
+          "line": 17,
+          "text": "       READ-X."
+        },
+        {
+          "line": 18,
+          "text": "       CALL DEST(IDX)."
+        }
+      ]
+    },
+    "occurs-arithmetic-index": {
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/arithmetic-index.cbl",
+      "sourceSha256": "731e58879842b07d7f21a09c85b00d884f4db9812311f1d7b62c8a307ca92a91",
+      "baselineOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/standalone/occurs-arithmetic-index/dependencies.json",
+      "baselineOutputSha256": "da169e4c978bb848dcd90d2d395275f0cf24c0715fd58c2ac62ffd44bf642b34",
+      "experimentOutput": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/corpus-final/occurs-arithmetic-index/definitions/1/dependencies.json",
+      "extras": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "numberedSource": [
+        {
+          "line": 1,
+          "text": "       IDENTIFICATION DIVISION."
+        },
+        {
+          "line": 2,
+          "text": "       PROGRAM-ID. SPARSE-TABLE."
+        },
+        {
+          "line": 3,
+          "text": "       DATA DIVISION."
+        },
+        {
+          "line": 4,
+          "text": "       WORKING-STORAGE SECTION."
+        },
+        {
+          "line": 5,
+          "text": "       01 TABLE-DATA."
+        },
+        {
+          "line": 6,
+          "text": "       05 DEST PIC X(8) OCCURS 1000 TIMES."
+        },
+        {
+          "line": 7,
+          "text": "       01 IDX PIC 9(4)."
+        },
+        {
+          "line": 8,
+          "text": "       PROCEDURE DIVISION."
+        },
+        {
+          "line": 9,
+          "text": "       MOVE 2 TO IDX."
+        },
+        {
+          "line": 10,
+          "text": "       MOVE 'OTHER' TO DEST(1)."
+        },
+        {
+          "line": 11,
+          "text": "       MOVE 'GOOD' TO DEST(500 * IDX)."
+        },
+        {
+          "line": 12,
+          "text": "       CALL DEST(500 * IDX)."
+        },
+        {
+          "line": 13,
+          "text": "       GOBACK."
+        }
+      ]
+    }
+  },
+  "findings": [
+    {
+      "case": "precision-caller-correlation",
+      "program": "CALLERCORRELATION",
+      "type": "program",
+      "name": "UNOBS",
+      "at": {
+        "file": "caller-correlation.cbl",
+        "line": 12
+      },
+      "category": "PREDICATE_IGNORED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "The only observed CALL follows FLAG='0'; UNOBS requires FLAG='1'. One-caller isolation still produces UNOBS."
+    },
+    {
+      "case": "precision-caller-many-12",
+      "program": "MANYCALLERS",
+      "type": "program",
+      "name": "INITIAL",
+      "at": {
+        "file": "caller-many-12.cbl",
+        "line": 12
+      },
+      "category": "PREDICATE_IGNORED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "Every invoked MODE has a matching assignment; admitting the false outcome of every IF retains INITIAL."
+    },
+    {
+      "case": "precision-caller-many-12",
+      "program": "MANYCALLERS",
+      "type": "program",
+      "name": "PGM00011",
+      "at": {
+        "file": "caller-many-12.cbl",
+        "line": 12
+      },
+      "category": "PREDICATE_IGNORED",
+      "secondaryMechanisms": [
+        "CALLER_VALUE_MIXING"
+      ],
+      "assessment": "incompatible with source execution for valid accesses; two independently sufficient approximation routes",
+      "sourceReason": "The last MODE/name is used only in a final unobserved PERFORM. Deleting that invocation still yields the last name through infeasible IF outcomes."
+    },
+    {
+      "case": "precision-caller-many-24",
+      "program": "MANYCALLERS",
+      "type": "program",
+      "name": "INITIAL",
+      "at": {
+        "file": "caller-many-24.cbl",
+        "line": 12
+      },
+      "category": "PREDICATE_IGNORED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "Every invoked MODE has a matching assignment; admitting the false outcome of every IF retains INITIAL."
+    },
+    {
+      "case": "precision-caller-many-24",
+      "program": "MANYCALLERS",
+      "type": "program",
+      "name": "PGM00023",
+      "at": {
+        "file": "caller-many-24.cbl",
+        "line": 12
+      },
+      "category": "PREDICATE_IGNORED",
+      "secondaryMechanisms": [
+        "CALLER_VALUE_MIXING"
+      ],
+      "assessment": "incompatible with source execution for valid accesses; two independently sufficient approximation routes",
+      "sourceReason": "The last MODE/name is used only in a final unobserved PERFORM. Deleting that invocation still yields the last name through infeasible IF outcomes."
+    },
+    {
+      "case": "occurs-sparse-100",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OLD",
+      "at": {
+        "file": "sparse-100.cbl",
+        "line": 11
+      },
+      "category": "TABLE_OVERWRITE_NOT_KILLED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "GOOD fully replaces OLD at DEST(1); the summary unions instead of killing the previous value."
+    },
+    {
+      "case": "occurs-sparse-100",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "sparse-100.cbl",
+        "line": 11
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER is assigned to the last element, while only DEST(1) is read."
+    },
+    {
+      "case": "occurs-sparse-1000",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OLD",
+      "at": {
+        "file": "sparse-1000.cbl",
+        "line": 11
+      },
+      "category": "TABLE_OVERWRITE_NOT_KILLED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "GOOD fully replaces OLD at DEST(1); the summary unions instead of killing the previous value."
+    },
+    {
+      "case": "occurs-sparse-1000",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "sparse-1000.cbl",
+        "line": 11
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER is assigned to the last element, while only DEST(1) is read."
+    },
+    {
+      "case": "occurs-sparse-5000",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OLD",
+      "at": {
+        "file": "sparse-5000.cbl",
+        "line": 11
+      },
+      "category": "TABLE_OVERWRITE_NOT_KILLED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "GOOD fully replaces OLD at DEST(1); the summary unions instead of killing the previous value."
+    },
+    {
+      "case": "occurs-sparse-5000",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "sparse-5000.cbl",
+        "line": 11
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER is assigned to the last element, while only DEST(1) is read."
+    },
+    {
+      "case": "occurs-sparse-50000",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OLD",
+      "at": {
+        "file": "sparse-50000.cbl",
+        "line": 11
+      },
+      "category": "TABLE_OVERWRITE_NOT_KILLED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "GOOD fully replaces OLD at DEST(1); the summary unions instead of killing the previous value."
+    },
+    {
+      "case": "occurs-sparse-50000",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "sparse-50000.cbl",
+        "line": 11
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER is assigned to the last element, while only DEST(1) is read."
+    },
+    {
+      "case": "occurs-nested-10",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "nested-10.cbl",
+        "line": 11
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER belongs to (N,N); the query reads (1,2), which contains GOOD."
+    },
+    {
+      "case": "occurs-nested-50",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "nested-50.cbl",
+        "line": 11
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER belongs to (N,N); the query reads (1,2), which contains GOOD."
+    },
+    {
+      "case": "occurs-nested-200",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "nested-200.cbl",
+        "line": 11
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER belongs to (N,N); the query reads (1,2), which contains GOOD."
+    },
+    {
+      "case": "occurs-unknown-content",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OLD",
+      "at": {
+        "file": "unknown-content.cbl",
+        "line": 11
+      },
+      "category": "TABLE_OVERWRITE_NOT_KILLED",
+      "secondaryMechanisms": [],
+      "assessment": "local provenance invalidated; OLD cannot be ruled out as a possible unknown INPUT-X value",
+      "sourceReason": "MOVE INPUT-X fully replaces OLD at the same exact cell. Summary retains the concrete OLD provenance alongside the unknown input."
+    },
+    {
+      "case": "occurs-unknown-write",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "unknown-write.cbl",
+        "line": 12
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER belongs to cell 2; writing NEW to an unknown cell can make cell 1 FIRST or NEW, but cannot copy OTHER into it."
+    },
+    {
+      "case": "occurs-unknown-then-known",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OLD",
+      "at": {
+        "file": "unknown-then-known.cbl",
+        "line": 11
+      },
+      "category": "TABLE_OVERWRITE_NOT_KILLED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "Regardless of the earlier unknown IDX, the final GOOD write overwrites DEST(1), the only queried cell."
+    },
+    {
+      "case": "occurs-all-overwritten",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OLD",
+      "at": {
+        "file": "all-overwritten.cbl",
+        "line": 11
+      },
+      "category": "TABLE_OVERWRITE_NOT_KILLED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "Both declared cells have been overwritten, so no valid index reads their VALUE OLD initializer."
+    },
+    {
+      "case": "occurs-initialize",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OLD",
+      "at": {
+        "file": "initialize.cbl",
+        "line": 10
+      },
+      "category": "WHOLE_TABLE_INITIALIZE_WEAK",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "INITIALIZE TABLE-DATA replaces all non-filler elements; the repeated-declaration transformer retains OLD because its strong table-slot reset depends on absent tableValueIds."
+    },
+    {
+      "case": "occurs-alias-write",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OLD",
+      "at": {
+        "file": "alias-write.cbl",
+        "line": 13
+      },
+      "category": "TABLE_OVERWRITE_NOT_KILLED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "Exact REDEFINES overlay OTHER-DEST(1) writes GOOD over DEST(1), replacing OLD."
+    },
+    {
+      "case": "occurs-alias-write",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "alias-write.cbl",
+        "line": 13
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER belongs to cell 2; the exact alias write affects only cell 1."
+    },
+    {
+      "case": "occurs-alias-weak",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "alias-weak.cbl",
+        "line": 14
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER belongs to cell 2; writing NEW to an unknown cell can make cell 1 FIRST or NEW, but cannot copy OTHER into it."
+    },
+    {
+      "case": "occurs-full-text",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "FIRST",
+      "at": {
+        "file": "full-text.cbl",
+        "line": 9
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "The 16-character group literal fills FIRST into cell 1 and SECOND into cell 2; only cell 2 is queried."
+    },
+    {
+      "case": "occurs-partial-cell",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHEB",
+      "at": {
+        "file": "partial-cell.cbl",
+        "line": 11
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [
+        "PARTIAL_WRITE_ON_WRONG_CELL"
+      ],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "The cell-1 partial write applies character B to the merged OTHER from cell 2, fabricating OTHEB. No concrete cell ever holds it."
+    },
+    {
+      "case": "occurs-partial-cell",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "partial-cell.cbl",
+        "line": 11
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "OTHER belongs to cell 2; the query and partial write target cell 1."
+    },
+    {
+      "case": "occurs-partial-cell",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "PROGA001",
+      "at": {
+        "file": "partial-cell.cbl",
+        "line": 11
+      },
+      "category": "TABLE_OVERWRITE_NOT_KILLED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "The exact character replacement changes PROGA001 to PROGB001; the previous unmodified PROGA001 is retained by weak repeated storage."
+    },
+    {
+      "case": "occurs-index-through-perform",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "index-through-perform.cbl",
+        "line": 18
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "IDX is fixed at 1000; STORE and READ use that cell, while OTHER belongs to cell 1."
+    },
+    {
+      "case": "occurs-arithmetic-index",
+      "program": "SPARSE-TABLE",
+      "type": "program",
+      "name": "OTHER",
+      "at": {
+        "file": "arithmetic-index.cbl",
+        "line": 12
+      },
+      "category": "TABLE_POSITIONS_MIXED",
+      "secondaryMechanisms": [],
+      "assessment": "incompatible with source execution for valid accesses",
+      "sourceReason": "IDX=2, so 500*IDX=1000 for write and read; OTHER belongs to cell 1."
+    }
+  ]
+}

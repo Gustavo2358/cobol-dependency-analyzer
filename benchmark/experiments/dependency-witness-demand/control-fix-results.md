@@ -125,3 +125,7 @@ alteração de fonte/POM e com a mesma guarda agregada de RSS. Ela compilou e
 passou o FAST. Logs da tentativa inicial e da final estão preservados em
 `fast-final/` e `fast-fork/`. Os hashes de produção iguais aos da main estão
 registrados no JSON de resultados.
+
+A [auditoria posterior dos 30 adicionais standalone](standalone-additions-audit.md)
+classifica os mecanismos por fonte, com contrastes separados de condição,
+pareamento de chamadas e armazenamento repetido.
