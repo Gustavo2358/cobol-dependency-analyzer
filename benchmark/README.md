@@ -1,5 +1,10 @@
 # Medições locais
 
+[União em lote no reaching definitions](rd-batched-unions-20261010.md):
+N=16.384 com heap de 6 GiB passa de 393 para 80 segundos, mantendo 16.385
+dependências e os contadores de trabalho. Dataflow 333 → 19 s; CardDemo e
+fixtures preservados. Pico de RSS permanece próximo do anterior.
+
 [Armazenamento do controle](control-layout-discovery-20261009.md): contadores e
 histogramas vivos em heap de 256 MiB localizam o peso das coleções por ponto e
 dos índices duplicados. Proposta de grafo compacto canônico por IDs, reutilizado

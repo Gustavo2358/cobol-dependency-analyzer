@@ -28,14 +28,17 @@ cd "$project_dir"
 "$maven_bin" -q test
 
 "$maven_bin" -q compile exec:java \
+  -Dexec.mainClass=com.imd.cobolexplorer.ExplorerMain \
   -Dexec.args="--source corpus/cbl/COACTUPC.cbl --copybooks corpus/cpy --output $canonical_output" \
   >"$run_root/coactupc.log"
 
 "$maven_bin" -q compile exec:java \
+  -Dexec.mainClass=com.imd.cobolexplorer.ExplorerMain \
   -Dexec.args="--source src/test/resources/cobol/source-format/comment-before-environment.cbl --copybooks src/test/resources/cobol/provenance/cpy --output $fixture_output" \
   >"$run_root/comment-entry.log"
 
 "$maven_bin" -q compile exec:java \
+  -Dexec.mainClass=com.imd.cobolexplorer.ExplorerMain \
   -Dexec.args="--source src/test/resources/cobol/source-format-integration/main.cbl --copybooks src/test/resources/cobol/source-format-integration/cpy --output $integration_output" \
   >"$run_root/copybook-normalization.log"
 
