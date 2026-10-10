@@ -19,8 +19,11 @@ Não há fallback ao solver de contextos, whitelist de construções ou corte de
 
 CardDemo: 815 dependências da baseline preservadas, 826 no experimento. Os 11
 acréscimos são 9 referências ao próprio programa e 2 ocorrências de CARDAIX.
-São acréscimos relativos à baseline; não foram todos auditados para confirmar
-falsos positivos. As fixtures negativas confirmam falsos positivos por perder
+São acréscimos relativos à baseline. A [auditoria posterior dos fontes](carddemo-additions-audit.md)
+identificou caminhos locais artificiais nos seis casos distintos: duas ocorrências
+de CARDAIX são READs inalcançáveis; as autorreferências resultam de retornos/travessias
+inventados. Quatro programas recebem o nome de origem de fora, portanto não se
+exclui a autorreferência em qualquer ambiente externo. As fixtures negativas confirmam falsos positivos por perder
 correlações de condição/chamador e por resumir posições de OCCURS.
 As 32 mudanças de localização em standalone são antecipações por esses fluxos
 aproximados. Nenhuma localização mudou em CardDemo.

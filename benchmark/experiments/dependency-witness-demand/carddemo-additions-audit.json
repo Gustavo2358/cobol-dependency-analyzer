@@ -1,0 +1,479 @@
+{
+  "baselineCommit": "52c1b82dc6accbb615818cf5b5298843a85b0f01",
+  "experimentCommit": "332abaf",
+  "baseJarSha256": "6bd96f31911976c097c9fb47377587c11bf3ebe6dc60305190104314bc39b036",
+  "originalCorpusCases": 73,
+  "auditedOccurrences": 11,
+  "uniqueSources": 6,
+  "baselineDependenciesInUniqueSources": 84,
+  "findings": [
+    {
+      "program": "COPAUS0C",
+      "extra": [
+        "COPAUS0C",
+        "program",
+        "COPAUS0C"
+      ],
+      "multiplicity": 1,
+      "sourceSha256": "7ab6dadad6d9d738f6a0cb402f394c25ccda5f7fef26ad644feeb76c11065254",
+      "sources": [
+        {
+          "case": "fdb6a11aa23211a4",
+          "path": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/app-authorization-ims-db2-mq/cbl/COPAUS0C.cbl"
+        }
+      ],
+      "verdict": "spurious-local-dependency",
+      "mechanism": "shared return edges and ordinary fallthrough at PERFORM endpoint",
+      "definitionLine": 192,
+      "queryLine": 674,
+      "overwrites": [
+        236,
+        316,
+        669
+      ],
+      "query": {
+        "line": 674,
+        "type": "program",
+        "position": 152,
+        "definitions": [
+          0
+        ],
+        "values": [
+          "COPAUS1C",
+          "COPAUS0C",
+          "COSGN00C",
+          "COMEN01C"
+        ],
+        "unknown": true
+      }
+    },
+    {
+      "program": "COBIL00C",
+      "extra": [
+        "COBIL00C",
+        "program",
+        "COBIL00C"
+      ],
+      "multiplicity": 2,
+      "sourceSha256": "b5c46039eb8fd2f7ed7d3ca379172e56fa87385a369023bef706b04986fe1cfb",
+      "sources": [
+        {
+          "case": "270d89141e57ffe5",
+          "path": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COBIL00C.cbl"
+        },
+        {
+          "case": "b7bb370b3171956f",
+          "path": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COBIL00C.cl2"
+        }
+      ],
+      "verdict": "spurious-local-witness-external-input-unresolved",
+      "mechanism": "unconditional condition continuation after XCTL plus shared/fallthrough PERFORM control",
+      "writeFromLine": 279,
+      "copyToLine": 132,
+      "queryLine": 281,
+      "query": {
+        "line": 281,
+        "type": "program",
+        "position": 41,
+        "definitions": [
+          0
+        ],
+        "values": [
+          "COMEN01C",
+          "COSGN00C",
+          "COBIL00C"
+        ],
+        "unknown": true
+      }
+    },
+    {
+      "program": "COCRDSLC",
+      "extra": [
+        "COCRDSLC",
+        "file",
+        "CARDAIX"
+      ],
+      "multiplicity": 2,
+      "sourceSha256": "d5af307fb4b1a155f03df9eea14b402d866a332360e14a1e37dbefe59b73363b",
+      "sources": [
+        {
+          "case": "4b5ec43c105bb64f",
+          "path": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COCRDSLC.cbl"
+        },
+        {
+          "case": "287d36f735ecab42",
+          "path": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COCRDSLC.cl2"
+        }
+      ],
+      "verdict": "unreachable-file-read",
+      "mechanism": "ordinary fallthrough past the endpoint of PERFORM 9100 THRU 9100-EXIT",
+      "queryLine": 783,
+      "endpointLine": 775,
+      "callLine": 728,
+      "query": {
+        "line": 783,
+        "type": "file",
+        "position": 270,
+        "definitions": [
+          1
+        ],
+        "values": [
+          "CARDAIX "
+        ],
+        "unknown": true
+      }
+    },
+    {
+      "program": "COUSR02C",
+      "extra": [
+        "COUSR02C",
+        "program",
+        "COUSR02C"
+      ],
+      "multiplicity": 2,
+      "sourceSha256": "85d36699cbd3079320e689576ea8406d07ad78901f4f3a68a129b869359b46ca",
+      "sources": [
+        {
+          "case": "f55d741512b8cc47",
+          "path": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COUSR02C.cbl"
+        },
+        {
+          "case": "5e3ce0f6b5e6b3e7",
+          "path": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR02C.cl2"
+        }
+      ],
+      "verdict": "spurious-local-witness-external-input-unresolved",
+      "mechanism": "unconditional condition continuation after XCTL plus shared/fallthrough PERFORM control",
+      "writeFromLine": 256,
+      "copyToLine": 116,
+      "queryLine": 258,
+      "query": {
+        "line": 258,
+        "type": "program",
+        "position": 41,
+        "definitions": [
+          0
+        ],
+        "values": [
+          "COUSR02C",
+          "COADM01C",
+          "COSGN00C"
+        ],
+        "unknown": true
+      }
+    },
+    {
+      "program": "COUSR03C",
+      "extra": [
+        "COUSR03C",
+        "program",
+        "COUSR03C"
+      ],
+      "multiplicity": 2,
+      "sourceSha256": "bcd68f08c145b3b9b9c809a7082834e9519d78b6f363a0d1c5ff9d9576dcf888",
+      "sources": [
+        {
+          "case": "03c557ca5d9ae101",
+          "path": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COUSR03C.cbl"
+        },
+        {
+          "case": "9401561db503964f",
+          "path": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR03C.cl2"
+        }
+      ],
+      "verdict": "spurious-local-witness-external-input-unresolved",
+      "mechanism": "unconditional condition continuation after XCTL plus shared/fallthrough PERFORM control",
+      "writeFromLine": 203,
+      "copyToLine": 115,
+      "queryLine": 205,
+      "query": {
+        "line": 205,
+        "type": "program",
+        "position": 41,
+        "definitions": [
+          0
+        ],
+        "values": [
+          "COSGN00C",
+          "COUSR03C",
+          "COADM01C"
+        ],
+        "unknown": true
+      }
+    },
+    {
+      "program": "COTRN01C",
+      "extra": [
+        "COTRN01C",
+        "program",
+        "COTRN01C"
+      ],
+      "multiplicity": 2,
+      "sourceSha256": "fc24ff879ac6ae12bc6817554cb756f14c5e86e0ca2dd0037af49599887f03c0",
+      "sources": [
+        {
+          "case": "5eb47d950101cbe6",
+          "path": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COTRN01C.cbl"
+        },
+        {
+          "case": "90f81d7b685a1abd",
+          "path": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN01C.cl2"
+        }
+      ],
+      "verdict": "spurious-local-witness-external-input-unresolved",
+      "mechanism": "unconditional condition continuation after XCTL plus shared/fallthrough PERFORM control",
+      "writeFromLine": 203,
+      "copyToLine": 119,
+      "queryLine": 205,
+      "query": {
+        "line": 205,
+        "type": "program",
+        "position": 41,
+        "definitions": [
+          0
+        ],
+        "values": [
+          "COSGN00C",
+          "COTRN01C",
+          "COTRN00C",
+          "COMEN01C"
+        ],
+        "unknown": true
+      }
+    }
+  ],
+  "instrumentationOutputIdentical": true,
+  "newRuns": 34,
+  "heapMiB": 128,
+  "maxObservedRssMiB": 165.4453125,
+  "ablations": [
+    {
+      "case": "fdb6a11aa23211a4",
+      "mode": "no-unregistered-condition",
+      "lost": [],
+      "extra": [
+        [
+          "COPAUS0C",
+          "program",
+          "COPAUS0C"
+        ]
+      ],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "270d89141e57ffe5",
+      "mode": "no-unregistered-condition",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "4b5ec43c105bb64f",
+      "mode": "no-unregistered-condition",
+      "lost": [],
+      "extra": [
+        [
+          "COCRDSLC",
+          "file",
+          "CARDAIX"
+        ]
+      ],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "f55d741512b8cc47",
+      "mode": "no-unregistered-condition",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "03c557ca5d9ae101",
+      "mode": "no-unregistered-condition",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "5eb47d950101cbe6",
+      "mode": "no-unregistered-condition",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "fdb6a11aa23211a4",
+      "mode": "no-perform-fallthrough",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "270d89141e57ffe5",
+      "mode": "no-perform-fallthrough",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "4b5ec43c105bb64f",
+      "mode": "no-perform-fallthrough",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "f55d741512b8cc47",
+      "mode": "no-perform-fallthrough",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "03c557ca5d9ae101",
+      "mode": "no-perform-fallthrough",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "5eb47d950101cbe6",
+      "mode": "no-perform-fallthrough",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "fdb6a11aa23211a4",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "270d89141e57ffe5",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "4b5ec43c105bb64f",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "f55d741512b8cc47",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "03c557ca5d9ae101",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "5eb47d950101cbe6",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "b7bb370b3171956f",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "287d36f735ecab42",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "5e3ce0f6b5e6b3e7",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "9401561db503964f",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    },
+    {
+      "case": "90f81d7b685a1abd",
+      "mode": "both",
+      "lost": [],
+      "extra": [],
+      "changedAt": [],
+      "exit": 1,
+      "guard": null
+    }
+  ],
+  "productionChange": false,
+  "universalFalsePositiveClaim": false,
+  "duplicateEvidence": "all five duplicate .cl2 sources rerun with their original copy-directory ordering; combined ablation also rerun",
+  "rawEvidence": "benchmark/results/carddemo-rd-audit-20261009-final",
+  "instrumentedRuns": 11,
+  "ablationRuns": 23,
+  "baselineDependenciesInAllAffectedSources": 148,
+  "copybookAndCorpusHashInventoryRechecked": true,
+  "inputHashInventoryCount": 185
+}
