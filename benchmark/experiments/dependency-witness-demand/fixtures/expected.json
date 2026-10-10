@@ -15,7 +15,7 @@
         }
       ]
     },
-    "prototypeExtra": []
+    "experimentExtra": []
   },
   {
     "id": "correlation",
@@ -33,7 +33,7 @@
         }
       ]
     },
-    "prototypeExtra": [
+    "experimentExtra": [
       [
         "WCORRELATION",
         "program",
@@ -57,7 +57,7 @@
         }
       ]
     },
-    "prototypeExtra": []
+    "experimentExtra": []
   },
   {
     "id": "duplicates",
@@ -75,7 +75,7 @@
         }
       ]
     },
-    "prototypeExtra": []
+    "experimentExtra": []
   },
   {
     "id": "kill",
@@ -93,7 +93,7 @@
         }
       ]
     },
-    "prototypeExtra": []
+    "experimentExtra": []
   },
   {
     "id": "late-candidate",
@@ -119,7 +119,7 @@
         }
       ]
     },
-    "prototypeExtra": []
+    "experimentExtra": []
   },
   {
     "id": "nonreturn",
@@ -128,7 +128,318 @@
       "program": "WNONRETURN",
       "dependencies": []
     },
-    "prototypeExtra": []
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-abend-handler",
+    "sha256": "1048920cae20c0c3b74b8c64271b297fae04e508d8d662e8d6cfcc6e505f2b0d",
+    "main": {
+      "program": "RDABENDHANDLER",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "HANDLER",
+          "at": {
+            "file": "rd-abend-handler.cbl",
+            "line": 14
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-cics-handler",
+    "sha256": "79876d7865545cb8fa9c752e7a6cbdbb980ae3414379418b16b9c581276b581b",
+    "main": {
+      "program": "RDCICSHANDLER",
+      "dependencies": [
+        {
+          "type": "file",
+          "name": "INPUTDD",
+          "at": {
+            "file": "rd-cics-handler.cbl",
+            "line": 11
+          }
+        },
+        {
+          "type": "program",
+          "name": "NORMAL",
+          "at": {
+            "file": "rd-cics-handler.cbl",
+            "line": 12
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-copy-cycle",
+    "sha256": "fce938d6e0bbfb08bc4b083f128047fab197bb335423b7f263140fbcc6f3945a",
+    "main": {
+      "program": "RDCOPYCYCLE",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "SEED",
+          "at": {
+            "file": "rd-copy-cycle.cbl",
+            "line": 12
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-corresponding",
+    "sha256": "ce4aa4caceaa1a536eeb637bf0d0f290bf31be4c5aa2fc0da6c07c5afaa7c0c2",
+    "main": {
+      "program": "RDCORRESPONDING",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "NEW",
+          "at": {
+            "file": "rd-corresponding.cbl",
+            "line": 11
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-functions",
+    "sha256": "9644db0e6c4b68f8936257cd77c9862ca3bcc80f3eb0424f5ffbd04556c89d63",
+    "main": {
+      "program": "RDFUNCTIONS",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "PROGRAM",
+          "at": {
+            "file": "rd-functions.cbl",
+            "line": 9
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-initialize",
+    "sha256": "8fd04bec45fe15ffde6bf865089914beb0a4aba249822b8a889b83f467fa58cf",
+    "main": {
+      "program": "RDINITIALIZE",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "NEW",
+          "at": {
+            "file": "rd-initialize.cbl",
+            "line": 10
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-io-handler",
+    "sha256": "5fd6e914f9eed8070fb51dca4a17cb6c89daf7b0516b9281c656df11cf54e7c3",
+    "main": {
+      "program": "RDIOHANDLER",
+      "dependencies": [
+        {
+          "type": "file",
+          "name": "INPUTDD",
+          "at": {
+            "file": "rd-io-handler.cbl",
+            "line": 6
+          }
+        },
+        {
+          "type": "program",
+          "name": "HANDLER",
+          "at": {
+            "file": "rd-io-handler.cbl",
+            "line": 23
+          }
+        },
+        {
+          "type": "program",
+          "name": "NORMAL",
+          "at": {
+            "file": "rd-io-handler.cbl",
+            "line": 23
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-noops-copy-width",
+    "sha256": "39c5fdfeab71165ccd04e709984b7530856aa08240eb80c1f9eb1a2421dd5e60",
+    "main": {
+      "program": "WCOPYWIDTH",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "ABCD",
+          "at": {
+            "file": "rd-noops-copy-width.cbl",
+            "line": 140
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-noops-rd-copy-cycle",
+    "sha256": "d60e16afc4b96d79519d0bd222fe4c6eca62d2bd3681647d4d54e0e82e7d76f6",
+    "main": {
+      "program": "RDCOPYCYCLE",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "SEED",
+          "at": {
+            "file": "rd-noops-rd-copy-cycle.cbl",
+            "line": 140
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-offset-read",
+    "sha256": "7650f1687a1a4313af372155d4d5c3f305776eef6dbdb2cc05cc8f97ed82cd66",
+    "main": {
+      "program": "RDOFFSETREAD",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "LEFT",
+          "at": {
+            "file": "rd-offset-read.cbl",
+            "line": 13
+          }
+        },
+        {
+          "type": "program",
+          "name": "NEXT",
+          "at": {
+            "file": "rd-offset-read.cbl",
+            "line": 13
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-offset-write",
+    "sha256": "fb5fd12a2662067ed13faf9cbd0e439a2a6c9c288f5884dfa8566af9f51eaafb",
+    "main": {
+      "program": "RDOFFSETWRITE",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "12345678",
+          "at": {
+            "file": "rd-offset-write.cbl",
+            "line": 12
+          }
+        }
+      ]
+    },
+    "experimentExtra": [
+      [
+        "RDOFFSETWRITE",
+        "program",
+        "1234ABCD"
+      ],
+      [
+        "RDOFFSETWRITE",
+        "program",
+        "ABCD5678"
+      ]
+    ]
+  },
+  {
+    "id": "rd-partial-group",
+    "sha256": "cd357815399dd0354c60e283863a98c60d332ebf35bc4fc5e06915a47c0b425c",
+    "main": {
+      "program": "RDPARTIALGROUP",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "NEW1NEW2",
+          "at": {
+            "file": "rd-partial-group.cbl",
+            "line": 13
+          }
+        },
+        {
+          "type": "program",
+          "name": "OLD1NEW",
+          "at": {
+            "file": "rd-partial-group.cbl",
+            "line": 11
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-table-summary",
+    "sha256": "115901aaf4b4b86c225851472cdb0c4cb0baf95a0eaf41c8bc16161cac038bce",
+    "main": {
+      "program": "RDTABLESUMMARY",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "FIRST",
+          "at": {
+            "file": "rd-table-summary.cbl",
+            "line": 12
+          }
+        },
+        {
+          "type": "program",
+          "name": "SECOND",
+          "at": {
+            "file": "rd-table-summary.cbl",
+            "line": 12
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-unknown-effect",
+    "sha256": "e099bad242bf95dcc4d8ac51f9fd2c62c80bad6307ee4317d92f11e156719a68",
+    "main": {
+      "program": "RDUNKNOWNEFFECT",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "KNOWN",
+          "at": {
+            "file": "rd-unknown-effect.cbl",
+            "line": 8
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
   },
   {
     "id": "return-matching",
@@ -146,7 +457,7 @@
         }
       ]
     },
-    "prototypeExtra": [
+    "experimentExtra": [
       [
         "WRETURNMATCHING",
         "program",
@@ -170,7 +481,7 @@
         }
       ]
     },
-    "prototypeExtra": []
+    "experimentExtra": []
   },
   {
     "id": "unreachable",
@@ -188,6 +499,32 @@
         }
       ]
     },
-    "prototypeExtra": []
+    "experimentExtra": []
+  },
+  {
+    "id": "rd-cics-condition-positive",
+    "sha256": "577f1668b82b09fb97af458ac0b9e6c6258811765b3d27e3a7782aaad098b535",
+    "main": {
+      "program": "RDCICSCONDITION",
+      "dependencies": [
+        {
+          "type": "program",
+          "name": "HANDLER",
+          "at": {
+            "file": "rd-cics-condition-positive.cbl",
+            "line": 9
+          }
+        },
+        {
+          "type": "program",
+          "name": "SERVICE",
+          "at": {
+            "file": "rd-cics-condition-positive.cbl",
+            "line": 6
+          }
+        }
+      ]
+    },
+    "experimentExtra": []
   }
 ]
