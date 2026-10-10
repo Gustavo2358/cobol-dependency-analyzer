@@ -4,6 +4,14 @@ import argparse,hashlib,json,shutil,subprocess,os
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[3]
 def overlay(text):
+ # Reuse the same structural rules, but let the experiment's small handler
+ # lattice decide event routes. Inventory of a condition is not its activation.
+ old='    private DependencyControl.Rule controlEffect(Exit position) {'
+ assert text.count(old)==1
+ text=text.replace(old,'''    private DependencyControl.Rule controlEffect(Exit position){return controlEffect(position,true);}
+    private DependencyControl.Rule controlEffect(Exit position,boolean eventsEnabled) {''')
+ text=text.replace('for(var event:events.getOrDefault(node,List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {','for(var event:events.getOrDefault(node,List.of()))if(eventsEnabled&&event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {',1)
+ text=text.replace('if(exceptionalEvents.getOrDefault(node,List.of()).stream().anyMatch(e->e.eligibility()==EventEligibility.HANDLER_ELIGIBLE))','if(eventsEnabled&&exceptionalEvents.getOrDefault(node,List.of()).stream().anyMatch(e->e.eligibility()==EventEligibility.HANDLER_ELIGIBLE))',1)
  start=text.index('        var cells=new LinkedHashSet<Element>();',text.index('    static DependencyFlow analyze('))
  end=text.index('\n    private DependencyFlow(',start)
  text=text[:start]+'''        return new DependencyFlow(unit,declarations,control,queries,maxWork,cics,conditions,Set.of());
@@ -22,8 +30,9 @@ def overlay(text):
     WriteSupport definitionSupport(Ast.Statement s){return writeSupport(s);}
     Set<Integer> definitionWrites(Ast.Statement s){return writes(s);}
     Set<Integer> definitionKills(Ast.Statement s){var result=new HashSet<Integer>();for(var input:localEffect(new Exit(TargetKind.OCCURRENCE,handle(s))).kills())if(input instanceof Value v)result.add(v.declaration());return result;}
-    DependencyControl.Rule definitionEffect(Exit e){return controlEffect(e);}
-    Exit definitionPhase(Binding b,String phase){return controlPhase(b,phase);}
+    DependencyControl.Rule definitionEffect(Exit e){return controlEffect(e,false);}
+    DependencyControl.Effect definitionDelivery(DependencyControl.Call c,Exit e){return controlDelivery(c,e);}
+    DependencyControl.Call definitionCall(Binding b){return new DependencyControl.Call(new Point(Exit.of(regions.get(b.region()).entry()),b.endpoint(),escapeScope(b)),b.id());}
 '''+text[end:]
  old='return slot==null?(tables.containsKey(id)&&tables.get(id).contains(indexes)?value.open():DependencyValues.UNKNOWN):state.get(slot);'
  assert text.count(old)==1
@@ -43,10 +52,11 @@ def main():
  src=a.output/'source/com/imd/cobolexplorer';src.mkdir(parents=True);flow=src/'DependencyFlow.java';flow.write_text(overlay(original));solver=src/'SparseDefinitions.java';shutil.copy2(Path(__file__).with_name('SparseDefinitions.java'),solver)
  analyzer=src/'DependencyAnalyzer.java';analyzer.write_text(analyzerText);publication=src/'DefinitionsPublication.java';shutil.copy2(Path(__file__).with_name('DefinitionsPublication.java'),publication)
  logical=src/'DefinitionValues.java';shutil.copy2(Path(__file__).with_name('DefinitionValues.java'),logical)
- classes=a.output/'classes';classes.mkdir();empty=a.output/'empty';empty.mkdir();cmd=[str(Path(os.environ['JAVA_HOME'])/'bin/javac'),'-J-Xmx128m','--release','17','-implicit:none','-sourcepath',str(empty),'-cp',str(a.jar.resolve()),'-d',str(classes),str(flow),str(solver),str(analyzer),str(publication),str(logical)]
+ structural=src/'DefinitionControl.java';shutil.copy2(Path(__file__).with_name('DefinitionControl.java'),structural)
+ classes=a.output/'classes';classes.mkdir();empty=a.output/'empty';empty.mkdir();cmd=[str(Path(os.environ['JAVA_HOME'])/'bin/javac'),'-J-Xmx128m','--release','17','-implicit:none','-sourcepath',str(empty),'-cp',str(a.jar.resolve()),'-d',str(classes),str(flow),str(solver),str(analyzer),str(publication),str(logical),str(structural)]
  with (a.output/'compile.log').open('w') as log:r=subprocess.run(cmd,stdout=log,stderr=subprocess.STDOUT,timeout=60)
  sha=lambda b:hashlib.sha256(b).hexdigest()
- (a.output/'manifest.json').write_text(json.dumps({'baselineCommit':a.ref,'jarSha256':sha(a.jar.read_bytes()),'originalFlowSha256':sha(original.encode()),'overlayFlowSha256':sha(flow.read_bytes()),'solverSha256':sha(solver.read_bytes()),'originalAnalyzerSha256':sha(analyzerOriginal.encode()),'overlayAnalyzerSha256':sha(analyzer.read_bytes()),'publicationSha256':sha(publication.read_bytes()),'logicalSha256':sha(logical.read_bytes()),'command':cmd,'exit':r.returncode,'productionQualified':False,'semanticInterventions':['context-insensitive physical control with shared boundary returns','sparse reaching definitions with identity-chain bypass','join-only SCC sharing','predicates and caller correlations conservatively ignored','table cells summarized by declaration'],'exactInterventions':['enumerate shared candidate sets once per dependency kind/validation rule with earliest provenance']},indent=2)+'\n')
+ (a.output/'manifest.json').write_text(json.dumps({'baselineCommit':a.ref,'jarSha256':sha(a.jar.read_bytes()),'originalFlowSha256':sha(original.encode()),'overlayFlowSha256':sha(flow.read_bytes()),'solverSha256':sha(solver.read_bytes()),'controlSha256':sha(structural.read_bytes()),'originalAnalyzerSha256':sha(analyzerOriginal.encode()),'overlayAnalyzerSha256':sha(analyzer.read_bytes()),'publicationSha256':sha(publication.read_bytes()),'logicalSha256':sha(logical.read_bytes()),'command':cmd,'exit':r.returncode,'productionQualified':False,'semanticInterventions':['shared physical control with forward boundary-policy bits and handler dispositions','sparse reaching definitions with identity-chain bypass','join-only SCC sharing','predicates and caller/value correlations conservatively ignored','table cells summarized by declaration'],'exactInterventions':['enumerate shared candidate sets once per dependency kind/validation rule with earliest provenance']},indent=2)+'\n')
  if r.returncode:print((a.output/'compile.log').read_text())
  return r.returncode
 if __name__=='__main__':raise SystemExit(main())

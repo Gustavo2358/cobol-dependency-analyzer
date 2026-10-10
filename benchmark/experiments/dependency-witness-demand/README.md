@@ -13,10 +13,25 @@ evidence, not executable code.
 ## What is shared
 
 Build physical control once, using the frontend's existing topology, including
-file/exception handlers and alternate entries. A PERFORM enters its body; only
-physical completion/escape boundaries lead to resumes. Matching caller identity
-and predicate correlations are relaxed. This can produce extra names and earlier
-source locations. Program return/halt does not create a resume edge.
+file/exception handlers and alternate entries. `DefinitionControl` propagates
+sets of boundary policies forward as immutable, shared bitsets. A policy contains
+the endpoint and ancestor escape rule, never a value environment. A boundary
+stops only the policies that must return there; other policies may fall through.
+Reachable PERFORM sites subscribe to completions of their callee policy. The
+existing frontend rules decide each completion/escape delivery. No backward
+per-entry result columns or value cells per policy are built.
+
+A small forward handler lattice follows HANDLE/IGNORE/default dispositions and
+ABEND activation, CANCEL and RESET. An eligible event alone does not authorize
+ordinary continuation: IGNORE or a published explicit completion must allow it.
+The control facts and subscriptions are released before discovering value
+definitions. The previous unconditional boundary/event graph builder is removed.
+
+Caller/value and predicate correlations remain relaxed: the value graph shares
+physical return edges after control reachability. It can still produce extra
+names and earlier source locations. This is not full call/return matching or a
+proof that every combined physical path is executable. Program return/halt does
+not create a resume edge.
 
 Starting at the BEFORE operand of each CALL/CICS query, discover only demanded
 logical definitions. Follow a declaration backward to a write, initial value or

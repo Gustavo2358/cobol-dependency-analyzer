@@ -61,6 +61,7 @@ def main():
     r.update(case=case,mode=mode,repeat=repeat+1,source=str(source),sourceSha256=sha(source),heapMiB=a.heap)
     stderr=(dest/'stderr.log').read_text();r['unsupported']='UNSUPPORTED_EXPERIMENT:' in stderr;r['completed']=r['exit'] in (0,1) and r['guard'] is None and out.exists();r['document']=json.loads(out.read_text()) if out.exists() else None
     r['probe']=[json.loads(l.removeprefix('DEFINITIONS ')) for l in stderr.splitlines() if l.startswith('DEFINITIONS ')]
+    r['controlProbe']=[json.loads(l.removeprefix('DEFINITIONS_CONTROL ')) for l in stderr.splitlines() if l.startswith('DEFINITIONS_CONTROL ')]
     if mode=='main' and r['completed'] and reference is None:reference=r['document']
     if r['completed']:
      actual=deps(r['document']);r['programNames']=sorted({k[2] for k in actual if k[1]=='program'})

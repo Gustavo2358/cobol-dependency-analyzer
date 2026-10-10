@@ -7,7 +7,7 @@ import static com.imd.cobolexplorer.DependencyRelevance.Point;
 
 /** Investigation only: sparse definition edges, without invocation states.
  * Full writes cut a definition chain; joins retain alternative definitions.
- * Physical control is deliberately conservative and may invent returns.
+ * Physical control respects may-reachable boundary and handler policies.
  * Identity control chains are bypassed during lookup; SCCs collapse union nodes
  * only. One graph is shared by every query, with no invocation-state solver. */
 final class SparseDefinitions {
@@ -33,22 +33,18 @@ final class SparseDefinitions {
         Operation(Ast.Statement statement){this.statement=statement;}
     }
     record OperationKey(int position,Set<Integer> reads) { }
-    static final class Position {
-        final Exit exit;final Set<Integer> predecessors=new LinkedHashSet<>();boolean root;
-        Position(Exit exit){this.exit=exit;}
-    }
     static final class Component {
         final List<Integer> members=new ArrayList<>();final Set<Integer> parents=new LinkedHashSet<>();
         final Set<Integer> children=new LinkedHashSet<>();Operation operation;
         DependencyValues value=BOTTOM,seed=BOTTOM;boolean queued;
     }
     final DependencyFlow flow;final DefinitionValues logical;
-    final Map<Exit,Integer> positionIds=new HashMap<>();final List<Position> positions=new ArrayList<>();
+    final DefinitionControl control;
+    final Map<Exit,Integer> positionIds;final List<DefinitionControl.Position> positions;
     final Map<Cell,Integer> definitionIds=new HashMap<>();final List<Definition> definitions=new ArrayList<>();
-    final ArrayDeque<Integer> physical=new ArrayDeque<>(),discovery=new ArrayDeque<>();
+    final ArrayDeque<Integer> discovery=new ArrayDeque<>();
     final Map<OperationKey,Operation> operations=new HashMap<>();
     final IdentityHashMap<Ast.Statement,State> independent=new IdentityHashMap<>();
-    final Map<String,List<Exit>> boundaryReturns=new HashMap<>(),escapeReturns=new HashMap<>();
     long steps,physicalEdges,definitionEdges,evaluations,propagations,candidateSlots,constantWrites,openingWrites;
     int joinComponents;int[] componentOf;final List<Component> components=new ArrayList<>();
     State initial;
@@ -71,39 +67,12 @@ final class SparseDefinitions {
         var todo=new ArrayDeque<Ast.Node>();if(node!=null)todo.add(node);
         while(!todo.isEmpty()){var next=todo.remove();if(next instanceof Ast.DataReference r){Integer id=flow.declarations.references.get(r.meta().id());if(id!=null&&!flow.declarations.children.getOrDefault(id,List.of()).isEmpty()&&!Collections.disjoint(flow.declarations.leaves(id),flow.demand))flow.textGroups.add(id);}todo.addAll(DependencyDeclarations.valueChildren(next));}
     }
-    SparseDefinitions(DependencyFlow flow){this.flow=flow;this.logical=new DefinitionValues(flow);}
+    SparseDefinitions(DependencyFlow flow){this.flow=flow;this.logical=new DefinitionValues(flow);control=new DefinitionControl(flow,this::tick);positionIds=control.positionIds;positions=control.positions;}
     void tick(){if(++steps>flow.maxWork)throw new IllegalStateException("RESOURCE_LIMIT: value-definition experiment --max-work="+flow.maxWork);}
     void stage(String name){System.err.printf("DEFINITIONS_STAGE %s positions=%d definitions=%d components=%d tracked=%d usedHeapMiB=%d%n",name,positions.size(),definitions.size(),components.size(),flow.demand.size(),(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576);}
     static void solve(DependencyFlow flow,List<Point> roots){new SparseDefinitions(flow).solve(roots);}
-    int position(Exit exit){Integer old=positionIds.get(exit);if(old!=null)return old;tick();int id=positions.size();positionIds.put(exit,id);positions.add(new Position(exit));physical.add(id);return id;}
-    void edge(int from,Exit exit){int to=position(exit);if(positions.get(to).predecessors.add(from))physicalEdges++;}
     void solve(List<Point> roots){
-        // All physical completion and escape edges are shared. A call cannot
-        // return merely because it was entered: its body must reach a boundary.
-        for(var binding:flow.bindings.values()) {
-            String region=binding.endpoint().startsWith("boundary:")?binding.endpoint().substring(9):binding.region();
-            boundaryReturns.computeIfAbsent(region,k->new ArrayList<>()).add(flow.definitionPhase(binding,binding.completionPhase()));
-            escapeReturns.computeIfAbsent(region,k->new ArrayList<>()).add(Exit.of(binding.resume()));
-            String body=flow.regions.get(binding.region()).entry().reference();String ancestor=flow.regions.containsKey(body)?flow.regions.get(body).parent():"";
-            while(flow.regions.containsKey(ancestor)) {escapeReturns.computeIfAbsent(ancestor,k->new ArrayList<>()).add(Exit.of(binding.resume()));ancestor=flow.regions.get(ancestor).parent();}
-        }
-        for(var root:roots)positions.get(position(root.exit())).root=true;
-        while(!physical.isEmpty()) {
-            tick();int id=physical.remove();Exit exit=positions.get(id).exit;var effect=flow.definitionEffect(exit).continuation();
-            for(var next:effect.next())edge(id,next);
-            for(var entry:effect.entries())edge(id,entry.exit());
-            for(var call:effect.calls()) {
-                edge(id,call.entry().exit());
-            }
-            // The frontend publishes an open declarative ending as UNKNOWN_LOCAL.
-            // Its control rule can return COMPLETE to a USE invocation; retaining
-            // that boundary is necessary for values written in its handler.
-            if(exit.kind()==TargetKind.UNKNOWN_LOCAL&&flow.regions.containsKey(exit.reference())
-                    &&flow.regions.get(exit.reference()).kind()==RegionKind.DECLARATIVE)
-                edge(id,new Exit(TargetKind.COMPLETE,exit.reference()));
-            if(exit.kind()==TargetKind.COMPLETE)for(var next:boundaryReturns.getOrDefault(exit.reference(),List.of()))edge(id,next);
-            if(exit.kind()==TargetKind.ESCAPE)for(var next:escapeReturns.getOrDefault(exit.reference(),List.of()))edge(id,next);
-        }
+        control.solve(roots);physicalEdges=control.edges;
         stage("physical");
         // Demand only value operands. Predicate operands do not need value
         // states because this experiment admits all published branch outcomes.
@@ -143,7 +112,7 @@ final class SparseDefinitions {
             flow.answers.put(q,answer);if(answer.unknown())flow.diagnostics.add("DYNAMIC_REMAINDER at "+q.statement().meta().provenance().original().file()+":"+q.statement().meta().provenance().original().startLine());
         }
         flow.visits=steps;flow.evaluations=evaluations;
-        flow.diagnostics.add("EXPERIMENT_APPROXIMATION: value-definition graph ignores predicate/caller correlations and shares physical return edges");
+        flow.diagnostics.add("EXPERIMENT_APPROXIMATION: value-definition graph ignores predicate/caller/value correlations and shares may-control return edges");
         var distinct=Collections.newSetFromMap(new IdentityHashMap<DependencyValues,Boolean>());
         for(var c:components)distinct.add(c.value);
         candidateSlots=distinct.stream().mapToLong(v->v.values().size()).sum();
