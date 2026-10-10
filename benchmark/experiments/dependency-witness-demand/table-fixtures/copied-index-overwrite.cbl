@@ -1,0 +1,17 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. INDEX-CHAIN.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 T.
+       05 P PIC X(8) OCCURS 1000000.
+       01 FIRST-IDX PIC 9(7).
+       01 MID-IDX PIC 9(7).
+       01 IDX PIC 9(7).
+       PROCEDURE DIVISION.
+       MOVE 'OLD' TO P(1).
+       MOVE 1 TO FIRST-IDX.
+       MOVE FIRST-IDX TO MID-IDX.
+       MOVE MID-IDX TO IDX.
+       MOVE 'GOOD' TO P(IDX).
+       CALL P(1).
+       GOBACK.

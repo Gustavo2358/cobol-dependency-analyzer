@@ -129,3 +129,11 @@ Nenhum fonte original, oráculo ou implementação foi alterado.
 FAST e o corpus completo não foram reexecutados: só mudaram evidências/docs,
 e os executáveis qualificados continuam iguais por hash. Esta distribuição
 descreve fixtures adversariais, não estima a frequência em programas reais.
+
+## Subsequent correction
+
+The sparse-table/INITIALIZE implementation and fresh qualification are recorded
+in [table-fix-results.md](table-fix-results.md). It removes the 25 storage
+additions audited here; the five predicate/caller-correlation additions remain.
+This audit describes the earlier build and its original evidence, which has not
+been rewritten.

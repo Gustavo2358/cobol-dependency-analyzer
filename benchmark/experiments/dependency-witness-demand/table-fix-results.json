@@ -1,0 +1,320 @@
+{
+  "baselineCommit": "52c1b82dc6accbb615818cf5b5298843a85b0f01",
+  "branch": "experiment/dependency-witness-demand",
+  "build": "benchmark/results/rd-table-fix-20261009/build-05",
+  "buildManifestSha256": "ab7ad67635dddf881852bf18419e2cd87e864e91a699fdeeb72bf364491dfe88",
+  "baseJarSha256": "6bd96f31911976c097c9fb47377587c11bf3ebe6dc60305190104314bc39b036",
+  "productionQualified": false,
+  "productionUnchanged": true,
+  "standalone": {
+    "runs": 36,
+    "completed": 36,
+    "lost": 0,
+    "extraBefore": 30,
+    "extraAfter": 5,
+    "changedAt": 32,
+    "jsonEqual": 33,
+    "removedCategories": {
+      "positionMixing": 15,
+      "staleOccursWrites": 9,
+      "wholeTableInitialize": 1
+    },
+    "remaining": [
+      {
+        "case": "precision-caller-correlation",
+        "extra": [
+          [
+            "CALLERCORRELATION",
+            "program",
+            "UNOBS"
+          ]
+        ]
+      },
+      {
+        "case": "precision-caller-many-12",
+        "extra": [
+          [
+            "MANYCALLERS",
+            "program",
+            "INITIAL"
+          ],
+          [
+            "MANYCALLERS",
+            "program",
+            "PGM00011"
+          ]
+        ]
+      },
+      {
+        "case": "precision-caller-many-24",
+        "extra": [
+          [
+            "MANYCALLERS",
+            "program",
+            "INITIAL"
+          ],
+          [
+            "MANYCALLERS",
+            "program",
+            "PGM00023"
+          ]
+        ]
+      }
+    ]
+  },
+  "cardDemo": {
+    "runs": 73,
+    "completed": 73,
+    "lost": 0,
+    "extra": 0,
+    "changedAt": 0,
+    "jsonEqual": 73,
+    "baselineDependencies": 815
+  },
+  "tableRegressions": {
+    "cases": 14,
+    "runs": 42,
+    "afterPassed": 14,
+    "beforeMismatches": 12,
+    "maximumAfterRssMiB": 102.703125,
+    "counts": [
+      {
+        "case": "one-cell-overwrite",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 1,
+            "remainders": 1,
+            "rounds": 1
+          }
+        ]
+      },
+      {
+        "case": "one-cell-initialize",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 1,
+            "remainders": 1,
+            "rounds": 1
+          }
+        ]
+      },
+      {
+        "case": "million-unknown-write",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 2,
+            "remainders": 1,
+            "rounds": 1
+          }
+        ]
+      },
+      {
+        "case": "million-initialize-remainder",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 1,
+            "remainders": 1,
+            "rounds": 1
+          }
+        ]
+      },
+      {
+        "case": "joined-index-read",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 3,
+            "remainders": 1,
+            "rounds": 1
+          }
+        ]
+      },
+      {
+        "case": "joined-index-write",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 2,
+            "remainders": 1,
+            "rounds": 1
+          }
+        ]
+      },
+      {
+        "case": "computed-negative-overwrite",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 1,
+            "remainders": 1,
+            "rounds": 2
+          }
+        ]
+      },
+      {
+        "case": "unknown-read-after-computed-write",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 2,
+            "remainders": 1,
+            "rounds": 2
+          }
+        ]
+      },
+      {
+        "case": "nested-million",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 2,
+            "remainders": 1,
+            "rounds": 2
+          }
+        ]
+      },
+      {
+        "case": "initialize-then-unknown-write",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 1,
+            "remainders": 1,
+            "rounds": 1
+          }
+        ]
+      },
+      {
+        "case": "numeric-initialize",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 1,
+            "remainders": 1,
+            "rounds": 1
+          }
+        ]
+      },
+      {
+        "case": "alias-index-overwrite",
+        "probe": [
+          {
+            "tables": 2,
+            "cells": 4,
+            "remainders": 2,
+            "rounds": 2
+          }
+        ]
+      },
+      {
+        "case": "copied-index-overwrite",
+        "probe": [
+          {
+            "tables": 1,
+            "cells": 1,
+            "remainders": 1,
+            "rounds": 1
+          }
+        ]
+      },
+      {
+        "case": "initialize-equivalent-view",
+        "probe": [
+          {
+            "tables": 2,
+            "cells": 2,
+            "remainders": 2,
+            "rounds": 1
+          }
+        ]
+      }
+    ],
+    "baselineConservativeExtras": [
+      "copied-index-overwrite",
+      "initialize-equivalent-view"
+    ]
+  },
+  "adversarial": {
+    "runs": 25,
+    "lost": 0,
+    "extra": 4,
+    "changedAt": 0
+  },
+  "remainderChecks": {
+    "cases": 23,
+    "matched": 23
+  },
+  "scale": [
+    {
+      "case": "dynamic-only-2048",
+      "seconds": 8.18566980198375,
+      "rssMiB": 579.49609375,
+      "programs": 2049,
+      "probe": [
+        {
+          "physicalNodes": 65550,
+          "physicalEdges": 81935,
+          "definitionNodes": 12291,
+          "definitionEdges": 24578,
+          "components": 12291,
+          "joinComponents": 12291,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 16388,
+          "candidateSlots": 16386,
+          "tracked": 1,
+          "work": 1063002,
+          "bypassedIdentityCells": 110611,
+          "lookupCells": 122902,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "heapMiB": 512
+    }
+  ],
+  "negative": {
+    "case": "negative-bound-2048",
+    "programs": [
+      "SAME"
+    ],
+    "passed": true
+  },
+  "fast": {
+    "suites": 142,
+    "tests": 1093,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 64.71974820899777,
+    "rssMiB": 279.37109375,
+    "heapMiB": 128,
+    "compilerFork": true,
+    "reuseForLastExperimentalInitializePatch": "Production src/scripts/pom are byte-identical; FAST exercises production, not the research overlay."
+  },
+  "evidence": {
+    "corpus-qualified": {
+      "path": "benchmark/results/rd-table-fix-20261009/corpus-qualified/results.json",
+      "sha256": "da4210efff105aec518605445cf0ee081df0f66f0028930542cdc9abf4381ebd"
+    },
+    "table-qualified": {
+      "path": "benchmark/results/rd-table-fix-20261009/table-qualified/results.json",
+      "sha256": "7c8548b349eaebe13c472e90bcf7b6423a842212733cc9bb2219be8695a3118a"
+    },
+    "adversarial-qualified": {
+      "path": "benchmark/results/rd-table-fix-20261009/adversarial-qualified/results.json",
+      "sha256": "d6f175194ba13e1876aec3e73c0e43f396be4a55b5ba19e75b73a838b27f0b77"
+    },
+    "scale-qualified": {
+      "path": "benchmark/results/rd-table-fix-20261009/scale-qualified/results.json",
+      "sha256": "d3d9fa53aede5e8a00f3876fd8f4e2b06ac5ed4029895cf4851e55ae477b1f51"
+    },
+    "negative-qualified": {
+      "path": "benchmark/results/rd-table-fix-20261009/negative-qualified/results.json",
+      "sha256": "ad9b7b269719fc992c8a2ba9694a8d12f515192158bb0eafac583cb311e4f28d"
+    }
+  }
+}

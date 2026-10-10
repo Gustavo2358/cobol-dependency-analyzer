@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Control regressions: frozen main, old experiment (red), corrected experiment.
+"""Independent dependency-name oracles: frozen main, before and after.
 
 One JVM at a time, 128 MiB heap, and the common host/RSS/time guards.
 Explicit source-level name oracles are checked on main and the corrected build.
@@ -16,13 +16,17 @@ def main():
     parser.add_argument('--jar',type=Path,required=True)
     parser.add_argument('--before',type=Path,required=True)
     parser.add_argument('--after',type=Path,required=True)
+    parser.add_argument('--fixtures',type=Path,default=Path(__file__).with_name('control-fixtures'))
+    parser.add_argument('--only',nargs='+')
     args=parser.parse_args();args.output.mkdir(parents=True,exist_ok=False)
     spec=spec_from_file_location('bounded',ROOT/'benchmark/run-sparse-occurs.py')
     bounded=module_from_spec(spec);spec.loader.exec_module(bounded)
-    fixtures=Path(__file__).with_name('control-fixtures')
+    fixtures=args.fixtures
     rows=[]
     for oracle in json.loads((fixtures/'expected.json').read_text()):
+        if args.only and oracle['id'] not in args.only:continue
         source=fixtures/(oracle['id']+'.cbl')
+        if 'sha256' in oracle:assert hashlib.sha256(source.read_bytes()).hexdigest()==oracle['sha256']
         for mode,build in [('main',None),('before',args.before),('after',args.after)]:
             dest=args.output/oracle['id']/mode;out=dest/'dependencies.json'
             cmd=[str(Path(os.environ['JAVA_HOME'])/'bin/java'),'-Xms16m','-Xmx128m',
@@ -35,9 +39,11 @@ def main():
             document=json.loads(out.read_text()) if out.exists() else []
             if isinstance(document,dict):document=[document]
             names=sorted({d['name'] for p in document for d in p['dependencies'] if d['type']=='program'})
+            expected=oracle.get('mainProgramNames',oracle['programNames']) if mode=='main' else oracle['programNames']
             row.update(case=oracle['id'],mode=mode,sourceSha256=hashlib.sha256(source.read_bytes()).hexdigest(),
-                       expected=oracle['programNames'],actual=names,
-                       passed=row['guard'] is None and row['exit'] in (0,1) and out.exists() and names==oracle['programNames'])
+                       expected=expected,actual=names,
+                       passed=row['guard'] is None and row['exit'] in (0,1) and out.exists() and names==expected)
+            row['tableProbe']=[json.loads(line.removeprefix('DEFINITIONS_TABLES ')) for line in (dest/'stderr.log').read_text().splitlines() if line.startswith('DEFINITIONS_TABLES ')]
             rows.append(row);(args.output/'results.json').write_text(json.dumps(rows,indent=2)+'\n')
             print(oracle['id'],mode,row['passed'],names,flush=True)
             if row['guard'] in ('SYSTEM_MEMORY_GUARD','RSS_GUARD'):return 1

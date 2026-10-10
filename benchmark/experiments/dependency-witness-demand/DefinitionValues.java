@@ -17,14 +17,24 @@ final class DefinitionValues {
             var ids=new TreeSet<Integer>();var todo=new ArrayDeque<Ast.Node>();if(n!=null)todo.add(n);
             while(!todo.isEmpty()){
                 var next=todo.remove();
-                if(next instanceof Ast.DataReference r&&r.referenceModification()!=null){
-                    var mod=r.referenceModification();ids.addAll(flow.declarations.reads(mod.offset()));
-                    if(mod.length()!=null)ids.addAll(flow.declarations.reads(mod.length()));
+                if(next instanceof Ast.DataReference r){
+                    r.subscriptGroups().forEach(g->g.subscripts().forEach(e->ids.addAll(flow.declarations.reads(e))));
+                    if(r.referenceModification()!=null){
+                        var mod=r.referenceModification();ids.addAll(flow.declarations.reads(mod.offset()));
+                        if(mod.length()!=null)ids.addAll(flow.declarations.reads(mod.length()));
+                    }
                 }
                 todo.addAll(DependencyDeclarations.valueChildren(next));
             }
             return List.copyOf(ids);
         });
+    }
+    boolean ready(Ast.Node node,Map<Integer,DependencyValues> values){
+        for(int id:addresses(node)){
+            var value=values.getOrDefault(id,DependencyValues.UNKNOWN);
+            if(value.values().isEmpty()&&!value.unknown())return false;
+        }
+        return true;
     }
     void alternatives(Ast.Node node,State input,Consumer<State> consume){
         var ids=addresses(node);if(ids.isEmpty()){consume.accept(input);return;}

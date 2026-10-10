@@ -4,6 +4,7 @@ import argparse,hashlib,json,shutil,subprocess,os
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[3]
 def overlay(text):
+ allocation=sparse_table_allocation(text)
  # Reuse the same structural rules, but let the experiment's small handler
  # lattice decide event routes. Inventory of a condition is not its activation.
  old='    private DependencyControl.Rule controlEffect(Exit position) {'
@@ -14,13 +15,13 @@ def overlay(text):
  text=text.replace('if(exceptionalEvents.getOrDefault(node,List.of()).stream().anyMatch(e->e.eligibility()==EventEligibility.HANDLER_ELIGIBLE))','if(eventsEnabled&&exceptionalEvents.getOrDefault(node,List.of()).stream().anyMatch(e->e.eligibility()==EventEligibility.HANDLER_ELIGIBLE))',1)
  start=text.index('        var cells=new LinkedHashSet<Element>();',text.index('    static DependencyFlow analyze('))
  end=text.index('\n    private DependencyFlow(',start)
- text=text[:start]+'''        return new DependencyFlow(unit,declarations,control,queries,maxWork,cics,conditions,Set.of());
+ text=text[:start]+'''        return new DependencyFlow(unit,declarations,control,queries,maxWork,cics,conditions,new LinkedHashSet<>());
     }
 '''+text[end:]
  start=text.index('        var observations=new HashSet<String>();',text.index('    private DependencyFlow('))
  end=text.index('\n    static String handle(',start)
  text=text[:start]+'''        // Empty adapters serve only the existing CLI metric shape. No canonical
-        // control, relevance, contexts or demand passes are executed here.
+        // control, relevance or invocation contexts are executed here.
         controlSummary=new DependencyControl(List.of(),this::controlEffect,this::controlDelivery,p->false,maxWork);
         relevance=new DependencyRelevance(controlSummary.graph,this::inputEffect,maxWork);
         SparseDefinitions.solve(this,roots);
@@ -34,13 +35,30 @@ def overlay(text):
     DependencyControl.Effect definitionDelivery(DependencyControl.Call c,Exit e){return controlDelivery(c,e);}
     DependencyControl.Call definitionCall(Binding b){return new DependencyControl.Call(new Point(Exit.of(regions.get(b.region()).entry()),b.endpoint(),escapeScope(b)),b.id());}
 '''+text[end:]
- old='return slot==null?(tables.containsKey(id)&&tables.get(id).contains(indexes)?value.open():DependencyValues.UNKNOWN):state.get(slot);'
+ # Whole-table initialization replaces every proven equivalent logical view.
+ # The scalar weak-write helper must not keep pre-initialization alias cells.
+ old="""            var initialized=new DependencyEnvironment.Builder<>(state.values());initialized.put(id,value);
+            for(int slot:tableValueIds.get(id))initialized.put(slot,value);state=state.withValues(initialized);"""
  assert text.count(old)==1
- text=text.replace(old,'return value.open(); // Experiment: union of all positions, no table cells.')
- old='declarations.leaves(id).stream().anyMatch(tableValueIds::containsKey)'
- assert text.count(old)==1
- text=text.replace(old,'declarations.leaves(id).stream().anyMatch(leaf -> demand.contains(leaf)&&declarations.repeated.contains(leaf))')
+ text=text.replace(old,"""            var initialized=new DependencyEnvironment.Builder<>(state.values());
+            for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id))) {
+                initialized.put(alias,fitField(alias,value));
+                for(int slot:tableValueIds.getOrDefault(alias,List.of()))initialized.put(slot,fitField(alias,value));
+            }
+            state=state.withValues(initialized);""")
+ # Reuse canonical sparse table allocation, after RD has discovered demand.
+ text=text.replace('    State definitionInitial(){return initial();}',allocation+'\n    State definitionInitial(){return initial();}')
  return text
+
+def sparse_table_allocation(original):
+ start=original.index('        nextElementId=declarations.entries.keySet()')
+ end=original.index('        var cyclic=controlSummary.cyclicNodes();',start)
+ allocation=original[start:end]
+ # Allocate tables once; subsequent rounds only append newly requested cells.
+ allocation=allocation.replace('        nextElementId=', '        if(tables.isEmpty())nextElementId=',1)
+ allocation=allocation.replace('if(declarations.repeated.contains(id)&&','if(!tables.containsKey(id)&&declarations.repeated.contains(id)&&',1)
+ allocation=allocation.replace('if(tables.containsKey(cell.declaration())) {','if(tables.containsKey(cell.declaration())&&!elements.containsKey(cell)) {',1)
+ return '    void definitionTables(){\n'+allocation+'        writeSupports.clear();accessEffects.clear();\n    }'
 
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('output',type=Path);p.add_argument('--jar',type=Path,required=True);p.add_argument('--ref',default='52c1b82dc6accbb615818cf5b5298843a85b0f01');a=p.parse_args();a.output=a.output.resolve();a.output.mkdir(parents=True,exist_ok=False)
@@ -56,7 +74,7 @@ def main():
  classes=a.output/'classes';classes.mkdir();empty=a.output/'empty';empty.mkdir();cmd=[str(Path(os.environ['JAVA_HOME'])/'bin/javac'),'-J-Xmx128m','--release','17','-implicit:none','-sourcepath',str(empty),'-cp',str(a.jar.resolve()),'-d',str(classes),str(flow),str(solver),str(analyzer),str(publication),str(logical),str(structural)]
  with (a.output/'compile.log').open('w') as log:r=subprocess.run(cmd,stdout=log,stderr=subprocess.STDOUT,timeout=60)
  sha=lambda b:hashlib.sha256(b).hexdigest()
- (a.output/'manifest.json').write_text(json.dumps({'baselineCommit':a.ref,'jarSha256':sha(a.jar.read_bytes()),'originalFlowSha256':sha(original.encode()),'overlayFlowSha256':sha(flow.read_bytes()),'solverSha256':sha(solver.read_bytes()),'controlSha256':sha(structural.read_bytes()),'originalAnalyzerSha256':sha(analyzerOriginal.encode()),'overlayAnalyzerSha256':sha(analyzer.read_bytes()),'publicationSha256':sha(publication.read_bytes()),'logicalSha256':sha(logical.read_bytes()),'command':cmd,'exit':r.returncode,'productionQualified':False,'semanticInterventions':['shared physical control with forward boundary-policy bits and handler dispositions','sparse reaching definitions with identity-chain bypass','join-only SCC sharing','predicates and caller/value correlations conservatively ignored','table cells summarized by declaration'],'exactInterventions':['enumerate shared candidate sets once per dependency kind/validation rule with earliest provenance']},indent=2)+'\n')
+ (a.output/'manifest.json').write_text(json.dumps({'baselineCommit':a.ref,'jarSha256':sha(a.jar.read_bytes()),'originalFlowSha256':sha(original.encode()),'overlayFlowSha256':sha(flow.read_bytes()),'solverSha256':sha(solver.read_bytes()),'controlSha256':sha(structural.read_bytes()),'originalAnalyzerSha256':sha(analyzerOriginal.encode()),'overlayAnalyzerSha256':sha(analyzer.read_bytes()),'publicationSha256':sha(publication.read_bytes()),'logicalSha256':sha(logical.read_bytes()),'command':cmd,'exit':r.returncode,'productionQualified':False,'semanticInterventions':['shared physical control with forward boundary-policy bits and handler dispositions','sparse reaching definitions with identity-chain bypass','join-only SCC sharing','predicates and caller/value correlations conservatively ignored','demanded sparse table positions plus unmaterialized remainder','whole-table INITIALIZE resets proven equivalent views'],'exactInterventions':['enumerate shared candidate sets once per dependency kind/validation rule with earliest provenance']},indent=2)+'\n')
  if r.returncode:print((a.output/'compile.log').read_text())
  return r.returncode
 if __name__=='__main__':raise SystemExit(main())

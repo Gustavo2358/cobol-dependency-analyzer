@@ -56,7 +56,8 @@ final class SparseDefinitions {
                 var next=todo.remove();
                 if(next instanceof Ast.DataReference r){
                     Integer id=flow.declarations.references.get(r.meta().id());
-                    if(id!=null){id=flow.declarations.conditions.getOrDefault(id,id);if(flow.textGroups.contains(id))ids.add(id);else ids.addAll(flow.declarations.leaves(id));}
+                    if(id!=null){id=flow.declarations.conditions.getOrDefault(id,id);if(flow.textGroups.contains(id))ids.add(id);else ids.addAll(flow.declarations.leaves(id));
+                    for(int leaf:flow.declarations.leaves(id))ids.addAll(flow.tableValueIds.getOrDefault(leaf,List.of()));}
                 }
                 todo.addAll(DependencyDeclarations.valueChildren(next));
             }
@@ -94,10 +95,32 @@ final class SparseDefinitions {
         for(var statement:flow.statements.values())if(statement instanceof Ast.MoveStatement move&&!Collections.disjoint(flow.definitionWrites(move),flow.demand))snapshots(move.source());
         for(int id:flow.declarations.textualViews.keySet())if(!Collections.disjoint(flow.declarations.leaves(id),flow.demand))flow.textGroups.add(id);
         flow.demand.addAll(flow.textGroups);
+        int tableRounds=0;
+        do {
+            tick();tableRounds++;
+            flow.definitionTables();
+            solveValues();
+            // Learning an exact index refines storage, not execution contexts.
+            // Only value equations are rebuilt; physical control stays shared.
+            if(flow.tableDemandExpanded){flow.answers.clear();flow.diagnostics.removeIf(d->d.startsWith("DYNAMIC_REMAINDER at "));}
+        }while(flow.tableDemandExpanded);
+        flow.tableDemandPasses=tableRounds;
+        System.err.printf("DEFINITIONS_TABLES {\"tables\":%d,\"cells\":%d,\"remainders\":%d,\"rounds\":%d}%n",flow.tables.size(),flow.elements.size(),flow.tables.size(),tableRounds);
+        flow.visits=steps;flow.evaluations=evaluations;
+        flow.diagnostics.add("EXPERIMENT_APPROXIMATION: value-definition graph ignores predicate/caller/value correlations and shares may-control return edges");
+        var distinct=Collections.newSetFromMap(new IdentityHashMap<DependencyValues,Boolean>());
+        for(var c:components)distinct.add(c.value);
+        candidateSlots=distinct.stream().mapToLong(v->v.values().size()).sum();
+        System.err.printf("DEFINITIONS_PRUNING constantWrites=%d openingWrites=%d independentTransfers=%d%n",constantWrites,openingWrites,independent.size());
+        System.err.printf("DEFINITIONS {\"physicalNodes\":%d,\"physicalEdges\":%d,\"definitionNodes\":%d,\"definitionEdges\":%d,\"components\":%d,\"joinComponents\":%d,\"operations\":%d,\"evaluations\":%d,\"propagations\":%d,\"candidateSlots\":%d,\"tracked\":%d,\"work\":%d,\"bypassedIdentityCells\":%d,\"lookupCells\":%d,\"localAddressAlternatives\":%d}%n",positions.size(),physicalEdges,definitions.size(),definitionEdges,components.size(),joinComponents,operations.size(),evaluations,propagations,candidateSlots,flow.demand.size(),steps,bypassed,aliases.size(),logical.combinations);
+    }
+    void solveValues(){
+        readCache.clear();supports.clear();independent.clear();
+        definitionIds.clear();definitions.clear();discovery.clear();operations.clear();aliases.clear();components.clear();joinComponents=0;definitionEdges=0;
         initial=flow.definitionInitial();
         stage("demand");
         // Whole-group candidates remain one logical channel. Child fields are
-        // also available for partial writes; no table positions are allocated.
+        // also available for partial writes, with demand-created table positions.
         for(var q:flow.queries) {
             Integer pos=positionIds.get(new Exit(TargetKind.OCCURRENCE,handle(q.statement())));if(pos==null)continue;
             for(int id:reads(q.expression()))before(id,pos);
@@ -111,13 +134,6 @@ final class SparseDefinitions {
             DependencyValues answer=q.literal().map(DependencyValues::known).orElseGet(()->logical.read(q.expression(),new State(values,Map.of(),Set.of())));
             flow.answers.put(q,answer);if(answer.unknown())flow.diagnostics.add("DYNAMIC_REMAINDER at "+q.statement().meta().provenance().original().file()+":"+q.statement().meta().provenance().original().startLine());
         }
-        flow.visits=steps;flow.evaluations=evaluations;
-        flow.diagnostics.add("EXPERIMENT_APPROXIMATION: value-definition graph ignores predicate/caller/value correlations and shares may-control return edges");
-        var distinct=Collections.newSetFromMap(new IdentityHashMap<DependencyValues,Boolean>());
-        for(var c:components)distinct.add(c.value);
-        candidateSlots=distinct.stream().mapToLong(v->v.values().size()).sum();
-        System.err.printf("DEFINITIONS_PRUNING constantWrites=%d openingWrites=%d independentTransfers=%d%n",constantWrites,openingWrites,independent.size());
-        System.err.printf("DEFINITIONS {\"physicalNodes\":%d,\"physicalEdges\":%d,\"definitionNodes\":%d,\"definitionEdges\":%d,\"components\":%d,\"joinComponents\":%d,\"operations\":%d,\"evaluations\":%d,\"propagations\":%d,\"candidateSlots\":%d,\"tracked\":%d,\"work\":%d,\"bypassedIdentityCells\":%d,\"lookupCells\":%d,\"localAddressAlternatives\":%d}%n",positions.size(),physicalEdges,definitions.size(),definitionEdges,components.size(),joinComponents,operations.size(),evaluations,propagations,candidateSlots,flow.demand.size(),steps,bypassed,aliases.size(),logical.combinations);
     }
     int node(Cell cell){Integer old=definitionIds.get(cell);if(old!=null)return old;tick();int id=definitions.size();definitions.add(new Definition(cell));definitionIds.put(cell,id);discovery.add(id);return id;}
     int reportedDefinitions,reportedWide;
@@ -183,6 +199,10 @@ final class SparseDefinitions {
             ancestor=flow.declarations.parent.get(ancestor);
         }
         if(statement instanceof Ast.MoveStatement move)for(var target:move.targets())for(var child:DependencyDeclarations.valueChildren(target))operands.addAll(reads(child));
+        // Canonical indexed writes reconstruct table summaries from sparse
+        // slots. Include those logical operands, never enumerate OCCURS extent.
+        for(int operand:new ArrayList<>(operands))operands.addAll(flow.tableValueIds.getOrDefault(operand,List.of()));
+        operands.addAll(logical.addresses(statement));
         operands.retainAll(flow.demand);
         // Share an evaluation for identical operand support, rather than adding
         // every affected destination as an input to every requested output.
@@ -225,6 +245,10 @@ final class SparseDefinitions {
             if(c.operation==null){next=c.seed;for(int p:c.parents)next=join(next,components.get(p).value);}
             else {
                 var values=new HashMap<Integer,DependencyValues>();for(var input:c.operation.inputs.entrySet())values.put(input.getKey(),components.get(componentOf[input.getValue()]).value);
+                // BOTTOM means no address fact has arrived yet. Evaluating it
+                // as UNKNOWN would introduce a weak write that monotone union
+                // can never retract when the exact index subsequently arrives.
+                if(!logical.ready(c.operation.statement,values))continue;
                 if(c.operation.lastInputs==null||!values.equals(c.operation.lastInputs)) {
                     c.operation.lastInputs=Map.copyOf(values);
                     c.operation.lastResult=logical.transfer(c.operation.statement,new State(values,Map.of(),Set.of()));evaluations++;

@@ -50,14 +50,24 @@ kind/file validation rule, preserving earliest provenance and notices.
 The existing logical evaluator handles group MOVE, CORRESPONDING, numeric/text
 fits, REDEFINES, INITIALIZE, SET, partial references and generic frontend effects.
 Statement support and binding are reused, not reimplemented in a second frontend.
-OCCURS positions are summarized by declaration; indexes do not allocate cells.
-This deliberately loses index precision, never claiming that a write to one
-position overwrote every other position.
+OCCURS uses the existing sparse logical table evaluator: one remainder for
+unmaterialized positions and separate cells only for valid indexes identified
+by source expressions. Unknown-index writes stay weak; exact full writes kill
+only their selected cell; whole-table INITIALIZE resets both cells and remainder.
+Static subscripts allocate cells immediately. Computed subscripts are learned
+from shared value equations; new cells trigger another value-only round on the
+same physical control graph. No PERFORM context solver is invoked or rebuilt.
+Aliases, group text and partial-cell writes reuse the canonical local evaluator.
+The previous declaration-only table override is removed.
 
-Reference-modification addresses need an additional local rule: a merged offset
+Subscript and reference-modification addresses need an additional local rule: a merged offset
 with several known values must still generate each known substring. Stream the
 finite alternatives of address operands, evaluate each through the same local
 transformer, and union them with the conservative merged-address remainder.
+An address with no fact yet (BOTTOM) postpones evaluation. It is not an unknown
+runtime address: treating it as UNKNOWN would insert an early weak write that
+monotone candidate union could not retract later. Genuine UNKNOWN still retains
+all possible writes and known candidates.
 No product of *program paths or callers* is created. A local candidate product can
 still be large, so exhaustion is an explicit RESOURCE_LIMIT, not truncation.
 Generic STRING/arithmetic/external effects retain the product's existing known
@@ -68,7 +78,8 @@ semantics that the baseline frontend/evaluator does not provide.
 
 `build.py` generates an ignored research overlay from the pinned main sources and
 JAR. It exposes the existing local evaluator and bypasses the production control,
-context and table-demand solvers. Empty control/relevance adapters only satisfy
+context solvers. Sparse table allocation and local transfer are reused; table
+demand closure runs over the experimental value equations. Empty control/relevance adapters only satisfy
 the unchanged CLI metric shape. They do no graph analysis. Production `src/`, POM
 and scripts are unchanged; this is not yet a production replacement or PR.
 
@@ -107,3 +118,11 @@ The subsequent boundary/handler correction and its qualifications are in
 [control-fix-results.md](control-fix-results.md). `control-regressions.py`
 compares 15 independent name oracles on main, the previous experiment build,
 and the corrected build; pass `--jar`, `--before`, and `--after` build paths.
+
+The table/INITIALIZE correction is qualified in
+[table-fix-results.md](table-fix-results.md). The same bounded independent-oracle
+runner accepts `--fixtures benchmark/experiments/dependency-witness-demand/table-fixtures`
+for its table cases. Two cases deliberately expect fewer names than
+frozen main: a copied index overwrites the exact cell, and whole-table INITIALIZE
+resets its equivalent REDEFINES view, but frozen main conservatively retained OLD. The raw RED run and that separate baseline expectation are
+preserved; corpus dependency preservation is checked separately.
