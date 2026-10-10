@@ -81,13 +81,58 @@ JAR. It exposes the existing local evaluator and bypasses the production control
 context solvers. Sparse table allocation and local transfer are reused; table
 demand closure runs over the experimental value equations. Empty control/relevance adapters only satisfy
 the unchanged CLI metric shape. They do no graph analysis. Production `src/`, POM
-and scripts are unchanged; this is not yet a production replacement or PR.
+and scripts are unchanged; this is an opt-in experiment for review, not a
+replacement of the default production solver.
 
 The sparse graph reuses ideas/local evaluator integration from the separate
 `experiment/value-origin-graph` branch; that branch remains untouched. This
 experiment additionally bypasses identity chains, requires physical boundaries
 for returns, supports joined substring addresses, and removes the restricted
 witness-search algorithm rather than maintaining it beside the new one.
+
+## Run the alternative on a source file
+
+This branch keeps the product source identical to the pinned main. Build its
+normal JAR, then compile the experimental classes against it. Python 3, Maven,
+Git history containing the pinned commit and a JDK selected by JAVA_HOME are
+required. The build directory must be new; the builder does not overwrite one.
+
+```sh
+export JAVA_HOME=/path/to/jdk21
+mvn -DskipTests package
+rd_build=$(mktemp -d)/build
+python3 benchmark/experiments/dependency-witness-demand/build.py "$rd_build" \
+  --jar target/cobol-dependency-analyzer.jar
+java -Xmx512m -cp "$rd_build/classes:target/cobol-dependency-analyzer.jar" \
+  com.imd.cobolexplorer.DependencyMain \
+  --source programa.cbl --copy-dir copybooks --output dependencies.json \
+  --max-work 100000000
+```
+
+The experimental classes must precede the JAR on the classpath. The usual
+`java -jar` command continues to execute the main solver. The alternative shares
+physical flow and definitions, relaxing predicate/caller-value correlations;
+it can report additional candidate names and earlier provenance. Exit 1 with
+output is expected PARTIAL and must not be mistaken for a fully precise result.
+The qualification has no lost baseline dependencies, which is empirical
+evidence rather than a guarantee for every COBOL source. The corporate source
+itself has not been tested. Existing resource-limit and atomic-output behavior
+still apply. No automatic retry or solver selection is introduced.
+
+For a self-contained smoke comparison after building, run the committed
+fixtures with the same JAR and the existing bounded runner:
+
+```sh
+python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/rd-smoke \
+  --build "$rd_build" --jar target/cobol-dependency-analyzer.jar \
+  --modes main definitions --heap 128
+python3 benchmark/experiments/dependency-witness-demand/check.py /tmp/rd-smoke
+```
+
+The frozen qualification JAR and CardDemo input inventory used below are local
+ignored artifacts. They are not needed for the source-file command or smoke
+comparison above. Tracked result reports contain the qualification hashes and
+outcomes; recreating the full corpus comparison requires those pinned inputs.
 
 Run JVMs sequentially, with at most 512 MiB heap, 768 MiB RSS, 2 GiB host reserve,
 60 s timeout and max-work 100M. Qualification uses 128 MiB heap. The runner records

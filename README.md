@@ -9,6 +9,12 @@ O objetivo é facilitar o inventário de dependências de aplicações COBOL e a
 avaliação do impacto de mudanças, com execução simples e custo de memória
 controlado. A análise acontece em um único processo Java.
 
+Há também uma [alternativa experimental com reaching definitions](benchmark/experiments/dependency-witness-demand/README.md)
+para fontes que excedem os recursos do solver padrão. Ela compartilha o fluxo
+entre consultas e aceita menor precisão de condições e correlações entre
+chamadas. O guia mostra como executá-la separadamente e registra os resultados
+e as limitações observadas. O comando padrão continua usando o solver descrito abaixo.
+
 ## Como funciona
 
 ```text
