@@ -1,0 +1,90 @@
+{
+  "baselineCommit": "7a0b02a386a7a98b81d90ca0acb0c3c8f21e7ca6",
+  "baselineJarSha256": "1153e987c23dc8d2a94baa4371171c972c510e36e902ea1c2b0045aeec6e1a16",
+  "measuredJarSha256": "0b66a9047ac21a1170963b2e6540edeb3e76400d7637af0dd6d6085c9556c53b",
+  "sourceSha256": "5980c3b6362f3b624bd4ad8181fb97cebc6302ea93d19a0227f3b17c3108241d",
+  "java": "OpenJDK 25.0.4; release 17",
+  "gc": "SerialGC",
+  "activeProcessors": 2,
+  "maxWork": 100000000,
+  "systemReserveMiB": 3072,
+  "scale": [
+    {
+      "n": 2048,
+      "loc": 46108,
+      "heapMiB": 2048,
+      "names": 2049,
+      "byteIdentical": true,
+      "oraclePassed": true,
+      "sameWorkCounters": true,
+      "sourceSha256": "bc91258f6ea88282a8753d7a05dc9ebd448e2fe286b534378b2ed527e64b789e",
+      "outputSha256": "e103eb3da6487135b3f149c42881bf185af9ba24691f5af8120fbe771e865d3c",
+      "before": {
+        "seconds": 7.1159893949989055,
+        "dataflowSeconds": 1.634200484,
+        "peakRssMiB": 762.9296875
+      },
+      "after": {
+        "seconds": 6.764324865998788,
+        "dataflowSeconds": 1.223040846,
+        "peakRssMiB": 742.4609375,
+        "guard": null
+      }
+    },
+    {
+      "n": 16384,
+      "loc": 368668,
+      "heapMiB": 6144,
+      "names": 16385,
+      "byteIdentical": true,
+      "oraclePassed": true,
+      "sameWorkCounters": true,
+      "sourceSha256": "c31d83c211dbd204bf99df735c5ddd05790e239dda780328d7fb31fc840f838d",
+      "outputSha256": "340d4b2a00d26be45e7c0f40c59753c27abb71fc66e9c62c2b93682a2d244511",
+      "before": {
+        "seconds": 392.98382469399803,
+        "dataflowSeconds": 333.144872297,
+        "peakRssMiB": 6040.18359375
+      },
+      "after": {
+        "seconds": 79.94404397700055,
+        "dataflowSeconds": 19.083619037,
+        "peakRssMiB": 6079.53515625,
+        "guard": null
+      }
+    }
+  ],
+  "fast": {
+    "tests": 1100,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "full": {
+    "tests": 1807,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "corpus": {
+    "runs": 218,
+    "identicalOutputs": 217,
+    "cardDemoPrograms": 73,
+    "cardDemoRelations": {
+      "main": 815,
+      "definitions": 815
+    },
+    "standalonePrograms": 36,
+    "reachingDefinitionsIdentical": 109,
+    "preciseIdentical": 108,
+    "existingPreciseOom": [
+      "return-fanout-128; heap 128 MiB; exit 3, unchanged"
+    ]
+  },
+  "limitations": [
+    "Individual CLI measurements, not medians.",
+    "Reaching definitions remains PARTIAL; prior correlation approximation unchanged.",
+    "Global complexity and the corporate source are not qualified.",
+    "No material peak RSS reduction in N16384."
+  ]
+}

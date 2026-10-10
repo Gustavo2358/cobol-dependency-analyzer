@@ -237,11 +237,27 @@ final class SparseDefinitions {
         }
         for(int i=0;i<components.size();i++)for(int p:components.get(i).parents)components.get(p).children.add(i);
     }
+    /** Union a component's incoming facts, freezing only the final set. A
+     * pairwise fold would copy every growing prefix at a high fan-in join.
+     * Reuse a covering immutable input until a mutable builder is needed;
+     * unknown remains independent of which input covers the candidates. */
+    static DependencyValues unionParents(Component c,List<Component> components){
+        var next=c.seed;HashSet<String> combined=null;boolean unknown=next.unknown();
+        for(int p:c.parents){
+            var value=components.get(p).value;unknown|=value.unknown();
+            if(combined!=null){combined.addAll(value.values());continue;}
+            if(next==value||next.values().containsAll(value.values()))continue;
+            if(value.values().containsAll(next.values())){next=value;continue;}
+            combined=new HashSet<>(next.values());combined.addAll(value.values());
+        }
+        if(combined!=null)return new DependencyValues(combined,unknown);
+        return next.unknown()==unknown?next:next.open();
+    }
     void propagate(){
         var queue=new ArrayDeque<Integer>();for(int i=0;i<components.size();i++){queue.add(i);components.get(i).queued=true;}
         while(!queue.isEmpty()) {
             tick();int id=queue.remove();var c=components.get(id);c.queued=false;DependencyValues next;
-            if(c.operation==null){next=c.seed;for(int p:c.parents)next=join(next,components.get(p).value);}
+            if(c.operation==null)next=unionParents(c,components);
             else {
                 var values=new HashMap<Integer,DependencyValues>();for(var input:c.operation.inputs.entrySet())values.put(input.getKey(),components.get(componentOf[input.getValue()]).value);
                 // BOTTOM means no address fact has arrived yet. Evaluating it
