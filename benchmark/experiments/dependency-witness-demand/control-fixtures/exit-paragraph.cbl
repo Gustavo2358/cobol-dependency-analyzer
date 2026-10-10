@@ -1,0 +1,14 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CONTROLTEST.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 P PIC X(8) VALUE 'INITIAL'.
+       01 F PIC 9.
+       PROCEDURE DIVISION.
+       PERFORM A.
+       CALL P.
+       GOBACK.
+       A.
+       MOVE 'GOOD' TO P.
+       EXIT PARAGRAPH.
+       MOVE 'DEAD' TO P.

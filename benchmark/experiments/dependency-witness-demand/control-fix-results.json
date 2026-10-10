@@ -1,0 +1,386 @@
+{
+  "reports": [
+    {
+      "directory": "benchmark/results/rd-control-fix-20261009/adversarial-final",
+      "runs": 25,
+      "completed": 25,
+      "resourceFailures": [],
+      "lost": 0,
+      "extra": 4,
+      "changedAt": 0,
+      "identityMetamorphicChecks": 2
+    },
+    {
+      "directory": "benchmark/results/rd-control-fix-20261009/corpus-final",
+      "runs": 109,
+      "completed": 109,
+      "resourceFailures": [],
+      "lost": 0,
+      "extra": 30,
+      "changedAt": 32,
+      "identityMetamorphicChecks": 0
+    },
+    {
+      "directory": "benchmark/results/rd-control-fix-20261009/scale-final",
+      "runs": 4,
+      "completed": 4,
+      "resourceFailures": [],
+      "lost": 0,
+      "extra": 0,
+      "changedAt": 0,
+      "identityMetamorphicChecks": 0
+    },
+    {
+      "directory": "benchmark/results/rd-control-fix-20261009/negative-bound-final",
+      "runs": 1,
+      "completed": 1,
+      "resourceFailures": [],
+      "lost": 0,
+      "extra": 0,
+      "changedAt": 0,
+      "identityMetamorphicChecks": 0
+    }
+  ],
+  "failures": [],
+  "qualification": "research only; all approximations remain PARTIAL",
+  "implementationCommit": "1797f16495230388c15fbb18e09bfc3e596107d5",
+  "baselineCommit": "52c1b82dc6accbb615818cf5b5298843a85b0f01",
+  "build": {
+    "baselineCommit": "52c1b82dc6accbb615818cf5b5298843a85b0f01",
+    "jarSha256": "6bd96f31911976c097c9fb47377587c11bf3ebe6dc60305190104314bc39b036",
+    "originalFlowSha256": "e10bffb651af61842bf4b81f0b5fe483fe7d6459f05caa7b379c72f83125aa1a",
+    "overlayFlowSha256": "6e41496d2f1735de1550b1b430cee4106298b28d437598b06e541ad25fdaab09",
+    "solverSha256": "4ae1668a2358b2eda2b17155863662226a2ff60fb78cc479984c1e7a75570d70",
+    "controlSha256": "adf2011ba64dc1f10e2a6aa6d13f36dd8ccaa12d2c9a85ca4124534d099c15fd",
+    "originalAnalyzerSha256": "716496e91506a08056353104452dce0c76040b2bc86bada4ca91bd53175b6779",
+    "overlayAnalyzerSha256": "89db2b985a6774ead803d02059ea309d52e50f7bf962456d04d83ea56f887fc4",
+    "publicationSha256": "a2fc73d035df0dc8c66fecf78da1abe5e7c3a349a59f51d8055af809c2fc56fe",
+    "logicalSha256": "5a454e0fb2296ab284879a065c8589f3a90a1cf311231ca20b8fe3425ca0b70a",
+    "command": [
+      "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/javac",
+      "-J-Xmx128m",
+      "--release",
+      "17",
+      "-implicit:none",
+      "-sourcepath",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/build-02/empty",
+      "-cp",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/remote.jar",
+      "-d",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/build-02/classes",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/build-02/source/com/imd/cobolexplorer/DependencyFlow.java",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/build-02/source/com/imd/cobolexplorer/SparseDefinitions.java",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/build-02/source/com/imd/cobolexplorer/DependencyAnalyzer.java",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/build-02/source/com/imd/cobolexplorer/DefinitionsPublication.java",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/build-02/source/com/imd/cobolexplorer/DefinitionValues.java",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/build-02/source/com/imd/cobolexplorer/DefinitionControl.java"
+    ],
+    "exit": 0,
+    "productionQualified": false,
+    "semanticInterventions": [
+      "shared physical control with forward boundary-policy bits and handler dispositions",
+      "sparse reaching definitions with identity-chain bypass",
+      "join-only SCC sharing",
+      "predicates and caller/value correlations conservatively ignored",
+      "table cells summarized by declaration"
+    ],
+    "exactInterventions": [
+      "enumerate shared candidate sets once per dependency kind/validation rule with earliest provenance"
+    ]
+  },
+  "corpus": {
+    "standalone": {
+      "cases": 36,
+      "completed": 36,
+      "lost": 0,
+      "extra": 30,
+      "changedAt": 32,
+      "fullJsonEqual": 15
+    },
+    "carddemo": {
+      "cases": 73,
+      "completed": 73,
+      "lost": 0,
+      "extra": 0,
+      "changedAt": 0,
+      "fullJsonEqual": 73
+    }
+  },
+  "controlRegressions": {
+    "cases": 15,
+    "baselinePassed": 15,
+    "correctedPassed": 15,
+    "previousMismatches": [
+      "perform-stop",
+      "overlapping-ranges",
+      "xctl-default",
+      "xctl-ignore-reset",
+      "xctl-handler",
+      "xctl-unreachable-ignore",
+      "xctl-abend-handler",
+      "xctl-abend-cancel",
+      "xctl-abend-reset"
+    ]
+  },
+  "scale": [
+    {
+      "case": "dynamic-only-32",
+      "seconds": 1.1111545819730964,
+      "peakRssKiB": 118584,
+      "expectedNamesEqual": true,
+      "probe": [
+        {
+          "physicalNodes": 1038,
+          "physicalEdges": 1295,
+          "definitionNodes": 195,
+          "definitionEdges": 386,
+          "components": 195,
+          "joinComponents": 195,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 260,
+          "candidateSlots": 258,
+          "tracked": 1,
+          "work": 16697,
+          "bypassedIdentityCells": 1747,
+          "lookupCells": 1942,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "controlProbe": [
+        {
+          "policies": 65,
+          "positions": 1038,
+          "edges": 1295,
+          "visits": 13135,
+          "deliveries": 507,
+          "distinctPolicySets": 2,
+          "policyWords": 4
+        }
+      ],
+      "sourceSha256": "591ce26b744aae06af39845a0f66eb66426d9e3113384b0989dbd61f1cee66cf"
+    },
+    {
+      "case": "dynamic-only-128",
+      "seconds": 1.464858337014448,
+      "peakRssKiB": 137696,
+      "expectedNamesEqual": true,
+      "probe": [
+        {
+          "physicalNodes": 4110,
+          "physicalEdges": 5135,
+          "definitionNodes": 771,
+          "definitionEdges": 1538,
+          "components": 771,
+          "joinComponents": 771,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 1028,
+          "candidateSlots": 1026,
+          "tracked": 1,
+          "work": 66521,
+          "bypassedIdentityCells": 6931,
+          "lookupCells": 7702,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "controlProbe": [
+        {
+          "policies": 257,
+          "positions": 4110,
+          "edges": 5135,
+          "visits": 52399,
+          "deliveries": 2043,
+          "distinctPolicySets": 2,
+          "policyWords": 10
+        }
+      ],
+      "sourceSha256": "0744fcd1e169d1696e25e9c0471a88a9a4584188970a7d7b29a13a8699cb16ac"
+    },
+    {
+      "case": "dynamic-only-512",
+      "seconds": 2.829332720983075,
+      "peakRssKiB": 245012,
+      "expectedNamesEqual": true,
+      "probe": [
+        {
+          "physicalNodes": 16398,
+          "physicalEdges": 20495,
+          "definitionNodes": 3075,
+          "definitionEdges": 6146,
+          "components": 3075,
+          "joinComponents": 3075,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 4100,
+          "candidateSlots": 4098,
+          "tracked": 1,
+          "work": 265817,
+          "bypassedIdentityCells": 27667,
+          "lookupCells": 30742,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "controlProbe": [
+        {
+          "policies": 1025,
+          "positions": 16398,
+          "edges": 20495,
+          "visits": 209455,
+          "deliveries": 8187,
+          "distinctPolicySets": 2,
+          "policyWords": 34
+        }
+      ],
+      "sourceSha256": "2ccd418e68c098a938f8461d2de2f742f89b7d7aaeb1bc2d1be613bb33181b08"
+    },
+    {
+      "case": "dynamic-only-2048",
+      "seconds": 7.979989704996115,
+      "peakRssKiB": 592192,
+      "expectedNamesEqual": true,
+      "probe": [
+        {
+          "physicalNodes": 65550,
+          "physicalEdges": 81935,
+          "definitionNodes": 12291,
+          "definitionEdges": 24578,
+          "components": 12291,
+          "joinComponents": 12291,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 16388,
+          "candidateSlots": 16386,
+          "tracked": 1,
+          "work": 1063001,
+          "bypassedIdentityCells": 110611,
+          "lookupCells": 122902,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "controlProbe": [
+        {
+          "policies": 4097,
+          "positions": 65550,
+          "edges": 81935,
+          "visits": 837679,
+          "deliveries": 32763,
+          "distinctPolicySets": 2,
+          "policyWords": 130
+        }
+      ],
+      "sourceSha256": "bc91258f6ea88282a8753d7a05dc9ebd448e2fe286b534378b2ed527e64b789e"
+    }
+  ],
+  "evidenceHashes": {
+    "adversarial/results.json": "f7e9172e308eaff9ec125605256a1ab261bd3069ad8075a58c6c5220572b0428",
+    "adversarial-final/results.json": "b22e812d872e376d11d2465b1f2f8d7b020236afdc0d206258eb8cfd1ec5b98e",
+    "control-regressions-02/results.json": "4c2a929d83a628c0cfcf84694fed909b201d60fdb79a0d3b2c72cc6ece4412ae",
+    "control-regressions-final/results.json": "aa91b000c60872d0d0e68bcf65d7d9f1eb5500da683e8748505094298e11f6cc",
+    "corpus-final/results.json": "833a40bc35d38286b25efabb48d076ccd366c9f017bb18b6e3629368e2ff88b5",
+    "focused-carddemo/results.json": "6930ab204e4fade134b119e6e2f3698c45c22a011f2510e882fe4d05ba123158",
+    "negative-bound-final/results.json": "e983ec4f4ec8c53f0c021d64d904b35ebc1f4355d2e698295c4e715163855a1c",
+    "scale-final/results.json": "519c1b948ce42ab5bf002c1babc80597fd56c14bd666d798c5e084d880bd7e51",
+    "scale-large/results.json": "2ee91146eff4d830c88a68e9efdb5609e03f04e698880dacf3042c6791ef2d61",
+    "scale-small/results.json": "e2644820194f1a23c3fb00890fbd95fe9396eb9d8966e71dc1e01bb11fd46615",
+    "fast-final/stdout.log": "1ab83d14b1abf21a953d1e5c737da050f943c0d4edbf578c73743b9def16165a",
+    "fast-final/stderr.log": "e6746eb78ed2693de40a4901a2c9e1d3ea6284dc0c14275ba2acf17ad1dcc2b7",
+    "fast-fork/stdout.log": "a4834578e48079912c7d4e9f216a02be2d8bad15b9f5326129e2c7c2d3d00239",
+    "fast-fork/stderr.log": "75f1c751b86f9cc7ec75e2163d7b5ac5258e4de1150f8527bca9bd8592732b9b",
+    "atomic-final/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "atomic-final/stderr.log": "669e8182de8552f20e3d7cf205649fc65f0e043069fc0b58670c774d4b62b383"
+  },
+  "resourceLimits": {
+    "qualificationHeapMiB": 128,
+    "scaleHeapMiB": 512,
+    "rssMiB": 768,
+    "reserveMiB": 2048,
+    "timeoutSeconds": 60,
+    "maxWork": 100000000
+  },
+  "atomic": {
+    "exit": 2,
+    "guard": null,
+    "seconds": 0.7066642200225033,
+    "peakRssKiB": 90784,
+    "command": [
+      "/home/gustavo/.sdkman/candidates/java/21.0.12+1.1-tem/bin/java",
+      "-Xms16m",
+      "-Xmx128m",
+      "-XX:MaxMetaspaceSize=128m",
+      "-XX:MaxDirectMemorySize=32m",
+      "-XX:ActiveProcessorCount=2",
+      "-XX:+UseSerialGC",
+      "-XX:+ExitOnOutOfMemoryError",
+      "-cp",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/build-02/classes:/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/remote-requalification-20261009/remote.jar",
+      "com.imd.cobolexplorer.DependencyMain",
+      "--source",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/experiments/dependency-witness-demand/control-fixtures/perform-stop.cbl",
+      "--output",
+      "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/rd-control-fix-20261009/atomic-output.json",
+      "--max-work",
+      "1"
+    ],
+    "observedCpuSeconds": 1.22,
+    "rssGuardMiB": 768,
+    "systemReserveMiB": 2048,
+    "outputPreserved": true,
+    "resourceLimit": true
+  },
+  "unchangedProductionTrees": {
+    "src": {
+      "baseline": "930059df60e8389a827aa797e85db0a3e4be1d43",
+      "implementation": "930059df60e8389a827aa797e85db0a3e4be1d43"
+    },
+    "scripts": {
+      "baseline": "0e703f4de5cdc2e8177cb32bebf433421787caff",
+      "implementation": "0e703f4de5cdc2e8177cb32bebf433421787caff"
+    },
+    "pom.xml": {
+      "baseline": "6d05ae3205879a13099867e202f667173b3c6481",
+      "implementation": "6d05ae3205879a13099867e202f667173b3c6481"
+    }
+  },
+  "fast": {
+    "suites": 142,
+    "tests": 1093,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "attempts": [
+      {
+        "exit": 1,
+        "guard": null,
+        "seconds": 38.75129589001881,
+        "peakRssKiB": 359584,
+        "command": [
+          "python3",
+          "scripts/harness/lean.py",
+          "fast"
+        ],
+        "observedCpuSeconds": 78.41000000000001,
+        "rssGuardMiB": 768,
+        "systemReserveMiB": 2048,
+        "heapMiB": 128
+      },
+      {
+        "exit": 0,
+        "guard": null,
+        "seconds": 62.93372599800932,
+        "peakRssKiB": 285280,
+        "command": [
+          "python3",
+          "scripts/harness/lean.py",
+          "fast"
+        ],
+        "observedCpuSeconds": 9.209999999999999,
+        "rssGuardMiB": 768,
+        "systemReserveMiB": 2048,
+        "heapMiB": 128,
+        "compilerFork": true
+      }
+    ]
+  },
+  "expectedControlOraclesSha256": "cf3cb9c7a5ea65a9bfdf2566014d098714635d15af83cae121379ff3f5c2fb0a"
+}

@@ -9,6 +9,24 @@ O objetivo é facilitar o inventário de dependências de aplicações COBOL e a
 avaliação do impacto de mudanças, com execução simples e custo de memória
 controlado. A análise acontece em um único processo Java.
 
+O mesmo JAR oferece dois algoritmos de análise:
+
+- `--solver precise` (padrão): preserva correlações entre condições, valores e chamadores.
+- `--solver reaching-definitions`: compartilha o fluxo e as definições para analisar programas
+  que exigem muitos contextos; pode acrescentar candidatos ao ignorar essas correlações.
+
+```sh
+java -Xmx512m -jar target/cobol-dependency-analyzer.jar \
+  --solver reaching-definitions --source programa.cbl --output dependencies.json \
+  --max-work 100000000 --metrics metrics.jsonl
+```
+
+Não é necessária compilação adicional nem classpath especial. O modo reaching definitions
+sinaliza a aproximação em stderr e retorna `1` (PARTIAL) com o JSON publicado. Erros de
+argumentos ou limites de recursos retornam `2` e preservam o output anterior. `--metrics`
+registra o algoritmo escolhido e o trabalho realizado. A [documentação da alternativa](benchmark/experiments/dependency-witness-demand/README.md)
+explica a arquitetura, a validação e os limites conhecidos.
+
 ## Como funciona
 
 ```text
@@ -27,7 +45,7 @@ Por exemplo, após `MOVE 'PROGA' TO WS-TARGET` seguido de
 Uma sobrescrita completa elimina o valor anterior; se branches viáveis
 atribuírem nomes diferentes, ambos permanecem candidatos.
 
-O dataflow usa um único solver de resumos, com uma worklist até o ponto fixo.
+No modo `precise`, o dataflow usa um solver de resumos, com uma worklist até o ponto fixo.
 Cada resumo é identificado por entrada de controle normalizada, endpoint de
 retorno e entradas que precisam determinar o controle ou uma recorrência.
 As demais entradas relevantes são parâmetros: valores diferentes podem usar
@@ -73,8 +91,8 @@ compartilham esse escopo, sem incluir a identidade do chamador.
 O resultado de um resumo conserva o tipo de saída: conclusão, escape ou término
 do programa. A continuação aplica a regra correspondente: seguir o trecho,
 retornar/repetir uma invocação ou encerrar uma entrada independente. Essas regras
-representam diferenças da linguagem no mesmo solver. Não há seletor de estratégia,
-modo antigo ou restrição global a programas estruturados. As conclusões também
+representam diferenças da linguagem dentro do modo `precise`. A escolha pela CLI
+seleciona o algoritmo para a análise inteira. As conclusões também
 passam pela worklist, evitando desempilhar recursivamente caudas longas.
 
 Cruzar uma fronteira alheia ao endpoint e aos ancestrais continua no mesmo
@@ -226,7 +244,9 @@ Não há garantia de paridade universal de COBOL; a paridade medida refere-se
 aos insumos e oráculos documentados.
 
 `--max-work N` limita visitas, estados, resumos, trabalho de relevância e controle,
-expressões/resoluções paramétricas e produtos de candidatos (padrão 1000000).
+expressões/resoluções paramétricas e produtos de candidatos (padrão 100000000,
+ou 100 milhões, na CLI e na API). Esse é o orçamento usado na qualificação de
+N=2048 com reaching definitions; `--max-work N` permite substituí-lo.
 Ultrapassar o orçamento falha explicitamente; não corta candidatos para obter
 sucesso. `--metrics arquivo.jsonl` grava tempos e contadores fora do JSON de
 produto. `evaluations` conta transformações locais calculadas e `reusedEvaluations`

@@ -249,4 +249,49 @@ class DependencyAnalyzerTest {
         assertEquals(1,result.metrics().materializedTableElements());
     }
 
+    @Test void cliSelectsSolversInTheSameJarAndExplainsApproximation()throws Exception {
+        assertEquals(100_000_000L,DependencyAnalyzer.Options.defaults().maxWork());
+        analyze("01 TARGET PIC X(8).\n01 FLAG PIC X.",
+            "MOVE 'Y' TO FLAG.\nIF FLAG = 'Y'\nMOVE 'GOOD' TO TARGET\nELSE\nMOVE 'BAD' TO TARGET\nEND-IF.\nCALL TARGET.\nGOBACK.");
+        var source=temp.resolve("test.cbl");var output=temp.resolve("dependencies.json");
+        var metrics=temp.resolve("metrics.jsonl");var mapper=new com.fasterxml.jackson.databind.ObjectMapper();
+        for(String solver:List.of("precise","reaching-definitions")) {
+            int exit=DependencyMain.run(new String[]{"--source",source.toString(),"--output",output.toString(),
+                "--solver",solver,"--metrics",metrics.toString()});
+            assertEquals(solver.equals("precise")?0:1,exit);
+            var document=mapper.readTree(output.toFile());var names=new TreeSet<String>();
+            document.path("dependencies").forEach(d->names.add(d.path("name").asText()));
+            assertEquals(solver.equals("precise")?Set.of("GOOD"):Set.of("BAD","GOOD"),names);
+            var measured=mapper.readTree(Files.readAllLines(metrics).get(0)).path("metrics");
+            assertEquals(solver,measured.path("solver").asText());
+            assertEquals(solver.equals("precise")?0:1,measured.path("reachingDefinitions").size());
+        }
+        String previous=Files.readString(output);
+        for(String solver:List.of("precise","reaching-definitions","invalid")) {
+            assertEquals(2,DependencyMain.run(new String[]{"--source",source.toString(),"--output",output.toString(),
+                "--solver",solver,"--max-work","1"}));
+            assertEquals(previous,Files.readString(output));
+        }
+        assertEquals(2,DependencyMain.run(new String[]{"--source",source.toString(),"--output",output.toString(),"--solver"}));
+        assertEquals(previous,Files.readString(output));
+    }
+    @Test void reachingDefinitionsKeepsSparseCellsAndResetsEquivalentViews()throws Exception {
+        for(String name:List.of("copied-index-overwrite","initialize-equivalent-view")) {
+            var source=Path.of("src/test/resources/dependency-definitions/"+name+".cbl");
+            var defaults=DependencyAnalyzer.Options.defaults();
+            var options=new DependencyAnalyzer.Options(defaults.copyDirectories(),defaults.format(),defaults.charset(),
+                defaults.sourceInventory(),defaults.parser(),defaults.maxWork(),DependencyAnalyzer.Solver.REACHING_DEFINITIONS);
+            var result=new DependencyAnalyzer().analyze(source,options);
+            var names=result.programs().stream().flatMap(p->p.dependencies().stream()).filter(d->d.type().equals("program"))
+                .map(DependencyAnalyzer.Dependency::name).collect(java.util.stream.Collectors.toSet());
+            assertEquals(name.equals("copied-index-overwrite")?Set.of("GOOD"):Set.of(),names);
+            assertEquals(1,result.metrics().reachingDefinitions().size());
+            assertTrue(result.metrics().materializedTableElements()<=4);
+        }
+    }
+    @Test void preciseInitializeAlsoResetsProvenEquivalentTableViews()throws Exception {
+        var source=Path.of("src/test/resources/dependency-definitions/initialize-equivalent-view.cbl");
+        var result=new DependencyAnalyzer().analyze(source,DependencyAnalyzer.Options.defaults());
+        assertTrue(result.programs().get(0).dependencies().stream().noneMatch(d->d.type().equals("program")),result.toString());
+    }
 }

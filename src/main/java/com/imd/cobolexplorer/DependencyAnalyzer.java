@@ -9,14 +9,32 @@ import com.imd.cobolexplorer.semanticproduct.CobolSemanticProduct;
 /** Headless single-process analysis. Never builds/publishes the Semantic Product,
  * physical storage, AIR, presentation snapshots or intermediate files. */
 public final class DependencyAnalyzer {
+    public static final long DEFAULT_MAX_WORK=100_000_000L;
     public record At(String file,int line) { }
     public record Dependency(String type,String name,At at) { }
     public record Program(String program,List<Dependency> dependencies) { }
-    public record Metrics(long parseNanos,long bindingNanos,long cfgNanos,long dataflowNanos,long resolutionNanos,long totalNanos,long workItems,int contexts,int trackedDeclarations,long evaluations,long reusedEvaluations,long instantiationEvaluations,long resolutionWorkItems,int parametricCalculations,int specializedDeclarations,int controlSummaries,int physicalControlNodes,int physicalControlEdges,int controlObligations,int controlResultColumns,long controlWorkItems,long controlResultPairs,long controlResultFacts,long resultDeliveries,long decisionNodes,int predicateInputs,long decisionOperations,long liftedOperations,int materializedTableElements,int tableDemandPasses) { }
+    public enum Solver {
+        PRECISE("precise"),REACHING_DEFINITIONS("reaching-definitions");
+        private final String cliName;
+        Solver(String cliName){this.cliName=cliName;}
+        public String cliName(){return cliName;}
+        static Solver parse(String name){
+            for(var solver:values())if(solver.cliName.equals(name))return solver;
+            throw new IllegalArgumentException("Expected --solver precise or reaching-definitions");
+        }
+    }
+    public record ReachingDefinitionsMetrics(int physicalNodes,long physicalEdges,int policies,long controlWorkItems,long deliveries,
+            int definitionNodes,long definitionEdges,int components,int joinComponents,int operations,long evaluations,
+            long propagations,long candidateSlots,long workItems,long bypassedIdentityCells,int lookupCells,long localAddressAlternatives,
+            int tables,int cells,int tableDemandPasses) { }
+    public record Metrics(long parseNanos,long bindingNanos,long cfgNanos,long dataflowNanos,long resolutionNanos,long totalNanos,long workItems,int contexts,int trackedDeclarations,long evaluations,long reusedEvaluations,long instantiationEvaluations,long resolutionWorkItems,int parametricCalculations,int specializedDeclarations,int controlSummaries,int physicalControlNodes,int physicalControlEdges,int controlObligations,int controlResultColumns,long controlWorkItems,long controlResultPairs,long controlResultFacts,long resultDeliveries,long decisionNodes,int predicateInputs,long decisionOperations,long liftedOperations,int materializedTableElements,int tableDemandPasses,String solver,List<ReachingDefinitionsMetrics> reachingDefinitions) { }
     public record Result(List<Program> programs,List<String> diagnostics,Metrics metrics) { }
-    public record Options(List<Path> copyDirectories,SourceNormalizer.SourceFormat format,Charset charset,Path sourceInventory,String parser,long maxWork) {
-        public Options {copyDirectories=List.copyOf(copyDirectories);if(maxWork<1)throw new IllegalArgumentException("positive --max-work required");}
-        public static Options defaults(){return new Options(List.of(),SourceNormalizer.SourceFormat.FIXED,Charset.forName("UTF-8"),null,"direct-ast-lab",1_000_000);}
+    public record Options(List<Path> copyDirectories,SourceNormalizer.SourceFormat format,Charset charset,Path sourceInventory,String parser,long maxWork,Solver solver) {
+        public Options {Objects.requireNonNull(solver);copyDirectories=List.copyOf(copyDirectories);if(maxWork<1)throw new IllegalArgumentException("positive --max-work required");}
+        public Options(List<Path> copyDirectories,SourceNormalizer.SourceFormat format,Charset charset,Path sourceInventory,String parser,long maxWork){
+            this(copyDirectories,format,charset,sourceInventory,parser,maxWork,Solver.PRECISE);
+        }
+        public static Options defaults(){return new Options(List.of(),SourceNormalizer.SourceFormat.FIXED,Charset.forName("UTF-8"),null,"direct-ast-lab",DEFAULT_MAX_WORK);}
     }
     public Result analyze(Path source,Options options)throws Exception {
         long started=System.nanoTime();var binding=Bindings.cobol();
@@ -50,7 +68,7 @@ public final class DependencyAnalyzer {
             var sourceFacts=SourceDependencySemantics.associate(build,prep.sourceDependencies(),prep.sourceDependencyGaps());
             var notices=new TreeSet<String>();normalization.diagnostics().forEach(d->notices.add("NORMALIZATION: "+d));for(var d:diagnostics)notices.add(d.code()+": "+d.message());notices.addAll(prep.sourceDependencyGaps());
             if(frontend.route().equals("fallback"))notices.add("PARSER_FALLBACK: "+frontend.fallbackReason());
-            var programs=new ArrayList<Program>();
+            var programs=new ArrayList<Program>();var definitionMetrics=new ArrayList<ReachingDefinitionsMetrics>();
             for(var unit:compilation.programUnits()) {
                 mark=System.nanoTime();var table=tables.forProgramUnit(unit.id()).orElseThrow().symbolTable();
                 var declarations=new DependencyDeclarations(unit,compilation,tables,resolution);
@@ -75,13 +93,28 @@ public final class DependencyAnalyzer {
                 if(!queries.isEmpty()) {
                     var topology=ControlTopologySemantics.analyze(unit,table,resolution,report,handles,CobolSemanticProduct.FileInventory.unavailable(),cics);
                     cfg+=System.nanoTime()-mark;mark=System.nanoTime();
-                    var values=DependencyFlow.analyze(unit,declarations,topology,queries,options.maxWork(),cics,conditions.uses(unit.id()));
-                    flow+=System.nanoTime()-mark;work+=values.visits;evaluations+=values.evaluations;reusedEvaluations+=values.reusedEvaluations;instantiationEvaluations+=values.instantiationEvaluations;resolutionWorkItems+=values.resolutionVisits;parametricCalculations+=values.calculations.size();specializedDeclarations+=values.specialized.size();controlSummaries+=values.controlSummary.summaryCount;physicalControlNodes+=values.controlSummary.physicalNodes;physicalControlEdges+=values.controlSummary.physicalEdges;controlObligations+=values.controlSummary.obligations;controlResultColumns+=values.controlSummary.resultColumns;controlWorkItems+=values.controlSummary.visits;controlResultPairs+=values.controlSummary.resultPairs;controlResultFacts+=values.controlSummary.resultFacts;resultDeliveries+=values.resultDeliveries;decisionNodes+=values.decisionNodes;predicateInputs+=values.tests.size();decisionOperations+=values.decisionOperations;liftedOperations+=values.liftedOperations;contexts+=values.contexts.size();tracked+=values.demand.size();materializedTableElements+=values.elements.size();tableDemandPasses+=values.tableDemandPasses;mark=System.nanoTime();notices.addAll(values.diagnostics);
-                    values.answers.forEach((q,v)->v.values().forEach(name->{
-                        if(q.type().equals("file")&&(q.literal().isEmpty()&&name.length()!=8||name.stripTrailing().length()>8||!name.stripTrailing().matches("[A-Z0-9$@#]+")))
-                            notices.add("CICS_FILE_NAME_UNSUPPORTED at "+q.statement().meta().provenance().original().startLine());
-                        else add(deps,q.type(),name,q.statement().meta().provenance().original());
-                    }));
+                    var values=DependencyFlow.analyze(unit,declarations,topology,queries,options.maxWork(),cics,conditions.uses(unit.id()),options.solver());
+                    flow+=System.nanoTime()-mark;
+                    work+=values.visits;evaluations+=values.evaluations;reusedEvaluations+=values.reusedEvaluations;
+                    instantiationEvaluations+=values.instantiationEvaluations;resolutionWorkItems+=values.resolutionVisits;
+                    parametricCalculations+=values.calculations.size();specializedDeclarations+=values.specialized.size();
+                    if(values.controlSummary!=null) {
+                        var summary=values.controlSummary;
+                        controlSummaries+=summary.summaryCount;physicalControlNodes+=summary.physicalNodes;
+                        physicalControlEdges+=summary.physicalEdges;controlObligations+=summary.obligations;
+                        controlResultColumns+=summary.resultColumns;controlWorkItems+=summary.visits;
+                        controlResultPairs+=summary.resultPairs;controlResultFacts+=summary.resultFacts;
+                    } else {
+                        var summary=values.definitionsMetrics;
+                        physicalControlNodes+=summary.physicalNodes();physicalControlEdges+=summary.physicalEdges();
+                        controlObligations+=summary.policies();controlWorkItems+=summary.controlWorkItems();
+                        definitionMetrics.add(summary);
+                    }
+                    resultDeliveries+=values.resultDeliveries;decisionNodes+=values.decisionNodes;predicateInputs+=values.tests.size();
+                    decisionOperations+=values.decisionOperations;liftedOperations+=values.liftedOperations;
+                    contexts+=values.contexts.size();tracked+=values.demand.size();materializedTableElements+=values.elements.size();
+                    tableDemandPasses+=values.tableDemandPasses;mark=System.nanoTime();notices.addAll(values.diagnostics);
+                    DefinitionsPublication.publish(values.answers,(type,name,at)->add(deps,type,name,at),notices);
                 }
                 for(var f:sourceFacts.get(unit.id()).occurrences()) {
                     String type=switch(f.kind()){case COPYBOOK->"copybook";case DCLGEN->"dclgen";case SQL_INCLUDE->"sql-include";case DB2_TABLE->"db2-table";};
@@ -99,7 +132,7 @@ public final class DependencyAnalyzer {
                 programs.add(new Program(unit.id().canonicalProgramName(),List.copyOf(deps.values())));resolve+=System.nanoTime()-mark;
             }
             programs.sort(Comparator.comparing(Program::program));
-            return new Result(List.copyOf(programs),List.copyOf(notices),new Metrics(parse,bind,cfg,flow,resolve,System.nanoTime()-started,work,contexts,tracked,evaluations,reusedEvaluations,instantiationEvaluations,resolutionWorkItems,parametricCalculations,specializedDeclarations,controlSummaries,physicalControlNodes,physicalControlEdges,controlObligations,controlResultColumns,controlWorkItems,controlResultPairs,controlResultFacts,resultDeliveries,decisionNodes,predicateInputs,decisionOperations,liftedOperations,materializedTableElements,tableDemandPasses));
+            return new Result(List.copyOf(programs),List.copyOf(notices),new Metrics(parse,bind,cfg,flow,resolve,System.nanoTime()-started,work,contexts,tracked,evaluations,reusedEvaluations,instantiationEvaluations,resolutionWorkItems,parametricCalculations,specializedDeclarations,controlSummaries,physicalControlNodes,physicalControlEdges,controlObligations,controlResultColumns,controlWorkItems,controlResultPairs,controlResultFacts,resultDeliveries,decisionNodes,predicateInputs,decisionOperations,liftedOperations,materializedTableElements,tableDemandPasses,options.solver().cliName(),List.copyOf(definitionMetrics)));
         }
     }
     private static Ast.Expression operand(Ast.EmbeddedLanguageStatement statement,String option) {

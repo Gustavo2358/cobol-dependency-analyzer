@@ -11,13 +11,14 @@ public final class DependencyMain {
     static int run(String[] args) {
         try {
             Path source=null,output=null,inventory=null,metrics=null;var copies=new ArrayList<Path>();
-            var format=SourceNormalizer.SourceFormat.FIXED;var charset=Charset.forName("UTF-8");String parser="direct-ast-lab";long maxWork=1_000_000;
+            var format=SourceNormalizer.SourceFormat.FIXED;var charset=Charset.forName("UTF-8");String parser="direct-ast-lab";long maxWork=DependencyAnalyzer.DEFAULT_MAX_WORK;var solver=DependencyAnalyzer.Solver.PRECISE;
             for(int i=0;i<args.length;i++) {
-                if(args[i].equals("--help")){System.out.println("java -jar cobol-dependency-analyzer.jar --source FILE_OR_DIR --output dependencies.json [--copy-dir DIR] [--source-format fixed] [--source-inventory FILE] [--charset UTF-8] [--parser direct|antlr] [--max-work N] [--metrics FILE]");return 0;}
+                if(args[i].equals("--help")){System.out.println("java -jar cobol-dependency-analyzer.jar --source FILE_OR_DIR --output dependencies.json [--copy-dir DIR] [--source-format fixed] [--source-inventory FILE] [--charset UTF-8] [--parser direct|antlr] [--solver precise|reaching-definitions] [--max-work N] [--metrics FILE]\n--max-work default: "+DependencyAnalyzer.DEFAULT_MAX_WORK);return 0;}
                 if(i+1==args.length)throw new IllegalArgumentException("Missing value for "+args[i]);String option=args[i++],value=args[i];
                 switch(option) {
                     case "--source"->source=Path.of(value);case "--output"->output=Path.of(value);case "--copy-dir"->copies.add(Path.of(value));
                     case "--source-inventory"->inventory=Path.of(value);case "--metrics"->metrics=Path.of(value);case "--charset"->charset=Charset.forName(value);
+                    case "--solver"->solver=DependencyAnalyzer.Solver.parse(value);
                     case "--max-work"->maxWork=Long.parseLong(value);
                     case "--source-format"->format=switch(value){case "fixed"->SourceNormalizer.SourceFormat.FIXED;default->throw new IllegalArgumentException("Only fixed source format is currently supported");};
                     case "--parser"->parser=switch(value){case "direct"->"direct-ast-lab";case "antlr"->"antlr";default->throw new IllegalArgumentException("Expected direct or antlr");};
@@ -25,7 +26,7 @@ public final class DependencyMain {
                 }
             }
             if(source==null||output==null)throw new IllegalArgumentException("--source and --output are required");
-            var options=new DependencyAnalyzer.Options(copies,format,charset,inventory,parser,maxWork);
+            var options=new DependencyAnalyzer.Options(copies,format,charset,inventory,parser,maxWork,solver);
             var files=new ArrayList<Path>();
             if(Files.isDirectory(source))try(var stream=Files.walk(source)){stream.filter(Files::isRegularFile).filter(p->p.getFileName().toString().toLowerCase(Locale.ROOT).matches(".*\\.(cbl|cob|cobol)")).sorted().forEach(files::add);}else files.add(source);
             if(files.isEmpty())throw new IllegalArgumentException("No COBOL sources");

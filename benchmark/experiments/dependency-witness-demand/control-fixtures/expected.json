@@ -1,0 +1,99 @@
+[
+  {
+    "id": "perform-stop",
+    "programNames": [
+      "GOOD"
+    ]
+  },
+  {
+    "id": "overlapping-ranges",
+    "programNames": [
+      "GOOD"
+    ]
+  },
+  {
+    "id": "ordinary-fallthrough",
+    "programNames": [
+      "GOOD"
+    ]
+  },
+  {
+    "id": "exit-paragraph",
+    "programNames": [
+      "GOOD"
+    ]
+  },
+  {
+    "id": "xctl-default",
+    "programNames": [
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-ignore",
+    "programNames": [
+      "RECOVERY",
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-ignore-reset",
+    "programNames": [
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-handler",
+    "programNames": [
+      "RECOVERY",
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-unreachable-ignore",
+    "programNames": [
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-handler-return",
+    "programNames": [
+      "RECOVERY",
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-abend-handler",
+    "programNames": [
+      "RECOVERY",
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-abend-cancel",
+    "programNames": [
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-abend-reset",
+    "programNames": [
+      "RECOVERY",
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-nohandle",
+    "programNames": [
+      "RECOVERY",
+      "SERVICE"
+    ]
+  },
+  {
+    "id": "xctl-resp",
+    "programNames": [
+      "RECOVERY",
+      "SERVICE"
+    ]
+  }
+]

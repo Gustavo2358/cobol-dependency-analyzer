@@ -1,0 +1,20 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TABLE-REGRESSION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 T.
+       05 P PIC X(8) OCCURS 1000000.
+       01 IDX PIC 9(7).
+       01 FLAG-X PIC 9.
+       PROCEDURE DIVISION.
+       MOVE 'FIRST' TO P(1).
+       MOVE 'SECOND' TO P(1000000).
+       IF FLAG-X = 1
+       MOVE 1 TO IDX
+       ELSE
+       MOVE 1000000 TO IDX
+       END-IF.
+       MOVE 'NEW' TO P(IDX).
+       CALL P(1).
+       CALL P(1000000).
+       GOBACK.

@@ -1,0 +1,1165 @@
+{
+  "implementationCommit": "332abaf",
+  "baselineCommit": "52c1b82dc6accbb615818cf5b5298843a85b0f01",
+  "jarSha256": "6bd96f31911976c097c9fb47377587c11bf3ebe6dc60305190104314bc39b036",
+  "buildManifestSha256": "087033559d4db2c34736e5f31004cdeefcc22c7fa199a16dec102e6613171ed6",
+  "sourceHashes": {
+    "solverSha256": "fb17c3e7ea2b346936f55e79aa4a6a7d80c9bef9aa38ccc55cc9abe57ef0a6ad",
+    "logicalSha256": "5a454e0fb2296ab284879a065c8589f3a90a1cf311231ca20b8fe3425ca0b70a",
+    "publicationSha256": "a2fc73d035df0dc8c66fecf78da1abe5e7c3a349a59f51d8055af809c2fc56fe"
+  },
+  "productionQualified": false,
+  "standalone": {
+    "cases": 36,
+    "completed": 36,
+    "lost": 0,
+    "extra": 30,
+    "changedAt": 32,
+    "resourceFailures": []
+  },
+  "carddemo": {
+    "cases": 73,
+    "completed": 73,
+    "lost": 0,
+    "extra": 11,
+    "changedAt": 0,
+    "resourceFailures": []
+  },
+  "adversarial": {
+    "cases": 25,
+    "completed": 25,
+    "lost": 0,
+    "extra": 4,
+    "changedAt": 0,
+    "resourceFailures": []
+  },
+  "scale": [
+    {
+      "case": "dynamic-32",
+      "mode": "definitions",
+      "seconds": 1.111248192988569,
+      "peakRssKiB": 120308,
+      "sourceSha256": "3136f08f2241bd039075833e49d6c232a0f760102a9b076f1c33ff70bbbfef32",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 1038,
+          "physicalEdges": 1295,
+          "definitionNodes": 195,
+          "definitionEdges": 386,
+          "components": 195,
+          "joinComponents": 195,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 260,
+          "candidateSlots": 258,
+          "tracked": 1,
+          "work": 5638,
+          "bypassedIdentityCells": 1747,
+          "lookupCells": 1942,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-64",
+      "mode": "definitions",
+      "seconds": 1.36501374701038,
+      "peakRssKiB": 129196,
+      "sourceSha256": "49bd4670bb85a376c057305a8f6b860d3bff2513236b2bce13d41f8ead411677",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 2062,
+          "physicalEdges": 2575,
+          "definitionNodes": 387,
+          "definitionEdges": 770,
+          "components": 387,
+          "joinComponents": 387,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 516,
+          "candidateSlots": 514,
+          "tracked": 1,
+          "work": 11206,
+          "bypassedIdentityCells": 3475,
+          "lookupCells": 3862,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-128",
+      "mode": "definitions",
+      "seconds": 1.4647433000209276,
+      "peakRssKiB": 136256,
+      "sourceSha256": "deff523e1b101280578753fd917cc38b6fa4f1e09fb68eac7b4a26afd36fbf31",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 4110,
+          "physicalEdges": 5135,
+          "definitionNodes": 771,
+          "definitionEdges": 1538,
+          "components": 771,
+          "joinComponents": 771,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 1028,
+          "candidateSlots": 1026,
+          "tracked": 1,
+          "work": 22342,
+          "bypassedIdentityCells": 6931,
+          "lookupCells": 7702,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-512",
+      "mode": "definitions",
+      "seconds": 2.7779743740102276,
+      "peakRssKiB": 240648,
+      "sourceSha256": "9cd8e520287f1b37f5c960d49a0a1e7874178267ef57fccdba9e56a104652e3e",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 16398,
+          "physicalEdges": 20495,
+          "definitionNodes": 3075,
+          "definitionEdges": 6146,
+          "components": 3075,
+          "joinComponents": 3075,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 4100,
+          "candidateSlots": 4098,
+          "tracked": 1,
+          "work": 89158,
+          "bypassedIdentityCells": 27667,
+          "lookupCells": 30742,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-2048",
+      "mode": "definitions",
+      "seconds": 7.427315431996249,
+      "peakRssKiB": 600116,
+      "sourceSha256": "d9c6e0c72195b7238c96d39ae21b2a5552dfb037fdec1250f4edacbb44c84893",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 65550,
+          "physicalEdges": 81935,
+          "definitionNodes": 12291,
+          "definitionEdges": 24578,
+          "components": 12291,
+          "joinComponents": 12291,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 16388,
+          "candidateSlots": 16386,
+          "tracked": 1,
+          "work": 356422,
+          "bypassedIdentityCells": 110611,
+          "lookupCells": 122902,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    }
+  ],
+  "dynamicOnly": [
+    {
+      "case": "dynamic-only-8",
+      "mode": "main",
+      "seconds": 1.0614145820145495,
+      "peakRssKiB": 103504,
+      "sourceSha256": "059054356e93b2ac6618c5db7527c1c6b612bcd8cee92dd50f3ddce1416b3817",
+      "heapMiB": 128,
+      "exit": 1,
+      "guard": null,
+      "probe": [],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-only-8",
+      "mode": "definitions",
+      "seconds": 0.9091546830022708,
+      "peakRssKiB": 99364,
+      "sourceSha256": "059054356e93b2ac6618c5db7527c1c6b612bcd8cee92dd50f3ddce1416b3817",
+      "heapMiB": 128,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 270,
+          "physicalEdges": 335,
+          "definitionNodes": 51,
+          "definitionEdges": 98,
+          "components": 51,
+          "joinComponents": 51,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 68,
+          "candidateSlots": 66,
+          "tracked": 1,
+          "work": 1462,
+          "bypassedIdentityCells": 451,
+          "lookupCells": 502,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-only-32",
+      "mode": "main",
+      "seconds": 3.3336470380018,
+      "peakRssKiB": 169732,
+      "sourceSha256": "591ce26b744aae06af39845a0f66eb66426d9e3113384b0989dbd61f1cee66cf",
+      "heapMiB": 128,
+      "exit": 1,
+      "guard": null,
+      "probe": [],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-only-32",
+      "mode": "definitions",
+      "seconds": 1.1113383030169643,
+      "peakRssKiB": 121344,
+      "sourceSha256": "591ce26b744aae06af39845a0f66eb66426d9e3113384b0989dbd61f1cee66cf",
+      "heapMiB": 128,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 1038,
+          "physicalEdges": 1295,
+          "definitionNodes": 195,
+          "definitionEdges": 386,
+          "components": 195,
+          "joinComponents": 195,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 260,
+          "candidateSlots": 258,
+          "tracked": 1,
+          "work": 5638,
+          "bypassedIdentityCells": 1747,
+          "lookupCells": 1942,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-only-128",
+      "mode": "definitions",
+      "seconds": 1.4650797749927733,
+      "peakRssKiB": 138292,
+      "sourceSha256": "0744fcd1e169d1696e25e9c0471a88a9a4584188970a7d7b29a13a8699cb16ac",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 4110,
+          "physicalEdges": 5135,
+          "definitionNodes": 771,
+          "definitionEdges": 1538,
+          "components": 771,
+          "joinComponents": 771,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 1028,
+          "candidateSlots": 1026,
+          "tracked": 1,
+          "work": 22342,
+          "bypassedIdentityCells": 6931,
+          "lookupCells": 7702,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-only-512",
+      "mode": "definitions",
+      "seconds": 2.6261647950159386,
+      "peakRssKiB": 224560,
+      "sourceSha256": "2ccd418e68c098a938f8461d2de2f742f89b7d7aaeb1bc2d1be613bb33181b08",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 16398,
+          "physicalEdges": 20495,
+          "definitionNodes": 3075,
+          "definitionEdges": 6146,
+          "components": 3075,
+          "joinComponents": 3075,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 4100,
+          "candidateSlots": 4098,
+          "tracked": 1,
+          "work": 89158,
+          "bypassedIdentityCells": 27667,
+          "lookupCells": 30742,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-only-2048",
+      "mode": "definitions",
+      "seconds": 7.480587099009426,
+      "peakRssKiB": 558632,
+      "sourceSha256": "bc91258f6ea88282a8753d7a05dc9ebd448e2fe286b534378b2ed527e64b789e",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 65550,
+          "physicalEdges": 81935,
+          "definitionNodes": 12291,
+          "definitionEdges": 24578,
+          "components": 12291,
+          "joinComponents": 12291,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 16388,
+          "candidateSlots": 16386,
+          "tracked": 1,
+          "work": 356422,
+          "bypassedIdentityCells": 110611,
+          "lookupCells": 122902,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    }
+  ],
+  "negativeBound": [
+    {
+      "case": "negative-bound-32",
+      "mode": "definitions",
+      "seconds": 0.8080850869882852,
+      "peakRssKiB": 94912,
+      "sourceSha256": "77a04a129dd324645fb2c4149620f3317617d31714b68c93ab334fda693cd5f3",
+      "heapMiB": 256,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 105,
+          "physicalEdges": 137,
+          "definitionNodes": 2,
+          "definitionEdges": 34,
+          "components": 2,
+          "joinComponents": 2,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 2,
+          "candidateSlots": 1,
+          "tracked": 1,
+          "work": 490,
+          "bypassedIdentityCells": 201,
+          "lookupCells": 203,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "negative-bound-128",
+      "mode": "definitions",
+      "seconds": 0.9596671709732618,
+      "peakRssKiB": 105056,
+      "sourceSha256": "610c0e2c011df32d669ab437569c883828033ce6c074649d8802fedbc2da482b",
+      "heapMiB": 256,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 393,
+          "physicalEdges": 521,
+          "definitionNodes": 2,
+          "definitionEdges": 130,
+          "components": 2,
+          "joinComponents": 2,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 2,
+          "candidateSlots": 1,
+          "tracked": 1,
+          "work": 1834,
+          "bypassedIdentityCells": 777,
+          "lookupCells": 779,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "negative-bound-512",
+      "mode": "definitions",
+      "seconds": 1.2630269050132483,
+      "peakRssKiB": 124560,
+      "sourceSha256": "caa7eea34db21c847cad87b225c8fa0fdcd4c7a6123383bf17e639ec520fb884",
+      "heapMiB": 256,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 1545,
+          "physicalEdges": 2057,
+          "definitionNodes": 2,
+          "definitionEdges": 514,
+          "components": 2,
+          "joinComponents": 2,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 2,
+          "candidateSlots": 1,
+          "tracked": 1,
+          "work": 7210,
+          "bypassedIdentityCells": 3081,
+          "lookupCells": 3083,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "negative-bound-2048",
+      "mode": "definitions",
+      "seconds": 2.020899468974676,
+      "peakRssKiB": 169480,
+      "sourceSha256": "cc111e45126cc6f2a89692bb8e878d76e5e0a7ee58a72e6dd8cb0de4ccbf6328",
+      "heapMiB": 256,
+      "exit": 1,
+      "guard": null,
+      "probe": [
+        {
+          "physicalNodes": 6153,
+          "physicalEdges": 8201,
+          "definitionNodes": 2,
+          "definitionEdges": 2050,
+          "components": 2,
+          "joinComponents": 2,
+          "operations": 0,
+          "evaluations": 0,
+          "propagations": 2,
+          "candidateSlots": 1,
+          "tracked": 1,
+          "work": 28714,
+          "bypassedIdentityCells": 12297,
+          "lookupCells": 12299,
+          "localAddressAlternatives": 0
+        }
+      ],
+      "expectedNamesEqual": true
+    }
+  ],
+  "reusedBaseline": [
+    {
+      "case": "dynamic-32",
+      "mode": "main",
+      "seconds": 3.3333296549972147,
+      "peakRssKiB": 174328,
+      "sourceSha256": "3136f08f2241bd039075833e49d6c232a0f760102a9b076f1c33ff70bbbfef32",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-64",
+      "mode": "main",
+      "seconds": 13.133151899004588,
+      "peakRssKiB": 495672,
+      "sourceSha256": "49bd4670bb85a376c057305a8f6b860d3bff2513236b2bce13d41f8ead411677",
+      "heapMiB": 512,
+      "exit": 1,
+      "guard": null,
+      "probe": [],
+      "expectedNamesEqual": true
+    },
+    {
+      "case": "dynamic-128",
+      "mode": "main",
+      "seconds": 60.008515786990756,
+      "peakRssKiB": 638064,
+      "sourceSha256": "deff523e1b101280578753fd917cc38b6fa4f1e09fb68eac7b4a26afd36fbf31",
+      "heapMiB": 512,
+      "exit": -9,
+      "guard": "TIME_GUARD",
+      "probe": []
+    }
+  ],
+  "fast": {
+    "exit": 0,
+    "guard": null,
+    "seconds": 55.98147621599492,
+    "peakRssKiB": 477860,
+    "suites": 142,
+    "tests": 1093,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "atomic": {
+    "exit": 2,
+    "guard": null,
+    "previousOutputPreserved": true
+  },
+  "differences": [
+    {
+      "case": "precision-caller-correlation",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/fixtures/precision-budget/caller-correlation.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "CALLERCORRELATION",
+          "program",
+          "UNOBS"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "precision-caller-many-12",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/fixtures/precision-budget/caller-many-12.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "MANYCALLERS",
+          "program",
+          "INITIAL"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00011"
+        ]
+      ],
+      "changedAt": [
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00002"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00010"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00009"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00005"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00007"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00001"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00004"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00008"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00006"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00003"
+        ]
+      ]
+    },
+    {
+      "case": "precision-caller-many-24",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/fixtures/precision-budget/caller-many-24.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "MANYCALLERS",
+          "program",
+          "INITIAL"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00023"
+        ]
+      ],
+      "changedAt": [
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00009"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00015"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00017"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00008"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00006"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00003"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00002"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00011"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00022"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00018"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00013"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00010"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00014"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00001"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00016"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00021"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00019"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00012"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00020"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00007"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00004"
+        ],
+        [
+          "MANYCALLERS",
+          "program",
+          "PGM00005"
+        ]
+      ]
+    },
+    {
+      "case": "occurs-sparse-100",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/sparse-100.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-sparse-1000",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/sparse-1000.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-sparse-5000",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/sparse-5000.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-sparse-50000",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/sparse-50000.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-nested-10",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/nested-10.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-nested-50",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/nested-50.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-nested-200",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/nested-200.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-unknown-content",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/unknown-content.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-unknown-write",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/unknown-write.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-unknown-then-known",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/unknown-then-known.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-all-overwritten",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/all-overwritten.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-initialize",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/initialize.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-alias-write",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/alias-write.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OLD"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-alias-weak",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/alias-weak.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-full-text",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/full-text.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "FIRST"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-partial-cell",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/partial-cell.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHEB"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ],
+        [
+          "SPARSE-TABLE",
+          "program",
+          "PROGA001"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-index-through-perform",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/index-through-perform.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "occurs-arithmetic-index",
+      "source": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/src/test/resources/dependency-regression/sparse-occurs/arithmetic-index.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "SPARSE-TABLE",
+          "program",
+          "OTHER"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "fdb6a11aa23211a4",
+      "source": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/app-authorization-ims-db2-mq/cbl/COPAUS0C.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "COPAUS0C",
+          "program",
+          "COPAUS0C"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "270d89141e57ffe5",
+      "source": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COBIL00C.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "COBIL00C",
+          "program",
+          "COBIL00C"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "b7bb370b3171956f",
+      "source": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COBIL00C.cl2",
+      "lost": [],
+      "extra": [
+        [
+          "COBIL00C",
+          "program",
+          "COBIL00C"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "4b5ec43c105bb64f",
+      "source": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COCRDSLC.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "COCRDSLC",
+          "file",
+          "CARDAIX"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "287d36f735ecab42",
+      "source": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COCRDSLC.cl2",
+      "lost": [],
+      "extra": [
+        [
+          "COCRDSLC",
+          "file",
+          "CARDAIX"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "f55d741512b8cc47",
+      "source": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COUSR02C.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "COUSR02C",
+          "program",
+          "COUSR02C"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "5e3ce0f6b5e6b3e7",
+      "source": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR02C.cl2",
+      "lost": [],
+      "extra": [
+        [
+          "COUSR02C",
+          "program",
+          "COUSR02C"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "03c557ca5d9ae101",
+      "source": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COUSR03C.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "COUSR03C",
+          "program",
+          "COUSR03C"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "9401561db503964f",
+      "source": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COUSR03C.cl2",
+      "lost": [],
+      "extra": [
+        [
+          "COUSR03C",
+          "program",
+          "COUSR03C"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "5eb47d950101cbe6",
+      "source": "/home/gustavo/workspace/teste-e2e/storage-semantics-st-w0-w5/runtime/carddemo-upstream/app/cbl/COTRN01C.cbl",
+      "lost": [],
+      "extra": [
+        [
+          "COTRN01C",
+          "program",
+          "COTRN01C"
+        ]
+      ],
+      "changedAt": []
+    },
+    {
+      "case": "90f81d7b685a1abd",
+      "source": "/home/gustavo/workspace/teste-e2e/.carddemo-scanner-discovery-20261003/archive-members/samples/m2/unikix/UniKix_CardDemo_runtime_v1.zip!/migrated_app/cbl/COTRN01C.cl2",
+      "lost": [],
+      "extra": [
+        [
+          "COTRN01C",
+          "program",
+          "COTRN01C"
+        ]
+      ],
+      "changedAt": []
+    }
+  ],
+  "rawEvidence": "/home/gustavo/workspace/teste-e2e/cobol-dependency-analyzer/benchmark/results/reaching-definitions-20261009"
+}

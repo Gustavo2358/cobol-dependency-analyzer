@@ -1,0 +1,110 @@
+[
+  {
+    "id": "one-cell-overwrite",
+    "sha256": "250931a78d258680380aab5cfbefb357fb08cb30c5169368f025b4bad5e1076c",
+    "programNames": [
+      "GOOD"
+    ]
+  },
+  {
+    "id": "one-cell-initialize",
+    "sha256": "64758f2cd833f56a72a57f6ab833141bf74620f75eb684e9460c8eada3f630a1",
+    "programNames": []
+  },
+  {
+    "id": "million-unknown-write",
+    "sha256": "fe4f14fb2998f3a6c779bfa3b36e17db0a64cc30a6413a5140c13886f702625c",
+    "programNames": [
+      "FIRST",
+      "NEW"
+    ]
+  },
+  {
+    "id": "million-initialize-remainder",
+    "sha256": "4966d759f3b57db0722155c2470d014086eab477cc73337fa42b4508ef7eddf3",
+    "programNames": [
+      "GOOD"
+    ]
+  },
+  {
+    "id": "joined-index-read",
+    "sha256": "6d4bfc37d0dc486949c21caab22a4353b49e2823b7b9e7fa2c9ddf281321539a",
+    "programNames": [
+      "FIRST",
+      "SECOND"
+    ]
+  },
+  {
+    "id": "joined-index-write",
+    "sha256": "b6493822135a27675659ac20a9235faac506d0d86430be87d37ebd5a6d360db3",
+    "programNames": [
+      "FIRST",
+      "NEW",
+      "SECOND"
+    ]
+  },
+  {
+    "id": "computed-negative-overwrite",
+    "sha256": "928138f13f51b3a98385cee8f6c0d656984012173e70cca7d93c65a53becaed3",
+    "programNames": [
+      "GOOD"
+    ]
+  },
+  {
+    "id": "unknown-read-after-computed-write",
+    "sha256": "26268dd5cb95edabcdfec4142ae8617a48a1b864c75ed141c35ef795b4707137",
+    "programNames": [
+      "FIRST",
+      "SECOND"
+    ]
+  },
+  {
+    "id": "nested-million",
+    "sha256": "f3fab86610a8b8e7d50ce27e8607a6fbd435fc2790b3af580f8b6a464ead4ae4",
+    "programNames": [
+      "GOOD"
+    ]
+  },
+  {
+    "id": "initialize-then-unknown-write",
+    "sha256": "a4c858942dd69e2cde6ca363d9d17a597863d2b24a1c8278d08e0ad27d7f6a01",
+    "programNames": [
+      "NEW"
+    ]
+  },
+  {
+    "id": "numeric-initialize",
+    "sha256": "56f4d78b3e6b089a42120bc398da5554954cf1f12d8f0f330e2934afc77bf568",
+    "programNames": [
+      "0000"
+    ]
+  },
+  {
+    "id": "alias-index-overwrite",
+    "sha256": "71c9821b231f741ea9dc6d78a0b84f8bb6d335e03b275813cf697bced1aecaf9",
+    "programNames": [
+      "GOOD"
+    ]
+  },
+  {
+    "id": "copied-index-overwrite",
+    "sha256": "75ffb72803f535e7913e92e0fd531a97be3ae00283b0b61ab01376d661d66aeb",
+    "programNames": [
+      "GOOD"
+    ],
+    "mainProgramNames": [
+      "GOOD",
+      "OLD"
+    ],
+    "note": "Source overwrites P(1) through a copied constant index. Frozen main also conservatively retains OLD; after must exclude it. See table-02 raw failing comparison."
+  },
+  {
+    "id": "initialize-equivalent-view",
+    "sha256": "f0a5c32e55d8b998340a165f4eb3c83538f98288781a1a40b1c5c851252f6cde",
+    "programNames": [],
+    "mainProgramNames": [
+      "OLD"
+    ],
+    "note": "INITIALIZE T replaces P(1) and its proven equivalent ALT-P(1). Frozen main retains OLD on the equivalent view; raw initialize-view-01 records the RED comparison."
+  }
+]

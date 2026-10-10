@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. RDCOPYCYCLE.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 A PIC X(8) VALUE 'SEED'.
+       01 B PIC X(8).
+       01 SEL PIC 9.
+       PROCEDURE DIVISION.
+       HUB.
+       MOVE A TO B.
+       MOVE B TO A.
+       CALL B.
+       ACCEPT SEL.
+       IF SEL = 1 GO TO HUB END-IF.
+       GOBACK.

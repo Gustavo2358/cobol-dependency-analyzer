@@ -1,0 +1,11 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. TABLE-REGRESSION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 T.
+       05 P PIC X(8) OCCURS 1.
+       PROCEDURE DIVISION.
+       MOVE 'OLD' TO P(1).
+       MOVE 'GOOD' TO P(1).
+       CALL P(1).
+       GOBACK.
