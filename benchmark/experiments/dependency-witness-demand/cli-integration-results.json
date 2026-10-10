@@ -1,7 +1,7 @@
 {
-  "implementationCommit": "8c78ec5c492bb7958b8635d84cbf1b2373d84ddf",
+  "implementationCommit": "6317b9c8de0e515bee8c752a0cb04655591640e8",
   "baselineCommit": "52c1b82dc6accbb615818cf5b5298843a85b0f01",
-  "finalJarSha256": "87a7eebddb1194302210772c397ed1ff26faf396e533317f803fd6ae71cb1572",
+  "finalJarSha256": "6f5f8e07c30677403faaf02eb6c80475a067f00ed9ca333dde5f73984d0d062b",
   "comparisonJarSha256": "71a04306ccc8058e0c802ba8f3263ebd9393e06e022595d0bef6edb7e8c2aa13",
   "sourceHashes": {
     "src/main/java/com/imd/cobolexplorer/AlternateEntrySemantics.java": "002c04f1cdf39ae7b078057a947904fd35c523bfc43558078fd683e96b85a390",
@@ -127,7 +127,7 @@
     "src/main/java/com/imd/cobolexplorer/SourceMap.java": "5d2e0b7031c624b9b6c48251dcf1d9bb4577cc66460e310b5a04daf6f014b750",
     "src/main/java/com/imd/cobolexplorer/SourceNormalizer.java": "e1345044d837b84d6b430ec22919d1e359fd77a83f311fb2e186ccb035c2d41e",
     "src/main/java/com/imd/cobolexplorer/SourceStorageGeometry.java": "a8eebd2ce968d34b2d21f9d2d501d456db14057688f813f73d72f8079e897473",
-    "src/main/java/com/imd/cobolexplorer/SparseDefinitions.java": "a12f9cd65f18061e023ebec64c18500186fa4900b6f8278aad6cf527d3abf422",
+    "src/main/java/com/imd/cobolexplorer/SparseDefinitions.java": "9c25f55bd5073e19dee2e477adf316c08624c0ebd848b5d8e39677416444a4f7",
     "src/main/java/com/imd/cobolexplorer/SqlCommandSemantics.java": "27443029ba17ed8c8d39b7cbb3c5bd5dd16accbc16cb36b60153dd172bb6a3f8",
     "src/main/java/com/imd/cobolexplorer/SqlCommandSyntax.java": "171cddd39ded6986229380c033c1c3d929e194478daaeced0498648c1ef2734a",
     "src/main/java/com/imd/cobolexplorer/SqlDeclarationSyntax.java": "239d1d69a90a8a4f6d419c365b49c3d086b6a2bd5ca1b5d60433cfe6b7b31fb1",
@@ -186,8 +186,8 @@
     "n": 2048,
     "names": 2049,
     "heapMiB": 512,
-    "seconds": 7.931710831995588,
-    "peakRssMiB": 561.6015625,
+    "seconds": 8.18323157998384,
+    "peakRssMiB": 559.64453125,
     "metrics": [
       {
         "physicalNodes": 65550,
@@ -252,5 +252,27 @@
     "timeoutSeconds": 60,
     "maxWork": 100000000
   },
-  "qualification": "CLI integration validated; reaching definitions remains approximate/PARTIAL; precise retains a confirmed pre-existing heap128 failure"
+  "qualification": "CLI integration validated; reaching definitions remains approximate/PARTIAL; precise retains a confirmed pre-existing heap128 failure",
+  "initialIntegrationCommit": "8c78ec5c492bb7958b8635d84cbf1b2373d84ddf",
+  "qualifiedJarBeforeCounterCleanupSha256": "87a7eebddb1194302210772c397ed1ff26faf396e533317f803fd6ae71cb1572",
+  "finalCounterCleanup": {
+    "commit": "6317b9c8de0e515bee8c752a0cb04655591640e8",
+    "jarSha256": "6f5f8e07c30677403faaf02eb6c80475a067f00ed9ca333dde5f73984d0d062b",
+    "counterRemovalEquivalent": true,
+    "removedCounters": [
+      "constantWrites",
+      "openingWrites"
+    ],
+    "focusedTests": 60,
+    "focusedFailures": 0,
+    "scale": {
+      "n": 2048,
+      "names": 2049,
+      "heapMiB": 512,
+      "seconds": 8.18323157998384,
+      "peakRssMiB": 559.64453125,
+      "identicalJsonAndMetricsToPreviousFinal": true
+    },
+    "reuse": "The only source change after final FAST/CLI checks removes two unread long fields and their increments. Exact source substitution proof; all other source hashes identical. FAST/corpus/table/control/adversarial/atomicity evidence reused; focused CLI tests and N2048 newly rerun."
+  }
 }
