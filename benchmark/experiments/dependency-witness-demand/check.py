@@ -30,6 +30,6 @@ def main():
    before=original['probe'][0];after=changed['probe'][0]
    if after['definitionNodes']>before['definitionNodes']+1:failures.append([name,'identity nodes were materialized'])
   report.append(summary)
- print(json.dumps(dict(reports=report,failures=failures,qualification='research only; all approximations remain PARTIAL'),indent=2))
+ print(json.dumps(dict(reports=report,failures=failures,qualification='packaged CLI validation; reaching definitions remains PARTIAL'),indent=2))
  return bool(failures)
 if __name__=='__main__':raise SystemExit(main())

@@ -523,12 +523,15 @@ final class DependencyFlow {
      * after a new cell makes all projections and memo keys use one fixed schema;
      * no answer from an incomplete footprint is published. */
     static DependencyFlow analyze(CompilationUnitModel.ProgramUnit unit,DependencyDeclarations declarations,
-            ControlTopology control,List<Query> queries,long maxWork,CicsProgramControlAnalyzer.Contribution cics,Map<Integer,ConditionNameSemantics.Use> conditions) {
+            ControlTopology control,List<Query> queries,long maxWork,CicsProgramControlAnalyzer.Contribution cics,
+            Map<Integer,ConditionNameSemantics.Use> conditions,DependencyAnalyzer.Solver solver) {
+        if(solver==DependencyAnalyzer.Solver.REACHING_DEFINITIONS)
+            return new DependencyFlow(unit,declarations,control,queries,maxWork,cics,conditions,new LinkedHashSet<>(),solver);
         var cells=new LinkedHashSet<Element>();
         long work=0,evaluations=0,reused=0,instantiated=0,resolved=0,delivered=0,decisions=0,operations=0,lifted=0,controlWork=0,controlPairs=0,controlFacts=0;
         int passes=0;
         while(true) {
-            var flow=new DependencyFlow(unit,declarations,control,queries,maxWork,cics,conditions,cells);passes++;
+            var flow=new DependencyFlow(unit,declarations,control,queries,maxWork,cics,conditions,cells,solver);passes++;
             work+=flow.visits;evaluations+=flow.evaluations;reused+=flow.reusedEvaluations;instantiated+=flow.instantiationEvaluations;
             resolved+=flow.resolutionVisits;delivered+=flow.resultDeliveries;decisions+=flow.decisionNodes;operations+=flow.decisionOperations;lifted+=flow.liftedOperations;controlWork+=flow.controlSummary.visits;controlPairs+=flow.controlSummary.resultPairs;controlFacts+=flow.controlSummary.resultFacts;
             if(work>maxWork)throw new IllegalStateException("RESOURCE_LIMIT: table demand closure exceeded --max-work="+maxWork);
@@ -538,7 +541,7 @@ final class DependencyFlow {
         }
     }
     private DependencyFlow(CompilationUnitModel.ProgramUnit unit,DependencyDeclarations declarations,
-            ControlTopology control,List<Query> queries,long maxWork,CicsProgramControlAnalyzer.Contribution cics,Map<Integer,ConditionNameSemantics.Use> conditions,Set<Element> requestedElements) {
+            ControlTopology control,List<Query> queries,long maxWork,CicsProgramControlAnalyzer.Contribution cics,Map<Integer,ConditionNameSemantics.Use> conditions,Set<Element> requestedElements,DependencyAnalyzer.Solver solver) {
         this.declarations=declarations;this.queries=queries;this.maxWork=maxWork;this.requestedElements=requestedElements;
         predicates=new ScalarPredicateSemantics(conditions,declarations.references.keySet());
         var todo=new ArrayDeque<Ast.Node>();todo.add(unit.program());
@@ -585,6 +588,11 @@ final class DependencyFlow {
             String endpoint="boundary:"+r.id();roots.add(new Point(Exit.of(r.entry()),endpoint));
             for(var entry:control.entryPoints())roots.add(new Point(Exit.of(entry.target()),endpoint));
         });
+        if(solver==DependencyAnalyzer.Solver.REACHING_DEFINITIONS) {
+            controlSummary=null;relevance=null;
+            SparseDefinitions.solve(this,roots);
+            return;
+        }
         var observations=new HashSet<String>();queries.forEach(q->observations.add(handle(q.statement())));
         controlSummary=new DependencyControl(roots,this::controlEffect,this::controlDelivery,p->{
             var statement=statements.get(p.reference());
@@ -634,26 +642,7 @@ final class DependencyFlow {
             if(entry.kind()==TargetKind.OCCURRENCE)paragraphEntries.add(entry.reference());
         }
         possibilities.values().forEach(ps->ps.forEach(p->prerequisites.addAll(p.prerequisites())));
-        nextElementId=declarations.entries.keySet().stream().mapToInt(Integer::intValue).max().orElse(0)+1;
-        for(int id:new ArrayList<>(demand))if(declarations.repeated.contains(id)&&declarations.children.getOrDefault(id,List.of()).isEmpty()) {
-            var dimensions=new ArrayList<Integer>();Integer ancestor=id;
-            while(ancestor!=null) {if(declarations.entries.get(ancestor).clauses().stream().anyMatch(Ast.OccursClause.class::isInstance))dimensions.add(0,declarations.counts.getOrDefault(ancestor,0));ancestor=declarations.parent.get(ancestor);}
-            int remainder=nextElementId++;tables.put(id,new Table(dimensions,remainder));
-            tableValueIds.put(id,new ArrayList<>(List.of(remainder)));demand.add(remainder);
-        }
-        // Literal indexes need no discovery pass. All other indexes are learned
-        // by ordinary transfer/read operations, including caller substitution.
-        var unknownInput=new State(Map.of(),Map.of(),Set.of());
-        for(var expression:expressions.values())if(expression instanceof Ast.DataReference reference&&!reference.subscriptGroups().isEmpty()) {
-            Integer id=declarations.references.get(reference.meta().id());if(id==null)continue;
-            var indexes=reference.subscriptGroups().stream().flatMap(g->g.subscripts().stream()).map(e->integer(e,unknownInput)).toList();
-            requestElement(id,indexes);
-        }
-        for(var cell:requestedElements)if(tables.containsKey(cell.declaration())) {
-            if(elements.size()>=maxWork)throw new IllegalStateException("RESOURCE_LIMIT: demanded logical table elements");
-            int slot=nextElementId++;elements.put(cell,slot);tableValueIds.get(cell.declaration()).add(slot);demand.add(slot);
-        }
-        tableDemandExpanded=false;
+        allocateDemandedTables();
         var cyclic=controlSummary.cyclicNodes();
         for(var statement:statements.values()) {
             if(cyclic.contains(handle(statement))) {
@@ -705,6 +694,44 @@ final class DependencyFlow {
         }
         for(var q:queries)if(answers.containsKey(q)&&answers.get(q).unknown())diagnostics.add("DYNAMIC_REMAINDER at "+q.statement().meta().provenance().original().file()+":"+q.statement().meta().provenance().original().startLine());
     }
+    DependencyAnalyzer.ReachingDefinitionsMetrics definitionsMetrics;
+    void allocateDemandedTables(){
+        if(tables.isEmpty())nextElementId=declarations.entries.keySet().stream().mapToInt(Integer::intValue).max().orElse(0)+1;
+        for(int id:new ArrayList<>(demand))if(!tables.containsKey(id)&&declarations.repeated.contains(id)&&declarations.children.getOrDefault(id,List.of()).isEmpty()) {
+            var dimensions=new ArrayList<Integer>();Integer ancestor=id;
+            while(ancestor!=null) {if(declarations.entries.get(ancestor).clauses().stream().anyMatch(Ast.OccursClause.class::isInstance))dimensions.add(0,declarations.counts.getOrDefault(ancestor,0));ancestor=declarations.parent.get(ancestor);}
+            int remainder=nextElementId++;tables.put(id,new Table(dimensions,remainder));
+            tableValueIds.put(id,new ArrayList<>(List.of(remainder)));demand.add(remainder);
+        }
+        // Literal indexes need no discovery pass. All other indexes are learned
+        // by ordinary transfer/read operations, including caller substitution.
+        var unknownInput=new State(Map.of(),Map.of(),Set.of());
+        for(var expression:expressions.values())if(expression instanceof Ast.DataReference reference&&!reference.subscriptGroups().isEmpty()) {
+            Integer id=declarations.references.get(reference.meta().id());if(id==null)continue;
+            var indexes=reference.subscriptGroups().stream().flatMap(g->g.subscripts().stream()).map(e->integer(e,unknownInput)).toList();
+            requestElement(id,indexes);
+        }
+        for(var cell:requestedElements)if(tables.containsKey(cell.declaration())&&!elements.containsKey(cell)) {
+            if(elements.size()>=maxWork)throw new IllegalStateException("RESOURCE_LIMIT: demanded logical table elements");
+            int slot=nextElementId++;elements.put(cell,slot);tableValueIds.get(cell.declaration()).add(slot);demand.add(slot);
+        }
+        tableDemandExpanded=false;
+        writeSupports.clear();accessEffects.clear();
+    }
+    State definitionInitial(){return initial();}
+    State definitionTransfer(Ast.Statement statement,State input){return transfer(statement,input);}
+    WriteSupport definitionSupport(Ast.Statement statement){return writeSupport(statement);}
+    Set<Integer> definitionWrites(Ast.Statement statement){return writes(statement);}
+    Set<Integer> definitionKills(Ast.Statement statement){
+        var result=new HashSet<Integer>();
+        for(var input:localEffect(new Exit(TargetKind.OCCURRENCE,handle(statement))).kills())
+            if(input instanceof Value value)result.add(value.declaration());
+        return result;
+    }
+    DependencyControl.Rule definitionEffect(Exit exit){return controlEffect(exit,false);}
+    DependencyControl.Effect definitionDelivery(DependencyControl.Call call,Exit exit){return controlDelivery(call,exit);}
+    DependencyControl.Call definitionCall(Binding binding){return new DependencyControl.Call(new Point(Exit.of(regions.get(binding.region()).entry()),binding.endpoint(),escapeScope(binding)),binding.id());}
+
     static String handle(Ast.Statement s){return "statement:"+s.meta().id();}
     private State initial() {
         var out=new HashMap<Integer,DependencyValues>();demand.stream().filter(id->!textGroups.contains(id)).forEach(id->out.put(id,DependencyValues.UNKNOWN));
@@ -1183,8 +1210,13 @@ final class DependencyFlow {
         var value=width>0?DependencyValues.known(declarations.numeric.contains(id)?"0".repeat(width):" ".repeat(width)):DependencyValues.UNKNOWN;
         state=write(id,value,state,false);
         if(tableValueIds.containsKey(id)) {
-            var initialized=new DependencyEnvironment.Builder<>(state.values());initialized.put(id,value);
-            for(int slot:tableValueIds.get(id))initialized.put(slot,value);state=state.withValues(initialized);
+            var initialized=new DependencyEnvironment.Builder<>(state.values());
+            // A full-table reset replaces every proven equivalent logical view.
+            for(int alias:declarations.equivalents.getOrDefault(id,Set.of(id))) {
+                initialized.put(alias,fitField(alias,value));
+                for(int slot:tableValueIds.getOrDefault(alias,List.of()))initialized.put(slot,fitField(alias,value));
+            }
+            state=state.withValues(initialized);
         }return state;
     }
     private void enqueue(int context,String node,State state) {
@@ -1211,7 +1243,10 @@ final class DependencyFlow {
     }
     /** Physical transfers preserve the caller obligation. Only real invocation
      * edges install a fixed callee obligation; boundary rules partition them. */
-    private DependencyControl.Rule controlEffect(Exit position) {
+    private DependencyControl.Rule controlEffect(Exit position){return controlEffect(position,true);}
+    // RD activates handler routes with its forward handler lattice; precise uses
+    // its parametric control effects. Both reuse the same structural rules.
+    private DependencyControl.Rule controlEffect(Exit position,boolean eventsEnabled) {
         var exit=normalize(position);
         if(!exit.equals(position))return DependencyControl.Rule.flow(DependencyControl.Effect.next(exit));
         var next=new ArrayList<Exit>();var calls=new ArrayList<DependencyControl.Call>();var entries=new ArrayList<Point>();
@@ -1247,11 +1282,11 @@ final class DependencyFlow {
                         var region=regions.get("region:"+node+"/file/handler-"+handler.kind());if(region!=null)next.add(Exit.of(region.entry()));
                     }});
                     for(var binding:ioDeclarations.getOrDefault(node,List.of()))next.add(controlPhase(binding,binding.entryPhase()));
-                    for(var event:events.getOrDefault(node,List.of()))if(event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
+                    for(var event:events.getOrDefault(node,List.of()))if(eventsEnabled&&event.eligibility()==EventEligibility.HANDLER_ELIGIBLE) {
                         next.add(Exit.of(event.continuation()));
                         for(var registrations:registrations.values())for(var registration:registrations)for(var target:registration.target())next.add(Exit.of(target));
                     }
-                    if(exceptionalEvents.getOrDefault(node,List.of()).stream().anyMatch(e->e.eligibility()==EventEligibility.HANDLER_ELIGIBLE))
+                    if(eventsEnabled&&exceptionalEvents.getOrDefault(node,List.of()).stream().anyMatch(e->e.eligibility()==EventEligibility.HANDLER_ELIGIBLE))
                         handlerEndpoints.forEach((handler,endpoint)->entries.add(new Point(new Exit(TargetKind.OCCURRENCE,handler),endpoint)));
                 }
             }

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Sequential bounded A/B: frozen main versus sparse reaching definitions."""
-import argparse,hashlib,importlib.util,json,os,time
+import argparse,hashlib,importlib.util,json,os
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[3]
 def load(path,name):
@@ -9,7 +9,7 @@ def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def deps(doc):
  return {(p['program'],d['type'],d['name']):(d['at']['file'],d['at']['line']) for p in (doc if isinstance(doc,list) else [doc]) for d in p['dependencies']}
 def main():
- p=argparse.ArgumentParser();p.add_argument('output',type=Path);p.add_argument('--jar',type=Path,required=True);p.add_argument('--build',type=Path,required=True);p.add_argument('--sizes',type=int,nargs='*',default=[]);p.add_argument('--modes',nargs='+',choices=['main','definitions'],default=['definitions']);p.add_argument('--family',choices=['dynamic','dynamic-only','negative-bound'],default='dynamic');p.add_argument('--focused',action='store_true');p.add_argument('--carddemo',action='store_true');p.add_argument('--repeats',type=int,default=1);p.add_argument('--heap',type=int,default=512);p.add_argument('--only',nargs='+');p.add_argument('--timeout',type=int,default=60);a=p.parse_args();a.output=a.output.resolve();a.output.mkdir(parents=True,exist_ok=False);inputs=a.output/'inputs';inputs.mkdir();(a.output/'run.py').write_bytes(Path(__file__).read_bytes());a.jar=a.jar.resolve();a.build=a.build.resolve()
+ p=argparse.ArgumentParser();p.add_argument('output',type=Path);p.add_argument('--jar',type=Path,required=True);p.add_argument('--sizes',type=int,nargs='*',default=[]);p.add_argument('--modes',nargs='+',choices=['main','definitions'],default=['definitions']);p.add_argument('--family',choices=['dynamic','dynamic-only','negative-bound'],default='dynamic');p.add_argument('--focused',action='store_true');p.add_argument('--carddemo',action='store_true');p.add_argument('--repeats',type=int,default=1);p.add_argument('--heap',type=int,default=512);p.add_argument('--only',nargs='+');p.add_argument('--timeout',type=int,default=60);a=p.parse_args();a.output=a.output.resolve();a.output.mkdir(parents=True,exist_ok=False);inputs=a.output/'inputs';inputs.mkdir();(a.output/'run.py').write_bytes(Path(__file__).read_bytes());a.jar=a.jar.resolve()
  runner=load(ROOT/'benchmark/run-sparse-occurs.py','bounded');gen=load(ROOT/'benchmark/generate-hub-dispatch.py','hub');baseline=ROOT/'benchmark/results/remote-requalification-20261009';cases=[]
  for n in a.sizes:
   if a.family!='negative-bound':
@@ -54,14 +54,13 @@ def main():
    for repeat in range(a.repeats):
     dest=a.output/case/mode/str(repeat+1);out=dest/'dependencies.json'
     cmd=[java,'-Xms16m',f'-Xmx{a.heap}m','-XX:MaxMetaspaceSize=128m','-XX:MaxDirectMemorySize=32m','-XX:ActiveProcessorCount=2','-XX:+UseSerialGC','-XX:+ExitOnOutOfMemoryError']
-    if mode=='main':cmd+=['-jar',str(a.jar)]
-    else:cmd+=['-cp',str(a.build/'classes')+os.pathsep+str(a.jar),'com.imd.cobolexplorer.DependencyMain']
+    cmd+=['-jar',str(a.jar),'--solver','precise' if mode=='main' else 'reaching-definitions']
     cmd+=['--source',str(source),'--output',str(out),'--metrics',str(dest/'metrics.jsonl'),'--max-work','100000000',*extra]
     r=runner.execute(cmd,dest,timeout=a.timeout,rss_mib=768,telemetry_period=1,min_available_mib=2048)
     r.update(case=case,mode=mode,repeat=repeat+1,source=str(source),sourceSha256=sha(source),heapMiB=a.heap)
     stderr=(dest/'stderr.log').read_text();r['unsupported']='UNSUPPORTED_EXPERIMENT:' in stderr;r['completed']=r['exit'] in (0,1) and r['guard'] is None and out.exists();r['document']=json.loads(out.read_text()) if out.exists() else None
-    r['probe']=[json.loads(l.removeprefix('DEFINITIONS ')) for l in stderr.splitlines() if l.startswith('DEFINITIONS ')]
-    r['controlProbe']=[json.loads(l.removeprefix('DEFINITIONS_CONTROL ')) for l in stderr.splitlines() if l.startswith('DEFINITIONS_CONTROL ')]
+    r['probe']=[d for line in (dest/'metrics.jsonl').read_text().splitlines() for d in json.loads(line).get('metrics',{}).get('reachingDefinitions',[])] if (dest/'metrics.jsonl').exists() else []
+    r['controlProbe']=r['probe']
     if mode=='main' and r['completed'] and reference is None:reference=r['document']
     if r['completed']:
      actual=deps(r['document']);r['programNames']=sorted({k[2] for k in actual if k[1]=='program'})
@@ -74,5 +73,5 @@ def main():
    if r['guard'] in ('SYSTEM_MEMORY_GUARD','RSS_GUARD'):break
   if r['guard'] in ('SYSTEM_MEMORY_GUARD','RSS_GUARD'):break
  assert all(sha(Path(k))==v for k,v in hashes.items())
- (a.output/'manifest.json').write_text(json.dumps(dict(baseJarSha256=sha(a.jar),buildManifestSha256=sha(a.build/'manifest.json'),selectedCases=[c[0] for c in cases],inputHashes=hashes,heapMiB=a.heap,rssMiB=768,reserveMiB=2048,productionQualified=False),indent=2)+'\n')
+ (a.output/'manifest.json').write_text(json.dumps(dict(baseJarSha256=sha(a.jar),selectedCases=[c[0] for c in cases],inputHashes=hashes,heapMiB=a.heap,rssMiB=768,reserveMiB=2048,productionQualified=False),indent=2)+'\n')
 if __name__=='__main__':main()

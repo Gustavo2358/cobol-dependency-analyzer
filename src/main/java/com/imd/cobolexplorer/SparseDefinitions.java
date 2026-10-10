@@ -5,7 +5,7 @@ import static com.imd.cobolexplorer.DependencyFlow.*;
 import static com.imd.cobolexplorer.semanticproduct.ControlTopology.*;
 import static com.imd.cobolexplorer.DependencyRelevance.Point;
 
-/** Investigation only: sparse definition edges, without invocation states.
+/** Sparse reaching definitions: sparse definition edges, without invocation states.
  * Full writes cut a definition chain; joins retain alternative definitions.
  * Physical control respects may-reachable boundary and handler policies.
  * Identity control chains are bypassed during lookup; SCCs collapse union nodes
@@ -69,14 +69,13 @@ final class SparseDefinitions {
         while(!todo.isEmpty()){var next=todo.remove();if(next instanceof Ast.DataReference r){Integer id=flow.declarations.references.get(r.meta().id());if(id!=null&&!flow.declarations.children.getOrDefault(id,List.of()).isEmpty()&&!Collections.disjoint(flow.declarations.leaves(id),flow.demand))flow.textGroups.add(id);}todo.addAll(DependencyDeclarations.valueChildren(next));}
     }
     SparseDefinitions(DependencyFlow flow){this.flow=flow;this.logical=new DefinitionValues(flow);control=new DefinitionControl(flow,this::tick);positionIds=control.positionIds;positions=control.positions;}
-    void tick(){if(++steps>flow.maxWork)throw new IllegalStateException("RESOURCE_LIMIT: value-definition experiment --max-work="+flow.maxWork);}
-    void stage(String name){System.err.printf("DEFINITIONS_STAGE %s positions=%d definitions=%d components=%d tracked=%d usedHeapMiB=%d%n",name,positions.size(),definitions.size(),components.size(),flow.demand.size(),(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576);}
+    void tick(){if(++steps>flow.maxWork)throw new IllegalStateException("RESOURCE_LIMIT: reaching definitions --max-work="+flow.maxWork);}
     static void solve(DependencyFlow flow,List<Point> roots){new SparseDefinitions(flow).solve(roots);}
     void solve(List<Point> roots){
         control.solve(roots);physicalEdges=control.edges;
-        stage("physical");
+        
         // Demand only value operands. Predicate operands do not need value
-        // states because this experiment admits all published branch outcomes.
+        // states because this solver admits all published branch outcomes.
         var pending=new ArrayDeque<Integer>();
         for(var query:flow.queries)if(positionIds.containsKey(new Exit(TargetKind.OCCURRENCE,handle(query.statement()))))
             for(int id:flow.declarations.reads(query.expression()))if(flow.demand.add(id))pending.add(id);
@@ -98,35 +97,37 @@ final class SparseDefinitions {
         int tableRounds=0;
         do {
             tick();tableRounds++;
-            flow.definitionTables();
+            flow.allocateDemandedTables();
             solveValues();
             // Learning an exact index refines storage, not execution contexts.
             // Only value equations are rebuilt; physical control stays shared.
             if(flow.tableDemandExpanded){flow.answers.clear();flow.diagnostics.removeIf(d->d.startsWith("DYNAMIC_REMAINDER at "));}
         }while(flow.tableDemandExpanded);
         flow.tableDemandPasses=tableRounds;
-        System.err.printf("DEFINITIONS_TABLES {\"tables\":%d,\"cells\":%d,\"remainders\":%d,\"rounds\":%d}%n",flow.tables.size(),flow.elements.size(),flow.tables.size(),tableRounds);
         flow.visits=steps;flow.evaluations=evaluations;
-        flow.diagnostics.add("EXPERIMENT_APPROXIMATION: value-definition graph ignores predicate/caller/value correlations and shares may-control return edges");
+        flow.diagnostics.add("REACHING_DEFINITIONS_APPROXIMATION: conditions and caller/value correlations are conservatively ignored; dependencies may include false positives");
         var distinct=Collections.newSetFromMap(new IdentityHashMap<DependencyValues,Boolean>());
         for(var c:components)distinct.add(c.value);
         candidateSlots=distinct.stream().mapToLong(v->v.values().size()).sum();
-        System.err.printf("DEFINITIONS_PRUNING constantWrites=%d openingWrites=%d independentTransfers=%d%n",constantWrites,openingWrites,independent.size());
-        System.err.printf("DEFINITIONS {\"physicalNodes\":%d,\"physicalEdges\":%d,\"definitionNodes\":%d,\"definitionEdges\":%d,\"components\":%d,\"joinComponents\":%d,\"operations\":%d,\"evaluations\":%d,\"propagations\":%d,\"candidateSlots\":%d,\"tracked\":%d,\"work\":%d,\"bypassedIdentityCells\":%d,\"lookupCells\":%d,\"localAddressAlternatives\":%d}%n",positions.size(),physicalEdges,definitions.size(),definitionEdges,components.size(),joinComponents,operations.size(),evaluations,propagations,candidateSlots,flow.demand.size(),steps,bypassed,aliases.size(),logical.combinations);
+        flow.definitionsMetrics=new DependencyAnalyzer.ReachingDefinitionsMetrics(
+            positions.size(),physicalEdges,control.policyCount,control.visits,control.deliveries,
+            definitions.size(),definitionEdges,components.size(),joinComponents,operations.size(),
+            evaluations,propagations,candidateSlots,steps,bypassed,aliases.size(),logical.combinations,
+            flow.tables.size(),flow.elements.size(),tableRounds);
     }
     void solveValues(){
         readCache.clear();supports.clear();independent.clear();
         definitionIds.clear();definitions.clear();discovery.clear();operations.clear();aliases.clear();components.clear();joinComponents=0;definitionEdges=0;
         initial=flow.definitionInitial();
-        stage("demand");
+        
         // Whole-group candidates remain one logical channel. Child fields are
         // also available for partial writes, with demand-created table positions.
         for(var q:flow.queries) {
             Integer pos=positionIds.get(new Exit(TargetKind.OCCURRENCE,handle(q.statement())));if(pos==null)continue;
             for(int id:reads(q.expression()))before(id,pos);
         }
-        while(!discovery.isEmpty()){expand(discovery.remove());if(definitions.size()/100000>reportedDefinitions){reportedDefinitions=definitions.size()/100000;stage("discovering");}}
-        stage("definitions");condense();stage("components");propagate();stage("fixed-point");
+        while(!discovery.isEmpty()){expand(discovery.remove());}
+        condense();propagate();
         for(var q:flow.queries) {
             Integer pos=positionIds.get(new Exit(TargetKind.OCCURRENCE,handle(q.statement())));if(pos==null)continue;
             var values=new HashMap<Integer,DependencyValues>();
@@ -136,7 +137,6 @@ final class SparseDefinitions {
         }
     }
     int node(Cell cell){Integer old=definitionIds.get(cell);if(old!=null)return old;tick();int id=definitions.size();definitions.add(new Definition(cell));definitionIds.put(cell,id);discovery.add(id);return id;}
-    int reportedDefinitions,reportedWide;
     final Map<Cell,Integer> aliases=new HashMap<>();
     final IdentityHashMap<Ast.Statement,WriteSupport> supports=new IdentityHashMap<>();
     long bypassed;
@@ -209,7 +209,6 @@ final class SparseDefinitions {
         var operation=operations.computeIfAbsent(new OperationKey(cell.position(),Set.copyOf(operands)),key->{
             var op=new Operation(statement);
             for(int read:key.reads())op.inputs.put(read,before(read,key.position()));
-            if(op.inputs.size()>64&&reportedWide++<10)System.err.printf("DEFINITIONS_WIDE line=%d kind=%s inputs=%d changed=%d%n",statement.meta().provenance().original().startLine(),statement.getClass().getSimpleName(),op.inputs.size(),support(statement).changed().size());
             return op;
         });
         definition.operation=operation;

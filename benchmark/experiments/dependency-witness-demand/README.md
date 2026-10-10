@@ -74,85 +74,68 @@ Generic STRING/arithmetic/external effects retain the product's existing known
 candidates and unknown remainder; this does not add new string-construction
 semantics that the baseline frontend/evaluator does not provide.
 
-## Isolation and validation
+## CLI integration and validation
 
-`build.py` generates an ignored research overlay from the pinned main sources and
-JAR. It exposes the existing local evaluator and bypasses the production control,
-context solvers. Sparse table allocation and local transfer are reused; table
-demand closure runs over the experimental value equations. Empty control/relevance adapters only satisfy
-the unchanged CLI metric shape. They do no graph analysis. Production `src/`, POM
-and scripts are unchanged; this is an opt-in experiment for review, not a
-replacement of the default production solver.
-
-The sparse graph reuses ideas/local evaluator integration from the separate
-`experiment/value-origin-graph` branch; that branch remains untouched. This
-experiment additionally bypasses identity chains, requires physical boundaries
-for returns, supports joined substring addresses, and removes the restricted
-witness-search algorithm rather than maintaining it beside the new one.
+Both algorithms now ship in the normal product JAR. The frontend, nominal binding,
+logical evaluator and sparse table allocation are shared. `--solver` chooses the
+analysis algorithm once per invocation; no automatic fallback or per-query
+selection exists. `precise` remains the default. The old source overlay and
+`build.py` were removed: there are no shadow classes or separate research compiler.
+The implementations live under `src/main/java/com/imd/cobolexplorer/`.
 
 ## Run the alternative on a source file
 
-This branch keeps the product source identical to the pinned main. Build its
-normal JAR, then compile the experimental classes against it. Python 3, Maven,
-Git history containing the pinned commit and a JDK selected by JAVA_HOME are
-required. The build directory must be new; the builder does not overwrite one.
+Use the same JAR as the default analyzer:
 
 ```sh
-export JAVA_HOME=/path/to/jdk21
-mvn -DskipTests package
-rd_build=$(mktemp -d)/build
-python3 benchmark/experiments/dependency-witness-demand/build.py "$rd_build" \
-  --jar target/cobol-dependency-analyzer.jar
-java -Xmx512m -cp "$rd_build/classes:target/cobol-dependency-analyzer.jar" \
-  com.imd.cobolexplorer.DependencyMain \
+java -Xmx512m -jar target/cobol-dependency-analyzer.jar \
+  --solver reaching-definitions \
   --source programa.cbl --copy-dir copybooks --output dependencies.json \
-  --max-work 100000000
+  --max-work 100000000 --metrics metrics.jsonl
 ```
 
-The experimental classes must precede the JAR on the classpath. The usual
-`java -jar` command continues to execute the main solver. The alternative shares
-physical flow and definitions, relaxing predicate/caller-value correlations;
-it can report additional candidate names and earlier provenance. Exit 1 with
-output is expected PARTIAL and must not be mistaken for a fully precise result.
-The qualification has no lost baseline dependencies, which is empirical
-evidence rather than a guarantee for every COBOL source. The corporate source
-itself has not been tested. Existing resource-limit and atomic-output behavior
-still apply. No automatic retry or solver selection is introduced.
+For the original algorithm use `--solver precise`, or omit `--solver`. Building
+with `mvn -DskipTests package` is the normal application build; users of an already
+built JAR need no Python, Git history, Java compiler or special classpath.
 
-For a self-contained smoke comparison after building, run the committed
-fixtures with the same JAR and the existing bounded runner:
+Reaching definitions shares physical flow and definitions, relaxing
+predicate/caller-value correlations. It can report extra names and earlier
+provenance. Exit 1 with output and `REACHING_DEFINITIONS_APPROXIMATION` is expected
+PARTIAL, even if a particular result matches precise. Invalid solver names, missing
+values and exhausted resources return 2 and preserve the previous dependency
+output. There is no automatic retry. Solver choice and graph/work counters are
+published only in the `--metrics` sidecar; dependency JSON stays unchanged.
+
+For a comparison using the committed fixtures:
 
 ```sh
 python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/rd-smoke \
-  --build "$rd_build" --jar target/cobol-dependency-analyzer.jar \
-  --modes main definitions --heap 128
+  --jar target/cobol-dependency-analyzer.jar --modes main definitions --heap 128
 python3 benchmark/experiments/dependency-witness-demand/check.py /tmp/rd-smoke
 ```
 
-The frozen qualification JAR and CardDemo input inventory used below are local
-ignored artifacts. They are not needed for the source-file command or smoke
-comparison above. Tracked result reports contain the qualification hashes and
-outcomes; recreating the full corpus comparison requires those pinned inputs.
+The runner's historical mode labels `main` and `definitions` invoke the explicit
+CLI choices `precise` and `reaching-definitions`. Frozen corpus inputs/outputs are
+local ignored artifacts; the commands above require only tracked fixtures.
 
-Run JVMs sequentially, with at most 512 MiB heap, 768 MiB RSS, 2 GiB host reserve,
-60 s timeout and max-work 100M. Qualification uses 128 MiB heap. The runner records
-raw output, commands, source/JAR/build hashes, resource limits and peak RSS. It
-stops a campaign on a memory guard. A stopped run is not counted as passing.
+Qualification uses sequential JVMs with 128 MiB heap (512 MiB for scale), 768 MiB
+RSS guard, 2 GiB host reserve, 60 s timeout and max-work 100M. Raw output, commands,
+input/JAR hashes and resource telemetry are preserved. A guard stop never counts
+as passing.
 
 ```sh
-export JAVA_HOME=/path/to/jdk21
-python3 benchmark/experiments/dependency-witness-demand/build.py /tmp/rd-build \
-  --jar benchmark/results/remote-requalification-20261009/remote.jar
-python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/rd-negatives \
-  --build /tmp/rd-build --jar benchmark/results/remote-requalification-20261009/remote.jar \
-  --modes main definitions --heap 128
+python3 benchmark/experiments/dependency-witness-demand/control-regressions.py /tmp/rd-tables \
+  --jar target/cobol-dependency-analyzer.jar \
+  --fixtures src/test/resources/dependency-definitions
 python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/rd-corpus \
-  --build /tmp/rd-build --jar benchmark/results/remote-requalification-20261009/remote.jar \
-  --focused --carddemo --heap 128
+  --jar target/cobol-dependency-analyzer.jar --focused --carddemo --heap 128
 python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/rd-scale \
-  --build /tmp/rd-build --jar benchmark/results/remote-requalification-20261009/remote.jar \
-  --sizes 32 64 128 512 2048
+  --jar target/cobol-dependency-analyzer.jar --sizes 2048 --family dynamic-only
 ```
+
+Previous overlay reports are historical evidence for the pinned baseline and
+compiled overlays they identify. They are not relabeled as CLI integration tests.
+The corporate source itself has not been tested.
 
 CLI exit 1 is PARTIAL, not failure, when output exists: the approximation is
 always disclosed. Compare actual dependency names and source locations against
@@ -166,7 +149,7 @@ and the corrected build; pass `--jar`, `--before`, and `--after` build paths.
 
 The table/INITIALIZE correction is qualified in
 [table-fix-results.md](table-fix-results.md). The same bounded independent-oracle
-runner accepts `--fixtures benchmark/experiments/dependency-witness-demand/table-fixtures`
+runner accepts `--fixtures src/test/resources/dependency-definitions`
 for its table cases. Two cases deliberately expect fewer names than
 frozen main: a copied index overwrites the exact cell, and whole-table INITIALIZE
 resets its equivalent REDEFINES view, but frozen main conservatively retained OLD. The raw RED run and that separate baseline expectation are

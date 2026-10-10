@@ -35,7 +35,7 @@ final class DefinitionControl {
     private final Map<Integer,Set<Completion>> completions=new HashMap<>();
     private final DependencyFlyweight<BitSet> masks=new DependencyFlyweight<>();
     private boolean policiesFrozen;
-    long edges,visits,deliveries;int policyCount;long retainedPolicyWords;
+    long edges,visits,deliveries;int policyCount;
     DefinitionControl(DependencyFlow flow,Runnable tick){this.flow=flow;this.tick=tick;}
     private void step(){tick.run();visits++;}
     private int policy(Point point){
@@ -148,9 +148,7 @@ final class DefinitionControl {
             for(var call:effect.calls())call(id,call,active,handlers);
             events(id,active,handlers);
         }
-        policyCount=policies.size();var distinct=Collections.newSetFromMap(new IdentityHashMap<BitSet,Boolean>());
-        for(var p:positions)distinct.add(p.policies);retainedPolicyWords=distinct.stream().mapToLong(b->b.toLongArray().length).sum();
-        System.err.printf("DEFINITIONS_CONTROL {\"policies\":%d,\"positions\":%d,\"edges\":%d,\"visits\":%d,\"deliveries\":%d,\"distinctPolicySets\":%d,\"policyWords\":%d}%n",policyCount,positions.size(),edges,visits,deliveries,distinct.size(),retainedPolicyWords);
+        policyCount=policies.size();
         // Only topology is needed by reaching definitions. Release forward
         // facts and subscriptions before allocating the value equations.
         for(var p:positions){p.policies=EMPTY_BITS;p.handlers=null;p.output=null;}

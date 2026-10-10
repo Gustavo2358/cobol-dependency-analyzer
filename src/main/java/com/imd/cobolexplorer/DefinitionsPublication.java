@@ -17,21 +17,19 @@ final class DefinitionsPublication {
         }
     }
     static void publish(Map<DependencyFlow.Query,DependencyValues> answers,Sink sink,Set<String> notices){
-        var sets=new IdentityHashMap<Set<String>,Map<Kind,Group>>();long naive=0,enumerated=0;int groups=0;
+        var sets=new IdentityHashMap<Set<String>,Map<Kind,Group>>();
         for(var answer:answers.entrySet()){
-            var q=answer.getKey();var names=answer.getValue().values();naive+=names.size();
+            var q=answer.getKey();var names=answer.getValue().values();
             var kind=new Kind(q.type(),q.type().equals("file")&&q.literal().isEmpty());
             sets.computeIfAbsent(names,k->new HashMap<>()).computeIfAbsent(kind,k->new Group()).accept(q);
         }
         for(var set:sets.entrySet())for(var entry:set.getValue().entrySet()){
-            groups++;var kind=entry.getKey();var group=entry.getValue();boolean unsupported=false;
+            var kind=entry.getKey();var group=entry.getValue();boolean unsupported=false;
             for(String name:set.getKey()){
-                enumerated++;
                 if(kind.type().equals("file")&&(kind.strictFile()&&name.length()!=8||name.stripTrailing().length()>8||!name.stripTrailing().matches("[A-Z0-9$@#]+")))unsupported=true;
                 else sink.add(kind.type(),name,group.earliest);
             }
             if(unsupported)for(var q:group.queries)notices.add("CICS_FILE_NAME_UNSUPPORTED at "+q.statement().meta().provenance().original().startLine());
         }
-        System.err.printf("DEFINITIONS_PUBLICATION queries=%d distinctSets=%d groups=%d naivePairs=%d enumeratedPairs=%d%n",answers.size(),sets.size(),groups,naive,enumerated);
     }
 }
