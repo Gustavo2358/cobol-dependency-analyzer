@@ -45,7 +45,7 @@ final class SparseDefinitions {
     final ArrayDeque<Integer> discovery=new ArrayDeque<>();
     final Map<OperationKey,Operation> operations=new HashMap<>();
     final IdentityHashMap<Ast.Statement,State> independent=new IdentityHashMap<>();
-    long steps,physicalEdges,definitionEdges,evaluations,propagations,candidateSlots,constantWrites,openingWrites;
+    long steps,physicalEdges,definitionEdges,evaluations,propagations,candidateSlots;
     int joinComponents;int[] componentOf;final List<Component> components=new ArrayList<>();
     State initial;
     final IdentityHashMap<Ast.Node,Set<Integer>> readCache=new IdentityHashMap<>();
@@ -176,12 +176,12 @@ final class SparseDefinitions {
         // The canonical local transformer uses TOP to certify independence.
         // Closed outputs under TOP cannot consume any previous field value.
         var closed=independent.computeIfAbsent(statement,s->logical.transfer(s,new State(Map.of(),Map.of(),Set.of()))).get(cell.declaration());
-        if(!closed.unknown()){definition.seed=closed;constantWrites++;return;}
+        if(!closed.unknown()){definition.seed=closed;return;}
         // Opening is distributive: open(A union B) = A union B union UNKNOWN.
         // It is a union equation, with output-specific support already supplied
         // by the product. It does not require the other affected declarations.
         var opening=support(statement).widenings().get(cell.declaration());
-        if(opening!=null){definition.seed=DependencyValues.UNKNOWN;for(int read:opening)if(flow.demand.contains(read))parent(definition,before(read,cell.position()));openingWrites++;return;}
+        if(opening!=null){definition.seed=DependencyValues.UNKNOWN;for(int read:opening)if(flow.demand.contains(read))parent(definition,before(read,cell.position()));return;}
         var operands=new HashSet<Integer>();
         if(statement instanceof Ast.MoveStatement move&&!move.corresponding())operands.addAll(reads(move.source()));
         else if(statement instanceof Ast.MoveStatement move)operands.addAll(flow.declarations.reads(move.source()));
