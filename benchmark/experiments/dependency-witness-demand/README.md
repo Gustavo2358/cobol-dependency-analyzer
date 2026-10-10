@@ -1,89 +1,90 @@
-# Dependency witness demand — research prototype
+# Sparse reaching definitions — research experiment
 
-Branch: `experiment/dependency-witness-demand`, based on main
+Branch `experiment/dependency-witness-demand`, baseline main
 `52c1b82dc6accbb615818cf5b5298843a85b0f01`.
 
-The canceled bitset experiment branch was deleted. Its two commits were saved
-in the verified, ignored bundle at
-`benchmark/results/failed-experiment-20261009/failed-experiment.bundle`; its
-benchmark documents were archived next to that bundle. The origin-graph
-experiment branch remains untouched.
+This is the generalization of the witness-search prototype. `WitnessFlow.java`
+and its scalar-fit helper were removed. There is one experimental solver,
+`SparseDefinitions`; there is no admission whitelist, old-solver fallback,
+fixture-specific dispatch, or per-query algorithm selection. The old experiment's
+measurements remain in Git and in `results.md` / `results.json` as historical
+evidence, not executable code.
 
-## Question and intervention
+## What is shared
 
-Can we stop doing work when it can only reproduce dependencies already found?
-This prototype starts **before each CALL**, walks backward through assignments,
-and records each discovered (dependency type, name) once, at its earliest
-source site. Queries are visited in source order. A flow-insensitive scalar
-value bound tells us which names remain possible; finding one abstract witness
-is sufficient to retire that name. Later CALLs only search for missing names.
-The pending bound is shared per (type, declaration), so constructing it does
-not itself reproduce a query × candidate matrix.
+Build physical control once, using the frontend's existing topology, including
+file/exception handlers and alternate entries. A PERFORM enters its body; only
+physical completion/escape boundaries lead to resumes. Matching caller identity
+and predicate correlations are relaxed. This can produce extra names and earlier
+source locations. Program return/halt does not create a resume edge.
 
-The backward goal contains a physical location, a declaration and a compact
-text-fit transform. It does not contain a complete environment or a sequence
-of context/state snapshots. Full scalar MOVE kills the old definition. Text
-copies preserve padding/truncation, including chains with different widths.
-ACCEPT conservatively retains the known candidate and opens the unknown part,
-matching the current product's behavior.
+Starting at the BEFORE operand of each CALL/CICS query, discover only demanded
+logical definitions. Follow a declaration backward to a write, initial value or
+control join. Bypass single-predecessor identity chains, caching the representative;
+commands that do not change the declaration do not become new definition nodes.
+Full assignments replace definitions. Weak effects retain candidates plus an
+unknown remainder, following the existing local value semantics.
 
-A second adversary puts an impossible name in the bound: VALUE 'DEAD' is
-unconditionally replaced with 'SAME' before entering the dispatch loop.
-Stopping after positive findings alone repeats a failed search at every CALL.
-An **exhausted** traversal certifies that the names still pending cannot be
-obtained from any visited goal. The pending set only shrinks, so these negative
-certificates can be reused at later sites for the same (type, declaration).
-A traversal stopped early never creates a negative certificate.
+Joins form union equations. Collapse their strongly connected components, then
+propagate candidates to a fixed point. Transformations remain separate equations:
+a width-changing copy is not identified with a plain union. Each equation uses
+local operands rather than a whole caller environment, and all queries read the
+same completed graph. Equal shared answer sets are enumerated once per dependency
+kind/file validation rule, preserving earliest provenance and notices.
 
-## Scope and precision
+The existing logical evaluator handles group MOVE, CORRESPONDING, numeric/text
+fits, REDEFINES, INITIALIZE, SET, partial references and generic frontend effects.
+Statement support and binding are reused, not reimplemented in a second frontend.
+OCCURS positions are summarized by declaration; indexes do not allocate cells.
+This deliberately loses index precision, never claiming that a write to one
+position overwrote every other position.
 
-This is an isolated compiler overlay under `benchmark/experiments`, not a
-production implementation, feature flag, alternate production path or fallback.
-`build.py` compiles against the frozen main JAR and reuses the actual frontend,
-nominal binding, control topology, source dependencies and JSON writer.
+Reference-modification addresses need an additional local rule: a merged offset
+with several known values must still generate each known substring. Stream the
+finite alternatives of address operands, evaluate each through the same local
+transformer, and union them with the conservative merged-address remainder.
+No product of *program paths or callers* is created. A local candidate product can
+still be large, so exhaustion is an explicit RESOURCE_LIMIT, not truncation.
+Generic STRING/arithmetic/external effects retain the product's existing known
+candidates and unknown remainder; this does not add new string-construction
+semantics that the baseline frontend/evaluator does not provide.
 
-The control graph is deliberately a **may approximation**: it ignores predicate
-correlations and shares PERFORM boundary returns between callers. A witness in
-this graph does not prove a balanced, feasible concrete COBOL execution.
-Negative sentinels explicitly expose both sources of false positives. Unknown
-remainders are retained conservatively; diagnostic and exit-code parity are
-not claimed. Known names and their earliest locations are compared separately.
+## Isolation and validation
 
-Value support is restricted to bound scalar text references, basic text VALUE
-and literal/scalar MOVE, and conservatively open input. Indexed/group/partial
-references, numeric value transforms, aliases, event/file control and unsupported
-mutations fail with `UNSUPPORTED_EXPERIMENT`. No old solver is invoked to make
-an unsupported case look successful. Unsupported corpus cases are gaps, not
-passes or evidence of preserved dependencies.
+`build.py` generates an ignored research overlay from the pinned main sources and
+JAR. It exposes the existing local evaluator and bypasses the production control,
+context and table-demand solvers. Empty control/relevance adapters only satisfy
+the unchanged CLI metric shape. They do no graph analysis. Production `src/`, POM
+and scripts are unchanged; this is not yet a production replacement or PR.
 
-## Reproduce
+The sparse graph reuses ideas/local evaluator integration from the separate
+`experiment/value-origin-graph` branch; that branch remains untouched. This
+experiment additionally bypasses identity chains, requires physical boundaries
+for returns, supports joined substring addresses, and removes the restricted
+witness-search algorithm rather than maintaining it beside the new one.
 
-Use the configured JDK; the baseline JAR is:
-`benchmark/results/remote-requalification-20261009/remote.jar`, SHA-256
-`6bd96f31911976c097c9fb47377587c11bf3ebe6dc60305190104314bc39b036`.
+Run JVMs sequentially, with at most 512 MiB heap, 768 MiB RSS, 2 GiB host reserve,
+60 s timeout and max-work 100M. Qualification uses 128 MiB heap. The runner records
+raw output, commands, source/JAR/build hashes, resource limits and peak RSS. It
+stops a campaign on a memory guard. A stopped run is not counted as passing.
 
 ```sh
-python3 benchmark/experiments/dependency-witness-demand/build.py /tmp/witness-build --jar benchmark/results/remote-requalification-20261009/remote.jar
-python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/witness-small --jar benchmark/results/remote-requalification-20261009/remote.jar --build /tmp/witness-build --sizes 32 64 128
-python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/witness-large --jar benchmark/results/remote-requalification-20261009/remote.jar --build /tmp/witness-build --sizes 512 2048 --modes full stop
-python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/witness-negative --jar benchmark/results/remote-requalification-20261009/remote.jar --build /tmp/witness-build --family negative-bound --sizes 128 512 2048 --modes main stop-no-cache stop
-python3 benchmark/experiments/dependency-witness-demand/laws.py
-python3 benchmark/experiments/dependency-witness-demand/check.py /tmp/witness-small /tmp/witness-large /tmp/witness-negative
+export JAVA_HOME=/path/to/jdk21
+python3 benchmark/experiments/dependency-witness-demand/build.py /tmp/rd-build \
+  --jar benchmark/results/remote-requalification-20261009/remote.jar
+python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/rd-negatives \
+  --build /tmp/rd-build --jar benchmark/results/remote-requalification-20261009/remote.jar \
+  --modes main definitions --heap 128
+python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/rd-corpus \
+  --build /tmp/rd-build --jar benchmark/results/remote-requalification-20261009/remote.jar \
+  --focused --carddemo --heap 128
+python3 benchmark/experiments/dependency-witness-demand/run.py /tmp/rd-scale \
+  --build /tmp/rd-build --jar benchmark/results/remote-requalification-20261009/remote.jar \
+  --sizes 32 64 128 512 2048
 ```
 
-`full` and `stop` use the same frontend, graph, transfer semantics and bounds.
-Only pruning and its negative cache differ. `stop-no-cache` isolates the cache.
-All runs are sequential, max work 100M, timeout 60 seconds, RSS cap 768 MiB and
-host reserve 2 GiB. Large comparisons use the same 512 MiB heap. Smaller
-qualification runs use 128/256 MiB; the heap cap was not increased.
-Raw stderr/stdout, input copies and hashes, JSON, time, telemetry, commands and
-instrumentation remain in `benchmark/results/witness-demand-20261009/`.
-
-## Qualification boundary
-
-Production sources, build settings and FAST scripts remain identical to main.
-The frozen main FAST qualification is reused only for that unchanged product;
-FAST has not qualified the new solver. New evidence consists of the overlay
-compile, 1,024 fit-composition checks, ten positive/negative CLI cases, synthetic
-scaling and corpus admission/comparisons. See `results.json` and `results.md`
-here for the measured outcomes. This branch is not ready for production merge.
+CLI exit 1 is PARTIAL, not failure, when output exists: the approximation is
+always disclosed. Compare actual dependency names and source locations against
+frozen baseline JSON. No lost baseline name is acceptable; additional names and
+location changes are reported separately. Corpus parity is empirical, not a
+universal soundness proof. `reaching-definitions-results.md` records this wave.

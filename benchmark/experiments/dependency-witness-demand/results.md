@@ -1,3 +1,5 @@
+> Historical scalar witness prototype at 85a91e9. Current solver and measurements: [sparse reaching definitions](reaching-definitions-results.md).
+
 # Resultado do experimento de busca por testemunhos
 
 A hipótese teve resultado positivo nas famílias exercitadas: parar de procurar
